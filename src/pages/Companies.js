@@ -132,7 +132,11 @@ export default function Companies() {
 
   useEffect(() => {
     axios.get('/companies')
-      .then(res => setCompanies(res.data))
+      .then(res => {
+        console.log(res.data)
+        setCompanies(res.data)
+      
+      })
   }, [])
 
   const handleSelect = async (value) => {
@@ -207,7 +211,8 @@ export default function Companies() {
 
 
           {companies ? companies.map((el, i) => {
-            const { name, players } = el.companyInfo
+            console.log(el)
+            const { name, images } = el.companyInfo
             return (
               <>
 
@@ -221,7 +226,8 @@ export default function Companies() {
                     <CardActionArea className={classes.cardSubcontainer}>
                       <CardMedia
                         className={classes.media}
-                        image="https://images.unsplash.com/photo-1510566337590-2fc1f21d0faa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"
+                        image={images ? images[0] : 
+                          "https://images.unsplash.com/photo-1510566337590-2fc1f21d0faa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"}
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">

@@ -36,17 +36,20 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const EnquiryModal = ({ toggleModal, selectedService, companyName }) => {
+const EnquiryModal = ({ toggleModal, selectedService, companyId, companyName }) => {
 
   const [isLoading, setIsLoading] = useState(false)
+
+  // console.log(auth.getUserId(), companyId)
  
   const [enquiryBody, setEnquiryBody] = useState({
     name: '',
     email: '',
     message: '',
-    subject: selectedService,
     company: companyName,
+    subject: selectedService,
     userId: auth.getUserId(),
+    companyId
   })
 
   const [enquiryErr, setEnquiryErr] = useState()
@@ -67,6 +70,7 @@ const EnquiryModal = ({ toggleModal, selectedService, companyName }) => {
     axios.post('/enquiries', enquiryBody)
       .then(res => {
         console.log(res.data.message)
+        toggleModal()
         setIsLoading(false)
       })
       .catch(err => {

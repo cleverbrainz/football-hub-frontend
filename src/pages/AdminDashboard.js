@@ -29,7 +29,7 @@ import {
 } from '@material-ui/icons';
 
 import auth from '../lib/auth'
-import { AuthContext } from '../lib/context'
+// import { AuthContext } from '../lib/context'
 
 // import {
 //   Summary,
@@ -40,7 +40,7 @@ import { AuthContext } from '../lib/context'
 // } from '../components/Dashboard'
 
 import Summary from '../components/Dashboard/Summary'
-import Messages from '../components/Dashboard/Messages'
+import Messages from '../components/Dashboard/CompanyMessages'
 import Listings from '../components/Dashboard/Listings'
 import Coaches from '../components/Dashboard/Coaches'
 import Sessions from '../components/Dashboard/Sessions'
@@ -128,7 +128,7 @@ export default function Profile() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [selectedComponent, setSelectedComponent] = useState('Sessions');
-  const { getUserDetails } = useContext(AuthContext)
+  // const { getUserDetails } = useContext(AuthContext)
 
   const [drawerItems, setDrawerItems] = useState({
     Summary: BubbleChartSharp,

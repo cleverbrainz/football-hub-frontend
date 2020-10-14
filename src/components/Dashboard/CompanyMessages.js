@@ -105,7 +105,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Messages = (props) => {
+const CompanyMessages = (props) => {
 
   const { window } = props;
   const classes = useStyles();
@@ -116,13 +116,13 @@ const Messages = (props) => {
   const [selectedMessage, setSelectedMessage] = useState()
   const [typedMessage, setTypedMessage] = useState({
     message: '',
-    from: auth.getUserId()
+    from: auth.getUserId()      
   })
 
   useEffect(() => {
-    axios.get('/enquiries', { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+    axios.get(`/enquiries/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(async res => {
-
+        console.log(res.data)
         const orderedMessages = res.data.sort((a, b) => {
           const messageA = a.enquiryInfo.messages[a.enquiryInfo.messages.length - 1]
           const messageB = b.enquiryInfo.messages[b.enquiryInfo.messages.length - 1]
@@ -329,4 +329,4 @@ const Messages = (props) => {
   );
 }
 
-export default Messages;
+export default CompanyMessages;

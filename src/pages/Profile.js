@@ -10,6 +10,8 @@ import axios from 'axios'
 import EditSharpIcon from '@material-ui/icons/EditSharp';
 import moment from 'moment'
 
+import jwt from 'jsonwebtoken';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     height: window.innerHeight - 80,
@@ -35,7 +37,11 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     [theme.breakpoints.up('sm')]: {
       flexDirection: 'row',
-      width: '65%',
+      width: '100%',
+      justifyContent: 'space-around'
+    },
+    [theme.breakpoints.up('md')]: {
+      width: '75%',
     },
     // backgroundColor: 'lightblue',
   },
@@ -50,8 +56,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(37),
-      height: theme.spacing(37),
+      width: theme.spacing(38),
+      height: theme.spacing(38),
     },
     width: theme.spacing(30),
     height: theme.spacing(30),
@@ -59,17 +65,22 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       cursor: 'pointer',
       filter: 'grayscale(50%)'
-    }
+    },
+    // boxShadow: '1px 1px 2px 2px grey'
   },
   rightContainer: {
     [theme.breakpoints.up('sm')]: {
-      width: '60%',
+      width: '55%',
     },
     height: '100%',
     width: '100%',
-    backgroundColor: 'lightgreen',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly'
   },
-
+name: {
+  margin: '20px 0',
+}
 }));
 
 const Profile = () => {
@@ -80,7 +91,10 @@ const Profile = () => {
 
   useEffect(() => {
     axios.get(`/users/${auth.getUserId()}`)
-      .then(res => setUser(res.data[0]))
+      .then(res => {
+        console.log(res.data)
+        setUser(res.data[0])
+      })
   }, [!imageUpload])
 
   const classes = useStyles();
@@ -93,7 +107,7 @@ const Profile = () => {
     picture.append('owner', auth.getUserId())
     picture.append('picture', image[0], image[0].name)
 
-    axios.post('/user/image', picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+    axios.post(`/user/${auth.getUserId()}/image`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
         console.log(res.data)
         setImageUpload(false)
@@ -106,34 +120,14 @@ const Profile = () => {
       <div className={classes.subContainer}>
         <div className={classes.leftContainer}>
 
-        <input ref={input} 
-        style={{ display: 'none' }} onChange={(e) => handleMediaChange(e)} type="file" />
-        
-          <Avatar 
-          onClick={(e) => input.current.click()}
-          className={classes.avatar} src={user && user.imageURL} 
-     
+          <input ref={input}
+            style={{ display: 'none' }} onChange={(e) => handleMediaChange(e)} type="file" />
+
+          <Avatar
+            onClick={(e) => input.current.click()}
+            className={classes.avatar} src={user && user.imageURL}
+
           />
-
-
-
-
-          <Typography style={{ margin: '10px 0', textAlign: 'center' }} component='div' >
-            <Box
-              fontSize={30} fontWeight="fontWeightBold" m={0}>
-              {user && user.fullName}
-            </Box>
-            <small style={{ fontStyle: 'italic' }}>
-              Joined: {user && moment(new Date(user.joined._seconds * 1000 + user.joined._nanoseconds / 1000000)).format('DD-MM-YYYY')}
-            </small>
-          </Typography>
-
-          <Typography style={{ margin: '10px 0' }} component='div' >
-            <Box
-              fontSize={16} fontWeight="fontWeightRegular" m={0}>
-              <span style={{ fontWeight: 'bold', display: 'block' }}> Player ID </span> {user && user.userId}
-            </Box>
-          </Typography>
 
           <Typography style={{ margin: '10px 0' }} component='div' >
             <Box
@@ -146,13 +140,76 @@ const Profile = () => {
             <Box
               fontSize={16} fontWeight="fontWeightRegular" m={0}>
               <span style={{ fontWeight: 'bold', display: 'block' }}> DOB </span>
-              {user && moment(new Date(user.dob._seconds * 1000 + user.dob._nanoseconds / 1000000)).format('DD-MM-YYYY')}
+              {/* {user && moment(new Date(user.dob._seconds * 1000 + user.dob._nanoseconds / 1000000)).format('DD-MM-YYYY')} */}
+            </Box>
+          </Typography>
+
+          <Typography style={{ margin: '10px 0' }} component='div' >
+            <Box
+              fontSize={16} fontWeight="fontWeightRegular" m={0}>
+              <span style={{ fontWeight: 'bold', display: 'block' }}> Player Position </span>
+            {user && user.preferred_position}
+            </Box>
+          </Typography>
+
+          <Typography style={{ margin: '10px 0' }} component='div' >
+            <Box
+              fontSize={16} fontWeight="fontWeightRegular" m={0}>
+              <span style={{ fontWeight: 'bold', display: 'block' }}> Favourite Football Team </span>
+            {user && user.favourite_football_team}
+            </Box>
+          </Typography>
+
+
+          <Typography style={{ margin: '10px 0' }} component='div' >
+            <Box
+              fontSize={16} fontWeight="fontWeightRegular" m={0}>
+              <span style={{ fontWeight: 'bold', display: 'block' }}> Favourite Football Player </span>
+            {user && user.favourite_football_player}
             </Box>
           </Typography>
 
         </div>
-        <div className={classes.rightContainer}>
 
+
+        <div className={classes.rightContainer}>
+        <Typography style={{textAlign: 'center'}}  component='div' >
+            <Box className={classes.name}
+              fontSize={35} fontWeight="fontWeightBold" m={0}>
+              {user && user.name}
+            </Box>
+            <small style={{ fontStyle: 'italic' }}>
+              Joined: {user && moment(new Date(user.joined._seconds * 1000 + user.joined._nanoseconds / 1000000)).format('DD-MM-YYYY')}
+            </small>
+          </Typography>
+
+
+          <Typography style={{ margin: '10px 0' }} component='div' >
+            <Box
+              fontSize={16} fontWeight="fontWeightRegular" m={0}>
+              <span style={{ fontWeight: 'bold', display: 'block' }}> Player ID </span> {user && user.userId}
+            </Box>
+          </Typography>
+
+        <Typography style={{ margin: '10px 0' }} component='div' >
+            <Box
+              fontSize={16} fontWeight="fontWeightRegular" m={0}>
+              <span style={{ fontWeight: 'bold', display: 'block' }}> About Me </span>
+            {user && user.bio}
+            </Box>
+          </Typography>
+
+         
+
+          <Typography style={{ margin: '10px 0' }} component='div' >
+            <Box
+              fontSize={16} fontWeight="fontWeightRegular" m={0}>
+              <span style={{ fontWeight: 'bold', display: 'block' }}> Career Highlight </span>
+            {user && user.best_career_highlight}
+            </Box>
+          </Typography>
+
+        
         </div>
       </div>
 

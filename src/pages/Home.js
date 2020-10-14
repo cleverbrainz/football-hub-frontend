@@ -83,26 +83,7 @@ const Home = () => {
 
   const classes = useStyles()
 
-  const [scrollPosition, setScrollPosition] = useState()
-
-  useEffect(() => {
-    const nav = document.querySelector('.navbar')
-    const navMenu = document.querySelector('.is-active')
-
-    window.addEventListener('scroll', () => {
-      setScrollPosition(window.pageYOffset)
-      
-      if (scrollPosition > 340) {
-        nav.style.backgroundColor = 'white'
-        navMenu.style.backgroundColor = 'red'
-        nav.style.boxShadow = '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.1), 0px 1px 10px 0px rgba(0,0,0,0.12)'
-      } else {
-        navMenu.style.backgroundColor = 'transparent'
-        nav.style.backgroundColor = 'transparent'
-        nav.style.boxShadow = ''
-      }
-    })
-  })
+  
 
   return (
     <>

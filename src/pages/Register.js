@@ -1,149 +1,490 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import FormControl from '@material-ui/core/FormControl';
+import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 import OutlinedInput from '@material-ui/core/OutlinedInput'
-import { Select, MenuItem, CircularProgress } from '@material-ui/core'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-
+import InputLabel from '@material-ui/core/InputLabel';
+import VisibilityOffSharpIcon from '@material-ui/icons/VisibilityOffSharp';
+import VisibilitySharpIcon from '@material-ui/icons/VisibilitySharp';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+// import 'date-fns';
+// import DateFnsUtils from '@date-io/date-fns';
+// import {
+//   MuiPickersUtilsProvider,
+//   KeyboardDatePicker,
+// } from '@material-ui/pickers';
 import axios from 'axios'
+import AttachFileSharpIcon from '@material-ui/icons/AttachFileSharp';
+import { Link } from 'react-router-dom'
+
+import { CircularProgress } from '@material-ui/core'
+const { validateSignupFields, validateLoginFields } = require('../lib/validators')
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    height: window.innerHeight - 80,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly'
+  },
+  backButton: {
+    marginRight: theme.spacing(1),
+  },
+  instructions: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
+  formContainer: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column'
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '35%',
+    minWidth: '300px',
+    justifyContent: 'space-around',
+    // alignItems: 'center'
+    minHeight: '60%',
+  },
+  button: {
+    position: 'relative'
+  },
+  progress: {
+    position: 'absolute'
+  }
+}));
+
+function getSteps() {
+  return ['Registration details', 'Basic information', 'User profile setup', 'Registration Completed'];
+}
 
 
 
 export default function Register() {
-
-  const [formLabels, setFormLabels] = useState(['Full Name', 'Email', 'Password', 'Confirm Password'])
-  const [age, setAge] = useState('')
+  const classes = useStyles();
+  const [activeStep, setActiveStep] = useState(0);
+  const steps = getSteps();
   const [isLoading, setIsLoading] = useState(false)
+  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const [registerFields, setRegisterFields] = useState({
-    fullName: '',
+    name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    category: '',
+    public_liability_insurance: '',
+    professional_indemnity_insurance: '',
   })
-  
   const [fieldErrors, setFieldErrors] = useState()
   const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState()
 
-  const useStyles = makeStyles((theme) => ({
-    container: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'space-evenly',
-      height: `${window.innerHeight - 100}px`,
-    },
-    form: {
-      width: '30%',
-      minWidth: '300px',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '55%',
-      justifyContent: 'space-around' 
-    },
-    button: {
-      position: 'relative'
-    },
-    progress: {
-      position: 'absolute'
-    }
-  }));
+  // const [selectedDate, setSelectedDate] = useState(new Date('2020-08-10T21:11:54'));
 
-  const classes = useStyles();
+  // const handleDateChange = (date) => {
+  //   setSelectedDate(date);
+  // };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault()
+  }
 
   function handleFormChange(e) {
     const { name, value } = e.target
     const fields = { ...registerFields, [name]: value }
+    // console.log(e.target.tagName)
     setRegisterFields(fields)
+
   }
 
-  function handleFormSubmit(e) {
-    e.preventDefault()
-    // setRegisterFields({ ...registerFields, category: age })
-    setIsLoading(true)
+  const handleNext = (e) => {
+    if (activeStep === 0) {
+      setIsLoading(true)
 
-    axios.post('/signup', registerFields)
-      .then(res => {
-        // const inputs = Array.from(document.querySelectorAll('#outlined-basic'))
-        Array.from(document.querySelectorAll('#outlined-basic')).map(el => el.value = '')
-        setRegistrationSuccessMessage(res.data)
-        setIsLoading(false)
+      for (var key in registerFields) {
+        if (!registerFields[key]) delete registerFields[key]
+      }
+
+      axios.post('/signup', registerFields)
+        .then(res => {
+          setRegistrationSuccessMessage(res.data)
+          console.log(res.data)
+          setIsLoading(false)
+        })
+        .then(() => {
+          setRegisterFields({ ...registerFields, name: '', email: '', password: '', confirmPassword: '' })
+          setActiveStep((prevActiveStep) => prevActiveStep + 1)
+        })
+        .catch(err => {
+          setIsLoading(false)
+          setFieldErrors(err.response.data)
+        })
+    } else if (activeStep === 2) {
+
+      for (var key in registerFields) {
+        if (!registerFields[key]) delete registerFields[key]
+      }
+
+      let requestObject = {}
+
+      if (registerFields.category === 'player') {
+        requestObject = { ...registerFields }
+      } else requestObject = { ...registerFields }
+
+
+      console.log(registerFields)
+      console.log(registrationSuccessMessage)
+      setIsLoading(true)
+
+      axios.post(`/user/${registrationSuccessMessage.userId}/signup`, requestObject)
+        .then(res => {
+          console.log(res.data)
+          setIsLoading(false)
+        })
+        .then(() => setActiveStep((prevActiveStep) => prevActiveStep + 1))
+        .catch(err => {
+          // setFieldErrors(err.response.data)
+          setIsLoading(false)
+          console.error(err.response.data)
+
+        })
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+
+    // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
+  const form = (
+    <>
+      <FormControl variant="outlined">
+        <TextField id="outlined-basic"
+          type='text'
+          variant="outlined"
+          error={fieldErrors ? fieldErrors.fullName ? true : false : null}
+          helperText={fieldErrors ? fieldErrors.fullName : null}
+          name='name' label='Company/Player Name' />
+      </FormControl>
+
+      <FormControl variant="outlined">
+        <TextField id="outlined-basic"
+          type='email'
+          variant="outlined"
+          error={fieldErrors ? fieldErrors.email ? true : false : null}
+          helperText={fieldErrors ? fieldErrors.email : null}
+          name='email' label='Email' />
+      </FormControl>
+
+
+      <FormControl variant="outlined">
+        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-password"
+          error={fieldErrors ? fieldErrors.password ? true : false : null}
+          helperText={fieldErrors ? fieldErrors.password : null}
+          type={showPassword ? 'text' : 'password'}
+          name='password'
+          label='Password'
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilitySharpIcon /> : <VisibilityOffSharpIcon />}
+              </IconButton>
+            </InputAdornment>
+          }
+          labelWidth={70}
+        />
+
+      </FormControl>
+
+      <FormControl variant="outlined">
+
+        <InputLabel htmlFor="outlined-adornment-password"> Confirm Password</InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-password"
+          error={fieldErrors ? fieldErrors.confirmPassword ? true : false : null}
+          helperText={fieldErrors ? fieldErrors.confirmPassword : null}
+          type={showPasswordConfirmation ? 'text' : 'password'}
+          name='confirmPassword'
+          label='Confirm Password'
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {showPasswordConfirmation ? <VisibilitySharpIcon /> : <VisibilityOffSharpIcon />}
+              </IconButton>
+            </InputAdornment>
+          }
+          labelWidth={70}
+        />
+
+      </FormControl>
+    </>
+
+  )
+
+
+  const basicInfo = (
+
+    <>
+      <Typography variant='h5'>
+        Who are you?
+      </Typography>
+
+      <FormControl variant="outlined" className={classes.formControl}>
+        <InputLabel id="demo-simple-select-outlined-label">Category</InputLabel>
+        <Select
+          labelId="demo-simple-select-outlined-label"
+          id="demo-simple-select-outlined"
+          value={registerFields.category}
+          onChange={(e) => setRegisterFields({ ...registerFields, category: e.target.value })}
+          label="Category"
+        >
+          <MenuItem value='player'>Player</MenuItem>
+          <MenuItem value='company'>Company</MenuItem>
+        </Select>
+      </FormControl>
+
+    </>
+  )
+
+
+
+  const userProfileSetup = () => {
+
+    const companyUserSetupFields = ['VAT Number', 'Company Registration Number', 'Main Contact Number',
+      'Main Email', 'Accounts Contact Number', 'Accounts Email']
+    const insuranceFields = ['Public Liability Insurance', 'Professional Indemnity Insurance']
+    const playerUserSetupFields = ['Best Career Highlight', 'Favourite Football Player', 'Preferred Position', 'Favourite Football Team']
+
+    if (registerFields.category === 'player') {
+
+      const formFields = playerUserSetupFields.map(el => {
+        return (
+          <FormControl variant="outlined">
+            <TextField id="outlined-basic"
+              type='text'
+              variant="outlined"
+
+              name={el.toLowerCase().replace(/ /g, '_')} label={el} />
+          </FormControl>
+        )
       })
-      .catch(err => {
-        setFieldErrors(err.response.data)
-        setIsLoading(false)
+
+      return formFields.concat(
+        <>
+          {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+
+            <KeyboardDatePicker
+              disableToolbar
+              variant="inline"
+              format="MM/dd/yyyy"
+              margin="normal"
+              id="date-picker-inline"
+              label="Date of Birth"
+              value={selectedDate}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </MuiPickersUtilsProvider> */}
+
+
+          <FormControl variant="outlined">
+            <TextField
+              id="outlined-multiline-static"
+              label="Write a short bio"
+              multiline
+              rows={3}
+              name='bio'
+              variant="outlined"
+            />
+          </FormControl>
+
+
+        </>
+
+
+      ).reverse()
+
+
+
+    } else {
+      const formFields = companyUserSetupFields.map(el => {
+        return (
+          <FormControl variant="outlined">
+            <TextField id="outlined-basic"
+              type='text'
+              variant="outlined"
+              // error={fieldErrors ? fieldErrors[fieldName] ? true : false : null}
+              // helperText={fieldErrors ? fieldErrors[fieldName] : null}
+              name={el.toLowerCase().replace(/ /g, '_')} label={el} />
+          </FormControl>
+        )
       })
+
+      return formFields.concat(insuranceFields.map(el => {
+        const name = el.toLowerCase().replace(/ /g, '_')
+        return (
+          <>
+            <FormControl variant="outlined" className={classes.formControl} >
+              <InputLabel id="demo-simple-select-outlined-label">{el}</InputLabel>
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                value={registerFields[name]}
+                onChange={(e) => setRegisterFields({ ...registerFields, [name]: e.target.value })}
+                label={el}
+              >
+                <MenuItem value='No insurance'>I don't have any insurance</MenuItem>
+                <MenuItem value='£250,000'>£250,000</MenuItem>
+                <MenuItem value='£500,000'>£500,000</MenuItem>
+                <MenuItem value='£1,000,000'>£1,000,000</MenuItem>
+                <MenuItem value='£2,000,000'>£2,000,000</MenuItem>
+                <MenuItem value='£5,000,000'>£5,000,000</MenuItem>
+                <MenuItem value='£10,000,000'>£10,000,000</MenuItem>
+                <MenuItem value='Other'>Other</MenuItem>
+              </Select>
+
+            </FormControl >
+
+          </>
+        )
+      })
+      )
+    }
   }
 
-  // const handleChange = (event) => {
-  //   setAge(event.target.value);
-  // };
+  const completedRegistration = (
+    <>
+      <Typography variant='h4'>
+        Thank you for registering to the Football Hub!
+    </Typography>
+      <p style={{ color: 'green' }}>
+        {registrationSuccessMessage && registrationSuccessMessage.message}
+      </p>
+
+      <Link to='/login'> Click here to login </Link>
+    </>
+
+  )
+
+
+
+
+
+  function getStepContent(stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return form;
+      case 1:
+        return basicInfo;
+      case 2:
+        return userProfileSetup();
+      case 3:
+        return completedRegistration;
+      default:
+        return 'Unknown stepIndex';
+    }
+  }
 
   return (
 
-    <div className={classes.container}>
-      <Typography variant='h4'> SIGN UP </Typography>
-      <form
-        autoComplete='off'
-        onChange={(e) => handleFormChange(e)}
-        onSubmit={(e) => handleFormSubmit(e)}
-        className={classes.form}>
-
-        {formLabels.map((el, i) => {
-          let arr
-          let fieldName
-
-          if (el.split(' ').length > 1) {
-            arr = el.split(' ')
-            fieldName = arr[0].toLowerCase() + (arr[1].charAt(0).toUpperCase() + arr[1].slice(1))
-          } else {
-            fieldName = el.charAt(0).toLowerCase() + el.slice(1)
-          }
-
-          return (
-            <FormControl key={i} variant="outlined">
-              <TextField id="outlined-basic"
-                type={el === 'Full Name' || el === 'Email' ? 'text' : 'password'}
-                variant="outlined"
-                error={fieldErrors ? fieldErrors[fieldName] ? true : false : null}
-                helperText={fieldErrors ? fieldErrors[fieldName] : null}
-                name={fieldName} label={el} />
-            </FormControl>
-          )
-        })}
+    <div className={classes.root}>
+      <Typography style={{ textAlign: "center" }} variant='h4'> SIGN UP </Typography>
 
 
-        {/* <FormControl variant="outlined">
-          <InputLabel id="demo-simple-select-outlined-label">You're a</InputLabel>
-          <Select
-            labelId="demo-simple-select-outlined-label"
-            id="demo-simple-select-outlined"
-            value={age}
-            onChange={handleChange}
-            // name='category'
-            label="You're a"
-          >
-            <MenuItem value='Player'>Player</MenuItem>
-            <MenuItem value='Coach'>Coach</MenuItem>
-          </Select>
-        </FormControl> */}
+      <div className={classes.formContainer}>
 
+        <Stepper style={{ width: '100%' }} activeStep={activeStep} alternativeLabel>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
 
-        <Button disabled={isLoading} 
-          className={classes.button} 
-          variant="contained" type='submit' color="primary">
-          REGISTER
-          {isLoading && <CircularProgress size={30} className={classes.progress} />}
-        </Button>
+        {/* when they're finished registering  */}
+        {activeStep === steps.length ? (
+          <div>
+            <Typography className={classes.instructions}>
+              Thank you for registering with Ballers Hub. Your account is waiting to be verified.
+            </Typography>
+            <Button onClick={handleReset}>Reset</Button>
+          </div>
+        ) : (
+            // when not finished registering
+            <>
 
-        {registrationSuccessMessage && <p style={{ color: 'green', textAlign: 'center' }}> {registrationSuccessMessage.message} </p>}
-      </form>
+              <form
+                autoComplete='off'
+                onChange={(e) => handleFormChange(e)}
+                // onSubmit={(e) => handleFormSubmit(e)}
+                className={classes.form}>
 
-      <Link to='/login'> Already have an account? Login </Link>
+                {getStepContent(activeStep)}
+
+              </form>
+
+              <div>
+                {activeStep !== 3 && (
+                  <>
+                    <Button
+                      disabled={activeStep === 0 || activeStep === 1}
+                      onClick={handleBack}
+                      className={classes.backButton}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      className={classes.button}
+                      disabled={isLoading}
+                      variant="contained" color="primary"
+                      onClick={handleNext}>
+                      {activeStep === 2 ? 'Finish' : 'Continue'}
+
+                      {isLoading && <CircularProgress size={25} className={classes.progress} />}
+                    </Button>
+                  </>
+
+                )}
+              </div>
+            </>
+          )}
+      </div>
     </div>
-  )
+  );
 }

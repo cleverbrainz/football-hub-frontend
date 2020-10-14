@@ -61,23 +61,28 @@ export default function Login({ history }) {
     event.preventDefault();
   };
 
+  // useEffect(() => console.log(props, updateUser), [])
+
   function handleFormSubmit(e) {
     e.preventDefault()
-
     setIsLoading(true)
 
-    console.log(loginFields)
-
     axios.post('/login', loginFields)
-      .then(res => {
-        console.log(res.data.token)
+      .then(async res => {
+        await auth.setToken(res.data.token)
         setIsLoading(false)
-        auth.setToken(res.data.token)
-        history.push(`/${auth.getUserId(res.data.token)}/profile`)
+
+        if (res.data.accountCategory === 'player') {
+          history.push(`/${auth.getUserId()}/profile`)
+        } else history.push('/companyDashboard')
       })
       .catch(err => {
         setIsLoading(false)
-        setLoginError(err.response.data)
+        if (err) {
+          if (err.response) {
+            setLoginError(err.response.data)
+          } else setLoginError(err)
+        }
       })
   }
 

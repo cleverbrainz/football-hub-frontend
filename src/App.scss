@@ -23,8 +23,9 @@ body,
   .modal-content {
     background-color: white;
     width: 25%;
-    min-width: 320px;
-    height: 600px;
+    min-width: 330px;
+    transform: translateY(7%);
+    height: 570px;
     display: flex;
     // justify-content: space-evenly
     align-items: center;

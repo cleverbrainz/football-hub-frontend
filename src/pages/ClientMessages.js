@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Messages = (props) => {
+const ClientMessages = (props) => {
 
   const { window } = props;
   const classes = useStyles();
@@ -119,7 +119,7 @@ const Messages = (props) => {
   useEffect(() => {
     axios.get('/enquiries', { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(async res => {
-
+        console.log(res.data)
         const orderedMessages = res.data.sort((a, b) => {
           const messageA = a.enquiryInfo.messages[a.enquiryInfo.messages.length - 1]
           const messageB = b.enquiryInfo.messages[b.enquiryInfo.messages.length - 1]
@@ -295,7 +295,6 @@ const Messages = (props) => {
               )
             })}
           </div>
-
         </div>
 
         <form
@@ -326,4 +325,4 @@ const Messages = (props) => {
   );
 }
 
-export default Messages;
+export default ClientMessages;

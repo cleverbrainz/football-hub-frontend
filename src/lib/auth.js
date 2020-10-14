@@ -1,4 +1,6 @@
+import axios from 'axios'
 const jwt = require('jsonwebtoken')
+
 
 function setToken(token) {
   localStorage.setItem('token', token)
@@ -7,12 +9,12 @@ function setToken(token) {
 function isLoggedIn() {
 
   if (!localStorage.token) return false
-  const token = localStorage.token
-  jwt.verify( token, function(err, decoded) {
-    if ( err ) {
-      localStorage.removeItem( 'token' )
-    }
-  })
+
+  const decodedToken = jwt.decode(localStorage.token)
+
+  if (decodedToken.exp * 1000 < Date.now()) {
+    localStorage.removeItem('token')
+  }
   return (localStorage.token)
 }
 
@@ -31,10 +33,16 @@ function getUserId() {
   return JSON.parse(atob(parts[1])).sub
 }
 
+// function getUserInfo() { 
+//   axios.get(`/users/${getUserId()}`)
+//     .then(res => res.data[0])
+// }
+
 export default {
   setToken,
   getToken,
   isLoggedIn,
   logOut,
-  getUserId
+  getUserId,
+  // getUserInfo
 }

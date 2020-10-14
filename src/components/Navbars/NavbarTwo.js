@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function NavbarTwo() {
+function NavbarTwo({ history }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -81,8 +81,16 @@ function NavbarTwo() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-     <Link to={`/${auth.getUserId()}/profile`}> <MenuItem onClick={handleMenuClose}>Profile</MenuItem> </Link> 
+      <Link style={{color: '#000000de'}} to={`/${auth.getUserId()}/profile`}>
+        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      </Link>
+
       <MenuItem onClick={handleMenuClose}>Account Settings</MenuItem>
+
+      <MenuItem style={{color: 'red'}} onClick={async () => {
+        await auth.logOut()
+        history.push('/')
+      }}>Log out</MenuItem>
     </Menu>
   );
 
@@ -94,48 +102,69 @@ function NavbarTwo() {
       <AppBar id='navbar-noscroll' color="inherit" position="fixed">
         <Toolbar>
 
-          <Typography component='div'>
-            <Box fontSize={20} fontWeight="fontWeightRegular" m={1}>
-              <SportsSoccerSharpIcon style={{ transform: 'translateY(4.5px)', marginRight: '5px' }} />
-              BALLERS HUB
+          <Link to='/' style={{ color: '#4a4a4a' }}>
+            <Typography component='div'>
+              <Box fontSize={23} fontWeight="fontWeightRegular" m={1}>
+                <SportsSoccerSharpIcon style={{ transform: 'translateY(4.5px)', marginRight: '5px' }} />
+                BALLERS HUB
               </Box>
-          </Typography>
+            </Typography>
+          </Link>
 
           <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
 
 
 
+          {auth.isLoggedIn() ? (
+            <div className={classes.sectionDesktop}>
+              <Link to={'/companies'}>
+                <IconButton className={classes.icon}>
+                  <ExploreSharpIcon style={{ color: '#3d3d3d' }} />
+                </IconButton>
+              </Link>
 
-          <Link to={'/companies'}>
-            <IconButton className={classes.icon}>
-                <ExploreSharpIcon style={{color: '#3d3d3d'}}/>
-            </IconButton>
-            </Link>
+              <Link to={`/${auth.getUserId()}/messages`}>
+                <IconButton className={classes.icon}
+                  aria-label="show 4 new mails" >
+                  <Badge badgeContent={4} color="secondary">
+                    <MailIcon style={{ color: '#3d3d3d' }} />
+                  </Badge>
+                </IconButton>
+              </Link>
 
-            <Link to={`/${auth.getUserId()}/messages`}>
-
-
-              <IconButton className={classes.icon}
-                aria-label="show 4 new mails" >
-                <Badge badgeContent={4} color="secondary">
-                  <MailIcon style={{color: '#3d3d3d'}} />
-                </Badge>
+              <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+              >
+                <AccountCircle style={{ color: '#3d3d3d' }} />
               </IconButton>
+            </div>
+          ) : (
+              <div id="navbarBasicExample" className="navbar-menu">
+                <div className="navbar-end">
+                  <div className="navbar-item">
+                    <div className="navbar-start">
+                    </div>
+                    <div className="buttons">
+                      <button style={{ backgroundColor: '#3d3d3d' }} className="button is-link">
+                        <Link style={{ color: 'white', }} to='/register'> Sign up </Link>
+                      </button>
+                      <button component={Link} to='/login' className="button is-light">
+                        <Link style={{ color: 'black' }} to='/login'> Login </Link>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
 
-            </Link>
+            )}
 
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-            >
-              <AccountCircle style={{color: '#3d3d3d'}}/>
-            </IconButton>
-          </div>
+
+
 
           <div className={classes.sectionMobile}>
             <IconButton
@@ -148,19 +177,22 @@ function NavbarTwo() {
               <MoreIcon />
             </IconButton>
           </div>
+
+
         </Toolbar>
       </AppBar>
-      {<MobileMenu
-        handleMobileMenuClose={handleMobileMenuClose}
-        mobileMoreAnchorEl={mobileMoreAnchorEl}
-        isMobileMenuOpen={isMobileMenuOpen}
-        setAnchorEl={setAnchorEl}
-        setMobileMoreAnchorEl={setMobileMoreAnchorEl}
-        mobileMenuId={mobileMenuId}
-      />}
+      {
+        <MobileMenu
+          handleMobileMenuClose={handleMobileMenuClose}
+          mobileMoreAnchorEl={mobileMoreAnchorEl}
+          isMobileMenuOpen={isMobileMenuOpen}
+          setAnchorEl={setAnchorEl}
+          setMobileMoreAnchorEl={setMobileMoreAnchorEl}
+          mobileMenuId={mobileMenuId}
+        />
+      }
       {renderMenu}
-    </div>
-    // </>
+    </div >
   );
 }
 
