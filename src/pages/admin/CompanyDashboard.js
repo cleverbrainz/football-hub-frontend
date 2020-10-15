@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     margin: "40px",
-    maxWidth: "100%",
+    minWidth: "100%",
     height: "700px",
     flexGrow: 1,
   },
@@ -86,8 +86,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
   },
   cardroot: {
-    minWidth: 400,
-    margin: "10px 45px",
+    minWidth: 350,
+    margin: "10px 25px",
   },
   cardmedia: {
     height: 140,
