@@ -68,8 +68,6 @@ const App = () => {
       {/* <Route exact path='/:id/profile' component={Profile} /> */}
       <Route exact path="/companyDashboard" component={CompanyDashboard} />
 
-      {/* <Route exact path='/admin/:id' component={AdminDashboard} /> */}
-
       {/*  */}
     </>
   );
@@ -95,7 +93,7 @@ const App = () => {
       <Navbar />
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route exact path="/login" component={Login} />} />)
+        <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/forgot_password" component={ForgottenPassword} />
         <Route exact path="/test" component={Listings} />
