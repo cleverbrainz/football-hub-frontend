@@ -69,6 +69,8 @@ const App = () => {
       <Route exact path="/companyDashboard" component={CompanyDashboard} />
 
       {/*  */}
+
+      {/*  HELLOOOOOO BOYYSSSSSSS BHOWWW ARE YOU??? */}
     </>
   );
 
