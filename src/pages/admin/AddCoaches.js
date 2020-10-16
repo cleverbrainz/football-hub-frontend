@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Checkbox,
@@ -15,9 +15,8 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { db, storage, coachCollection } from "../../lib/firebase";
 import { database } from "firebase";
-import axios from 'axios'
-import auth from '../../lib/auth'
-
+import axios from "axios";
+import auth from "../../lib/auth";
 
 const useStyles = makeStyles((theme) => ({
   spacing: {
@@ -51,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
   },
   upload: {
     margin: "20px auto",
+    height: "20px",
+    width: "30px",
   },
   center: {
     margin: "0 auto",
@@ -72,6 +73,28 @@ export default function FormPropsTextFields() {
   const [phone, setPhone] = React.useState("");
   const [level, setLevel] = React.useState("");
 
+  const input = useRef();
+
+  const HandleChange = (e) => {
+    //setDataChange(true);
+    const image = e.target.files;
+    const picture = new FormData();
+    picture.append("owner", auth.getUserId());
+    picture.append("picture", image[0], image[0].name);
+
+    console.log(picture);
+
+    axios.patch(`/coach/:id/document`, picture, {
+      headers: { Authorization: `Bearer ${auth.getToken()}` },
+    });
+    //.then((res) => setDataChange(false))
+    //.catch((err) => {
+    //console.error(err);
+    //setDataChange(false);
+  };
+  //);
+  //};
+
   const handleUpload = (e) => {
     if (e.target.files[0]) {
       setImage(e.target.files[0]);
@@ -81,40 +104,40 @@ export default function FormPropsTextFields() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.post('/companies/coaches', {
-      coach_name: name,
-      coach_email: email,
-      coach_number: phone,
-      coaching_level: level,
-      companyId: auth.getUserId()
-    })
-      .then(res => {
+    axios
+      .post("/companies/coaches", {
+        coach_name: name,
+        coach_email: email,
+        coach_number: phone,
+        coaching_level: level,
+        companyId: auth.getUserId(),
+      })
+      .then((res) => {
         console.log(res.data);
       })
       .catch((error) => {
         alert(error.message);
       });
 
-    if (image) {
-      const uploadTask = storage.ref(`coaches/${image.name}`).put(image);
+    // if (image) {
+    //   const uploadTask = storage.ref(`coaches/${image.name}`).put(image);
 
-      uploadTask.on(
-        "state_changed",
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          storage
-            .ref("images")
-            .child(image.name)
-            .getDownloadURL()
-            .then((url) => {
-              setUrl(url);
-            });
-        }
-      );
-    }
-
+    //   uploadTask.on(
+    //     "state_changed",
+    //     (error) => {
+    //       console.log(error);
+    //     },
+    //     () => {
+    //       storage
+    //         .ref("images")
+    //         .child(image.name)
+    //         .getDownloadURL()
+    //         .then((url) => {
+    //           setUrl(url);
+    //         });
+    //     }
+    //   );
+    // }
 
     setName("");
     setEmail("");
@@ -191,11 +214,18 @@ export default function FormPropsTextFields() {
         </FormControl>
 
         <input
-          id="upload-photo"
-          className={classes.upload}
+          ref={input}
+          style={{ display: "none" }}
+          onChange={(e) => HandleChange(e)}
           type="file"
-          onChange={handleUpload}
         />
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => input.current.click()}
+        >
+          Secondary
+        </Button>
 
         <Typography variant="h5"> DBS Check </Typography>
 

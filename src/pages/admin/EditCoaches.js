@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Checkbox,
@@ -14,8 +14,8 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { storage, coachCollection } from "../../lib/firebase";
-import axios from 'axios'
-import auth from '../../lib/auth'
+import axios from "axios";
+import auth from "../../lib/auth";
 
 const useStyles = makeStyles((theme) => ({
   spacing: {
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 export default function FormPropsTextFields({ location, history }) {
   const classes = useStyles();
 
-  const { coachId, imageURL } = location.state 
+  const { coachId, imageURL } = location.state;
 
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
@@ -67,6 +67,8 @@ export default function FormPropsTextFields({ location, history }) {
   const [email, setEmail] = React.useState(location.state.coach_email);
   const [phone, setPhone] = React.useState(location.state.coach_number);
   const [level, setLevel] = React.useState(location.state.coaching_level);
+
+  const input = useRef();
 
   const [state, setState] = React.useState({
     checked: false,
@@ -82,16 +84,21 @@ export default function FormPropsTextFields({ location, history }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.patch('/companies/coaches', {
-      imageURL,
-      coach_name: name,
-      coach_email: email,
-      coach_number: phone,
-      coaching_level: level,
-      coachId
-    }, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
-      .then(res => {
-        console.log(res.data)
+    axios
+      .patch(
+        "/companies/coaches",
+        {
+          imageURL,
+          coach_name: name,
+          coach_email: email,
+          coach_number: phone,
+          coaching_level: level,
+          coachId,
+        },
+        { headers: { Authorization: `Bearer ${auth.getToken()}` } }
+      )
+      .then((res) => {
+        console.log(res.data);
         history.push("/companyDashboard/coaches");
       })
       .catch((error) => {
@@ -123,6 +130,27 @@ export default function FormPropsTextFields({ location, history }) {
     // setPhone("");
     // setLevel("");
   };
+
+  const HandleChange = (e) => {
+    //setDataChange(true);
+    const image = e.target.files;
+    const picture = new FormData();
+
+    picture.append("owner", auth.getUserId());
+    picture.append("picture", image[0], image[0].name);
+
+    console.log(picture);
+
+    axios.patch(`/coaches/${coachId}/document`, picture, {
+      headers: { Authorization: `Bearer ${auth.getToken()}` },
+    });
+    //.then((res) => setDataChange(false))
+    //.catch((err) => {
+    //console.error(err);
+    //setDataChange(false);
+  };
+  //);
+  //};
 
   //console.log("image: ", image);
 
@@ -215,11 +243,18 @@ export default function FormPropsTextFields({ location, history }) {
         />
 
         <input
-          id="upload-photo"
-          className={classes.upload}
+          ref={input}
+          style={{ display: "none" }}
+          onChange={(e) => HandleChange(e)}
           type="file"
-          onChange={handleUpload}
         />
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => input.current.click()}
+        >
+          Secondary
+        </Button>
 
         <Button
           className={classes.button}
