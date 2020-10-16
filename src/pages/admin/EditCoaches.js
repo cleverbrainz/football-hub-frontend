@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Checkbox,
@@ -62,6 +62,7 @@ export default function FormPropsTextFields({ location, history }) {
 
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
+  const [dataChange, setDataChange] = useState(false)
 
   const [name, setName] = React.useState(location.state.coach_name);
   const [email, setEmail] = React.useState(location.state.coach_email);
@@ -74,6 +75,8 @@ export default function FormPropsTextFields({ location, history }) {
     checked: false,
     details: null,
   });
+
+  
 
   const handleUpload = (e) => {
     if (e.target.files[0]) {
@@ -132,7 +135,8 @@ export default function FormPropsTextFields({ location, history }) {
   };
 
   const handleDocumentUpload = (e) => {
-    //setDataChange(true);
+    // setDataChange(true);
+    console.log('hellooo')
     const image = e.target.files;
     const document = new FormData();
 
@@ -144,9 +148,13 @@ export default function FormPropsTextFields({ location, history }) {
     axios.patch(`/coaches/${coachId}/document`, document, {
       headers: { Authorization: `Bearer ${auth.getToken()}` },
     })
-      .then((res) => console.log(res.data))
+      .then((res) => {
+        console.log(res.data)
+        // setDataChange(false);
+      })
       .catch((err) => {
         console.error(err);
+        // setDataChange(false);
       })
   }
 
@@ -249,7 +257,15 @@ export default function FormPropsTextFields({ location, history }) {
           color="secondary"
           onClick={() => input.current.click()}
         >
-          Secondary
+          UPLOAD DBS CERTIFICATE
+        </Button>
+
+        <Button
+          variant="contained"
+          color="default"
+          onClick={() => input.current.click()}
+        >
+          UPLOAD COACHING CERTIFICATE
         </Button>
 
         <Button
