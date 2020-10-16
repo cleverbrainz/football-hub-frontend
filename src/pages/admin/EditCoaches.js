@@ -131,28 +131,24 @@ export default function FormPropsTextFields({ location, history }) {
     // setLevel("");
   };
 
-  const HandleChange = (e) => {
+  const handleDocumentUpload = (e) => {
     //setDataChange(true);
     const image = e.target.files;
-    const picture = new FormData();
+    const document = new FormData();
 
-    picture.append("owner", auth.getUserId());
-    picture.append("picture", image[0], image[0].name);
+    document.append("owner", auth.getUserId());
+    document.append("document", image[0], image[0].name);
 
-    console.log(picture);
+    console.log(document);
 
-    axios.patch(`/coaches/${coachId}/document`, picture, {
+    axios.patch(`/coaches/${coachId}/document`, document, {
       headers: { Authorization: `Bearer ${auth.getToken()}` },
-    });
-    //.then((res) => setDataChange(false))
-    //.catch((err) => {
-    //console.error(err);
-    //setDataChange(false);
-  };
-  //);
-  //};
-
-  //console.log("image: ", image);
+    })
+      .then((res) => console.log(res.data))
+      .catch((err) => {
+        console.error(err);
+      })
+  }
 
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
@@ -245,7 +241,7 @@ export default function FormPropsTextFields({ location, history }) {
         <input
           ref={input}
           style={{ display: "none" }}
-          onChange={(e) => HandleChange(e)}
+          onChange={(e) => handleDocumentUpload(e)}
           type="file"
         />
         <Button
