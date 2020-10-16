@@ -13,7 +13,10 @@ import {
   Card,
   CardContent,
 } from "@material-ui/core";
-import { db, storage } from "../../lib/firebase";
+import axios from "axios";
+import auth from "../../lib/auth";
+
+//import { db, storage } from "../../lib/firebase";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -101,53 +104,50 @@ export default function ContainedButtons() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    db.collection("CompanyDetails")
-      .add({
-        company_name: name,
-        vat_number: vat,
-        company_registration_number: rnumber,
-        main_contact_number: cnumber,
-        main_email: memail,
-        company_email: email,
-        accounts_contact_number: anumber,
-        liability_insurance: insurance,
-        professional_idemnity_insurance: pinsurance,
-      })
-      .then(() => {
-        alert("Message has been submitted!");
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-
-    const uploadTask = storage.ref(`company-details/${image.name}`).put(image);
-
-    uploadTask.on(
-      "state_changed",
-      (error) => {
-        console.log(error);
-      },
-      () => {
-        storage
-          .ref("images")
-          .child(image.name)
-          .getDownloadURL()
-          .then((url) => {
-            setUrl(url);
-          });
-      }
-    );
-
-    setName("");
-    setVat("");
-    setRnumber("");
-    setCnumber("");
-    setMemail("");
-    setAnumber("");
-    setEmail("");
-    setInsurance("");
-    setPinsurance("");
+    //   e.preventDefault();
+    //   db.collection("CompanyDetails")
+    //     .add({
+    //       company_name: name,
+    //       vat_number: vat,
+    //       company_registration_number: rnumber,
+    //       main_contact_number: cnumber,
+    //       main_email: memail,
+    //       company_email: email,
+    //       accounts_contact_number: anumber,
+    //       liability_insurance: insurance,
+    //       professional_idemnity_insurance: pinsurance,
+    //     })
+    //     .then(() => {
+    //       alert("Message has been submitted!");
+    //     })
+    //     .catch((error) => {
+    //       alert(error.message);
+    //     });
+    //   const uploadTask = storage.ref(`company-details/${image.name}`).put(image);
+    //   uploadTask.on(
+    //     "state_changed",
+    //     (error) => {
+    //       console.log(error);
+    //     },
+    //     () => {
+    //       storage
+    //         .ref("images")
+    //         .child(image.name)
+    //         .getDownloadURL()
+    //         .then((url) => {
+    //           setUrl(url);
+    //         });
+    //     }
+    //   );
+    //   setName("");
+    //   setVat("");
+    //   setRnumber("");
+    //   setCnumber("");
+    //   setMemail("");
+    //   setAnumber("");
+    //   setEmail("");
+    //   setInsurance("");
+    //   setPinsurance("");
   };
 
   return (

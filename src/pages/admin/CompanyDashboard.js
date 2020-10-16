@@ -86,11 +86,11 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
   },
   cardroot: {
-    minWidth: 350,
-    margin: "10px 25px",
+    minWidth: 300,
+    margin: "10px 10px",
   },
   cardmedia: {
-    height: 140,
+    height: 250,
   },
   header: {
     marginTop: "1000px",
@@ -190,7 +190,7 @@ export default function ContainedButtons() {
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="h2">
-                    Company
+                    Update Company Details
                   </Typography>
                   <Typography
                     variant="body2"
@@ -246,6 +246,34 @@ export default function ContainedButtons() {
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="h2">
                     Messages & Enquiries
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                    Obcaecati at quo veritatis magnam alias omnis maiores
+                    laborum velit accusamus totam unde nemo, doloribus fugiat
+                    autem libero aliquam vitae vel rerum.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Link>
+        </td>
+
+        <td>
+          <Link to="/companyDashboard/messages">
+            <Card className={classes.cardroot}>
+              <CardActionArea>
+                <CardMedia
+                  className={classes.cardmedia}
+                  image="https://images.unsplash.com/photo-1526234577630-77b606b3421b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Age Groups
                   </Typography>
                   <Typography
                     variant="body2"
@@ -325,7 +353,7 @@ export default function ContainedButtons() {
               <CardActionArea>
                 <CardMedia
                   className={classes.cardmedia}
-                  image="https://images.unsplash.com/photo-1526232761682-d26e03ac148e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1015&q=80"
+                  image="https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1189&q=80"
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="h2">
@@ -346,17 +374,45 @@ export default function ContainedButtons() {
             </Card>
           </Link>
         </td>
+
+        <td>
+          <Link to="/companyDashboard/messages">
+            <Card className={classes.cardroot}>
+              <CardActionArea>
+                <CardMedia
+                  className={classes.cardmedia}
+                  image="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80"
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Company Approved
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                    Obcaecati at quo veritatis magnam alias omnis maiores
+                    laborum velit accusamus totam unde nemo, doloribus fugiat
+                    autem libero aliquam vitae vel rerum.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Link>
+        </td>
       </tr>
 
       <div className={classes.spacing}>
-        <Button
+        {/* <Button
           className={classes.button}
           type="submit"
           variant="contained"
           color="primary"
         >
           Submit Details
-        </Button>
+        </Button> */}
       </div>
     </Container>
   );
