@@ -43,6 +43,7 @@ import CampOptions from "./pages/admin/CampOptions";
 import CampMultiDetails from "./pages/admin/CampMultiDetails";
 import CampSingleDetails from "./pages/admin/CampSingleDetails";
 import AddServices from "./pages/admin/AddServices";
+import AddAgeGroup from "./pages/admin/AddAgeGroup";
 import ClientMessages from "./pages/ClientMessages";
 
 const App = () => {
@@ -188,6 +189,11 @@ const App = () => {
           exact
           path="/companyDashboard/addServices"
           component={AddServices}
+        />
+        <Route
+          exact
+          path="/companyDashboard/addAgeGroup"
+          component={AddAgeGroup}
         />
         {/* {auth.isLoggedIn() && additionalRoutes()} */}
       </Switch>
