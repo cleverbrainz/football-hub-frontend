@@ -145,9 +145,6 @@ export default function Register() {
         requestObject = { ...registerFields }
       } else requestObject = { ...registerFields }
 
-
-      console.log(registerFields)
-      console.log(registrationSuccessMessage)
       setIsLoading(true)
 
       axios.post(`/user/${registrationSuccessMessage.userId}/signup`, requestObject)
@@ -165,8 +162,6 @@ export default function Register() {
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
-
-    // setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
   };
 
@@ -460,6 +455,16 @@ export default function Register() {
               </form>
 
               <div>
+
+                {activeStep === 2 && (
+                  <Button
+                    onClick={handleNext}
+                    className={classes.backButton}
+                  >
+                    Skip
+                     </Button>
+                )}
+
                 {activeStep !== 3 && (
                   <>
                     <Button
@@ -469,6 +474,7 @@ export default function Register() {
                     >
                       Back
                     </Button>
+
                     <Button
                       className={classes.button}
                       disabled={isLoading}

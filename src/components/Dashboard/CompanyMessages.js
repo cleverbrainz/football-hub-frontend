@@ -20,7 +20,7 @@ import auth from '../../lib/auth'
 import moment from 'moment'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-const drawerWidth = 300;
+const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,9 +29,6 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       height: window.innerHeight - 80,
     },
-    // [theme.breakpoints.up('md')]: {
-    //   height: window.innerHeight - 80,
-    // }
   },
   drawer: {
     [theme.breakpoints.up('sm')]: {
@@ -116,11 +113,11 @@ const CompanyMessages = (props) => {
   const [selectedMessage, setSelectedMessage] = useState()
   const [typedMessage, setTypedMessage] = useState({
     message: '',
-    from: auth.getUserId()      
+    from: auth.getUserId()
   })
 
   useEffect(() => {
-    axios.get(`/enquiries/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+    axios.get('/enquiries/company', { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(async res => {
         console.log(res.data)
         const orderedMessages = res.data.sort((a, b) => {
@@ -178,7 +175,7 @@ const CompanyMessages = (props) => {
 
       <List>
         {messages && messages.map((el, i) => {
-          const { company, messages } = el.enquiryInfo
+          const { name, messages } = el.enquiryInfo
           const latestMessage = messages[messages.length - 1]
           const time = new Date(latestMessage.createdAt._seconds * 1000 + latestMessage.createdAt._nanoseconds / 1000000)
           const sameDay = moment(time).format('DD-MM-YYYY') === moment(new Date()).format('DD-MM-YYYY')
@@ -194,7 +191,7 @@ const CompanyMessages = (props) => {
                   <Typography component='div'>
                     <Box
                       fontSize={17} fontWeight="fontWeightRegular" m={0}>
-                      {company}
+                      {name}
                     </Box>
                   </Typography>
 
@@ -298,7 +295,6 @@ const CompanyMessages = (props) => {
               )
             })}
           </div>
-
         </div>
 
         <form
