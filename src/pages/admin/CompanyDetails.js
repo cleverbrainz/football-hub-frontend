@@ -16,8 +16,6 @@ import {
 import axios from "axios";
 import auth from "../../lib/auth";
 
-//import { db, storage } from "../../lib/firebase";
-
 const useStyles = makeStyles((theme) => ({
   container: {
     margin: "0 400px",
@@ -63,8 +61,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-around",
     opacity: "0.8",
     textAlign: "center",
-    //alignItems: "center",
-    //border: "1px solid black",
     padding: "20px",
     position: "relative",
     top: "60px",
@@ -81,21 +77,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ContainedButtons() {
+export default function ContainedButtons({ location, history }) {
   const classes = useStyles();
-
-  const [name, setName] = React.useState("");
-  const [vat, setVat] = React.useState("");
-  const [rnumber, setRnumber] = React.useState("");
-  const [cnumber, setCnumber] = React.useState("");
-  const [memail, setMemail] = React.useState("");
-  const [anumber, setAnumber] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [insurance, setInsurance] = React.useState("");
-  const [pinsurance, setPinsurance] = React.useState("");
-
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
+
+  const {
+    name,
+    vat_number,
+    company_registration_number,
+    main_contact_number,
+    main_email,
+    accounts_email,
+    accounts_contact_number,
+    public_liability_insurance,
+    professional_indemnity_insurance,
+  } = location.state;
+  console.log(location.state);
+  const [companyDetails, setCompanyDetails] = React.useState({
+    name,
+    vat_number,
+    company_registration_number,
+    main_contact_number,
+    main_email,
+    accounts_email,
+    accounts_contact_number,
+    public_liability_insurance,
+    professional_indemnity_insurance,
+  });
 
   const handleUpload = (e) => {
     if (e.target.files[0]) {
@@ -103,51 +112,26 @@ export default function ContainedButtons() {
     }
   };
 
+  function updateOtherCompanyInfo(event) {
+    const { name, value } = event.target;
+    setCompanyDetails({ ...companyDetails, [name]: value });
+  }
+
   const handleSubmit = (e) => {
-    //   e.preventDefault();
-    //   db.collection("CompanyDetails")
-    //     .add({
-    //       company_name: name,
-    //       vat_number: vat,
-    //       company_registration_number: rnumber,
-    //       main_contact_number: cnumber,
-    //       main_email: memail,
-    //       company_email: email,
-    //       accounts_contact_number: anumber,
-    //       liability_insurance: insurance,
-    //       professional_idemnity_insurance: pinsurance,
-    //     })
-    //     .then(() => {
-    //       alert("Message has been submitted!");
-    //     })
-    //     .catch((error) => {
-    //       alert(error.message);
-    //     });
-    //   const uploadTask = storage.ref(`company-details/${image.name}`).put(image);
-    //   uploadTask.on(
-    //     "state_changed",
-    //     (error) => {
-    //       console.log(error);
-    //     },
-    //     () => {
-    //       storage
-    //         .ref("images")
-    //         .child(image.name)
-    //         .getDownloadURL()
-    //         .then((url) => {
-    //           setUrl(url);
-    //         });
-    //     }
-    //   );
-    //   setName("");
-    //   setVat("");
-    //   setRnumber("");
-    //   setCnumber("");
-    //   setMemail("");
-    //   setAnumber("");
-    //   setEmail("");
-    //   setInsurance("");
-    //   setPinsurance("");
+    e.preventDefault();
+
+    console.log(companyDetails);
+
+    axios
+      .post(`/user/${auth.getUserId()}`, companyDetails, {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   };
 
   return (
@@ -161,64 +145,72 @@ export default function ContainedButtons() {
               id="outlined-basic"
               label="Company name"
               variant="outlined"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              name="name"
+              value={companyDetails.name}
+              onChange={(e) => updateOtherCompanyInfo(e)}
             />
             <TextField
               className={classes.spacing}
               id="outlined-basic"
               label="VAT number (optional)"
               variant="outlined"
-              value={vat}
-              onChange={(e) => setVat(e.target.value)}
+              value={companyDetails.vat_number}
+              name="vat_number"
+              onChange={(e) => updateOtherCompanyInfo(e)}
             />
             <TextField
               className={classes.spacing}
               id="outlined-basic"
               label="Company registration number"
               variant="outlined"
-              value={rnumber}
-              onChange={(e) => setRnumber(e.target.value)}
+              name="company_registration_number"
+              value={companyDetails.company_registration_number}
+              onChange={(e) => updateOtherCompanyInfo(e)}
             />
             <TextField
               className={classes.spacing}
               id="outlined-basic"
               label="Main contact number"
               variant="outlined"
-              value={cnumber}
-              onChange={(e) => setCnumber(e.target.value)}
+              name="main_contact_number"
+              value={companyDetails.main_contact_number}
+              onChange={(e) => updateOtherCompanyInfo(e)}
             />
             <TextField
               className={classes.spacing}
               id="outlined-basic"
               label="Main email"
               variant="outlined"
-              value={memail}
-              onChange={(e) => setMemail(e.target.value)}
+              name="main_email"
+              value={companyDetails.main_email}
+              onChange={(e) => updateOtherCompanyInfo(e)}
             />
             <TextField
               className={classes.spacing}
               id="outlined-basic"
               label="Accounts contact number"
               variant="outlined"
-              value={anumber}
-              onChange={(e) => setAnumber(e.target.value)}
+              name="accounts_contact_number"
+              value={companyDetails.accounts_contact_number}
+              onChange={(e) => updateOtherCompanyInfo(e)}
             />
             <TextField
               className={classes.spacing}
               id="outlined-basic"
               label="Accounts email"
               variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="accounts_email"
+              value={companyDetails.accounts_email}
+              onChange={(e) => updateOtherCompanyInfo(e)}
             />
 
             <FormControl variant="outlined" className={classes.spacing}>
               <InputLabel>Public Liability insurance</InputLabel>
               <Select
                 label="Public Liability insurance"
-                value={insurance}
-                onChange={(e) => setInsurance(e.target.value)}
+                value={companyDetails.public_liability_insurance}
+                name="public_liability_insurance"
+                onChange={(e) => updateOtherCompanyInfo(e)}
               >
                 <MenuItem value={"Select cover amount"}>
                   Select cover amount
@@ -240,8 +232,9 @@ export default function ContainedButtons() {
               <InputLabel>Professional idemnity insurance</InputLabel>
               <Select
                 label="Professional idemnity insurance"
-                value={pinsurance}
-                onChange={(e) => setPinsurance(e.target.value)}
+                name="professional_indemnity_insurance"
+                value={companyDetails.professional_indemnity_insurance}
+                onChange={(e) => updateOtherCompanyInfo(e)}
               >
                 <MenuItem value={"Select cover amount"}>
                   Select cover amount
@@ -275,7 +268,7 @@ export default function ContainedButtons() {
               SUBMIT
             </Button>
 
-            <Link to="/companyDashboard">
+            <Link to="/companyDashboard/companyDetailsApproved">
               <Button
                 className={classes.button}
                 variant="outlined"

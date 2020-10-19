@@ -181,16 +181,16 @@ export default function ContainedButtons() {
 
       <tr>
         <td>
-          <Link to="/companyDashboard/companyDetails">
+          <Link to="/companyDashboard/companyDetailsApproved">
             <Card className={classes.cardroot}>
               <CardActionArea>
                 <CardMedia
                   className={classes.cardmedia}
-                  image="https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
+                  image="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80"
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="h2">
-                    Update Company Details
+                    Company Approved
                   </Typography>
                   <Typography
                     variant="body2"
@@ -264,7 +264,7 @@ export default function ContainedButtons() {
         </td>
 
         <td>
-          <Link to="/companyDashboard/messages">
+          <Link to="/companyDashboard/addAgeGroup">
             <Card className={classes.cardroot}>
               <CardActionArea>
                 <CardMedia
@@ -358,34 +358,6 @@ export default function ContainedButtons() {
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="h2">
                     Listing
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                    Obcaecati at quo veritatis magnam alias omnis maiores
-                    laborum velit accusamus totam unde nemo, doloribus fugiat
-                    autem libero aliquam vitae vel rerum.
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Link>
-        </td>
-
-        <td>
-          <Link to="/companyDashboard/messages">
-            <Card className={classes.cardroot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.cardmedia}
-                  image="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80"
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    Company Approved
                   </Typography>
                   <Typography
                     variant="body2"
