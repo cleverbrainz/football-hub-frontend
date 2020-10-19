@@ -13,7 +13,7 @@ import {
   Container,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { storage, coachCollection } from "../../lib/firebase";
+import { storage } from "../../lib/firebase";
 import axios from "axios";
 import auth from "../../lib/auth";
 
@@ -59,10 +59,9 @@ export default function FormPropsTextFields({ location, history }) {
   const classes = useStyles();
 
   const { coachId, imageURL } = location.state;
-
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
-  const [dataChange, setDataChange] = useState(false)
+  const [dataChange, setDataChange] = useState(false);
 
   const [name, setName] = React.useState(location.state.coach_name);
   const [email, setEmail] = React.useState(location.state.coach_email);
@@ -75,8 +74,6 @@ export default function FormPropsTextFields({ location, history }) {
     checked: false,
     details: null,
   });
-
-  
 
   const handleUpload = (e) => {
     if (e.target.files[0]) {
@@ -127,16 +124,10 @@ export default function FormPropsTextFields({ location, history }) {
         }
       );
     }
-
-    // setName("");
-    // setEmail("");
-    // setPhone("");
-    // setLevel("");
   };
 
   const handleDocumentUpload = (e) => {
-    // setDataChange(true);
-    console.log('hellooo')
+    console.log("hellooo");
     const image = e.target.files;
     const document = new FormData();
 
@@ -145,18 +136,19 @@ export default function FormPropsTextFields({ location, history }) {
 
     console.log(document);
 
-    axios.patch(`/coaches/${coachId}/document`, document, {
-      headers: { Authorization: `Bearer ${auth.getToken()}` },
-    })
+    axios
+      .patch(`/coaches/${coachId}/document`, document, {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+      })
       .then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         // setDataChange(false);
       })
       .catch((err) => {
         console.error(err);
         // setDataChange(false);
-      })
-  }
+      });
+  };
 
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
@@ -277,21 +269,16 @@ export default function FormPropsTextFields({ location, history }) {
           Save
         </Button>
 
-        {/* <Link
+        <Link
           to={{
-            pathname: "/coachDetails",
+            pathname: "/companyDashboard/coachDetails",
             state: location.state,
           }}
         >
-          <Button
-            onClick={() => history.push("/coachDetails")}
-            className={classes.button}
-            variant="outlined"
-            color="primary"
-          >
+          <Button className={classes.button} variant="outlined" color="primary">
             Back
           </Button>
-        </Link> */}
+        </Link>
       </form>
     </Container>
   );
