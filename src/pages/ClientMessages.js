@@ -117,7 +117,7 @@ const ClientMessages = (props) => {
   })
 
   useEffect(() => {
-    axios.get('/enquiries', { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+    axios.get('/enquiries/player', { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(async res => {
         console.log(res.data)
         const orderedMessages = res.data.sort((a, b) => {

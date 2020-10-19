@@ -102,14 +102,12 @@ function NavbarTwo({ history }) {
       <AppBar id='navbar-noscroll' color="inherit" position="fixed">
         <Toolbar>
 
-          <Link to='/' style={{ color: '#4a4a4a' }}>
             <Typography component='div'>
               <Box fontSize={23} fontWeight="fontWeightRegular" m={1}>
                 <SportsSoccerSharpIcon style={{ transform: 'translateY(4.5px)', marginRight: '5px' }} />
                 BALLERS HUB
               </Box>
             </Typography>
-          </Link>
 
           <div className={classes.grow} />
 

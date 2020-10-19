@@ -104,13 +104,15 @@ const App = () => {
         <Route exact path="/companies/:id" component={IndividualCompany} />
         {/*  */}
         <Route exact path="/:id/profile" component={Profile} />
-        <Route exact path="/:id/messages" component={ClientMessages} />
-        <Route exact path="/companyDashboard" component={CompanyDashboard} />
         <Route
           exact
           path="/companyDashboard/messages"
           component={CompanyMessages}
         />
+        <Route exact path="/:id/messages" component={ClientMessages} />
+        
+        <Route exact path="/companyDashboard" component={CompanyDashboard} />
+        
         <Route
           exact
           path="/companyDashboard/companyDetails"
