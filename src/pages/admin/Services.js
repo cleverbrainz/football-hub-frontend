@@ -45,7 +45,6 @@ export default function ContainedButtons() {
   useEffect(() => {
     axios
       .get(`/users/${auth.getUserId()}`)
-      //  axios.get('/users/7DK37g0zVmNowHax6cEJ')
 
       .then((res) => {
         console.log(res.data);
@@ -56,20 +55,18 @@ export default function ContainedButtons() {
       });
   }, []);
 
-  const HandleDelete = (e) => {
-    e.preventDefault();
-
-    // .delete(`/companies/${auth.getUserId()}`, {
-    //   headers: { Authorization: `Bearer ${auth.getToken()}` },
-    // })
+  const HandleDelete = (serviceId) => {
     axios
-      .delete("/services/ffETes2qA5r633ZQxzV2")
+      .delete(`/companies/services/${serviceId}`, {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+      })
       .then((res) => {
         console.log(res.data);
       })
       .catch((err) => {
         console.error(err);
       });
+    window.location.reload(false);
   };
 
   return (
@@ -83,7 +80,7 @@ export default function ContainedButtons() {
               <CancelSharpIcon
                 id={i}
                 className={classes.icons}
-                onClick={(e) => HandleDelete(e)}
+                onClick={() => HandleDelete(data.serviceId)}
               />
               <Card className={classes.card}>
                 <Link

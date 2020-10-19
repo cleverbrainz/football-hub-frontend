@@ -269,21 +269,16 @@ export default function FormPropsTextFields({ location, history }) {
           Save
         </Button>
 
-        {/* <Link
+        <Link
           to={{
-            pathname: "/coachDetails",
+            pathname: "/companyDashboard/coachDetails",
             state: location.state,
           }}
         >
-          <Button
-            onClick={() => history.push("/coachDetails")}
-            className={classes.button}
-            variant="outlined"
-            color="primary"
-          >
+          <Button className={classes.button} variant="outlined" color="primary">
             Back
           </Button>
-        </Link> */}
+        </Link>
       </form>
     </Container>
   );

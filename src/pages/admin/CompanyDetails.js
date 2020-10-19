@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import auth from "../../lib/auth";
+import BackupIcon from "@material-ui/icons/Backup";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -81,6 +82,7 @@ export default function ContainedButtons({ location, history }) {
   const classes = useStyles();
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
+  const input = useRef();
 
   const {
     name,
@@ -123,11 +125,12 @@ export default function ContainedButtons({ location, history }) {
     console.log(companyDetails);
 
     axios
-      .post(`/user/${auth.getUserId()}`, companyDetails, {
+      .patch(`/companies/${auth.getUserId()}`, companyDetails, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
         console.log(res.data);
+        history.push("/companyDashboard/companyDetailsApproved");
       })
       .catch((error) => {
         alert(error.message);
@@ -253,11 +256,23 @@ export default function ContainedButtons({ location, history }) {
             </FormControl>
 
             <input
+              ref={input}
               id="upload-photo"
+              style={{ display: "none" }}
               className={classes.upload}
               type="file"
-              onChange={handleUpload}
+              //onChange={handleUpload}
+              //onChange={(e) => HandleChange(e)}
             />
+
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => input.current.click()}
+            >
+              <BackupIcon />
+              Upload insurance certificate
+            </Button>
 
             <Button
               className={classes.button}

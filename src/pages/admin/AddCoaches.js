@@ -13,8 +13,6 @@ import {
   Container,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { db, storage, coachCollection } from "../../lib/firebase";
-import { database } from "firebase";
 import axios from "axios";
 import auth from "../../lib/auth";
 
@@ -60,7 +58,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormPropsTextFields() {
   const classes = useStyles();
-
   const [state, setState] = React.useState({
     checked: false,
   });
@@ -87,18 +84,6 @@ export default function FormPropsTextFields() {
     axios.patch(`/coach/:id/document`, picture, {
       headers: { Authorization: `Bearer ${auth.getToken()}` },
     });
-    //.then((res) => setDataChange(false))
-    //.catch((err) => {
-    //console.error(err);
-    //setDataChange(false);
-  };
-  //);
-  //};
-
-  const handleUpload = (e) => {
-    if (e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
   };
 
   const handleSubmit = (e) => {
@@ -119,33 +104,11 @@ export default function FormPropsTextFields() {
         alert(error.message);
       });
 
-    // if (image) {
-    //   const uploadTask = storage.ref(`coaches/${image.name}`).put(image);
-
-    //   uploadTask.on(
-    //     "state_changed",
-    //     (error) => {
-    //       console.log(error);
-    //     },
-    //     () => {
-    //       storage
-    //         .ref("images")
-    //         .child(image.name)
-    //         .getDownloadURL()
-    //         .then((url) => {
-    //           setUrl(url);
-    //         });
-    //     }
-    //   );
-    // }
-
     setName("");
     setEmail("");
     setPhone("");
     setLevel("");
   };
-
-  // console.log("image: ", image);
 
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
@@ -246,7 +209,7 @@ export default function FormPropsTextFields() {
           id="upload-photo"
           className={classes.upload}
           type="file"
-          onChange={handleUpload}
+          //onChange={handleUpload}
         />
 
         <Button
