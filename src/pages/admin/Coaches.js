@@ -8,11 +8,9 @@ import {
   Card,
   CardContent,
 } from "@material-ui/core";
-import { coachCollection } from "../../lib/firebase";
-import { firebaselooper } from "../../lib/tools";
-import auth from '../../lib/auth'
-
-import axios from 'axios'
+import auth from "../../lib/auth";
+import CancelSharpIcon from "@material-ui/icons/CancelSharp";
+import axios from "axios";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -27,6 +25,16 @@ const useStyles = makeStyles(() => ({
     height: "100px",
     width: "200px",
   },
+  icons: {
+    position: "relative",
+    color: "#EF5B5B",
+    top: "5px",
+    right: "-106px",
+    //fontSize: "28px",
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
 }));
 
 export default function ContainedButtons() {
@@ -35,42 +43,60 @@ export default function ContainedButtons() {
   const [state, setState] = React.useState();
 
   useEffect(() => {
-
-      axios.get(`/users/${auth.getUserId()}`)
-      .then(res => {
-        console.log(res.data)
-        setState(res.data[0].coaches)
-      
+    axios
+      .get(`/users/${auth.getUserId()}`)
+      .then((res) => {
+        console.log(res.data);
+        setState(res.data[0].coaches);
       })
       .catch((e) => {
         console.log(e);
       });
   }, []);
 
+  const HandleDelete = (coachId) => {
+    axios
+      .delete(`/companies/coaches/${coachId}`, {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    window.location.reload(false);
+  };
 
   return (
     <Container className={classes.container}>
       <Typography variant="h4"> COACHES</Typography>
 
-      {state && state.map((data, i) => {
-      return (
-        <div key={i}>
-          <Card className={classes.card}>
-            <Link
-              to={{
-                pathname: "/companyDashboard/coachDetails",
-                state: data,
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6">{data.coach_name}</Typography>
-                <div>{data.coaching_level}</div>
-              </CardContent>
-            </Link>
-          </Card>
-        </div>
-      )
-    })}
+      {state &&
+        state.map((data, i) => {
+          return (
+            <div key={i}>
+              <CancelSharpIcon
+                id={i}
+                className={classes.icons}
+                onClick={() => HandleDelete(data.coachId)}
+              />
+              <Card className={classes.card}>
+                <Link
+                  to={{
+                    pathname: "/companyDashboard/coachDetails",
+                    state: data,
+                  }}
+                >
+                  <CardContent>
+                    <Typography variant="h6">{data.coach_name}</Typography>
+                    <div>{data.coaching_level}</div>
+                  </CardContent>
+                </Link>
+              </Card>
+            </div>
+          );
+        })}
 
       <Link to="/companyDashboard/addCoaches">
         <Button variant="contained" color="primary">

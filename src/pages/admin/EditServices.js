@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Button, Container, Typography } from "@material-ui/core";
 import { serviceCollection, storage } from "../../lib/firebase";
-import axios from 'axios'
-import auth from '../../lib/auth'
+import axios from "axios";
+import auth from "../../lib/auth";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -42,13 +42,18 @@ export default function ContainedButtons({ location, history }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.patch('/companies/services', {
-      service_name: name,
-      service_description: description,
-      serviceId
-    }, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
-      .then(res => {
-        console.log(res.data)
+    axios
+      .patch(
+        "/companies/services",
+        {
+          service_name: name,
+          service_description: description,
+          serviceId,
+        },
+        { headers: { Authorization: `Bearer ${auth.getToken()}` } }
+      )
+      .then((res) => {
+        console.log(res.data);
         history.push("/companyDashboard/services");
       })
       .catch((error) => {
@@ -123,11 +128,16 @@ export default function ContainedButtons({ location, history }) {
           SAVE
         </Button>
 
-        {/* <Link to="/serviceDetails">
+        <Link
+          to={{
+            pathname: "/companyDashboard/serviceDetails",
+            state: location.state,
+          }}
+        >
           <Button variant="outlined" color="primary">
             Back
           </Button>
-        </Link> */}
+        </Link>
       </form>
     </Container>
   );

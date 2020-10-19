@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Button, Container, Typography } from "@material-ui/core";
 import { db, storage, serviceCollection } from "../../lib/firebase";
-import axios from 'axios'
-import auth from '../../lib/auth'
+import axios from "axios";
+import auth from "../../lib/auth";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ContainedButtons() {
+export default function ContainedButtons({ history }) {
   const classes = useStyles();
   const [image, setImage] = React.useState(null);
   const [name, setName] = React.useState("");
@@ -41,14 +41,16 @@ export default function ContainedButtons() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.post('/companies/services', {
-      service_name: name,
-      service_description: description,
-      // companyId: '7DK37g0zVmNowHax6cEJ'
-      companyId: auth.getUserId()
-    })
-      .then(res => {
+    axios
+      .post("/companies/services", {
+        service_name: name,
+        service_description: description,
+        // companyId: '7DK37g0zVmNowHax6cEJ'
+        companyId: auth.getUserId(),
+      })
+      .then((res) => {
         console.log(res.data);
+        history.push("/companyDashboard/services");
       })
       .catch((error) => {
         alert(error.message);
@@ -73,8 +75,6 @@ export default function ContainedButtons() {
         }
       );
     }
-
-
 
     setName("");
     setDescription("");
