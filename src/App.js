@@ -45,6 +45,7 @@ import CampSingleDetails from "./pages/admin/CampSingleDetails";
 import AddServices from "./pages/admin/AddServices";
 import AddAgeGroup from "./pages/admin/AddAgeGroup";
 import ClientMessages from "./pages/ClientMessages";
+import Location from "./pages/admin/Location";
 
 const App = () => {
   const [userType, setUserType] = useState();
@@ -114,6 +115,12 @@ const App = () => {
         
         <Route exact path="/companyDashboard" component={CompanyDashboard} />
         
+        <Route
+          exact
+          path="/companyDashboard/location"
+          component={Location}
+        />
+
         <Route
           exact
           path="/companyDashboard/companyDetails"

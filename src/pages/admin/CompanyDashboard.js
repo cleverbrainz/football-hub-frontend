@@ -374,6 +374,35 @@ export default function ContainedButtons() {
             </Card>
           </Link>
         </td>
+
+
+        <td>
+          <Link to="/companyDashboard/location">
+            <Card className={classes.cardroot}>
+              <CardActionArea>
+                <CardMedia
+                  className={classes.cardmedia}
+                  image="https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1189&q=80"
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Location
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                    Obcaecati at quo veritatis magnam alias omnis maiores
+                    laborum velit accusamus totam unde nemo, doloribus fugiat
+                    autem libero aliquam vitae vel rerum.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Link>
+        </td>
       </tr>
 
       <div className={classes.spacing}>
