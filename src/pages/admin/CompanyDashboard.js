@@ -375,14 +375,13 @@ export default function ContainedButtons() {
           </Link>
         </td>
 
-
         <td>
           <Link to="/companyDashboard/location">
             <Card className={classes.cardroot}>
               <CardActionArea>
                 <CardMedia
                   className={classes.cardmedia}
-                  image="https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1189&q=80"
+                  image="https://images.unsplash.com/photo-1533027052290-2b4ece075c42?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="h2">

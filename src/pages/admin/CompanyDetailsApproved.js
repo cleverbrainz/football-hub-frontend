@@ -17,6 +17,7 @@ const useStyles = makeStyles(() => ({
     justifyContent: "space-evenly",
     height: `${window.innerHeight - 100}px`,
     textAlign: "center",
+    marginTop: "50px",
   },
   heading: {
     color: "blue",
@@ -43,11 +44,12 @@ export default function CompanyDetailsApproved() {
 
   return (
     <Container className={classes.container}>
-      <Typography variant="h6" className={classes.heading}>
-        Company Name
-      </Typography>
+      <Typography variant="h3"> COMPANY DETAILS </Typography>
       {state && (
         <>
+          <Typography variant="h6" className={classes.heading}>
+            Company Name
+          </Typography>
           <div>{state.name}</div>
           <Typography variant="h6" className={classes.heading}>
             VAT Number{" "}
@@ -68,7 +70,7 @@ export default function CompanyDetailsApproved() {
           <Typography variant="h6" className={classes.heading}>
             Company Email{" "}
           </Typography>
-          <div>{state.company_email}</div>
+          <div>{state.email}</div>
           <Typography variant="h6" className={classes.heading}>
             Accounts Contact Number
           </Typography>
