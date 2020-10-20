@@ -20,6 +20,9 @@ import FilterModal from '../components/FilterModal'
 import PeopleAltSharpIcon from '@material-ui/icons/PeopleAltSharp';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
 import MoreHorizSharpIcon from '@material-ui/icons/MoreHorizSharp';
+import PersonPinCircleSharpIcon from '@material-ui/icons/PersonPinCircleSharp';
+
+import ReactMapPopup from '../components/ReactMapPopup'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -110,6 +113,7 @@ export default function Companies() {
   const [selectedFilter, setSelectedFilter] = useState()
   const [address, setAddress] = useState('')
   const [modalOpen, setModal] = useState(false)
+  const [selected, setSelected] = useState()
   const [coordinates, setCoordinates] = useState({
     lat: null,
     lng: null
@@ -125,18 +129,14 @@ export default function Companies() {
   const [viewport, setViewport] = useState({
     longitude: -0.1300,
     latitude: 51.5074,
-    zoom: 11,
+    zoom: 10,
     width: '100%',
     height: window.innerHeight - 80,
   })
 
   useEffect(() => {
     axios.get('/companies')
-      .then(res => {
-        console.log(res.data)
-        setCompanies(res.data)
-      
-      })
+      .then(res => setCompanies(res.data))
   }, [])
 
   const handleSelect = async (value) => {
@@ -152,6 +152,10 @@ export default function Companies() {
   const filterIcons = {
     Location: LocationOnSharpIcon,
     More: MoreHorizSharpIcon
+  }
+
+  const closeSelectedPopup = () => {
+    setSelected(null)
   }
 
 
@@ -211,7 +215,6 @@ export default function Companies() {
 
 
           {companies ? companies.map((el, i) => {
-            console.log(el)
             const { name, images } = el.companyInfo
             return (
               <>
@@ -219,14 +222,14 @@ export default function Companies() {
                 <Link key={i} to={{
                   pathname: `/companies/${el.companyId}`,
                   state: el.companyInfo
-                  
+
                 }}>
 
                   <Card className={classes.card}>
                     <CardActionArea className={classes.cardSubcontainer}>
                       <CardMedia
                         className={classes.media}
-                        image={images ? images[0] : 
+                        image={images ? images[0] :
                           "https://images.unsplash.com/photo-1510566337590-2fc1f21d0faa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"}
                       />
                       <CardContent>
@@ -261,7 +264,38 @@ export default function Companies() {
             mapStyle='mapbox://styles/seangpachareonsub/ckdsqcwif16xt19mlhiuwb2dt'
             onViewportChange={viewport => {
               setViewport(viewport)
-            }}></ReactMapGL>
+            }}>
+
+            {companies && companies.map(el => {
+
+              if (el.companyInfo.location) {
+                const { latitude, longitude } = el.companyInfo.location
+                console.log(latitude, longitude)
+                return (
+                  <Marker key={el.companyId}
+                    anchor={'top-left'}
+                    offsetLeft={-20}
+                    offsetTop={-30}
+                    latitude={latitude}
+                    longitude={longitude} >
+                    <PersonPinCircleSharpIcon
+                      onClick={() => setSelected(el)}
+                      style={{
+                        fontSize: '40px',
+                        color: 'red'
+                      }} />
+                  </Marker>
+                )
+              }
+            }
+            )}
+
+            {selected && <ReactMapPopup
+              selected={selected}
+              closeSelectedPopup={() => closeSelectedPopup()} />}
+
+
+          </ReactMapGL>
         </section>
 
 
