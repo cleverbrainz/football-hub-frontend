@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function FormPropsTextFields() {
+export default function FormPropsTextFields({ history }) {
   const classes = useStyles();
   const [state, setState] = React.useState({
     checked: false,
@@ -99,6 +99,7 @@ export default function FormPropsTextFields() {
       })
       .then((res) => {
         console.log(res.data);
+        history.push("/companyDashboard/coaches");
       })
       .catch((error) => {
         alert(error.message);
@@ -187,7 +188,7 @@ export default function FormPropsTextFields() {
           color="secondary"
           onClick={() => input.current.click()}
         >
-          Secondary
+          Upload Certificates
         </Button>
 
         <Typography variant="h5"> DBS Check </Typography>
