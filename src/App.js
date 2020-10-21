@@ -45,6 +45,7 @@ import CampSingleDetails from "./pages/admin/CampSingleDetails";
 import AddServices from "./pages/admin/AddServices";
 import AddAgeGroup from "./pages/admin/AddAgeGroup";
 import ClientMessages from "./pages/ClientMessages";
+import Join from "./pages/Join";
 import Location from "./pages/admin/Location";
 
 const App = () => {
@@ -97,6 +98,7 @@ const App = () => {
       <Navbar />
       <Switch>
         <Route exact path="/" component={Home} />
+        <Route exact path="/join" component={Join} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/forgot_password" component={ForgottenPassword} />
