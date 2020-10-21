@@ -119,8 +119,6 @@ export default function Companies() {
     lng: null
   })
 
-
-
   function toggleModal(e) {
     if (modalOpen === false) setSelectedFilter(e.target.id)
     setModal(!modalOpen)
@@ -152,10 +150,6 @@ export default function Companies() {
   const filterIcons = {
     Location: LocationOnSharpIcon,
     More: MoreHorizSharpIcon
-  }
-
-  const closeSelectedPopup = () => {
-    setSelected(null)
   }
 
 
@@ -270,7 +264,6 @@ export default function Companies() {
 
               if (el.companyInfo.location) {
                 const { latitude, longitude } = el.companyInfo.location
-                console.log(latitude, longitude)
                 return (
                   <Marker key={el.companyId}
                     anchor={'top-left'}
@@ -279,7 +272,13 @@ export default function Companies() {
                     latitude={latitude}
                     longitude={longitude} >
                     <PersonPinCircleSharpIcon
-                      onClick={() => setSelected(el)}
+                      onClick={() => {
+                        if (selected) {
+                          if (selected === el) {
+                            setSelected(null) 
+                          } else setSelected(el)
+                        } else setSelected(el)
+                      }}
                       style={{
                         fontSize: '40px',
                         color: 'red'
@@ -291,8 +290,7 @@ export default function Companies() {
             )}
 
             {selected && <ReactMapPopup
-              selected={selected}
-              closeSelectedPopup={() => closeSelectedPopup()} />}
+              selected={selected} />}
 
 
           </ReactMapGL>
