@@ -11,6 +11,7 @@ import {
 import auth from "../../lib/auth";
 import CancelSharpIcon from "@material-ui/icons/CancelSharp";
 import axios from "axios";
+import DeleteComponent from "./DeleteComponent";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -41,7 +42,17 @@ export default function ContainedButtons() {
   const classes = useStyles();
 
   const [state, setState] = React.useState();
+  const [deleteCoach, setDeleteCoach] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [deleteCoachId, setDeleteCoachId] = React.useState();
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   useEffect(() => {
     axios
       .get(`/users/${auth.getUserId()}`)
@@ -52,20 +63,30 @@ export default function ContainedButtons() {
       .catch((e) => {
         console.log(e);
       });
-  }, []);
+  }, [!deleteCoach]);
 
-  const HandleDelete = (coachId) => {
+  const HandleDelete = () => {
+    setDeleteCoach(true);
+    console.log(deleteCoachId);
     axios
-      .delete(`/companies/coaches/${coachId}`, {
+      .delete(`/companies/coaches/${deleteCoachId}`, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
         console.log(res.data);
+        setDeleteCoach(false);
+        handleClose();
       })
       .catch((err) => {
         console.error(err);
+        setDeleteCoach(false);
+        handleClose();
       });
-    window.location.reload(false);
+  };
+
+  const Delete = (coachId) => {
+    setDeleteCoachId(coachId);
+    handleClickOpen();
   };
 
   return (
@@ -79,7 +100,7 @@ export default function ContainedButtons() {
               <CancelSharpIcon
                 id={i}
                 className={classes.icons}
-                onClick={() => HandleDelete(data.coachId)}
+                onClick={() => Delete(data.coachId)}
               />
               <Card className={classes.card}>
                 <Link
@@ -108,6 +129,14 @@ export default function ContainedButtons() {
           Back
         </Button>
       </Link>
+      {/* {open && ( */}
+      <DeleteComponent
+        open={open}
+        handleClose={() => handleClose()}
+        HandleDelete={() => HandleDelete()}
+        name={"coach"}
+      />
+      {/* )} */}
     </Container>
   );
 }
