@@ -19,6 +19,11 @@ body,
   .mapboxgl-ctrl-logo {
     display: none;
   }
+  .mapboxgl-popup-content {
+    button {
+      display: none
+    }
+  }
 
   .modal-content {
     background-color: white;
