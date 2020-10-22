@@ -15,6 +15,21 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Tooltip from '@material-ui/core/Tooltip'
+import ForumSharpIcon from '@material-ui/icons/ForumSharp';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+import TextField from '@material-ui/core/TextField';
+import axios from 'axios'
+
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const useStyles = makeStyles((theme) => ({
   jumbotron: {
@@ -74,6 +89,19 @@ const useStyles = makeStyles((theme) => ({
   accordionRoot: {
     width: '100%',
     marginTop: 30
+  },
+  tooltip: {
+    position: 'fixed',
+    bottom: '4%',
+    right: '2%',
+    zIndex: 1000,
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    justifyContent: 'space-evenly',
+    height: '375px'
   }
 
 }));
@@ -83,15 +111,77 @@ const Home = () => {
 
   const classes = useStyles()
 
-  
+  const [open, setOpen] = React.useState(false);
+  const [message, setMessage] = useState({
+    name: '',
+    email: '',
+    message: ''
+  })
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleMessage = () => {
+    axios.post('/preSignUpEnquiry', message)
+    .then(res => {
+      console.log(res.data)
+    })
+  }
+
+
 
   return (
     <>
+      <Tooltip title="Message us!"
+        onClick={handleClickOpen}
+        className={classes.tooltip} aria-label="Message us!">
+        <Fab color="secondary">
+          <ForumSharpIcon />
+        </Fab>
+      </Tooltip>
+
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">
+          Have a question? Send us a message!
+        </DialogTitle>
+
+        <DialogContent>
+          <form className={classes.form}
+          onChange={(e) => setMessage({...message, [e.target.name]: e.target.value})}
+          noValidate autoComplete="off">
+            <TextField id="outlined-basic" 
+            label="Name" name="name" variant="outlined" />
+            <TextField id="outlined-basic" name="email" label="Email" variant="outlined" />
+            <TextField id="outlined-basic" name="message"
+              label="Message" multiline
+              rows={9} variant="outlined" />
+          </form>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleMessage} color="primary">
+            Send
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <div className={classes.jumbotron}>
         <img className={classes.image} src="https://images.unsplash.com/photo-1556476870-36fde88f47d0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMjF9&auto=format&fit=crop&w=2090&q=80" alt="" />
-      <Button style={{ position: 'absolute', bottom: '15%', left: '10%', zIndex: '5' }} variant="contained" color="default">
-          <Link to='/companies'> Find a coach </Link> 
-          </Button> 
+        <Button style={{ position: 'absolute', bottom: '15%', left: '10%', zIndex: '5' }} variant="contained" color="default">
+          <Link to='/companies'> Find a coach </Link>
+        </Button>
       </div>
       <section>
         <Typography style={{ textAlign: 'center', margin: '40px 0' }} variant='h5' > Pathway to greatness </Typography>
