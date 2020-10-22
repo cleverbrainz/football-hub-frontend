@@ -7,7 +7,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
-const AgeComponent = ({ classes }) => {
+const AgeComponent = ({ classes, updateAges }) => {
   const ages = [
     "4",
     "5",
@@ -35,7 +35,7 @@ const AgeComponent = ({ classes }) => {
           <td>
             <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel>From Age</InputLabel>
-              <Select label="From Age" name="age">
+              <Select label="From Age" name="startAge" onChange={updateAges}>
                 <MenuItem>
                   {" "}
                   <em>Select</em>{" "}
@@ -52,7 +52,7 @@ const AgeComponent = ({ classes }) => {
           <td>
             <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel>To Age</InputLabel>
-              <Select label="To Age" name="age">
+              <Select label="To Age" name="endAge" onChange={updateAges}>
                 <MenuItem>
                   {" "}
                   <em>Select</em>{" "}

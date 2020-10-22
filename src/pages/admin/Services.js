@@ -11,6 +11,7 @@ import {
 import CancelSharpIcon from "@material-ui/icons/CancelSharp";
 import axios from "axios";
 import auth from "../../lib/auth";
+import DeleteComponent from "./DeleteComponent";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -41,6 +42,17 @@ export default function ContainedButtons() {
   const classes = useStyles();
 
   const [state, setState] = React.useState();
+  const [deleteService, setDeleteService] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [deleteServiceId, setDeleteServiceId] = React.useState();
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     axios
@@ -53,20 +65,29 @@ export default function ContainedButtons() {
       .catch((e) => {
         console.log(e);
       });
-  }, []);
+  }, [!deleteService]);
 
-  const HandleDelete = (serviceId) => {
+  const HandleDelete = () => {
+    setDeleteService(true);
     axios
-      .delete(`/companies/services/${serviceId}`, {
+      .delete(`/companies/services/${deleteServiceId}`, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
         console.log(res.data);
+        setDeleteService(false);
+        handleClose();
       })
       .catch((err) => {
         console.error(err);
+        setDeleteService(false);
+        handleClose();
       });
-    window.location.reload(false);
+  };
+
+  const Delete = (serviceId) => {
+    setDeleteServiceId(serviceId);
+    handleClickOpen();
   };
 
   return (
@@ -80,7 +101,7 @@ export default function ContainedButtons() {
               <CancelSharpIcon
                 id={i}
                 className={classes.icons}
-                onClick={() => HandleDelete(data.serviceId)}
+                onClick={() => Delete(data.serviceId)}
               />
               <Card className={classes.card}>
                 <Link
@@ -108,6 +129,12 @@ export default function ContainedButtons() {
           Back
         </Button>
       </Link>
+      <DeleteComponent
+        open={open}
+        handleClose={() => handleClose()}
+        HandleDelete={() => HandleDelete()}
+        name={"service"}
+      />
     </Container>
   );
 }
