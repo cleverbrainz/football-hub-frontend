@@ -16,7 +16,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import { storage } from "../../lib/firebase";
 import axios from "axios";
 import auth from "../../lib/auth";
+<<<<<<< HEAD
+import BackupIcon from "@material-ui/icons/Backup";
+=======
 import Avatar from '@material-ui/core/Avatar';
+>>>>>>> 7f3473a55a3ef9ccb60c576eb73b93b3c787f59c
 
 const useStyles = makeStyles((theme) => ({
   spacing: {
@@ -92,12 +96,6 @@ export default function FormPropsTextFields({ location, history }) {
     checked: false,
     details: null,
   });
-
-  const handleUpload = (e) => {
-    if (e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -244,11 +242,19 @@ export default function FormPropsTextFields({ location, history }) {
         </FormControl>
 
         <input
-          id="upload-photo"
-          className={classes.upload}
+          ref={input}
+          style={{ display: "none" }}
+          onChange={(e) => handleDocumentUpload(e)}
           type="file"
-          onChange={handleUpload}
         />
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => input.current.click()}
+        >
+          <BackupIcon />
+          UPLOAD COACHING CERTIFICATE
+        </Button>
 
         <Typography variant="h5"> DBS Check </Typography>
 
@@ -276,15 +282,8 @@ export default function FormPropsTextFields({ location, history }) {
           color="secondary"
           onClick={() => input.current.click()}
         >
+          <BackupIcon />
           UPLOAD DBS CERTIFICATE
-        </Button>
-
-        <Button
-          variant="contained"
-          color="default"
-          onClick={() => input.current.click()}
-        >
-          UPLOAD COACHING CERTIFICATE
         </Button>
 
         <Button
