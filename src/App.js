@@ -28,17 +28,23 @@ import AddCoaches from "./pages/admin/AddCoaches";
 import EditCoaches from "./pages/admin/EditCoaches";
 import EditCompany from "./pages/admin/EditCompany";
 import EditServices from "./pages/admin/EditServices";
+import EditCourses from "./pages/admin/EditCourses";
+import EditWeeklyCourse from "./pages/admin/EditWeeklyCourse";
+import EditSingleCampCourse from "./pages/admin/EditSingleCampCourse";
 import CoachDetails from "./pages/admin/CoachDetails";
 import Coaches from "./pages/admin/Coaches";
 import AddCourses from "./pages/admin/AddCourses";
 import WeeklyCourses from "./pages/admin/WeeklyCourses";
 import WeeklyCourseDetails from "./pages/admin/WeeklyCourseDetails";
+import WeeklyDetails from "./pages/admin/WeeklyDetails";
+import SingleCampDetails from "./pages/admin/SingleCampDetails";
 import Courses from "./pages/admin/Courses";
 import CompanyDashboard from "./pages/admin/CompanyDashboard";
 import CompanyDetails from "./pages/admin/CompanyDetails";
 import CompanyDetailsApproved from "./pages/admin/CompanyDetailsApproved";
 import Services from "./pages/admin/Services";
 import ServiceDetails from "./pages/admin/ServiceDetails";
+import CourseDetails from "./pages/admin/CourseDetails";
 import CampOptions from "./pages/admin/CampOptions";
 import CampMultiDetails from "./pages/admin/CampMultiDetails";
 import CampSingleDetails from "./pages/admin/CampSingleDetails";
@@ -115,14 +121,10 @@ const App = () => {
           component={CompanyMessages}
         />
         <Route exact path="/:id/messages" component={ClientMessages} />
-        
+
         <Route exact path="/companyDashboard" component={CompanyDashboard} />
-        
-        <Route
-          exact
-          path="/companyDashboard/location"
-          component={Location}
-        />
+
+        <Route exact path="/companyDashboard/location" component={Location} />
 
         <Route
           exact
@@ -168,8 +170,28 @@ const App = () => {
         />
         <Route
           exact
+          path="/companyDashboard/editWeeklyCourse"
+          component={EditWeeklyCourse}
+        />
+        <Route
+          exact
+          path="/companyDashboard/editSingleCampCourse"
+          component={EditSingleCampCourse}
+        />
+        <Route
+          exact
           path="/companyDashboard/weeklyCourseDetails"
           component={WeeklyCourseDetails}
+        />
+        <Route
+          exact
+          path="/companyDashboard/weeklyDetails"
+          component={WeeklyDetails}
+        />
+        <Route
+          exact
+          path="/companyDashboard/singleCampDetails"
+          component={SingleCampDetails}
         />
         <Route exact path="/companyDashboard/services" component={Services} />
         <Route
@@ -179,8 +201,18 @@ const App = () => {
         />
         <Route
           exact
+          path="/companyDashboard/editCourses"
+          component={EditCourses}
+        />
+        <Route
+          exact
           path="/companyDashboard/serviceDetails"
           component={ServiceDetails}
+        />
+        <Route
+          exact
+          path="/companyDashboard/courseDetails"
+          component={CourseDetails}
         />
         <Route
           exact

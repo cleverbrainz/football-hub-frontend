@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Button, Container, Typography } from "@material-ui/core";
 import { serviceCollection, storage } from "../../lib/firebase";
 import axios from "axios";
 import auth from "../../lib/auth";
+import BackupIcon from "@material-ui/icons/Backup";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -38,6 +39,8 @@ export default function ContainedButtons({ location, history }) {
   const [name, setName] = React.useState(service_name);
   const [description, setDescription] = React.useState(service_description);
   const [url, setUrl] = React.useState("");
+
+  const input = useRef();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -81,10 +84,28 @@ export default function ContainedButtons({ location, history }) {
     }
   };
 
-  const handleUpload = (e) => {
-    if (e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
+  const handleDocumentUpload = (e) => {
+    console.log("hellooo");
+    const image = e.target.files;
+    const document = new FormData();
+
+    document.append("owner", auth.getUserId());
+    document.append("document", image[0], image[0].name);
+
+    console.log(document);
+
+    axios
+      .patch(`/services/${serviceId}/document`, document, {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+      })
+      .then((res) => {
+        console.log(res.data);
+        // setDataChange(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        // setDataChange(false);
+      });
   };
 
   return (
@@ -113,11 +134,19 @@ export default function ContainedButtons({ location, history }) {
           onChange={(e) => setDescription(e.target.value)}
         />
         <input
-          id="upload-photo"
-          className={classes.upload}
+          ref={input}
+          style={{ display: "none" }}
+          onChange={(e) => handleDocumentUpload(e)}
           type="file"
-          onChange={handleUpload}
         />
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => input.current.click()}
+        >
+          <BackupIcon />
+          UPLOAD IMAGES
+        </Button>
 
         <Button
           className={classes.spacing}

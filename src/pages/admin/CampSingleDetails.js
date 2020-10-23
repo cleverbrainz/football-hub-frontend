@@ -41,48 +41,48 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MaterialUIPickers({ location, history }) {
+export default function MaterialUIPickers({ history }) {
   const classes = useStyles();
   const [rows, setRows] = React.useState([1]);
-  const [campDetails, setCampDetails] = React.useState({
+  const [courseDetails, setCourseDetails] = React.useState({
     startDate: "",
     dayCost: "",
     // excludeDays: "",
-    courseType: "Camp",
+    courseType: "Single Camp",
     sessions: [],
   });
-  const { startDate, dayCost, sessions } = campDetails;
+  const { startDate } = courseDetails;
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     e.preventDefault();
 
-    console.log(campDetails);
+    console.log(courseDetails);
 
     axios
       .post("/companies/courses", {
-        campDetails,
+        courseDetails,
         companyId: auth.getUserId(),
       })
       .then((res) => {
         console.log(res.data);
-        history.push("/companyDashboard/courses");
+        history.push("/companyDashboard/campOptions");
       })
       .catch((error) => {
         alert(error.message);
       });
   };
 
-  function updateCampDays(index, event) {
+  function updateCourseDays(index, event) {
     const { name, value } = event.target;
-    const campDays = [...campDetails.sessions];
-    campDays[index] = { ...campDays[index], [name]: value };
-    setCampDetails({ ...campDetails, sessions: campDays });
+    const courseDays = [...courseDetails.sessions];
+    courseDays[index] = { ...courseDays[index], [name]: value };
+    setCourseDetails({ ...courseDetails, sessions: courseDays });
   }
-  function updateOtherCampInfo(event) {
+  function updateOtherCourseInfo(event) {
     const { name, value } = event.target;
-    setCampDetails({ ...campDetails, [name]: value });
+    setCourseDetails({ ...courseDetails, [name]: value });
   }
 
   return (
@@ -100,7 +100,7 @@ export default function MaterialUIPickers({ location, history }) {
           }}
           name="startDate"
           value={startDate}
-          onChange={(e) => updateOtherCampInfo(e)}
+          onChange={(e) => updateOtherCourseInfo(e)}
         />
 
         <FormControl variant="outlined" className={classes.formControl}>
@@ -109,9 +109,9 @@ export default function MaterialUIPickers({ location, history }) {
             name="£ Cost per day"
             id="cost"
             label="£ Cost per day"
-            value={dayCost}
+            //value={dayCost}
             name="dayCost"
-            onChange={(e) => updateOtherCampInfo(e)}
+            onChange={(e) => updateOtherCourseInfo(e)}
           />
         </FormControl>
 
@@ -119,7 +119,7 @@ export default function MaterialUIPickers({ location, history }) {
           return (
             <SingleComponent
               classes={classes}
-              updateCampDays={(e) => updateCampDays(i, e)}
+              updateCampDays={(e) => updateCourseDays(i, e)}
               key={i}
             />
           );
