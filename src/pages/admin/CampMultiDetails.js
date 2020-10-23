@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MaterialUIPickers({ location, history }) {
   const classes = useStyles();
   const [rows, setRows] = React.useState([1]);
-  const [campDetails, setCampDetails] = React.useState({
+  const [courseDetails, setCourseDetails] = React.useState({
     firstDay: "",
     lastDay: "",
     // excludeDays: "",
@@ -62,36 +62,36 @@ export default function MaterialUIPickers({ location, history }) {
     campCost: "",
     dayCost: "",
   });
-  const { firstDay, lastDay, sessions, campCost, dayCost } = campDetails;
+  const { firstDay, lastDay } = courseDetails;
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(campDetails);
+    console.log(courseDetails);
 
     axios
       .post("/companies/courses", {
-        campDetails,
+        courseDetails,
         companyId: auth.getUserId(),
       })
       .then((res) => {
         console.log(res.data);
-        history.push("/companyDashboard/courses");
+        history.push("/companyDashboard/campOptions");
       })
       .catch((error) => {
         alert(error.message);
       });
   };
 
-  function updateCampDays(index, event) {
+  function updateCourseDays(index, event) {
     const { name, value } = event.target;
-    const campDays = [...campDetails.sessions];
-    campDays[index] = { ...campDays[index], [name]: value };
-    setCampDetails({ ...campDetails, sessions: campDays });
+    const courseDays = [...courseDetails.sessions];
+    courseDays[index] = { ...courseDays[index], [name]: value };
+    setCourseDetails({ ...courseDetails, sessions: courseDays });
   }
-  function updateOtherCampInfo(event) {
+  function updateOtherCourseInfo(event) {
     const { name, value } = event.target;
-    setCampDetails({ ...campDetails, [name]: value });
+    setCourseDetails({ ...courseDetails, [name]: value });
   }
   return (
     <Container className={classes.container}>
@@ -108,7 +108,7 @@ export default function MaterialUIPickers({ location, history }) {
           }}
           name="firstDay"
           value={firstDay}
-          onChange={(e) => updateOtherCampInfo(e)}
+          onChange={(e) => updateOtherCourseInfo(e)}
         />
         <TextField
           id="date"
@@ -122,7 +122,7 @@ export default function MaterialUIPickers({ location, history }) {
           }}
           name="lastDay"
           value={lastDay}
-          onChange={(e) => updateOtherCampInfo(e)}
+          onChange={(e) => updateOtherCourseInfo(e)}
         />
         <Typography variant="h6" className={classes.spacing}>
           Exclude any days
@@ -164,7 +164,7 @@ export default function MaterialUIPickers({ location, history }) {
           return (
             <MultiComponent
               classes={classes}
-              updateCampDays={(e) => updateCampDays(i, e)}
+              updateCampDays={(e) => updateCourseDays(i, e)}
               key={i}
             />
           );
@@ -183,8 +183,8 @@ export default function MaterialUIPickers({ location, history }) {
             name="campCost"
             id="cost"
             label="£ Cost per camp"
-            value={campCost}
-            onChange={(e) => updateOtherCampInfo(e)}
+            //value={campCost}
+            onChange={(e) => updateOtherCourseInfo(e)}
           />
         </FormControl>
 
@@ -194,8 +194,8 @@ export default function MaterialUIPickers({ location, history }) {
             name="dayCost"
             id="cost"
             label="£ Cost per day"
-            value={dayCost}
-            onChange={(e) => updateOtherCampInfo(e)}
+            //value={dayCost}
+            onChange={(e) => updateOtherCourseInfo(e)}
           />
         </FormControl>
         <Button
