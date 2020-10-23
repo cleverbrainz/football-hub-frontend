@@ -30,9 +30,18 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   icons: {
+<<<<<<< HEAD
     fontSize: "33px",
     color: "white",
   },
+=======
+    fontSize: '33px',
+    color: 'white',
+    '&:hover': {
+      cursor: 'pointer',
+    }
+  }
+>>>>>>> 7f3473a55a3ef9ccb60c576eb73b93b3c787f59c
 }));
 
 const ReactMapPopup = ({ selected }) => {
