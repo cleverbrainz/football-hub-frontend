@@ -16,11 +16,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { storage } from "../../lib/firebase";
 import axios from "axios";
 import auth from "../../lib/auth";
-<<<<<<< HEAD
-import BackupIcon from "@material-ui/icons/Backup";
-=======
 import Avatar from '@material-ui/core/Avatar';
->>>>>>> 7f3473a55a3ef9ccb60c576eb73b93b3c787f59c
+import BackupIcon from "@material-ui/icons/Backup";
 
 const useStyles = makeStyles((theme) => ({
   spacing: {
