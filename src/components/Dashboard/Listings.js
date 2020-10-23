@@ -17,18 +17,17 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     height: window.innerHeight - 80,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative'
+    position: 'relative',
+    padding: '50px 0'
   },
   form: {
-    display: 'flex',
-    justifyContent: 'space-between',
+    // display: 'flex',
+    // justifyContent: 'space-between',
     // alignContent: 'space-between',
-    width: '70%',
-    height: '85%',
-    flexWrap: 'wrap'
+    width: '85%',
+   margin: '0 auto'
+    // minHeight: '100%',
+    // flexWrap: 'wrap'
   },
   input: {
     width: '100%',
@@ -38,24 +37,26 @@ const useStyles = makeStyles((theme) => ({
     width: '47.5%',
   },
   subContainer: {
-    width: '47.5%',
-    disply: 'flex',
-    flexDirection: 'column'
+    width: '100%',
+    display: 'flex',
+    // flexDirection: 'column'
+    justifyContent: 'space-around'
   },
   button: {
     width: '20%',
     height: '5%'
   },
   imageContainer: {
-    height: '40%',
-    width: '95%',
+    width: '100%',
     display: 'flex',
-    justifyContent: 'space-between',
-    // margin: '50px 0'
+    flexWrap: 'wrap',
+    justifyContent: 'space-evenly'
   },
   frame: {
-    width: '30%',
-    height: '100%',
+    width: '20%',
+    minWidth: '240px',
+    margin: '20px',
+    height: '230px',
     border: 'solid black 1px',
     backgroundColor: '#dedede',
     position: 'relative'
@@ -84,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const Listings = ({history}) => {
+const Listings = ({ history }) => {
   const classes = useStyles();
   const [user, setUser] = useState()
   const input = useRef()
@@ -104,14 +105,14 @@ const Listings = ({history}) => {
     setDataChange(true)
 
     axios.post(`/user/${auth.getUserId()}`, form, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
-    .then(res => {
-      console.log(res.data)
-      setDataChange(false)
-    })
-    .catch(err => {
-      console.error(err)
-      setDataChange(false)
-    })
+      .then(res => {
+        console.log(res.data)
+        setDataChange(false)
+      })
+      .catch(err => {
+        console.error(err)
+        setDataChange(false)
+      })
 
   }
 
@@ -126,7 +127,7 @@ const Listings = ({history}) => {
           reasons_to_join
         })
         const slotNumbers = []
-        for (let i = 0; i < 3 - res.data[0].images.length; i++) {
+        for (let i = 0; i < 8 - res.data[0].images.length; i++) {
           slotNumbers.push(1)
         }
         setEmptyImageSlots(slotNumbers)
@@ -168,56 +169,61 @@ const Listings = ({history}) => {
     <div className={classes.root}>
       <form
         className={classes.form}>
-        <FormControl className={classes.inputTwo} variant="outlined">
-          <TextField id="outlined-basic"
-            type='text'
-            autoComplete='off'
-            variant="outlined"
-            multiline
-            rows={10}
-            inputProps={{
-              maxLength: 750,
-            }}
-            value={form.bio}
-            onChange={(e) => setForm({ ...form, bio: e.target.value })}
-            helperText={`${bio.split('').length}/750`}
-            label='Write about the company?'
-          />
-        </FormControl>
-
         <div className={classes.subContainer}>
-          {reasons_to_join.map((el, i) => {
-            return (
-              <FormControl className={classes.input} variant="outlined">
-                <TextField id="outlined-basic"
-                  type='text'
-                  key={i}
-                  value={form.reasons_to_join[i]}
-                  autoComplete='off'
-                  variant="outlined"
-                  inputProps={{
-                    maxLength: 75,
-                  }}
-                  onChange={(e) => {
-                    const arr = [...reasons_to_join]
-                    arr[i] = e.target.value
-                    setForm({ ...form, reasons_to_join: arr })
-                  }}
-                  helperText={`${reasons_to_join[i].split('').length}/75  `}
-                  label='A reason to join the company'
-                />
-              </FormControl>
-            )
-          })}
-          {reasons_to_join.length < 3 && <Button
-            variant="contained" color="primary"
-            onClick={() => {
-              if (reasons_to_join.length < 3) {
-                setForm({ ...form, reasons_to_join: [...reasons_to_join, ''] })
-              }
-            }}>
-            Add another reason
+
+          <FormControl className={classes.inputTwo} variant="outlined">
+            <TextField id="outlined-basic"
+              type='text'
+              autoComplete='off'
+              variant="outlined"
+              multiline
+              rows={10}
+              inputProps={{
+                maxLength: 750,
+              }}
+              value={form.bio}
+              onChange={(e) => setForm({ ...form, bio: e.target.value })}
+              helperText={`${bio.split('').length}/750`}
+              label='Write about the company?'
+            />
+          </FormControl>
+
+
+          <div>
+            {reasons_to_join.map((el, i) => {
+              return (
+                <FormControl className={classes.input} variant="outlined">
+                  <TextField id="outlined-basic"
+                    type='text'
+                    key={i}
+                    value={form.reasons_to_join[i]}
+                    autoComplete='off'
+                    variant="outlined"
+                    inputProps={{
+                      maxLength: 75,
+                    }}
+                    onChange={(e) => {
+                      const arr = [...reasons_to_join]
+                      arr[i] = e.target.value
+                      setForm({ ...form, reasons_to_join: arr })
+                    }}
+                    helperText={`${reasons_to_join[i].split('').length}/75  `}
+                    label='A reason to join the company'
+                  />
+                </FormControl>
+              )
+            })}
+            {reasons_to_join.length < 3 && <Button
+              variant="contained" color="primary"
+              onClick={() => {
+                if (reasons_to_join.length < 3) {
+                  setForm({ ...form, reasons_to_join: [...reasons_to_join, ''] })
+                }
+              }}>
+              Add another reason
           </Button>}
+          </div>
+
 
         </div>
 
@@ -225,7 +231,7 @@ const Listings = ({history}) => {
 
         <section className={classes.imageContainer}>
 
-        <input ref={input} style={{ display: 'none' }} onChange={(e) => HandleChange(e)} type="file" />
+          <input ref={input} style={{ display: 'none' }} onChange={(e) => HandleChange(e)} type="file" />
 
           {user && user.images.map((el, i) => {
             return (
@@ -253,7 +259,7 @@ const Listings = ({history}) => {
           Save
           </Button>
 
-          <Button
+        <Button
           onClick={() => history.push('/companyDashboard')}
           className={classes.button}
           variant="contained" color="primary">
