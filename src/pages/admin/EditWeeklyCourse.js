@@ -49,55 +49,48 @@ const useStyles = makeStyles((theme) => ({
 export default function MaterialUIPickers({ location, history }) {
   const classes = useStyles();
   const [rows, setRows] = React.useState([1]);
-
-  const [courseDetails, setCourseDetails] = React.useState({
-    startDate: "",
-    endDate: "",
-    sessions: [],
-    cost: "",
-    courseType: "Weekly",
-    paymentInterval: "",
-    age: location.state,
-  });
-
-  const { startDate, endDate } = courseDetails;
+  const { courseId } = location.state;
+  const {
+    startDate,
+    endDate,
+    cost,
+    paymentInterval,
+  } = location.state.courseDetails;
+  const [StartDate, setStartDate] = React.useState(startDate);
+  const [EndDate, setEndDate] = React.useState(endDate);
+  const [Cost, setCost] = React.useState(cost);
+  const [PaymentInterval, setPaymentInterval] = React.useState(paymentInterval);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(courseDetails);
-
     axios
-      .post("/companies/courses", {
-        courseDetails,
-        companyId: auth.getUserId(),
-      })
+      .patch(
+        "/companies/courses",
+        {
+          startDate: StartDate,
+          endDate: EndDate,
+          sessions: [],
+          cost: Cost,
+          paymentInterval: PaymentInterval,
+          //age: location.state,
+          courseId,
+        },
+        { headers: { Authorization: `Bearer ${auth.getToken()}` } }
+      )
       .then((res) => {
         console.log(res.data);
-        history.push("/companyDashboard/weeklyCourses");
+        history.push("/companyDashboard/weeklyDetails");
       })
       .catch((error) => {
         alert(error.message);
       });
   };
 
-  function updateCourseDays(index, event) {
-    const { name, value } = event.target;
-    const courseDays = [...courseDetails.sessions];
-    courseDays[index] = { ...courseDays[index], [name]: value };
-
-    setCourseDetails({ ...courseDetails, sessions: courseDays });
-  }
-
-  function updateOtherCourseInfo(event) {
-    const { name, value } = event.target;
-    setCourseDetails({ ...courseDetails, [name]: value });
-  }
-
   return (
     <Container className={classes.container}>
       <form onSubmit={handleSubmit}>
-        <Typography variant="h4"> {location.state} </Typography>
+        <Typography variant="h4"> Edit Weekly</Typography>
 
         <TextField
           name="startDate"
@@ -109,8 +102,8 @@ export default function MaterialUIPickers({ location, history }) {
             shrink: true,
           }}
           className={classes.formControl}
-          value={startDate}
-          onChange={(e) => updateOtherCourseInfo(e)}
+          value={StartDate}
+          onChange={(e) => setStartDate(e.target.value)}
         />
         <TextField
           name="endDate"
@@ -122,18 +115,12 @@ export default function MaterialUIPickers({ location, history }) {
             shrink: true,
           }}
           className={classes.formControl}
-          value={endDate}
-          onChange={(e) => updateOtherCourseInfo(e)}
+          value={EndDate}
+          onChange={(e) => setEndDate(e.target.value)}
         />
 
         {rows.map((el, i) => {
-          return (
-            <TableComponent
-              classes={classes}
-              updateCourseDays={(e) => updateCourseDays(i, e)}
-              key={i}
-            />
-          );
+          return <TableComponent classes={classes} key={i} />;
         })}
 
         <Button
@@ -153,16 +140,18 @@ export default function MaterialUIPickers({ location, history }) {
               type="number"
               id="cost"
               label="£"
-              onChange={(e) => updateOtherCourseInfo(e)}
+              value={Cost}
+              onChange={(e) => setCost(e.target.value)}
             />
           </FormControl>
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel>Select</InputLabel>
-            <Select
-              label="Select"
-              name="paymentInterval"
-              onChange={(e) => updateOtherCourseInfo(e)}
+            <InputLabel
+              value={PaymentInterval}
+              onChange={(e) => setPaymentInterval(e.target.value)}
             >
+              Select
+            </InputLabel>
+            <Select label="Select" name="paymentInterval">
               <MenuItem aria-label="Select">None</MenuItem>
               <MenuItem value="Session">Session</MenuItem>
               <MenuItem value="Course">Course</MenuItem>
@@ -176,10 +165,15 @@ export default function MaterialUIPickers({ location, history }) {
           variant="contained"
           color="primary"
         >
-          DONE
+          SAVE
         </Button>
         <div>
-          <Link to="/companyDashboard/weeklyCourses">
+          <Link
+            to={{
+              pathname: "/companyDashboard/weeklyDetails",
+              state: location.state,
+            }}
+          >
             <Button
               className={classes.button}
               variant="outlined"
