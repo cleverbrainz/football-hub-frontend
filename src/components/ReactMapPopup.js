@@ -31,7 +31,10 @@ const useStyles = makeStyles((theme) => ({
   },
   icons: {
     fontSize: '33px',
-    color: 'white'
+    color: 'white',
+    '&:hover': {
+      cursor: 'pointer',
+    }
   }
 }));
 

@@ -19,6 +19,8 @@ import InstagramIcon from '@material-ui/icons/Instagram';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import CallIcon from '@material-ui/icons/Call';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
+import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
+import { TimelineLite, Power2 } from 'gsap'
 
 const IndividualCompany = ({ location }) => {
 
@@ -55,10 +57,10 @@ const IndividualCompany = ({ location }) => {
     image: {
       width: '100%',
       height: '100%',
-      objectFit: 'cover',
       [theme.breakpoints.up('md')]: {
         width: '64.5%',
       },
+      position: 'relative'
     },
     imageContainer: {
       display: 'flex',
@@ -66,8 +68,42 @@ const IndividualCompany = ({ location }) => {
       height: '70vh',
       justifyContent: 'space-between'
     },
+    slideshowRoot: {
+      overflow: 'hidden',
+      width: '100%',
+      height: '100%',
+      // objectFit: 'cover',
+      position: 'relative',
+    },
+    slideshowContainer: {
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      transition: '0.2s'
+    },
+    slideArrows: {
+      zIndex: '100',
+      width: '100%',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center'
+    },
+    icons: {
+      fontSize: '45px',
+      color: 'white',
+      '&:hover': {
+        cursor: 'pointer',
+      }
+    },
     secondaryImages: {
       display: 'none',
+      flexDirection: 'column', 
+      width: '34.5%', 
+      height: '100%', 
+      justifyContent: 'space-between',
       [theme.breakpoints.up('md')]: {
         display: 'flex'
       },
@@ -128,6 +164,40 @@ const IndividualCompany = ({ location }) => {
     setModal(!modalOpen)
   }
 
+  let count = 1
+  let currentPosition = 0
+
+  const HandleSlide = (e) => {
+  
+    const size = document.querySelector('#slideshow').clientWidth
+    const t1 = new TimelineLite()
+
+    if (e.target.tagName === 'path') e.target = e.target.parentNode
+
+    if (e.target.id === 'right') {
+      if (count === images.length) {
+        return
+      }
+
+      t1.to('#slideshow', 0.1, { filter: 'blur(1px)' })
+        .to('#slideshow', 0.1, { transform: `translateX(-${size * count}px)` })
+        .to('#slideshow', 0.15, { filter: 'blur(0)' }, '+=0.1')
+      count++
+      currentPosition += size
+      console.log(count, images.length)
+    } else if (e.target.id === 'left'){
+      if (count === 1) {
+        return
+      }
+
+      t1.to('#slideshow', 0.1, { filter: 'blur(1px)' })
+        .to('#slideshow', 0.1, { transform: `translateX(-${currentPosition - size}px)` })
+        .to('#slideshow', 0.15, { filter: 'blur(0)' }, '+=0.1')
+      count--
+      currentPosition -= size
+    }
+  }
+
 
   return (
     <>
@@ -143,10 +213,23 @@ const IndividualCompany = ({ location }) => {
             </Typography>
 
             <div className={classes.imageContainer}>
-              <img className={classes.image} src={images[0] ? images[0] : "https://images.unsplash.com/photo-1510566337590-2fc1f21d0faa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"} alt="" />
-              <div className={classes.secondaryImages} style={{ display: 'flex', flexDirection: 'column', width: '34.5%', height: '100%', justifyContent: 'space-between'}}>
-                <img style={{ height: '49%', width: '100%', objectFit: 'cover' }} src={images[1] ? images[1] :"https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80"} alt="" />
-                <img style={{ height: '49%', width: '100%', objectFit: 'cover' }} src={images[2] ? images[2] :"https://images.unsplash.com/photo-1524748969064-cf3dabd7b84d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1568&q=80"} alt="" />
+              <section  className={classes.image}>
+                <div className={classes.slideArrows}>
+                  <KeyboardArrowLeft className={classes.icons}
+                  id='left' onClick={(e) => HandleSlide(e)} />
+                  <KeyboardArrowRight className={classes.icons}
+                  id='right' onClick={(e) => HandleSlide(e)} />
+                </div>
+                <div className={classes.slideshowRoot}>
+                  <div id='slideshow' className={classes.slideshowContainer} >
+                    {images && images.map((el, i) => <img style={{objectFit: 'cover'}} src={el} key={i} alt='' /> ).reverse()}
+                  </div>
+                </div>
+              </section>
+
+              <div className={classes.secondaryImages} >
+                <img style={{ height: '49%', width: '100%', objectFit: 'cover' }} src={images[0] ? images[0] :"https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80"} alt="" />
+                <img style={{ height: '49%', width: '100%', objectFit: 'cover' }} src={images[1] ? images[1] :"https://images.unsplash.com/photo-1524748969064-cf3dabd7b84d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1568&q=80"} alt="" />
               </div>
 
             </div>

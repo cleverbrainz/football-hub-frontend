@@ -16,6 +16,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { storage } from "../../lib/firebase";
 import axios from "axios";
 import auth from "../../lib/auth";
+import Avatar from '@material-ui/core/Avatar';
 
 const useStyles = makeStyles((theme) => ({
   spacing: {
@@ -53,6 +54,20 @@ const useStyles = makeStyles((theme) => ({
   center: {
     margin: "0 auto",
   },
+  avatar: {
+    // [theme.breakpoints.up('sm')]: {
+    //   width: theme.spacing(38),
+    //   height: theme.spacing(38),
+    // },
+    width: theme.spacing(30),
+    height: theme.spacing(30),
+    margin: '0 auto',
+    '&:hover': {
+      cursor: 'pointer',
+      filter: 'grayscale(50%)'
+    },
+    // boxShadow: '1px 1px 2px 2px grey'
+  },
 }));
 
 export default function FormPropsTextFields({ location, history }) {
@@ -62,13 +77,16 @@ export default function FormPropsTextFields({ location, history }) {
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
   const [dataChange, setDataChange] = useState(false);
-
+  const [avatarImage, setAvatarImage] = useState(location.state.imageURL)
   const [name, setName] = React.useState(location.state.coach_name);
   const [email, setEmail] = React.useState(location.state.coach_email);
   const [phone, setPhone] = React.useState(location.state.coach_number);
   const [level, setLevel] = React.useState(location.state.coaching_level);
+  const [imageUpload, setImageUpload] = useState(false)
+
 
   const input = useRef();
+  const imageInput = useRef();
 
   const [state, setState] = React.useState({
     checked: false,
@@ -83,12 +101,12 @@ export default function FormPropsTextFields({ location, history }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    console.log(imageURL)
     axios
       .patch(
-        "/companies/coaches",
+        "/companies/array/coaches",
         {
-          imageURL,
+          imageURL: avatarImage,
           coach_name: name,
           coach_email: email,
           coach_number: phone,
@@ -104,26 +122,6 @@ export default function FormPropsTextFields({ location, history }) {
       .catch((error) => {
         alert(error.message);
       });
-
-    if (image) {
-      const uploadTask = storage.ref(`coaches/${image.name}`).put(image);
-
-      uploadTask.on(
-        "state_changed",
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          storage
-            .ref("images")
-            .child(image.name)
-            .getDownloadURL()
-            .then((url) => {
-              setUrl(url);
-            });
-        }
-      );
-    }
   };
 
   const handleDocumentUpload = (e) => {
@@ -137,7 +135,7 @@ export default function FormPropsTextFields({ location, history }) {
     console.log(document);
 
     axios
-      .patch(`/coaches/${coachId}/document`, document, {
+      .patch(`/coaches/document/${coachId}`, document, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
@@ -154,10 +152,39 @@ export default function FormPropsTextFields({ location, history }) {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
 
+  const handleMediaChange = (e) => {
+    setImageUpload(true)
+    const image = e.target.files
+    const picture = new FormData()
+    picture.append('owner', auth.getUserId())
+    picture.append('picture', image[0], image[0].name)
+
+    axios.post(`/coaches/image/${coachId}`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+      .then(res => {
+        console.log(res.data)
+        setImageUpload(false)
+        setAvatarImage(res.data.message)
+      })
+      .catch(err => console.error(err))
+  }
+
   return (
     <Container className={classes.container}>
       <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
         <Typography variant="h4"> EDIT COACHES </Typography>
+
+        <input
+          ref={imageInput}
+          style={{ display: "none" }}
+          onChange={(e) => handleMediaChange(e)}
+          type="file"
+        />
+
+        <Avatar
+            onClick={(e) => imageInput.current.click()}
+            className={classes.avatar} src={avatarImage}
+
+          />
 
         <FormControl variant="outlined" className={classes.spacing}>
           <InputLabel htmlFor="component-outlined"> Coach name </InputLabel>
