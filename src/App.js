@@ -47,6 +47,7 @@ import AddAgeGroup from "./pages/admin/AddAgeGroup";
 import ClientMessages from "./pages/ClientMessages";
 import Join from "./pages/Join";
 import Location from "./pages/admin/Location";
+import PopulateHome from './pages/indulge admin/PopulateHome'
 
 const App = () => {
   const [userType, setUserType] = useState();
@@ -207,6 +208,12 @@ const App = () => {
           component={AddAgeGroup}
         />
         {/* {auth.isLoggedIn() && additionalRoutes()} */}
+
+
+        {/* indulge admin */}
+        <Route exact path="/admin/home"
+        component={PopulateHome} />
+
       </Switch>
     </Router>
   );
