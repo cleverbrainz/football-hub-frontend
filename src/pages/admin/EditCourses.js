@@ -1,11 +1,10 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Button, Container, Typography } from "@material-ui/core";
-import { db, storage, serviceCollection } from "../../lib/firebase";
+import { serviceCollection, storage } from "../../lib/firebase";
 import axios from "axios";
 import auth from "../../lib/auth";
-import BackupIcon from "@material-ui/icons/Backup";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -32,35 +31,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ContainedButtons({ history }) {
+export default function ContainedButtons({ location, history }) {
   const classes = useStyles();
+  //const { service_description, service_name, serviceId } = location.state;
+  const { courseId } = location.state;
   const [image, setImage] = React.useState(null);
-  const [name, setName] = React.useState("");
-  const [description, setDescription] = React.useState("");
+  const [name, setName] = React.useState(courseId);
+  const [description, setDescription] = React.useState(courseId);
   const [url, setUrl] = React.useState("");
-
-  const input = useRef();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     axios
-      .post("/companies/services", {
-        service_name: name,
-        service_description: description,
-        // companyId: '7DK37g0zVmNowHax6cEJ'
-        companyId: auth.getUserId(),
-      })
+      .patch(
+        "/companies/courses",
+        {
+          //service_name: name,
+          //service_description: description,
+          courseId,
+        },
+        { headers: { Authorization: `Bearer ${auth.getToken()}` } }
+      )
       .then((res) => {
         console.log(res.data);
-        history.push("/companyDashboard/services");
+        history.push("/companyDashboard/courses");
       })
       .catch((error) => {
         alert(error.message);
       });
 
     if (image) {
-      const uploadTask = storage.ref(`services/${image.name}`).put(image);
+      const uploadTask = storage.ref(`courses/${image.name}`).put(image);
 
       uploadTask.on(
         "state_changed",
@@ -78,23 +80,12 @@ export default function ContainedButtons({ history }) {
         }
       );
     }
-
-    setName("");
-    setDescription("");
   };
 
-  const HandleChange = (e) => {
-    //setDataChange(true);
-    const image = e.target.files;
-    const picture = new FormData();
-    picture.append("owner", auth.getUserId());
-    picture.append("picture", image[0], image[0].name);
-
-    console.log(picture);
-
-    axios.patch(`/service/:id/document`, picture, {
-      headers: { Authorization: `Bearer ${auth.getToken()}` },
-    });
+  const handleUpload = (e) => {
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
   };
 
   return (
@@ -105,11 +96,11 @@ export default function ContainedButtons({ history }) {
         autoComplete="off"
         onSubmit={handleSubmit}
       >
-        <Typography variant="h4"> SERVICES</Typography>
+        <Typography variant="h4"> EDIT COURSES</Typography>
         <TextField
           className={classes.spacing}
           id="outlined-basic"
-          label="Service name"
+          label="Course name"
           variant="outlined"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -117,25 +108,17 @@ export default function ContainedButtons({ history }) {
         <TextField
           className={classes.spacing}
           id="outlined-basic"
-          label="Service description"
+          label="Course description"
           variant="outlined"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
         <input
-          ref={input}
-          style={{ display: "none" }}
-          onChange={(e) => HandleChange(e)}
+          id="upload-photo"
+          className={classes.upload}
           type="file"
+          onChange={handleUpload}
         />
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => input.current.click()}
-        >
-          <BackupIcon />
-          UPLOAD IMAGES
-        </Button>
 
         <Button
           className={classes.spacing}
@@ -146,7 +129,12 @@ export default function ContainedButtons({ history }) {
           SAVE
         </Button>
 
-        <Link to="/companyDashboard/services">
+        <Link
+          to={{
+            pathname: "/companyDashboard/courseDetails",
+            state: location.state,
+          }}
+        >
           <Button variant="outlined" color="primary">
             Back
           </Button>

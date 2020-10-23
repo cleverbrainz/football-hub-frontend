@@ -15,6 +15,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import auth from "../../lib/auth";
+import BackupIcon from "@material-ui/icons/Backup";
 
 const useStyles = makeStyles((theme) => ({
   spacing: {
@@ -188,7 +189,8 @@ export default function FormPropsTextFields({ history }) {
           color="secondary"
           onClick={() => input.current.click()}
         >
-          Upload Certificates
+          <BackupIcon />
+          UPLOAD COACHING CERTIFICATE
         </Button>
 
         <Typography variant="h5"> DBS Check </Typography>
@@ -207,11 +209,19 @@ export default function FormPropsTextFields({ history }) {
         />
 
         <input
-          id="upload-photo"
-          className={classes.upload}
+          ref={input}
+          style={{ display: "none" }}
+          onChange={(e) => HandleChange(e)}
           type="file"
-          //onChange={handleUpload}
         />
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => input.current.click()}
+        >
+          <BackupIcon />
+          UPLOAD DBS CERTIFICATE
+        </Button>
 
         <Button
           className={classes.button}
