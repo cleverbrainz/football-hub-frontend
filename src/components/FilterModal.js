@@ -1,20 +1,33 @@
 import React from 'react'
 import LocationFilter from './LocationFilter'
-import MoreFilters from './MoreFilters'
+import AgeFilter from './AgeFilter'
+import TimingFilter from './TimingFilter'
 import { Typography, Box, TextField, InputAdornment } from '@material-ui/core';
 
 
-const FilterModal = ({ toggleModal, address, setAddress, handleSelect, classes, selectedFilter }) => {
+const FilterModal = ({ toggleModal,
+  handleFilterSubmit,
+  filterDetails,
+  address,
+  setAddress,
+  handleSelect,
+  classes,
+  selectedFilter,
+  handleTimingChange,
+  handleAgeChange 
+}) => {
 
   console.log(selectedFilter)
 
   const componentsObject = {
     Location: LocationFilter,
-    More: MoreFilters,
-    // skill: SkillFilter
+    Age: AgeFilter,
+    Timing: TimingFilter
   }
 
   const Component = componentsObject[selectedFilter]
+
+  const modalTitle = selectedFilter === 'Timing' ? 'date & time' : selectedFilter.toLowerCase()
 
   return (
 
@@ -22,13 +35,17 @@ const FilterModal = ({ toggleModal, address, setAddress, handleSelect, classes, 
       <div onClick={toggleModal} className='modal-background'></div>
       <div className="modal-content">
 
-      <Typography component='div'>
-        <Box fontSize={23} fontWeight="fontWeightBold" m={5}>
-          Filter by {selectedFilter.toLowerCase()}
-        </Box>
-      </Typography>
+        <Typography component='div'>
+          <Box fontSize={23} fontWeight="fontWeightBold" m={5}>
+            Filter by {modalTitle}
+          </Box>
+        </Typography>
 
         <Component
+          handleFilterSubmit={(e) => handleFilterSubmit(e)}
+          handleAgeChange={(e) => handleAgeChange(e)}
+          handleTimingChange={(e) => handleTimingChange(e)}
+          filterDetails={filterDetails}
           classes={classes}
           address={address}
           handleSelect={(value) => handleSelect(value)}

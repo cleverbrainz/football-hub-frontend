@@ -54,6 +54,8 @@ import ClientMessages from "./pages/ClientMessages";
 import Join from "./pages/Join";
 import Location from "./pages/admin/Location";
 import PopulateHome from './pages/indulge admin/PopulateHome'
+import PopulateWhyJoin from './pages/indulge admin/PopulateWhyJoin'
+import AdminHome from './pages/indulge admin/AdminHome'
 
 const App = () => {
   const [userType, setUserType] = useState();
@@ -243,8 +245,13 @@ const App = () => {
 
 
         {/* indulge admin */}
+        <Route exact path="/admin"
+        component={AdminHome} />
         <Route exact path="/admin/home"
         component={PopulateHome} />
+        <Route exact path="/admin/join"
+        component={PopulateWhyJoin} />
+        
 
       </Switch>
     </Router>

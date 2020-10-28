@@ -21,143 +21,160 @@ import CallIcon from '@material-ui/icons/Call';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
 import { TimelineLite, Power2 } from 'gsap'
+import CourseBookingDialogue from '../components/CourseBookingDialogue'
+import Slide from '@material-ui/core/Slide';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent:'space-between',
+    width: '100vw'
+  },
+  section: {
+    height: '100%',
+    width: '80%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row'
+    },
+  },
+  reviewSection: {
+    height: '100%',
+    width: '80%',
+    display: 'flex',
+    flexDirection: 'column',
+    // justifyContent: 'space-between'
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: '64.5%',
+    },
+    position: 'relative'
+  },
+  imageContainer: {
+    display: 'flex',
+    width: '100%',
+    height: '70vh',
+    justifyContent: 'space-between'
+  },
+  slideshowRoot: {
+    overflow: 'hidden',
+    width: '100%',
+    height: '100%',
+    // objectFit: 'cover',
+    position: 'relative',
+  },
+  slideshowContainer: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    transition: '0.2s'
+  },
+  slideArrows: {
+    zIndex: '100',
+    width: '100%',
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  icons: {
+    fontSize: '45px',
+    color: 'white',
+    '&:hover': {
+      cursor: 'pointer',
+    }
+  },
+  secondaryImages: {
+    display: 'none',
+    flexDirection: 'column', 
+    width: '34.5%', 
+    height: '100%', 
+    justifyContent: 'space-between',
+    [theme.breakpoints.up('md')]: {
+      display: 'flex'
+    },
+  },
+  description: {
+    [theme.breakpoints.up('md')]: {
+      width: '55%'
+    },
+  },
+  coachContainer: {
+    [theme.breakpoints.up('md')]: {
+      width: '37%'
+    },
+  },
+  staffRoot: {
+    display: 'flex',
+    alignItems: 'center',
+    margin: '25px 0'
+  },
+  avatar: {
+    width: theme.spacing(8),
+    height: theme.spacing(8),
+    marginRight: 20
+  },
+  reviewAvatar: {
+    width: theme.spacing(6),
+    height: theme.spacing(6),
+    marginRight: 20
+  },
+  reviewCard: {
+    
+    margin: '20px 0',
+    [theme.breakpoints.up('md')]: {
+      width: '45%' 
+    }
+  },
+  accordion: {
+    fontSize: theme.typography.pxToRem(15),
+    fontWeight: theme.typography.fontWeightRegular,
+  },
+  social: {
+    display: 'flex',
+    alignItems: 'center',
+    margin: '30px 0',
+  },
+  formControl: {
+    margin: theme.spacing(0),
+    minWidth: '100%',
+  },
+}))
+
 
 const IndividualCompany = ({ location }) => {
 
   const [modalOpen, setModal] = useState(false)
   const [selectedService, setSelectedService] = useState()
-  const { name, images, bio, reasons_to_join, coaches, services, userId } = location.state
+  const { name, images, bio, reasons_to_join, coaches, services, userId, courses } = location.state
   const companyName = name.charAt(0).toUpperCase() + name.slice(1)
 
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent:'space-between',
-      width: '100vw'
-    },
-    section: {
-      height: '100%',
-      width: '80%',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      [theme.breakpoints.up('md')]: {
-        flexDirection: 'row'
-      },
-    },
-    reviewSection: {
-      height: '100%',
-      width: '80%',
-      display: 'flex',
-      flexDirection: 'column',
-      // justifyContent: 'space-between'
-    },
-    image: {
-      width: '100%',
-      height: '100%',
-      [theme.breakpoints.up('md')]: {
-        width: '64.5%',
-      },
-      position: 'relative'
-    },
-    imageContainer: {
-      display: 'flex',
-      width: '100%',
-      height: '70vh',
-      justifyContent: 'space-between'
-    },
-    slideshowRoot: {
-      overflow: 'hidden',
-      width: '100%',
-      height: '100%',
-      // objectFit: 'cover',
-      position: 'relative',
-    },
-    slideshowContainer: {
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      transition: '0.2s'
-    },
-    slideArrows: {
-      zIndex: '100',
-      width: '100%',
-      position: 'absolute',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center'
-    },
-    icons: {
-      fontSize: '45px',
-      color: 'white',
-      '&:hover': {
-        cursor: 'pointer',
-      }
-    },
-    secondaryImages: {
-      display: 'none',
-      flexDirection: 'column', 
-      width: '34.5%', 
-      height: '100%', 
-      justifyContent: 'space-between',
-      [theme.breakpoints.up('md')]: {
-        display: 'flex'
-      },
-    },
-    description: {
-      [theme.breakpoints.up('md')]: {
-        width: '55%'
-      },
-    },
-    coachContainer: {
-      [theme.breakpoints.up('md')]: {
-        width: '37%'
-      },
-    },
-    staffRoot: {
-      display: 'flex',
-      alignItems: 'center',
-      margin: '25px 0'
-    },
-    avatar: {
-      width: theme.spacing(8),
-      height: theme.spacing(8),
-      marginRight: 20
-    },
-    reviewAvatar: {
-      width: theme.spacing(6),
-      height: theme.spacing(6),
-      marginRight: 20
-    },
-    reviewCard: {
-      
-      margin: '20px 0',
-      [theme.breakpoints.up('md')]: {
-        width: '45%' 
-      }
-    },
-    accordion: {
-      fontSize: theme.typography.pxToRem(15),
-      fontWeight: theme.typography.fontWeightRegular,
-    },
-    social: {
-      display: 'flex',
-      alignItems: 'center',
-      margin: '30px 0',
-    }
-  }))
+  const [open, setOpen] = React.useState(false);
+  
+ 
+  const handleClose = () => {
+    setOpen(false);
+  };
 
+  const [selectedBooking, setSelectedBooking] = useState(null)
+ 
   const classes = useStyles()
 
-
-
   const reviews = [...Array(6).keys()]
-
-  const products = ['Service 0', 'Service 1', 'Service 2', 'Service 3' , 'Service 4']
 
   const toggleModal = service => {
     if (modalOpen === false) setSelectedService(service)
@@ -198,10 +215,19 @@ const IndividualCompany = ({ location }) => {
     }
   }
 
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
+ 
+
+
 
   return (
     <>
       <div className={classes.root}>
+
+     
 
         <section className={classes.section}>
           <div>
@@ -325,7 +351,7 @@ const IndividualCompany = ({ location }) => {
               <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
               <Box
                 fontSize={25} fontWeight="fontWeightBold" m={0}>
-                What we offer
+                Services & Courses
               </Box>
             </Typography>
 
@@ -352,12 +378,78 @@ const IndividualCompany = ({ location }) => {
                 </Accordion>
               )
             })}
-            
+
+            <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
+              <Box
+                fontSize={19} fontWeight="fontWeightBold" m={0}>
+                Book onto a course
+              </Box>
+            </Typography>
+
+            <FormControl variant="outlined" className={classes.formControl}>
+        <InputLabel id="demo-simple-select-outlined-label">Select Course</InputLabel>
+        <Select
+              labelId="demo-simple-select-filled-label"
+              id="demo-simple-select-filled"
+              label='Select Course'
+              value={selectedBooking && selectedBooking.course}
+              onChange={(e) => setSelectedBooking({ course: e.target.value })}>
+                
+               {courses.map((el, i) => {
+                 const { courseType, age } = el.courseDetails
+                  return (
+                    <MenuItem value={i}>{`${courseType} course for ${age}`}</MenuItem>
+                  )
+                })}
+
+        </Select>
+      </FormControl>
+
+      {selectedBooking !== null &&  (
+      
+      <FormControl variant="outlined" style={{margin: '15px 0'}} className={classes.formControl}>
+        <InputLabel id="demo-simple-select-outlined-label">Select Session</InputLabel>
+        <Select
+              labelId="demo-simple-select-filled-label"
+              id="demo-simple-select-filled"
+              label='Select Session'
+              // value={}
+              onChange={(e) => {
+                setOpen(true)
+                setSelectedBooking({ ...selectedBooking, session: e.target.value })
+              }}
+              >
+               {courses[selectedBooking.course].courseDetails.sessions.map((el, i) => {
+                 const { day, endTime, startTime, spaces } = el
+                  return (
+                    <MenuItem value={i}>{`${day} sessions from ${startTime} to ${endTime}`}  
+                      {` - ${spaces} spaces available`} 
+                    </MenuItem>
+                  )
+                })}
+
+        </Select>
+      </FormControl>
+
+      
+      )}
+
            
 
+          
 
-
-
+                {open && 
+                <CourseBookingDialogue
+                companyId={userId}
+                companyName={companyName}
+                    selectedBooking={selectedBooking}
+                    courses={courses}
+                    Transition={Transition}
+                    open={open}
+                    handleClose={(e) => handleClose(e)}
+                  />
+                }
+                  
               </div>
 
               <div className={classes.coachContainer}>

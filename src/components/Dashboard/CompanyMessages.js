@@ -170,7 +170,7 @@ const CompanyMessages = (props) => {
 
   const drawer = (
     <div>
-      <div  className={classes.toolbar} />
+      <div className={classes.toolbar} />
       <Divider />
 
       <List>
@@ -225,8 +225,8 @@ const CompanyMessages = (props) => {
     <div className={classes.root}>
       <CssBaseline />
 
-      <nav 
-      className={classes.drawer} aria-label="mailbox folders">
+      <nav
+        className={classes.drawer} aria-label="mailbox folders">
 
         <Hidden smUp implementation="css">
           <Drawer
@@ -277,22 +277,50 @@ const CompanyMessages = (props) => {
 
             {selectedMessage && selectedMessage.enquiryInfo.messages.map((el, i) => {
 
+
+
               const currentUser = el.from === auth.getUserId()
               const time = new Date(el.createdAt._seconds * 1000 + el.createdAt._nanoseconds / 1000000)
+              const { name, email } = selectedMessage.enquiryInfo
 
-              return (
-                <Paper className={currentUser ? classes.currentUserMessages : classes.otherUserMessages}
-                  elevation={2} key={i} variant="outlined">
-                  <Typography paragraph>
-                    {el.message}
-                    <small style={{ fontSize: '12px', marginLeft: '9px' }}>
-                      {moment(time).format('HH:MM')}
-                    </small>
-                  </Typography>
+              if (el.enquiryType === 'booking') {
+                const title = el.enquiryType.charAt(0).toUpperCase() + el.enquiryType.slice(1)
+                return (
+                  <Paper className={currentUser ? classes.currentUserMessages : classes.otherUserMessages}
+                    elevation={2} key={i} variant="outlined">
+                    <Typography paragraph>
+                      <Box
+                        fontSize={20} fontWeight="fontWeightBold" m={0}>
+                        {title} Enquiry
+                        </Box>
+                      <p> <span style={{ fontWeight: 'bold' }}> Player Name: </span> {name} </p>
+                      <p> <span style={{ fontWeight: 'bold' }}>Contact Email:  </span> {email} </p>
+                      <p> <span style={{ fontWeight: 'bold' }}> Contact Number:  </span> {el.number} </p>
+                      <p> <span style={{ fontWeight: 'bold' }}> Player D.O.B: </span> {moment(el.dob).format('LL')} </p>
+                      <p> <span style={{ fontWeight: 'bold' }}> Course/Session: </span> {el.subject} </p>
+                      <br />
+                      <p> <span style={{ fontWeight: 'bold' }}> Message: </span>  {el.message} </p>
+                    </Typography>
 
-                </Paper>
+                  </Paper>
+                )
+              } else {
+                return (
+                  <Paper className={currentUser ? classes.currentUserMessages : classes.otherUserMessages}
+                    elevation={2} key={i} variant="outlined">
+                    <Typography paragraph>
+                      {el.message}
+                      <small style={{ fontSize: '12px', marginLeft: '9px' }}>
+                        {moment(time).format('HH:MM')}
+                      </small>
+                    </Typography>
 
-              )
+                  </Paper>
+
+                )
+              }
+
+
             })}
           </div>
         </div>
