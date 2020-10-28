@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import LocationFilter from './LocationFilter'
-import MoreFilters from './MoreFilters'
+// import MoreFilters from './MoreFilters'
 import {
   Typography,
   Box,
@@ -49,7 +49,8 @@ const EnquiryModal = ({ toggleModal, selectedService, companyId, companyName }) 
     company: companyName,
     subject: selectedService,
     userId: auth.getUserId(),
-    companyId
+    companyId,
+    enquiryType: 'general'
   })
 
   const [enquiryErr, setEnquiryErr] = useState()

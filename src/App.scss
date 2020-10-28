@@ -22,7 +22,7 @@ body,
   }
   .mapboxgl-popup-content {
     button {
-      display: none
+      display: none;
     }
   }
 
@@ -73,7 +73,6 @@ body,
 
   #chat-main-container {
     .convo-container {
-
       height: 85%;
       width: 100%;
       position: relative;
@@ -116,6 +115,15 @@ body,
     &::-webkit-scrollbar {
       display: none;
     }
+  }
 
+  .company-bio-preview {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    width: 380px;
+    // width: 45%
   }
 }
