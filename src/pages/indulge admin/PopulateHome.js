@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Home from '././EditHome'
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Box, Button, TextField } from "@material-ui/core";
+import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,15 +51,38 @@ const PopulateHome = () => {
     lookingForBox: ''
   })
 
+  const [dataChange, setDataChange] = useState(false)
+
+
+  useEffect(() => {
+    axios.get('/admin/RwlT9uMWhORyHNNQOell')
+      .then(res => {
+        // console.log(res.data)
+        if (res.data.pathwayBox) setForm({ ...form, ...res.data });
+      })
+      .catch(err => console.log(err))
+  }, [!dataChange])
+
   function handleFormChange(e) {
     const { name, value } = e.target
+    // console.log(name, value)
     setForm({ ...form, [name]: value })
   }
 
+
   function handleFormSubmit(e) {
     e.preventDefault()
+    setDataChange(true)
 
-    console.log(form)
+    axios.post('/admin/RwlT9uMWhORyHNNQOell', form)
+      .then(res => {
+        console.log(res.data)
+        setDataChange(false)
+      })
+      .catch(err => {
+        console.log(err)
+        setDataChange(false)
+      })
 
   }
 
@@ -66,7 +90,7 @@ const PopulateHome = () => {
     <div className={classes.root}>
 
       <div className={classes.homeComponent}>
-        <Home />
+        <Home form={form} />
       </div>
       <div className={classes.componentEdit}>
         <Typography style={{ margin: '20px 0' }} component='div' >
@@ -83,6 +107,7 @@ const PopulateHome = () => {
           className={classes.form}>
 
           <TextField className={classes.inputs} id="outlined-basic"
+            value={form.pathwayBox}
             label="Pathway Edit"
             variant="outlined"
             multiline
@@ -90,6 +115,7 @@ const PopulateHome = () => {
             name='pathwayBox' />
 
           <TextField className={classes.inputs} id="outlined-basic"
+            value={form.adviceBox}
             label="Advice Edit"
             variant="outlined"
             multiline
@@ -97,6 +123,7 @@ const PopulateHome = () => {
             name='adviceBox' />
 
           <TextField className={classes.inputs} id="outlined-basic"
+            value={form.lookingForBox}
             label="Looking For Edit"
             variant="outlined"
             multiline
