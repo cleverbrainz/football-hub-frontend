@@ -107,75 +107,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const Home = () => {
+const Home = ({ form }) => {
 
   const classes = useStyles()
 
-  const [open, setOpen] = React.useState(false);
-  const [message, setMessage] = useState({
-    name: '',
-    email: '',
-    message: ''
-  })
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleMessage = () => {
-    axios.post('/preSignUpEnquiry', message)
-    .then(res => {
-      console.log(res.data)
-    })
-  }
-
-
-
   return (
     <>
-      {/* <Tooltip title="Message us!"
-        onClick={handleClickOpen}
-        className={classes.tooltip} aria-label="Message us!">
-        <Fab color="secondary">
-          <ForumSharpIcon />
-        </Fab>
-      </Tooltip>
-
-      <Dialog
-        open={open}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-slide-title"
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle id="alert-dialog-slide-title">
-          Have a question? Send us a message!
-        </DialogTitle>
-
-        <DialogContent>
-          <form className={classes.form}
-          onChange={(e) => setMessage({...message, [e.target.name]: e.target.value})}
-          noValidate autoComplete="off">
-            <TextField id="outlined-basic" 
-            label="Name" name="name" variant="outlined" />
-            <TextField id="outlined-basic" name="email" label="Email" variant="outlined" />
-            <TextField id="outlined-basic" name="message"
-              label="Message" multiline
-              rows={9} variant="outlined" />
-          </form>
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={handleMessage} color="primary">
-            Send
-          </Button>
-        </DialogActions>
-      </Dialog> */}
 
       <div className={classes.jumbotron}>
         <img className={classes.image} src="https://images.unsplash.com/photo-1556476870-36fde88f47d0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMjF9&auto=format&fit=crop&w=2090&q=80" alt="" />
@@ -187,6 +124,20 @@ const Home = () => {
         <Typography style={{ textAlign: 'center', margin: '40px 0' }} variant='h5' > Pathway to greatness </Typography>
         <section id='home-scroll-section' className={classes.section}>
           {['Your pathway', 'Get advice', 'What to look for'].map((el, i) => {
+            let text
+            switch (i) {
+              case 0:
+                text = form.pathwayBox
+                break;
+              case 1:
+                text = form.adviceBox
+                break;
+              case 2:
+                text = form.lookingForBox
+                break;
+              default:
+                break;
+            }
             return (
               <Card key={i} className={classes.root}>
                 <CardActionArea>
@@ -199,9 +150,8 @@ const Home = () => {
                       {el}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec congue faucibus felis,
-                      vel semper tellus eleifend eu. Vestibulum ullamcorper ultrices efficitur.
-                </Typography>
+                      {text}
+                    </Typography>
                   </CardContent>
                 </CardActionArea>
                 <CardActions>

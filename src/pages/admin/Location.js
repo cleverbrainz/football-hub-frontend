@@ -47,6 +47,18 @@ export default function Location({ history }) {
     postcode: ''
   })
 
+  useEffect(() => {
+    axios
+      .get(`/users/${auth.getUserId()}`)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data[0].location) setAddressFields({...addressFields, ...res.data[0].location});
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
   const textFields = ['Address Line 1', 'Address Line 2', 'Address Line 3', 'City', 'Country', 'Postcode']
   const classes = useStyles();
 
@@ -71,6 +83,7 @@ export default function Location({ history }) {
       .then(res => {
         setIsLoading(false)
         console.log(res.data)
+        history.push('/companyDashboard')
       })
       .catch(err => {
         setIsLoading(false)
@@ -93,10 +106,11 @@ export default function Location({ history }) {
         {textFields.map((el, i) => {
           const name = el.charAt(0).toLowerCase() + el.slice(1).replace(/\s/g, '');
           return (
-            <FormControl variant="outlined">
+            <FormControl style={{margin: '10px 0'}} variant="outlined">
               <InputLabel htmlFor="component-outlined"> {el} </InputLabel>
               <OutlinedInput
                 // error={loginError ? true : false}
+                value={addressFields[name]}
                 type='text'
                 name={name} 
                 id="component-outlined" 
