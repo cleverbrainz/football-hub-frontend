@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import ReactMapGL, { Marker, Popup } from 'react-map-gl'
@@ -27,92 +28,94 @@ import RoomSharpIcon from '@material-ui/icons/RoomSharp';
 import ReactMapPopup from '../components/ReactMapPopup'
 import { fi } from 'date-fns/locale';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex'
+    display: "flex",
   },
   listContainer: {
-    width: '100vw',
-    [theme.breakpoints.up('md')]: {
-      width: '840px',
-      minWidth: '840px',
+    width: "100vw",
+    [theme.breakpoints.up("md")]: {
+      width: "840px",
+      minWidth: "840px",
       height: window.innerHeight - 100,
-      position: 'relative'
+      position: "relative",
     },
-    overflowY: 'scroll'
+    overflowY: "scroll",
   },
   mapContainer: {
-    [theme.breakpoints.up('md')]: {
-      width: '60vw',
+    [theme.breakpoints.up("md")]: {
+      width: "60vw",
       // width: (window.innerWidth / 10) * 6,
       height: window.innerHeight - 100,
-      display: 'block'
+      display: "block",
     },
-    display: 'none'
+    display: "none",
   },
   header: {
+
     minHeight: '27vh',
     padding: '35px 35px'
+
   },
   divider: {
-    [theme.breakpoints.up('sm')]: {
-      margin: '0 40px 50px 40px'
+    [theme.breakpoints.up("sm")]: {
+      margin: "0 40px 50px 40px",
     },
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    margin: '0 20px 50px 20px'
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    margin: "0 20px 50px 20px",
   },
   card: {
-    width: '90%',
-    margin: '40px auto',
-    boxShadow: 'none',
+    width: "90%",
+    margin: "40px auto",
+    boxShadow: "none",
     borderRadius: 0,
-    position: 'relative'
+    position: "relative",
   },
   cardSubcontainer: {
-    [theme.breakpoints.up('sm')]: {
-      display: 'flex'
-    }
+    [theme.breakpoints.up("sm")]: {
+      display: "flex",
+    },
   },
   media: {
     height: 300,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
       width: 640,
       height: 200,
     },
-    borderRadius: '8px'
+    borderRadius: "8px",
   },
   progress: {
-    position: 'absolute',
-    top: '60%',
-    left: '50%',
+    position: "absolute",
+    top: "60%",
+    left: "50%",
   },
 
   resize: {
     fontSize: 15.4,
-    letterSpacing: .5
+    letterSpacing: 0.5,
   },
   button: {
-    textTransform: 'none',
-    borderRadius: '20px',
+    textTransform: "none",
+    borderRadius: "20px",
     width: 150,
-    [theme.breakpoints.up('sm')]: {
-      margin: '25px 30px 25px 0'
+    [theme.breakpoints.up("sm")]: {
+      margin: "25px 30px 25px 0",
     },
-    margin: '10px 20px 10px 0'
-  }
-}))
+    margin: "10px 20px 10px 0",
+  },
+}));
 
-export default function Companies() {
-
-  const classes = useStyles()
-  const key = 'pk.eyJ1Ijoic2VhbmdwYWNoYXJlb25zdWIiLCJhIjoiY2s3cnJyeW85MDZuMzNwcGM1Y2o2M2NoayJ9.WRweK2tzYFh_8QiKacCXEw'
-  const [companies, setCompanies] = useState()
-  const [selectedFilter, setSelectedFilter] = useState()
-  const [address, setAddress] = useState('')
-  const [modalOpen, setModal] = useState(false)
-  const [selected, setSelected] = useState()
+export default function Companies({ age }) {
+  const classes = useStyles();
+  console.log(age);
+  const key =
+    "pk.eyJ1Ijoic2VhbmdwYWNoYXJlb25zdWIiLCJhIjoiY2s3cnJyeW85MDZuMzNwcGM1Y2o2M2NoayJ9.WRweK2tzYFh_8QiKacCXEw";
+  const [companies, setCompanies] = useState();
+  const [selectedFilter, setSelectedFilter] = useState();
+  const [address, setAddress] = useState();
+  const [modalOpen, setModal] = useState(false);
+  const [selected, setSelected] = useState();
   const [coordinates, setCoordinates] = useState({
     lat: null,
     lng: null
@@ -160,12 +163,12 @@ export default function Companies() {
   const [userCoordinates, setUserCoordinates] = useState()
 
   const [viewport, setViewport] = useState({
-    longitude: -0.1300,
+    longitude: -0.13,
     latitude: 51.5074,
     zoom: 10,
-    width: '100%',
+    width: "100%",
     height: window.innerHeight - 80,
-  })
+  });
 
   useEffect(() => {
     axios.get('/companies')
@@ -290,25 +293,22 @@ export default function Companies() {
 
 
   return (
-
     <>
       <div className={classes.root}>
-        <section id='list-container' className={classes.listContainer}>
+        <section id="list-container" className={classes.listContainer}>
           <header className={classes.header}>
-            <Typography component='div'>
+            <Typography component="div">
               <Box fontSize={25} fontWeight="fontWeightBold" m={0.3}>
                 Football in the UK
               </Box>
             </Typography>
 
-
             {/* search functions - location, age, ability, goal */}
 
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
               {Object.keys(filterIcons).map((el, i) => {
-                const Icon = filterIcons[el]
-                let text
+                const Icon = filterIcons[el];
+                let text;
 
                 if (el === 'Timing') text = 'Date/Times'
                 else text = el
@@ -320,43 +320,39 @@ export default function Companies() {
                     variant="outlined"
                     color="default"
                     className={classes.button}
-                    startIcon={<Icon />}>
+                    startIcon={<Icon />}
+                  >
                     {text}
                   </Button>
-                )
+                );
               })}
-
             </div>
-
-            <Button ref={location}
-              style={{ width: '230px', borderRadius: '20px' }}
-              onClick={handleLocate}
-              variant="contained" color="primary">
-              <EmojiPeopleSharpIcon style={{ marginRight: '10px' }} />
-              What's near me
-            </Button>
-
-            <Button
-              style={{ width: '200px', margin: '0 20px', borderRadius: '20px' }}
-              onClick={handleClearFilters}
-              variant="contained" color="secondary">
-              Clear all filters
-            </Button>
 
           </header>
 
-          <Divider className={classes.divider} variant='middle' />
+          <Divider className={classes.divider} variant="middle" />
 
-          <Typography component='div' >
+          <Typography component="div">
             <Box
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '85%', margin: '0 auto' }} fontSize={17} fontWeight="fontWeightRegular" m={1}>
-              <VerifiedUserIcon style={{ color: 'goldenrod', marginRight: '10px' }} />
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "85%",
+                margin: "0 auto",
+              }}
+              fontSize={17}
+              fontWeight="fontWeightRegular"
+              m={1}
+            >
+              <VerifiedUserIcon
+                style={{ color: "goldenrod", marginRight: "10px" }}
+              />
               All coaching companies and camps have been verified by us!
-              </Box>
+            </Box>
           </Typography>
 
           {/* map through companies */}
-
 
 
           {companies ? companies.map((el, i) => {
@@ -396,10 +392,6 @@ export default function Companies() {
 
                 </Link>
 
-
-
-
-
               </>
             )
           }) : <CircularProgress className={classes.progress} color="secondary" />}
@@ -409,6 +401,7 @@ export default function Companies() {
           <ReactMapGL
             {...viewport}
             mapboxApiAccessToken={key}
+
             mapStyle='mapbox://styles/seangpachareonsub/ckdsqcwif16xt19mlhiuwb2dt'
             onViewportChange={viewport => {
               setViewport(viewport)
@@ -463,10 +456,9 @@ export default function Companies() {
 
 
 
+
           </ReactMapGL>
         </section>
-
-
       </div>
 
       {
@@ -475,13 +467,15 @@ export default function Companies() {
           filterDetails={filterDetails}
           handleTimingChange={(e) => handleTimingChange(e)}
           handleAgeChange={(e) => handleAgeChange(e)}
+
           selectedFilter={selectedFilter}
           classes={classes}
           address={address}
           handleSelect={(value) => handleSelect(value)}
           setAddress={setAddress}
-          toggleModal={() => toggleModal()} />
-      }
+          toggleModal={() => toggleModal()}
+        />
+      )}
     </>
-  )
+  );
 }
