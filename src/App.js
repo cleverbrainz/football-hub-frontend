@@ -55,7 +55,13 @@ import AddAgeGroup from "./pages/admin/AddAgeGroup";
 import ClientMessages from "./pages/ClientMessages";
 import Join from "./pages/Join";
 import Location from "./pages/admin/Location";
+<<<<<<< HEAD
 import PopulateHome from "./pages/indulge admin/PopulateHome";
+=======
+import PopulateHome from './pages/indulge admin/PopulateHome'
+import PopulateWhyJoin from './pages/indulge admin/PopulateWhyJoin'
+import AdminHome from './pages/indulge admin/AdminHome'
+>>>>>>> 77cf675df14bf8bca1d378c9bdfbedf37f3af9ca
 
 const App = () => {
   const [userType, setUserType] = useState();
@@ -251,7 +257,18 @@ const App = () => {
         {/* {auth.isLoggedIn() && additionalRoutes()} */}
 
         {/* indulge admin */}
+<<<<<<< HEAD
         <Route exact path="/admin/home" component={PopulateHome} />
+=======
+        <Route exact path="/admin"
+        component={AdminHome} />
+        <Route exact path="/admin/home"
+        component={PopulateHome} />
+        <Route exact path="/admin/join"
+        component={PopulateWhyJoin} />
+        
+
+>>>>>>> 77cf675df14bf8bca1d378c9bdfbedf37f3af9ca
       </Switch>
     </Router>
   );

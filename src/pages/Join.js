@@ -6,6 +6,8 @@ import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
 import DirectionsRunSharpIcon from '@material-ui/icons/DirectionsRunSharp';
 import BusinessSharpIcon from '@material-ui/icons/BusinessSharp';
 import PeopleAltSharpIcon from '@material-ui/icons/PeopleAltSharp';
+import axios from 'axios'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,8 +52,18 @@ const useStyles = makeStyles((theme) => ({
 const Join = () => {
   const classes = useStyles()
 
+  const [joinDetails, setJoinDetails] = useState()
+
+  useEffect(() => {
+    axios.get('/admin/PGkp8RJmn6XA9uBv5dPg')
+      .then(res => {
+        setJoinDetails(res.data)
+      })
+      .catch(err => console.log(err))
+  }, [])
 
   return (
+
     <div className={classes.root}>
       <Typography style={{ margin: '50px 0', textAlign: 'center' }} component='div' >
         <Box
@@ -62,106 +74,64 @@ const Join = () => {
       </Typography>
 
       <section className={classes.section}>
-        <div className={classes.whyJoin}>
-          <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
-            <Box
-              fontSize={25} fontWeight="fontWeightBold" m={0}>
-              Why Join?
+        {joinDetails && (
+          <>
+            <div className={classes.whyJoin}>
+              <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
+                <Box
+                  fontSize={25} fontWeight="fontWeightBold" m={0}>
+                  Why Join?
               </Box>
-          </Typography>
+              </Typography>
 
 
-          <p style={{ textAlign: "justify" }}>
-            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC,
-            making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the
-            more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature,
-            discovered the undoubtable source.
-          </p>
+              <p style={{ textAlign: "justify" }}>
+                {joinDetails.whyJoin.mainText}
+              </p>
 
-          <Typography component='div' >
-            <Box
-              fontSize={17} style={{ display: 'flex', alignItems: 'center', margin: '30px 0' }} fontWeight="fontWeightBold" m={0}>
-              <CheckCircleSharpIcon style={{ color: 'lightseagreen', marginRight: '20px' }} />
-              Why join us reason 1
-            </Box>
-          </Typography>
+              {joinDetails.whyJoin.reasons.map((el, i) => {
+                return (
+                  <Typography component='div' >
+                    <Box
+                      fontSize={17} style={{ display: 'flex', alignItems: 'center', margin: '30px 0' }} fontWeight="fontWeightBold" m={0}>
+                      <CheckCircleSharpIcon style={{ color: 'lightseagreen', marginRight: '20px' }} />
+                      {joinDetails.whyJoin.reasons[i]}
+                    </Box>
+                  </Typography>
 
-          <Typography component='div' >
-            <Box
-              fontSize={17} style={{ display: 'flex', alignItems: 'center', margin: '30px 0' }} fontWeight="fontWeightBold" m={0}>
-              <CheckCircleSharpIcon style={{ color: 'lightseagreen', marginRight: '20px' }} />
-              Why join us reason 2
-            </Box>
-          </Typography>
+                )
+              })}
+            </div>
 
-          <Typography component='div' >
-            <Box
-              fontSize={17} style={{ display: 'flex', alignItems: 'center', margin: '30px 0' }} fontWeight="fontWeightBold" m={0}>
-              <CheckCircleSharpIcon style={{ color: 'lightseagreen', marginRight: '20px' }} />
-              Why join us reason 3
-            </Box>
-          </Typography>
-
-          <Typography component='div' >
-            <Box
-              fontSize={17} style={{ display: 'flex', alignItems: 'center', margin: '30px 0' }} fontWeight="fontWeightBold" m={0}>
-              <CheckCircleSharpIcon style={{ color: 'lightseagreen', marginRight: '20px' }} />
-              Why join us reason 4
-            </Box>
-          </Typography>
-
-
-
-        </div>
-
-        <div className={classes.whatYouGet}>
-          <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
-            <Box
-              fontSize={25} fontWeight="fontWeightBold" m={0}>
-              What you get
+            <div className={classes.whatYouGet}>
+              <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
+                <Box
+                  fontSize={25} fontWeight="fontWeightBold" m={0}>
+                  What you get
               </Box>
-          </Typography>
+              </Typography>
 
-          <p style={{ textAlign: "justify" }}>
-            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC,
-            making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the
-            more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature,
-            discovered the undoubtable source.
-          </p>
+              <p style={{ textAlign: "justify" }}>
+                {joinDetails.whatYouGet.mainText}
+              </p>
 
-          <Typography component='div' >
-            <Box
-              fontSize={17} style={{ display: 'flex', alignItems: 'center', margin: '30px 0' }} fontWeight="fontWeightBold" m={0}>
-              <CheckCircleSharpIcon style={{ color: 'lightseagreen', marginRight: '20px' }} />
-              What you get reason 1
-            </Box>
-          </Typography>
+              {joinDetails.whatYouGet.reasons.map((el, i) => {
+                return (
+                  <Typography component='div' >
+                    <Box
+                      fontSize={17} style={{ display: 'flex', alignItems: 'center', margin: '30px 0' }} fontWeight="fontWeightBold" m={0}>
+                      <CheckCircleSharpIcon style={{ color: 'lightseagreen', marginRight: '20px' }} />
+                      {joinDetails.whatYouGet.reasons[i]}
+                    </Box>
+                  </Typography>
 
-          <Typography component='div' >
-            <Box
-              fontSize={17} style={{ display: 'flex', alignItems: 'center', margin: '30px 0' }} fontWeight="fontWeightBold" m={0}>
-              <CheckCircleSharpIcon style={{ color: 'lightseagreen', marginRight: '20px' }} />
-              What you get reason 2
-            </Box>
-          </Typography>
+                )
+              })}
+            </div>
+          </>
+        )}
 
-          <Typography component='div' >
-            <Box
-              fontSize={17} style={{ display: 'flex', alignItems: 'center', margin: '30px 0' }} fontWeight="fontWeightBold" m={0}>
-              <CheckCircleSharpIcon style={{ color: 'lightseagreen', marginRight: '20px' }} />
-              What you get reason 3
-            </Box>
-          </Typography>
 
-          <Typography component='div' >
-            <Box
-              fontSize={17} style={{ display: 'flex', alignItems: 'center', margin: '30px 0' }} fontWeight="fontWeightBold" m={0}>
-              <CheckCircleSharpIcon style={{ color: 'lightseagreen', marginRight: '20px' }} />
-              What you get reason 4
-            </Box>
-          </Typography>
-
-        </div>
 
       </section>
 

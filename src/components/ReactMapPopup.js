@@ -51,6 +51,8 @@ const ReactMapPopup = ({ selected }) => {
     const size = 275;
     const t1 = new TimelineLite();
 
+    if (e.target.tagName === 'path') e.target = e.target.parentNode
+
     if (e.target.id === "right") {
       if (count === images.length) {
         return;
