@@ -39,9 +39,11 @@ import WeeklyCourseDetails from "./pages/admin/WeeklyCourseDetails";
 import WeeklyDetails from "./pages/admin/WeeklyDetails";
 import SingleCampDetails from "./pages/admin/SingleCampDetails";
 import Courses from "./pages/admin/Courses";
+import Camps from "./pages/admin/Camps";
 import CompanyDashboard from "./pages/admin/CompanyDashboard";
 import CompanyDetails from "./pages/admin/CompanyDetails";
 import CompanyDetailsApproved from "./pages/admin/CompanyDetailsApproved";
+import PlayersList from "./pages/admin/PlayersList";
 import Services from "./pages/admin/Services";
 import ServiceDetails from "./pages/admin/ServiceDetails";
 import CourseDetails from "./pages/admin/CourseDetails";
@@ -53,7 +55,7 @@ import AddAgeGroup from "./pages/admin/AddAgeGroup";
 import ClientMessages from "./pages/ClientMessages";
 import Join from "./pages/Join";
 import Location from "./pages/admin/Location";
-import PopulateHome from './pages/indulge admin/PopulateHome'
+import PopulateHome from "./pages/indulge admin/PopulateHome";
 
 const App = () => {
   const [userType, setUserType] = useState();
@@ -143,6 +145,11 @@ const App = () => {
         />
         <Route
           exact
+          path="/companyDashboard/playersList"
+          component={PlayersList}
+        />
+        <Route
+          exact
           path="/companyDashboard/addCoaches"
           component={AddCoaches}
         />
@@ -163,6 +170,8 @@ const App = () => {
           path="/companyDashboard/addCourses"
           component={AddCourses}
         />
+        <Route exact path="/companyDashboard/camps" component={Camps} />
+
         <Route
           exact
           path="/companyDashboard/weeklyCourses"
@@ -241,11 +250,8 @@ const App = () => {
         />
         {/* {auth.isLoggedIn() && additionalRoutes()} */}
 
-
         {/* indulge admin */}
-        <Route exact path="/admin/home"
-        component={PopulateHome} />
-
+        <Route exact path="/admin/home" component={PopulateHome} />
       </Switch>
     </Router>
   );

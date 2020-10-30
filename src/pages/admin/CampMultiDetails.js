@@ -11,6 +11,10 @@ import {
   Typography,
   Checkbox,
   FormControlLabel,
+  Select,
+  MenuItem,
+  Radio,
+  RadioGroup,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import MultiComponent from "./CampMultiComponent";
@@ -53,6 +57,10 @@ const useStyles = makeStyles((theme) => ({
 export default function MaterialUIPickers({ location, history }) {
   const classes = useStyles();
   const [rows, setRows] = React.useState([1]);
+  const [costType, setCostType] = React.useState(false);
+  const locations = ["Epsom College", "Goals North Cheam"];
+  const [value, setValue] = React.useState("");
+  const [error, setError] = React.useState(false);
   const [courseDetails, setCourseDetails] = React.useState({
     firstDay: "",
     lastDay: "",
@@ -63,6 +71,12 @@ export default function MaterialUIPickers({ location, history }) {
     dayCost: "",
   });
   const { firstDay, lastDay } = courseDetails;
+
+  const handleRadioChange = (event) => {
+    setValue(event.target.value);
+    setError(false);
+    setCostType(false);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -96,6 +110,25 @@ export default function MaterialUIPickers({ location, history }) {
   return (
     <Container className={classes.container}>
       <form onSubmit={handleSubmit} className={classes.form}>
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel>Location</InputLabel>
+          <Select
+            label="Location"
+            name="location"
+            onChange={(e) => updateOtherCourseInfo(e)}
+          >
+            <MenuItem>
+              {" "}
+              <em>Select</em>{" "}
+            </MenuItem>
+            {locations.map((el, i) => (
+              <MenuItem key={i} value={el}>
+                {" "}
+                {el}{" "}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           id="date"
           label="First day"
@@ -174,8 +207,33 @@ export default function MaterialUIPickers({ location, history }) {
           color="primary"
           onClick={() => setRows([...rows, 1])}
         >
-          Add another row
+          Add another age group
         </Button>
+
+        <Typography variant="h6" className={classes.spacing}>
+          Booking Options
+        </Typography>
+        <RadioGroup
+          aria-label="quiz"
+          name="quiz"
+          value={value}
+          onChange={handleRadioChange}
+        >
+          <FormControl component="fieldset">
+            <FormControlLabel
+              value="whole"
+              control={<Radio />}
+              label="Customers can book as a whole only"
+              onClick={() => setCostType(true)}
+            />
+            <FormControlLabel
+              value="one or more"
+              control={<Radio />}
+              label="Customers can book onto one or more days"
+              onClick={() => setCostType(true)}
+            />
+          </FormControl>
+        </RadioGroup>
 
         <FormControl variant="outlined" className={classes.formControl}>
           <InputLabel>£ Cost per camp</InputLabel>
@@ -198,6 +256,7 @@ export default function MaterialUIPickers({ location, history }) {
             onChange={(e) => updateOtherCourseInfo(e)}
           />
         </FormControl>
+
         <Button
           className={classes.button}
           type="submit"
