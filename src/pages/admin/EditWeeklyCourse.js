@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import TableComponent from "./TestComponent";
+import TableComponent from "./EditWeeklyCourseComponent";
 import axios from "axios";
 import auth from "../../lib/auth";
 
@@ -54,13 +54,16 @@ export default function MaterialUIPickers({ location, history }) {
     startDate,
     endDate,
     cost,
+    sessions,
     paymentInterval,
   } = location.state.courseDetails;
   const [StartDate, setStartDate] = React.useState(startDate);
+  const [Session, setSession] = React.useState(sessions);
   const [EndDate, setEndDate] = React.useState(endDate);
   const [Cost, setCost] = React.useState(cost);
   const [PaymentInterval, setPaymentInterval] = React.useState(paymentInterval);
 
+  console.log(location.state);
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -70,22 +73,28 @@ export default function MaterialUIPickers({ location, history }) {
         {
           startDate: StartDate,
           endDate: EndDate,
-          sessions: [],
+          sessions: Session,
           cost: Cost,
           paymentInterval: PaymentInterval,
-          //age: location.state,
           courseId,
         },
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
       )
       .then((res) => {
         console.log(res.data);
-        history.push("/companyDashboard/weeklyDetails");
+        // history.push("/companyDashboard/weeklyDetails");
       })
       .catch((error) => {
         alert(error.message);
       });
   };
+
+  function updateCourseDays(index, event) {
+    const { name, value } = event.target;
+    const courseDays = [...Session.sessions];
+    courseDays[index] = { ...courseDays[index], [name]: value };
+    setSession({ ...Session, sessions: courseDays });
+  }
 
   return (
     <Container className={classes.container}>
@@ -119,8 +128,16 @@ export default function MaterialUIPickers({ location, history }) {
           onChange={(e) => setEndDate(e.target.value)}
         />
 
-        {rows.map((el, i) => {
-          return <TableComponent classes={classes} key={i} />;
+        {sessions.map((el, i) => {
+          // return <h1>Hello</h1>;
+          return (
+            <TableComponent
+              classes={classes}
+              key={i}
+              updateCourseDays={(e) => updateCourseDays(i, e)}
+              Session={sessions[i]}
+            />
+          );
         })}
 
         <Button
@@ -145,13 +162,13 @@ export default function MaterialUIPickers({ location, history }) {
             />
           </FormControl>
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel
+            <InputLabel>Select</InputLabel>
+            <Select
+              label="Select"
+              name="paymentInterval"
               value={PaymentInterval}
               onChange={(e) => setPaymentInterval(e.target.value)}
             >
-              Select
-            </InputLabel>
-            <Select label="Select" name="paymentInterval">
               <MenuItem aria-label="Select">None</MenuItem>
               <MenuItem value="Session">Session</MenuItem>
               <MenuItem value="Course">Course</MenuItem>
