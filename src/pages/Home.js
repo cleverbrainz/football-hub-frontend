@@ -139,9 +139,20 @@ const Home = () => {
     //console.log(search);
   };
 
+  const [homeDetails, setHomeDetails] = useState()
+
+  useEffect(() => {
+    axios.get('/admin/RwlT9uMWhORyHNNQOell')
+      .then(res => {
+        setHomeDetails(res.data);
+      })
+      .catch(err => console.log(err))
+  }, [])
+
   const handleClickOpen = () => {
     setOpen(true);
   };
+
 
   const handleClose = () => {
     setOpen(false);
@@ -235,15 +246,26 @@ const Home = () => {
         </div>
       </div>
       <section>
-        <Typography
-          style={{ textAlign: "center", margin: "40px 0" }}
-          variant="h5"
-        >
-          {" "}
-          Pathway to greatness{" "}
-        </Typography>
-        <section id="home-scroll-section" className={classes.section}>
-          {["Your pathway", "Get advice", "What to look for"].map((el, i) => {
+        <Typography style={{ textAlign: 'center', margin: '40px 0' }} variant='h5' > Pathway to greatness </Typography>
+        <section id='home-scroll-section' className={classes.section}>
+          {['Your pathway', 'Get advice', 'What to look for'].map((el, i) => {
+               let text
+               if (homeDetails) {
+                switch (i) {
+                  case 0:
+                    text = homeDetails.pathwayBox
+                    break;
+                  case 1:
+                    text = homeDetails.adviceBox
+                    break;
+                  case 2:
+                    text = homeDetails.lookingForBox
+                    break;
+                  default:
+                    break;
+                }
+               }
+               
             return (
               <Card key={i} className={classes.root}>
                 <CardActionArea>
@@ -255,15 +277,11 @@ const Home = () => {
                     <Typography gutterBottom variant="h5" component="h2">
                       {el}
                     </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="p"
-                    >
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Donec congue faucibus felis, vel semper tellus eleifend
-                      eu. Vestibulum ullamcorper ultrices efficitur.
-                    </Typography>
+
+                    <Typography variant="body2" color="textSecondary" component="p">
+                      {text}
+                </Typography>
+
                   </CardContent>
                 </CardActionArea>
                 <CardActions>
