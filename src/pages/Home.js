@@ -109,23 +109,12 @@ const useStyles = makeStyles((theme) => ({
     margin: "10px",
     width: "200px",
   },
-  appBar: {
-    height: "57px",
-    padding: "3px",
-    backgroundColor: "#e0e0e0",
-    width: "570px",
-    borderRadius: "50px",
-  },
-  locationCard: {
-    backgroundColor: "#e0e0e0",
-    margin: "10px",
-    //display: "none",
-  },
+
 }));
 
 const Home = () => {
   const classes = useStyles();
-  const [search, setSearch] = useState();
+
   const [open, setOpen] = useState(false);
   //const [locCard, setLocCard] = useState(false);
   const [message, setMessage] = useState({
@@ -133,11 +122,6 @@ const Home = () => {
     email: "",
     message: "",
   });
-
-  const handleSearch = (event) => {
-    setSearch(event.target.value);
-    //console.log(search);
-  };
 
   const [homeDetails, setHomeDetails] = useState()
 
@@ -234,16 +218,10 @@ const Home = () => {
           src="https://images.unsplash.com/photo-1556476870-36fde88f47d0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMjF9&auto=format&fit=crop&w=2090&q=80"
           alt=""
         />
-        <div
-          style={{
-            position: "absolute",
-            bottom: "70%",
-            left: "30%",
-            zIndex: "5",
-          }}
-        >
-          <SearchBar classes={classes} handleSearch={(e) => handleSearch(e)} />
-        </div>
+
+          <SearchBar classes={classes} />
+
+
       </div>
       <section>
         <Typography style={{ textAlign: 'center', margin: '40px 0' }} variant='h5' > Pathway to greatness </Typography>

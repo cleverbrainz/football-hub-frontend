@@ -106,9 +106,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Companies({ age }) {
+export default function Companies({ history }) {
   const classes = useStyles();
-  console.log(age);
   const key =
     "pk.eyJ1Ijoic2VhbmdwYWNoYXJlb25zdWIiLCJhIjoiY2s3cnJyeW85MDZuMzNwcGM1Y2o2M2NoayJ9.WRweK2tzYFh_8QiKacCXEw";
   const [companies, setCompanies] = useState();
@@ -122,56 +121,65 @@ export default function Companies({ age }) {
   })
   const location = useRef()
   const [clearFilter, setClearFilter] = useState(false)
+
+  const { state } = history.location
+  const { age } = state
+  const { longitude, latitude } = state.location
+  const { days, times } = state.timing
+  const { monday, tuesday, wednesday, thursday, friday, saturday, sunday } = days
+  const { morning, afternoon, evening } = times
+
   const [filterDetails, setFilterDetails] = useState({
     location: {
-      longitude: '',
-      latitude: ''
+      longitude,
+      latitude
     },
     timing: {
       days: {
-        monday: false,
-        tuesday: false,
-        wednesday: false,
-        thursday: false,
-        friday: false,
-        saturday: false,
-        sunday: false
+        monday,
+        tuesday,
+        wednesday,
+        thursday,
+        friday,
+        saturday,
+        sunday
       },
       times: {
-        morning: false,
-        afternoon: false,
-        evening: false
+        morning,
+        afternoon,
+        evening
       }
     },
     age: {
-      7: false,
-      8: false,
-      9: false,
-      10: false,
-      11: false,
-      12: false,
-      13: false,
-      14: false,
-      15: false,
-      16: false,
-      17: false,
-      18: false,
-      adults: false
+      7: age['7'],
+      8: age['8'],
+      9: age['9'],
+      10: age['10'],
+      11: age['11'],
+      12: age['12'],
+      13: age['13'],
+      14: age['14'],
+      15: age['15'],
+      16: age['16'],
+      17: age['17'],
+      18: age['18'],
+      adults: age.adults
     }
   })
 
   const [userCoordinates, setUserCoordinates] = useState()
 
   const [viewport, setViewport] = useState({
-    longitude: -0.13,
-    latitude: 51.5074,
+    longitude: longitude ? longitude : -0.141099,
+    latitude: latitude ? latitude :  51.515419,
     zoom: 10,
     width: "100%",
     height: window.innerHeight - 80,
   });
 
   useEffect(() => {
-    axios.get('/companies')
+    console.log(filterDetails)
+    axios.post('/filteredCompanies', filterDetails)
       .then(res => setCompanies(res.data))
   }, [clearFilter])
 
@@ -257,9 +265,6 @@ export default function Companies({ age }) {
 
 
   function handleFilterSubmit() {
-
-    console.log(filterDetails)
-
     axios.post('/filteredCompanies', filterDetails)
       .then(res => {
         toggleModal()
@@ -290,6 +295,7 @@ export default function Companies({ age }) {
       }
     })
   }
+
 
 
   return (
@@ -327,6 +333,26 @@ export default function Companies({ age }) {
                 );
               })}
             </div>
+
+            <Button
+              ref={location}
+              style={{ borderRadius: '20px', width: '230px' }}
+              variant='contained'
+              onClick={handleLocate}
+              color="primary"
+              startIcon={<EmojiPeopleSharpIcon />}
+            >
+              Whats near me
+            </Button>
+
+            <Button
+              style={{ margin: '0 20px', borderRadius: '20px', width: '160px' }}
+              variant='contained'
+              onClick={handleClearFilters}
+              color="secondary"
+            >
+              Clear filters
+            </Button>
 
           </header>
 
@@ -377,9 +403,9 @@ export default function Companies({ age }) {
                         <Typography gutterBottom variant="h5" component="h2">
                           {name}
                         </Typography>
-                        <Typography 
-                        // className='company-bio-preview' 
-                        variant="body2" color="textSecondary" component="p">
+                        <Typography
+                          // className='company-bio-preview' 
+                          variant="body2" color="textSecondary" component="p">
                           {/* {bio} */}
                           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec congue faucibus felis,
                           vel semper tellus eleifend eu. Vestibulum ullamcorper ultrices efficitur.
@@ -475,7 +501,7 @@ export default function Companies({ age }) {
           setAddress={setAddress}
           toggleModal={() => toggleModal()}
         />
-      )}
+      }
     </>
   );
 }
