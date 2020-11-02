@@ -82,7 +82,7 @@ export default function MaterialUIPickers({ location, history }) {
       )
       .then((res) => {
         console.log(res.data);
-        // history.push("/companyDashboard/weeklyDetails");
+        history.push("/companyDashboard");
       })
       .catch((error) => {
         alert(error.message);
@@ -91,9 +91,11 @@ export default function MaterialUIPickers({ location, history }) {
 
   function updateCourseDays(index, event) {
     const { name, value } = event.target;
-    const courseDays = [...Session.sessions];
+    console.log(name, value);
+    const courseDays = Session;
     courseDays[index] = { ...courseDays[index], [name]: value };
-    setSession({ ...Session, sessions: courseDays });
+    console.log(courseDays);
+    setSession(courseDays);
   }
 
   return (
@@ -128,14 +130,14 @@ export default function MaterialUIPickers({ location, history }) {
           onChange={(e) => setEndDate(e.target.value)}
         />
 
-        {sessions.map((el, i) => {
+        {Session.map((el, i) => {
           // return <h1>Hello</h1>;
           return (
             <TableComponent
               classes={classes}
               key={i}
               updateCourseDays={(e) => updateCourseDays(i, e)}
-              Session={sessions[i]}
+              Session={Session[i]}
             />
           );
         })}
