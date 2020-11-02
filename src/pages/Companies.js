@@ -1,32 +1,31 @@
-
-import React, { useState, useRef } from 'react'
-import { Link } from 'react-router-dom'
-import ReactMapGL, { Marker, Popup } from 'react-map-gl'
-import { makeStyles } from '@material-ui/core/styles';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import LocationOnSharpIcon from '@material-ui/icons/LocationOnSharp';
-import { useEffect } from 'react';
-import axios from 'axios'
-import FilterModal from '../components/FilterModal'
-import PeopleAltSharpIcon from '@material-ui/icons/PeopleAltSharp';
-import { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
-import MoreHorizSharpIcon from '@material-ui/icons/MoreHorizSharp';
-import PersonPinCircleSharpIcon from '@material-ui/icons/PersonPinCircleSharp';
-import SupervisorAccountSharpIcon from '@material-ui/icons/SupervisorAccountSharp';
-import EventNoteSharpIcon from '@material-ui/icons/EventNoteSharp';
-import EmojiPeopleSharpIcon from '@material-ui/icons/EmojiPeopleSharp';
-import RoomSharpIcon from '@material-ui/icons/RoomSharp';
-import ReactMapPopup from '../components/ReactMapPopup'
-import { fi } from 'date-fns/locale';
+import React, { useState, useRef } from "react";
+import { Link } from "react-router-dom";
+import ReactMapGL, { Marker, Popup } from "react-map-gl";
+import { makeStyles } from "@material-ui/core/styles";
+import Divider from "@material-ui/core/Divider";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
+import LocationOnSharpIcon from "@material-ui/icons/LocationOnSharp";
+import { useEffect } from "react";
+import axios from "axios";
+import FilterModal from "../components/FilterModal";
+import PeopleAltSharpIcon from "@material-ui/icons/PeopleAltSharp";
+import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
+import MoreHorizSharpIcon from "@material-ui/icons/MoreHorizSharp";
+import PersonPinCircleSharpIcon from "@material-ui/icons/PersonPinCircleSharp";
+import SupervisorAccountSharpIcon from "@material-ui/icons/SupervisorAccountSharp";
+import EventNoteSharpIcon from "@material-ui/icons/EventNoteSharp";
+import EmojiPeopleSharpIcon from "@material-ui/icons/EmojiPeopleSharp";
+import RoomSharpIcon from "@material-ui/icons/RoomSharp";
+import ReactMapPopup from "../components/ReactMapPopup";
+import { fi } from "date-fns/locale";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,10 +51,8 @@ const useStyles = makeStyles((theme) => ({
     display: "none",
   },
   header: {
-
-    minHeight: '27vh',
-    padding: '35px 35px'
-
+    minHeight: "27vh",
+    padding: "35px 35px",
   },
   divider: {
     [theme.breakpoints.up("sm")]: {
@@ -167,7 +164,7 @@ export default function Companies({ history }) {
     }
   })
 
-  const [userCoordinates, setUserCoordinates] = useState()
+  const [userCoordinates, setUserCoordinates] = useState();
 
   const [viewport, setViewport] = useState({
     longitude: longitude ? longitude : -0.141099,
@@ -183,86 +180,97 @@ export default function Companies({ history }) {
       .then(res => setCompanies(res.data))
   }, [clearFilter])
 
-
   function toggleModal(e) {
-    if (modalOpen === false) setSelectedFilter(e.target.id)
-    setModal(!modalOpen)
+    if (modalOpen === false) setSelectedFilter(e.target.id);
+    setModal(!modalOpen);
   }
 
   const handleTimingChange = (e) => {
-    const { name, checked, id } = e.target
+    const { name, checked, id } = e.target;
     setFilterDetails({
-      ...filterDetails, timing: {
+      ...filterDetails,
+      timing: {
         ...filterDetails.timing,
-        [id]: { ...filterDetails.timing[id], [name]: checked }
-      }
-    })
+        [id]: { ...filterDetails.timing[id], [name]: checked },
+      },
+    });
   };
 
   const handleAgeChange = (e) => {
-    const { name, checked } = e.target
+    const { name, checked } = e.target;
     setFilterDetails({
-      ...filterDetails, age: {
-        ...filterDetails.age, [name]: checked
-      }
-    })
+      ...filterDetails,
+      age: {
+        ...filterDetails.age,
+        [name]: checked,
+      },
+    });
   };
 
   const handleSelect = async (value) => {
-    const results = await geocodeByAddress(value)
-    const latLng = await getLatLng(results[0])
+    const results = await geocodeByAddress(value);
+    const latLng = await getLatLng(results[0]);
 
     setFilterDetails({
-      ...filterDetails, location: {
-        latitude: latLng.lat, longitude: latLng.lng
-      }
-    })
+      ...filterDetails,
+      location: {
+        latitude: latLng.lat,
+        longitude: latLng.lng,
+      },
+    });
 
-    axios.post('/filteredCompanies', {
-      ...filterDetails, location: {
-        latitude: latLng.lat, longitude: latLng.lng
-      }
-    })
-      .then(res => {
-        toggleModal()
-        setViewport({ ...viewport, zoom: 11, latitude: latLng.lat, longitude: latLng.lng })
-        setAddress(value)
-        setCoordinates(latLng)
-        setCompanies(res.data)
+    axios
+      .post("/filteredCompanies", {
+        ...filterDetails,
+        location: {
+          latitude: latLng.lat,
+          longitude: latLng.lng,
+        },
       })
-  }
+      .then((res) => {
+        toggleModal();
+        setViewport({
+          ...viewport,
+          zoom: 11,
+          latitude: latLng.lat,
+          longitude: latLng.lng,
+        });
+        setAddress(value);
+        setCoordinates(latLng);
+        setCompanies(res.data);
+      });
+  };
 
   const success = async (pos) => {
-    location.current.innerHTML = 'Successfully located!'
-    var crd = pos.coords
-    const position = { latitude: parseFloat(crd.latitude.toFixed(4)), longitude: parseFloat(crd.longitude.toFixed(4)) }
+    location.current.innerHTML = "Successfully located!";
+    var crd = pos.coords;
+    const position = {
+      latitude: parseFloat(crd.latitude.toFixed(4)),
+      longitude: parseFloat(crd.longitude.toFixed(4)),
+    };
 
-    setFilterDetails({ ...filterDetails, location: position })
+    setFilterDetails({ ...filterDetails, location: position });
 
-
-    axios.post('/filteredCompanies', { ...filterDetails, location: position })
-      .then(res => {
-
-        setUserCoordinates(position)
+    axios
+      .post("/filteredCompanies", { ...filterDetails, location: position })
+      .then((res) => {
+        setUserCoordinates(position);
         setViewport({
           ...viewport,
           zoom: 11,
           latitude: parseFloat(position.latitude),
-          longitude: parseFloat(position.longitude)
-        })
-        setCompanies(res.data)
-      })
-
-  }
+          longitude: parseFloat(position.longitude),
+        });
+        setCompanies(res.data);
+      });
+  };
 
   const handleLocate = (e) => {
-    location.current.innerHTML = 'Locating...'
+    location.current.innerHTML = "Locating...";
     setTimeout(() => {
-      navigator.geolocation.getCurrentPosition(success)
-    }, 1500)
-  }
-
-
+      navigator.geolocation.getCurrentPosition(success);
+    }, 1500);
+  };
 
   function handleFilterSubmit() {
     axios.post('/filteredCompanies', filterDetails)
@@ -275,27 +283,42 @@ export default function Companies({ history }) {
   const filterIcons = {
     Location: LocationOnSharpIcon,
     Age: SupervisorAccountSharpIcon,
-    Timing: EventNoteSharpIcon
-  }
+    Timing: EventNoteSharpIcon,
+  };
 
   const handleClearFilters = () => {
-    setClearFilter(!clearFilter)
+    setClearFilter(!clearFilter);
     setFilterDetails({
-      location: { longitude: '', latitude: '' },
+      location: { longitude: "", latitude: "" },
       timing: {
         days: {
-          monday: false, tuesday: false, wednesday: false, thursday: false,
-          friday: false, saturday: false, sunday: false
+          monday: false,
+          tuesday: false,
+          wednesday: false,
+          thursday: false,
+          friday: false,
+          saturday: false,
+          sunday: false,
         },
-        times: { morning: false, afternoon: false, evening: false }
+        times: { morning: false, afternoon: false, evening: false },
       },
       age: {
-        7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false,
-        14: false, 15: false, 16: false, 17: false, 18: false, adults: false
-      }
-    })
-  }
-
+        7: false,
+        8: false,
+        9: false,
+        10: false,
+        11: false,
+        12: false,
+        13: false,
+        14: false,
+        15: false,
+        16: false,
+        17: false,
+        18: false,
+        adults: false,
+      },
+    });
+  };
 
 
   return (
@@ -316,8 +339,8 @@ export default function Companies({ history }) {
                 const Icon = filterIcons[el];
                 let text;
 
-                if (el === 'Timing') text = 'Date/Times'
-                else text = el
+                if (el === "Timing") text = "Date/Times";
+                else text = el;
                 return (
                   <Button
                     id={el}
@@ -353,7 +376,6 @@ export default function Companies({ history }) {
             >
               Clear filters
             </Button>
-
           </header>
 
           <Divider className={classes.divider} variant="middle" />
@@ -379,7 +401,6 @@ export default function Companies({ history }) {
           </Typography>
 
           {/* map through companies */}
-
 
           {companies ? companies.map((el, i) => {
             const { name, images, bio } = el.companyInfo
@@ -427,73 +448,70 @@ export default function Companies({ history }) {
           <ReactMapGL
             {...viewport}
             mapboxApiAccessToken={key}
-
-            mapStyle='mapbox://styles/seangpachareonsub/ckdsqcwif16xt19mlhiuwb2dt'
-            onViewportChange={viewport => {
-              setViewport(viewport)
-            }}>
-
-            {companies && companies.map(el => {
-
-              if (el.companyInfo.location) {
-                const { latitude, longitude } = el.companyInfo.location
-                return (
-                  <Marker key={el.companyId}
-                    anchor={'top-left'}
-                    offsetLeft={-20}
-                    offsetTop={-30}
-                    latitude={latitude}
-                    longitude={longitude} >
-                    <RoomSharpIcon
-                      onClick={() => {
-                        if (selected) {
-                          if (selected === el) {
-                            setSelected(null)
-                          } else setSelected(el)
-                        } else setSelected(el)
-                      }}
-                      style={{
-                        fontSize: '40px',
-                        color: 'red'
-                      }} />
-                  </Marker>
-                )
-              }
-            }
-            )}
+            mapStyle="mapbox://styles/seangpachareonsub/ckdsqcwif16xt19mlhiuwb2dt"
+            onViewportChange={(viewport) => {
+              setViewport(viewport);
+            }}
+          >
+            {companies &&
+              companies.map((el) => {
+                if (el.companyInfo.location) {
+                  const { latitude, longitude } = el.companyInfo.location;
+                  return (
+                    <Marker
+                      key={el.companyId}
+                      anchor={"top-left"}
+                      offsetLeft={-20}
+                      offsetTop={-30}
+                      latitude={latitude}
+                      longitude={longitude}
+                    >
+                      <RoomSharpIcon
+                        onClick={() => {
+                          if (selected) {
+                            if (selected === el) {
+                              setSelected(null);
+                            } else setSelected(el);
+                          } else setSelected(el);
+                        }}
+                        style={{
+                          fontSize: "40px",
+                          color: "red",
+                        }}
+                      />
+                    </Marker>
+                  );
+                }
+              })}
 
             {userCoordinates && (
               <Marker
-                anchor={'top-left'}
+                anchor={"top-left"}
                 offsetLeft={-20}
                 offsetTop={-30}
                 latitude={parseFloat(userCoordinates.latitude)}
-                longitude={parseFloat(userCoordinates.longitude)} >
+                longitude={parseFloat(userCoordinates.longitude)}
+              >
                 <PersonPinCircleSharpIcon
                   style={{
-                    fontSize: '40px',
-                    color: 'blue'
-                  }} />
+                    fontSize: "40px",
+                    color: "blue",
+                  }}
+                />
               </Marker>
             )}
 
-            {selected && <ReactMapPopup
-              selected={selected} />}
-
-
-
-
+            {selected && <ReactMapPopup selected={selected} />}
           </ReactMapGL>
         </section>
       </div>
 
-      {
-        modalOpen && <FilterModal
+      {modalOpen && (
+        <FilterModal
           handleFilterSubmit={(e) => handleFilterSubmit(e)}
           filterDetails={filterDetails}
           handleTimingChange={(e) => handleTimingChange(e)}
           handleAgeChange={(e) => handleAgeChange(e)}
-
           selectedFilter={selectedFilter}
           classes={classes}
           address={address}
