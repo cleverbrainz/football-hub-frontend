@@ -95,8 +95,11 @@ function HomeNav() {
                 </div> */}
               </div>
               <div className="buttons">
+                <button style={{ backgroundColor: '#3d0F3d' }} className="button is-link">
+                  <Link style={{ color: 'white', }} to='/register/player'>Register Player</Link>
+                </button>
                 <button style={{ backgroundColor: '#3d3d3d' }} className="button is-link">
-                  <Link style={{ color: 'white', }} to='/register'> Sign up </Link>
+                  <Link style={{ color: 'white', }} to='/register/trainer'>Register Trainer</Link>
                 </button>
                 <button component={Link} to='/login' className="button is-light">
                   <Link style={{ color: 'black' }} to='/login'> Login </Link>

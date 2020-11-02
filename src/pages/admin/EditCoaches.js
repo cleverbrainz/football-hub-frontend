@@ -83,10 +83,12 @@ export default function FormPropsTextFields({ location, history }) {
   const [email, setEmail] = React.useState(location.state.coach_email);
   const [phone, setPhone] = React.useState(location.state.coach_number);
   const [level, setLevel] = React.useState(location.state.coaching_level);
+  const [documents, setDocuments] = React.useState(location.state.documents);
   const [imageUpload, setImageUpload] = useState(false)
 
 
-  const input = useRef();
+  const dbsInput = useRef();
+  const coachingInput = useRef();
   const imageInput = useRef();
 
   const [state, setState] = React.useState({
@@ -107,6 +109,7 @@ export default function FormPropsTextFields({ location, history }) {
           coach_number: phone,
           coaching_level: level,
           coachId,
+          documents
         },
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
       )
@@ -120,7 +123,7 @@ export default function FormPropsTextFields({ location, history }) {
   };
 
   const handleDocumentUpload = (e) => {
-    console.log("hellooo");
+    console.log("hellooo", e.target.name);
     const image = e.target.files;
     const document = new FormData();
 
@@ -130,11 +133,12 @@ export default function FormPropsTextFields({ location, history }) {
     console.log(document);
 
     axios
-      .patch(`/coaches/document/${coachId}`, document, {
+      .patch(`/coaches/document/${e.target.name}/${coachId}`, document, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
         console.log(res.data);
+        setDocuments(res.data.documents)
         // setDataChange(false);
       })
       .catch((err) => {
@@ -239,7 +243,8 @@ export default function FormPropsTextFields({ location, history }) {
         </FormControl>
 
         <input
-          ref={input}
+          name="coachingCertificate"
+          ref={coachingInput}
           style={{ display: "none" }}
           onChange={(e) => handleDocumentUpload(e)}
           type="file"
@@ -247,7 +252,7 @@ export default function FormPropsTextFields({ location, history }) {
         <Button
           variant="contained"
           color="secondary"
-          onClick={() => input.current.click()}
+          onClick={() => coachingInput.current.click()}
         >
           <BackupIcon />
           UPLOAD COACHING CERTIFICATE
@@ -269,7 +274,8 @@ export default function FormPropsTextFields({ location, history }) {
         />
 
         <input
-          ref={input}
+          name="dbsCertificate"
+          ref={dbsInput}
           style={{ display: "none" }}
           onChange={(e) => handleDocumentUpload(e)}
           type="file"
@@ -277,7 +283,7 @@ export default function FormPropsTextFields({ location, history }) {
         <Button
           variant="contained"
           color="secondary"
-          onClick={() => input.current.click()}
+          onClick={() => dbsInput.current.click()}
         >
           <BackupIcon />
           UPLOAD DBS CERTIFICATE

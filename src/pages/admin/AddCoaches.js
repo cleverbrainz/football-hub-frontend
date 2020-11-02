@@ -97,6 +97,10 @@ export default function FormPropsTextFields({ history }) {
         coach_number: phone,
         coaching_level: level,
         companyId: auth.getUserId(),
+        documents: {
+          dbsCertificate: '',
+          coachingCertificate: ''
+        }
       })
       .then((res) => {
         console.log(res.data);
