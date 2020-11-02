@@ -47,6 +47,44 @@ function NavbarTwo({ history }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
+  const [filterDetails, setFilterDetails] = useState({
+    location: {
+      longitude: false,
+      latitude: false 
+    },
+    timing: {
+      days: {
+        monday: false ,
+        tuesday: false ,
+        wednesday: false ,
+        thursday: false ,
+        friday: false ,
+        saturday: false ,
+        sunday: false 
+      },
+      times: {
+        morning: false ,
+        afternoon: false ,
+        evening: false 
+      }
+    },
+    age: {
+      7: false ,
+      8: false ,
+      9: false ,
+      10: false ,
+      11: false ,
+      12: false ,
+      13: false ,
+      14: false ,
+      15: false ,
+      16: false ,
+      17: false ,
+      18: false ,
+      adults: false
+    }
+  })
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -115,7 +153,10 @@ function NavbarTwo({ history }) {
 
           {auth.isLoggedIn() ? (
             <div className={classes.sectionDesktop}>
-              <Link to={'/companies'}>
+              <Link to={{
+                pathname: '/companies',
+                state: filterDetails
+                }}>
                 <IconButton className={classes.icon}>
                   <ExploreSharpIcon style={{ color: '#3d3d3d' }} />
                 </IconButton>
