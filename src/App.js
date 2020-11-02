@@ -11,7 +11,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-// import AdminDashboard from './pages/AdminDashboard'
+import AdminDashboard from './pages/AdminDashboard'
 import Companies from "./pages/Companies";
 import IndividualCompany from "./pages/IndividualCompany";
 import ForgottenPassword from "./pages/ForgottenPassword";
