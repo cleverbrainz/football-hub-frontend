@@ -73,13 +73,17 @@ function getSteps() {
 
 
 
-export default function Register() {
+export default function Register({ match }) {
+
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
   const [isLoading, setIsLoading] = useState(false)
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [type, setType] = useState(match.params.type)
+  
+  console.log(type)
 
   const [registerFields, setRegisterFields] = useState({
     name: '',
@@ -181,7 +185,7 @@ export default function Register() {
           variant="outlined"
           error={fieldErrors ? fieldErrors.fullName ? true : false : null}
           helperText={fieldErrors ? fieldErrors.fullName : null}
-          name='name' label='Company/Player Name' />
+          name='name' label={type === 'player' ? 'Player Name' : 'Company Name'} />
       </FormControl>
 
       <FormControl variant="outlined">
