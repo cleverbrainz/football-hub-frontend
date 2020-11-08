@@ -6,11 +6,14 @@ import Box from '@material-ui/core/Box';
 import Badge from '@material-ui/core/Badge';
 import auth from '../lib/auth'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
 import axios from 'axios'
 import EditSharpIcon from '@material-ui/icons/EditSharp';
 import moment from 'moment'
 
 import jwt from 'jsonwebtoken';
+import { AdbOutlined } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,17 +86,28 @@ name: {
 }
 }));
 
-const Profile = () => {
+const Profile = ({ match }) => {
 
+  
+  const profileId = match.params.id
   const [user, setUser] = useState()
   const input = useRef()
   const [imageUpload, setImageUpload] = useState(false)
+  const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === profileId)
+  const [isCompany, setIsCompany] = useState(true)
+  const [isAlreadyCoach, setIsAlreadyCoach] = useState(false)
+  const [requestSent, setRequestSent] = useState()
+
+  console.log(isCompany, isOwnProfile)
 
   useEffect(() => {
-    axios.get(`/users/${auth.getUserId()}`)
+    axios.get(`/users/${profileId}`)
       .then(res => {
+        const { requests, companies } = res.data[0]
         console.log(res.data)
         setUser(res.data[0])
+        if (requests) setRequestSent(requests.some(id => id === auth.getUserId()))
+        if (companies) setIsAlreadyCoach(companies.some(id => id === auth.getUserId()))
       })
   }, [!imageUpload])
 
@@ -115,6 +129,28 @@ const Profile = () => {
       .catch(err => console.error(err))
   }
 
+  const handleSendRequest = (e) => {
+    e.preventDefault()
+    if (!isCompany) return
+    axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId })
+    .then(res => {
+      console.log(res.data)
+      setRequestSent(true)
+    })
+    .catch(err => console.error(err))
+  }
+
+  const handleDeleteRequest = (e) => {
+    e.preventDefault()
+    if (!isCompany) return
+    axios.put(`/user/${profileId}/deleterequest`, { companyId: auth.getUserId(), coachId: profileId })
+    .then(res => {
+      console.log(res.data)
+      setRequestSent(false)
+    })
+    .catch(err => console.error(err))
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.subContainer}>
@@ -124,7 +160,7 @@ const Profile = () => {
             style={{ display: 'none' }} onChange={(e) => handleMediaChange(e)} type="file" />
 
           <Avatar
-            onClick={(e) => input.current.click()}
+            onClick={isOwnProfile ? (e) => input.current.click(): ''}
             className={classes.avatar} src={user && user.imageURL}
 
           />
@@ -169,6 +205,15 @@ const Profile = () => {
             </Box>
           </Typography>
 
+        {(isCompany && !isOwnProfile && !isAlreadyCoach) &&  <Button
+        variant="contained"
+        color="primary"
+        onClick={!requestSent ? (event) => handleSendRequest(event) : (event) => handleDeleteRequest(event)}        
+      >
+        {!requestSent ? 'Add to Coaching team' : 'Request sent!'}
+      </Button>
+}
+
         </div>
 
 
@@ -178,6 +223,11 @@ const Profile = () => {
               fontSize={35} fontWeight="fontWeightBold" m={0}>
               {user && user.name}
             </Box>
+            {isAlreadyCoach && <Box className={classes.name}
+              fontSize={20} fontWeight="fontWeightBold" m={0}>
+              Part of your team!
+            </Box>
+            }
             <small style={{ fontStyle: 'italic' }}>
               Joined: {user && moment(new Date(user.joined._seconds * 1000 + user.joined._nanoseconds / 1000000)).format('DD-MM-YYYY')}
             </small>

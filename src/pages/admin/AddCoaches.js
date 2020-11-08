@@ -100,7 +100,8 @@ export default function FormPropsTextFields({ history }) {
         documents: {
           dbsCertificate: '',
           coachingCertificate: ''
-        }
+        },
+        verified: false
       })
       .then((res) => {
         console.log(res.data);

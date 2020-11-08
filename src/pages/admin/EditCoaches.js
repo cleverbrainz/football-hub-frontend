@@ -84,6 +84,7 @@ export default function FormPropsTextFields({ location, history }) {
   const [phone, setPhone] = React.useState(location.state.coach_number);
   const [level, setLevel] = React.useState(location.state.coaching_level);
   const [documents, setDocuments] = React.useState(location.state.documents);
+  const [verified, setVerified] = React.useState(location.state.verified);
   const [imageUpload, setImageUpload] = useState(false)
 
 
@@ -109,7 +110,8 @@ export default function FormPropsTextFields({ location, history }) {
           coach_number: phone,
           coaching_level: level,
           coachId,
-          documents
+          documents,
+          verified
         },
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
       )
