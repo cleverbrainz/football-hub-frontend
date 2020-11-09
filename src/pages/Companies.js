@@ -168,7 +168,7 @@ export default function Companies({ history }) {
 
   const [viewport, setViewport] = useState({
     longitude: longitude ? longitude : -0.141099,
-    latitude: latitude ? latitude :  51.515419,
+    latitude: latitude ? latitude : 51.515419,
     zoom: 10,
     width: "100%",
     height: window.innerHeight - 80,
@@ -519,7 +519,7 @@ export default function Companies({ history }) {
           setAddress={setAddress}
           toggleModal={() => toggleModal()}
         />
-      }
+      )}
     </>
   );
 }

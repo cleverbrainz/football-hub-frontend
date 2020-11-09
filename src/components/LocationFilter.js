@@ -16,7 +16,7 @@ const LocationFilter = ({ toggleModal, address, setAddress, handleSelect, classe
             <TextField
               style={{ width: '75%', marginBottom: '25px' }}
               variant="outlined"
-              // label='LOCATION'
+              label='Search for location'
               {...getInputProps()}
               InputProps={{
                 startAdornment: (
@@ -25,9 +25,9 @@ const LocationFilter = ({ toggleModal, address, setAddress, handleSelect, classe
                     <SearchSharpIcon />
                   </InputAdornment>
                 ),
-                classes: {
-                  input: classes.resize
-                }
+                // classes: {
+                //   input: classes.resize
+                // }
               }}
             />
 

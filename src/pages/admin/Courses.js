@@ -96,10 +96,11 @@ export default function ContainedButtons() {
       {state &&
         state.map((data, i) => {
           // const { startDate, endDate } = data.courseDetails
+          const { courseType } = data.courseDetails 
           let path = "";
-          if (data.courseDetails.courseType === "Camp") {
+          if (courseType === "Camp") {
             path = "/companyDashboard/courseDetails";
-          } else if (data.courseDetails.courseType === "Weekly") {
+          } else if (courseType === "Weekly") {
             path = "/companyDashboard/weeklyDetails";
           } else {
             path = "/companyDashboard/singleCampDetails";
