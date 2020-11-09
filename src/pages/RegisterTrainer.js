@@ -73,7 +73,7 @@ function getSteps() {
 
 
 
-export default function Register({ match }) {
+export default function RegisterTrainer({ match }) {
 
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
@@ -116,7 +116,7 @@ export default function Register({ match }) {
   }
 
   const handleNext = (e) => {
-    if (activeStep === 0) {
+    if (activeStep === 1) {
       setIsLoading(true)
 
       for (var key in registerFields) {
@@ -185,7 +185,7 @@ export default function Register({ match }) {
           variant="outlined"
           error={fieldErrors ? fieldErrors.fullName ? true : false : null}
           helperText={fieldErrors ? fieldErrors.fullName : null}
-          name='name' label={type === 'player' ? 'Player Name' : 'Company Name'} />
+          name='name' label={ registerFields.category === 'coach' ? 'Full Name' : 'Company Name'} />
       </FormControl>
 
       <FormControl variant="outlined">
@@ -261,6 +261,7 @@ export default function Register({ match }) {
       <Typography variant='h5'>
         Who are you?
       </Typography>
+      
 
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel id="demo-simple-select-outlined-label">Category</InputLabel>
@@ -271,7 +272,7 @@ export default function Register({ match }) {
           onChange={(e) => setRegisterFields({ ...registerFields, category: e.target.value })}
           label="Category"
         >
-          <MenuItem value='player'>Player</MenuItem>
+          <MenuItem value='coach'>Coach</MenuItem>
           <MenuItem value='company'>Company</MenuItem>
         </Select>
       </FormControl>
@@ -283,66 +284,12 @@ export default function Register({ match }) {
 
   const userProfileSetup = () => {
 
-    const companyUserSetupFields = ['VAT Number', 'Company Registration Number', 'Main Contact Number',
-      'Main Email', 'Accounts Contact Number', 'Accounts Email']
+    const userSetupFields = registerFields.category === 'company' ? ['VAT Number', 'Company Registration Number', 'Main Contact Number',
+      'Main Email', 'Accounts Contact Number', 'Accounts Email'] : ['Main Contact Number',
+      'Main Email']
     const insuranceFields = ['Public Liability Insurance', 'Professional Indemnity Insurance']
-    const playerUserSetupFields = ['Best Career Highlight', 'Favourite Football Player', 'Preferred Position', 'Favourite Football Team']
-
-    if (registerFields.category === 'player') {
-
-      const formFields = playerUserSetupFields.map(el => {
-        return (
-          <FormControl variant="outlined">
-            <TextField id="outlined-basic"
-              type='text'
-              variant="outlined"
-
-              name={el.toLowerCase().replace(/ /g, '_')} label={el} />
-          </FormControl>
-        )
-      })
-
-      return formFields.concat(
-        <>
-          {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
-
-            <KeyboardDatePicker
-              disableToolbar
-              variant="inline"
-              format="MM/dd/yyyy"
-              margin="normal"
-              id="date-picker-inline"
-              label="Date of Birth"
-              value={selectedDate}
-              onChange={handleDateChange}
-              KeyboardButtonProps={{
-                'aria-label': 'change date',
-              }}
-            />
-          </MuiPickersUtilsProvider> */}
-
-
-          <FormControl variant="outlined">
-            <TextField
-              id="outlined-multiline-static"
-              label="Write a short bio"
-              multiline
-              rows={3}
-              name='bio'
-              variant="outlined"
-            />
-          </FormControl>
-
-
-        </>
-
-
-      ).reverse()
-
-
-
-    } else {
-      const formFields = companyUserSetupFields.map(el => {
+    
+      const formFields = userSetupFields.map(el => {
         return (
           <FormControl variant="outlined">
             <TextField id="outlined-basic"
@@ -384,7 +331,6 @@ export default function Register({ match }) {
         )
       })
       )
-    }
   }
 
   const completedRegistration = (
@@ -408,9 +354,9 @@ export default function Register({ match }) {
   function getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return form;
-      case 1:
         return basicInfo;
+        case 1:
+          return form;
       case 2:
         return userProfileSetup();
       case 3:

@@ -73,7 +73,7 @@ function getSteps() {
 
 
 
-export default function Register({ match }) {
+export default function RegisterPlayer({ match }) {
 
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
@@ -81,9 +81,6 @@ export default function Register({ match }) {
   const [isLoading, setIsLoading] = useState(false)
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [type, setType] = useState(match.params.type)
-  
-  console.log(type)
 
   const [registerFields, setRegisterFields] = useState({
     name: '',
@@ -91,8 +88,6 @@ export default function Register({ match }) {
     password: '',
     confirmPassword: '',
     category: '',
-    public_liability_insurance: '',
-    professional_indemnity_insurance: '',
   })
   const [fieldErrors, setFieldErrors] = useState()
   const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState()
@@ -116,7 +111,7 @@ export default function Register({ match }) {
   }
 
   const handleNext = (e) => {
-    if (activeStep === 0) {
+    if (activeStep === 1) {
       setIsLoading(true)
 
       for (var key in registerFields) {
@@ -185,7 +180,7 @@ export default function Register({ match }) {
           variant="outlined"
           error={fieldErrors ? fieldErrors.fullName ? true : false : null}
           helperText={fieldErrors ? fieldErrors.fullName : null}
-          name='name' label={type === 'player' ? 'Player Name' : 'Company Name'} />
+          name='name' label='Name' />
       </FormControl>
 
       <FormControl variant="outlined">
@@ -259,7 +254,10 @@ export default function Register({ match }) {
 
     <>
       <Typography variant='h5'>
-        Who are you?
+        Who is this account for?
+      </Typography>
+      <Typography variant="h6">
+        To book coaching for a child aged 16 or under, an account must be made by their parent/guardian.
       </Typography>
 
       <FormControl variant="outlined" className={classes.formControl}>
@@ -271,8 +269,8 @@ export default function Register({ match }) {
           onChange={(e) => setRegisterFields({ ...registerFields, category: e.target.value })}
           label="Category"
         >
-          <MenuItem value='player'>Player</MenuItem>
-          <MenuItem value='company'>Company</MenuItem>
+          <MenuItem value='player'>Self</MenuItem>
+          <MenuItem value='parent'>Parent Account</MenuItem>
         </Select>
       </FormControl>
 
@@ -283,14 +281,10 @@ export default function Register({ match }) {
 
   const userProfileSetup = () => {
 
-    const companyUserSetupFields = ['VAT Number', 'Company Registration Number', 'Main Contact Number',
-      'Main Email', 'Accounts Contact Number', 'Accounts Email']
-    const insuranceFields = ['Public Liability Insurance', 'Professional Indemnity Insurance']
-    const playerUserSetupFields = ['Best Career Highlight', 'Favourite Football Player', 'Preferred Position', 'Favourite Football Team']
 
-    if (registerFields.category === 'player') {
+    const UserSetupFields = registerFields.category === 'player' ? ['Best Career Highlight', 'Favourite Football Player', 'Preferred Position', 'Favourite Football Team'] : ['Favourite Football Player', 'Preferred Position', 'Favourite Football Team', 'Child\'s name']
 
-      const formFields = playerUserSetupFields.map(el => {
+      const formFields = UserSetupFields.map(el => {
         return (
           <FormControl variant="outlined">
             <TextField id="outlined-basic"
@@ -341,50 +335,6 @@ export default function Register({ match }) {
 
 
 
-    } else {
-      const formFields = companyUserSetupFields.map(el => {
-        return (
-          <FormControl variant="outlined">
-            <TextField id="outlined-basic"
-              type='text'
-              variant="outlined"
-              // error={fieldErrors ? fieldErrors[fieldName] ? true : false : null}
-              // helperText={fieldErrors ? fieldErrors[fieldName] : null}
-              name={el.toLowerCase().replace(/ /g, '_')} label={el} />
-          </FormControl>
-        )
-      })
-
-      return formFields.concat(insuranceFields.map(el => {
-        const name = el.toLowerCase().replace(/ /g, '_')
-        return (
-          <>
-            <FormControl variant="outlined" className={classes.formControl} >
-              <InputLabel id="demo-simple-select-outlined-label">{el}</InputLabel>
-              <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
-                value={registerFields[name]}
-                onChange={(e) => setRegisterFields({ ...registerFields, [name]: e.target.value })}
-                label={el}
-              >
-                <MenuItem value='No insurance'>I don't have any insurance</MenuItem>
-                <MenuItem value='£250,000'>£250,000</MenuItem>
-                <MenuItem value='£500,000'>£500,000</MenuItem>
-                <MenuItem value='£1,000,000'>£1,000,000</MenuItem>
-                <MenuItem value='£2,000,000'>£2,000,000</MenuItem>
-                <MenuItem value='£5,000,000'>£5,000,000</MenuItem>
-                <MenuItem value='£10,000,000'>£10,000,000</MenuItem>
-                <MenuItem value='Other'>Other</MenuItem>
-              </Select>
-
-            </FormControl >
-
-          </>
-        )
-      })
-      )
-    }
   }
 
   const completedRegistration = (
@@ -408,9 +358,9 @@ export default function Register({ match }) {
   function getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return form;
-      case 1:
         return basicInfo;
+        case 1:
+          return form;
       case 2:
         return userProfileSetup();
       case 3:

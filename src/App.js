@@ -10,8 +10,10 @@ import bulma from "bulma";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
-import AdminDashboard from './pages/AdminDashboard'
+// import Register from "./pages/Register";
+import RegisterPlayer from "./pages/RegisterPlayer";
+import RegisterTrainer from "./pages/RegisterTrainer";
+// import AdminDashboard from './pages/AdminDashboard'
 import Companies from "./pages/Companies";
 import IndividualCompany from "./pages/IndividualCompany";
 import ForgottenPassword from "./pages/ForgottenPassword";
@@ -56,8 +58,11 @@ import AddAgeGroup from "./pages/admin/AddAgeGroup";
 import ClientMessages from "./pages/ClientMessages";
 import Join from "./pages/Join";
 import Location from "./pages/admin/Location";
+import PopulateHome from './pages/indulge admin/PopulateHome'
+import PopulateWhyJoin from './pages/indulge admin/PopulateWhyJoin'
+import AdminHome from './pages/indulge admin/AdminHome'
+import Requests from "./pages/Requests";
 import AddLocation from "./pages/admin/AddLocation";
-import PopulateHome from "./pages/indulge admin/PopulateHome";
 import CoachPageBeta from './pages/admin/CoachPageBeta'
 
 // axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
@@ -113,7 +118,8 @@ const App = () => {
         <Route exact path="/" component={Home} />
         <Route exact path="/join" component={Join} />
         <Route exact path="/login" component={Login} />
-        <Route exact path="/register" component={Register} />
+        <Route exact path="/register/player" component={RegisterPlayer} />
+        <Route exact path="/register/trainer" component={RegisterTrainer} />
         <Route exact path="/forgot_password" component={ForgottenPassword} />
         <Route exact path="/test" component={Listings} />
 
@@ -121,7 +127,12 @@ const App = () => {
         <Route exact path="/companies/:id" component={IndividualCompany} />
   
         <Route exact path="/:id/profile" component={Profile} />
-        <Route exact path="/companyDashboard/messages" component={CompanyMessages}/>
+        <Route exact path="/:id/profile/requests" component={Requests} />
+        <Route
+          exact
+          path="/companyDashboard/messages"
+          component={CompanyMessages}
+        />
         <Route exact path="/:id/messages" component={ClientMessages} />
         <Route exact path="/companyDashboard" component={CompanyDashboard} />
         <Route exact path="/companyDashboard/location" component={Location} />
