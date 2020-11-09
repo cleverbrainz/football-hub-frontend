@@ -1,138 +1,139 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import OutlinedInput from '@material-ui/core/OutlinedInput'
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import auth from '../../lib/auth'
-import { add } from 'date-fns';
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  Button,
+  Container,
+  Typography,
+  Card,
+  CardContent,
+} from "@material-ui/core";
+import auth from "../../lib/auth";
+import CancelSharpIcon from "@material-ui/icons/CancelSharp";
+import axios from "axios";
+import DeleteComponent from "./DeleteComponent";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    height: `${window.innerHeight - 80}px`,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    height: `${window.innerHeight - 100}px`,
+    textAlign: "center",
   },
-  form: {
-    width: '30%',
-    minWidth: '300px',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '40%',
-    justifyContent: 'space-evenly'
+  card: {
+    height: "100px",
+    width: "200px",
   },
-  button: {
-    position: 'relative'
+  icons: {
+    position: "relative",
+    color: "#EF5B5B",
+    top: "5px",
+    right: "-106px",
+    //fontSize: "28px",
+    "&:hover": {
+      cursor: "pointer",
+    },
   },
-  progress: {
-    position: 'absolute'
-  }
 }));
 
-export default function Location({ history }) {
+export default function Location() {
+  const classes = useStyles();
 
-  const [loginError, setLoginError] = useState()
-  const [isLoading, setIsLoading] = useState(false)
-  const [addressFields, setAddressFields] = useState({
-    addressLine1: '',
-    addressLine2: '',
-    addressLine3: '',
-    city: '',
-    country: '',
-    postcode: ''
-  })
+  const [state, setState] = React.useState();
+  const [deleteLocation, setDeleteLocation] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [deleteLocationId, setDeleteLocationId] = React.useState();
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   useEffect(() => {
     axios
       .get(`/users/${auth.getUserId()}`)
       .then((res) => {
         console.log(res.data);
-        if (res.data[0].location) setAddressFields({...addressFields, ...res.data[0].location});
+        setState(res.data[0].locations);
       })
       .catch((e) => {
         console.log(e);
       });
-  }, []);
+  }, [!deleteLocation]);
 
-  const textFields = ['Address Line 1', 'Address Line 2', 'Address Line 3', 'City', 'Country', 'Postcode']
-  const classes = useStyles();
-
-  function handleFormChange(e) {
-    const { name, value } = e.target
-    const fields = { ...addressFields, [name]: value }
-    setAddressFields(fields)
-  }
-
-  function handleFormSubmit(e) {
-    e.preventDefault()
-    setIsLoading(true)
-    
-    axios.get(`https://api.postcodes.io/postcodes/${addressFields.postcode.replace(/\s/g, '')}`)
-    .then(res => {
-      const { longitude, latitude } = res.data.result
-      return {...addressFields, longitude, latitude}
-    })
-    .then(res => {
-      console.log(res)
-      axios.post("/companies/locations", res)
-      .then(res => {
-        setIsLoading(false)
-        console.log(res.data)
-        history.push('/companyDashboard')
+  const handleDelete = () => {
+    setDeleteLocation(true);
+    console.log(deleteLocationId);
+    axios
+      .delete(`/companies/locations/${deleteLocationId}`, {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
-      .catch(err => {
-        setIsLoading(false)
-        console.log(err)
+      .then((res) => {
+        console.log(res.data);
+        setDeleteLocation(false);
+        handleClose();
       })
-    })
-    
-  }
+      .catch((err) => {
+        console.error(err);
+        setDeleteLocation(false);
+        handleClose();
+      });
+  };
 
   return (
+    <Container className={classes.container}>
+      <Typography variant="h4">locations</Typography>
 
-    <div className={classes.container}>
-      <Typography variant='h4'> Address </Typography>
-      <form
-        autoComplete='off'
-        onChange={(e) => handleFormChange(e)}
-        onSubmit={(e) => handleFormSubmit(e)}
-        className={classes.form}>
-
-        {textFields.map((el, i) => {
-          const name = el.charAt(0).toLowerCase() + el.slice(1).replace(/\s/g, '');
+      {state &&
+        state.map((data, i) => {
           return (
-            <FormControl style={{margin: '10px 0'}} variant="outlined">
-              <InputLabel htmlFor="component-outlined"> {el} </InputLabel>
-              <OutlinedInput
-                // error={loginError ? true : false}
-                value={addressFields[name]}
-                type='text'
-                name={name} 
-                id="component-outlined" 
-                label={el}
+            <div key={i}>
+              <CancelSharpIcon
+                id={i}
+                className={classes.icons}
+                onClick={() => {
+                  setDeleteLocationId(data.locationId)
+                  handleClickOpen()
+                }}
               />
-            </FormControl>
-          )
+              <Card className={classes.card}>
+                <Link
+                  to={{
+                    pathname: "/companyDashboard/editLocation",
+                    state: data,
+                  }}
+                >
+                  <CardContent>
+                    <Typography variant="h6">{data.venue}</Typography>
+                  </CardContent>
+                </Link>
+              </Card>
+            </div>
+          );
         })}
 
-
-
-        {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
-
-        <Button disabled={isLoading}
-          className={classes.button} type='submit'
-          variant="contained" color="primary">
-          Save
-          {isLoading && <CircularProgress size={30} className={classes.progress} />}
+      <Link to="/companyDashboard/addLocation">
+        <Button variant="contained" color="primary">
+          ADD ANOTHER LOCATION
         </Button>
-
-      </form>
-
-    </div>
-  )
+      </Link>
+      <Link to="/companyDashboard">
+        <Button className={classes.button} variant="outlined" color="primary">
+          Back
+        </Button>
+      </Link>
+      {/* {open && ( */}
+      <DeleteComponent
+        open={open}
+        handleClose={() => handleClose()}
+        HandleDelete={() => handleDelete()}
+        name={"location"}
+      />
+      {/* )} */}
+    </Container>
+  );
 }

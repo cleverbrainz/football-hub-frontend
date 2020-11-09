@@ -29,6 +29,7 @@ import EditCoaches from "./pages/admin/EditCoaches";
 import EditCompany from "./pages/admin/EditCompany";
 import EditServices from "./pages/admin/EditServices";
 import EditCourses from "./pages/admin/EditCourses";
+import EditLocation from "./pages/admin/EditLocation";
 import EditWeeklyCourse from "./pages/admin/EditWeeklyCourse";
 import EditSingleCampCourse from "./pages/admin/EditSingleCampCourse";
 import CoachDetails from "./pages/admin/CoachDetails";
@@ -55,7 +56,11 @@ import AddAgeGroup from "./pages/admin/AddAgeGroup";
 import ClientMessages from "./pages/ClientMessages";
 import Join from "./pages/Join";
 import Location from "./pages/admin/Location";
+import AddLocation from "./pages/admin/AddLocation";
 import PopulateHome from "./pages/indulge admin/PopulateHome";
+import CoachPageBeta from './pages/admin/CoachPageBeta'
+
+// axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
 
 const App = () => {
   const [userType, setUserType] = useState();
@@ -76,13 +81,8 @@ const App = () => {
     <>
       <Route exact path="/companies" component={Companies} />
       <Route exact path="/companies/:id" component={IndividualCompany} />
-
-      {/* <Route exact path='/:id/profile' component={Profile} /> */}
       <Route exact path="/companyDashboard" component={CompanyDashboard} />
 
-      {/*  */}
-
-      {/*  HELLOOOOOO BOYYSSSSSSS BHOWWW ARE YOU??? */}
     </>
   );
 
@@ -106,152 +106,60 @@ const App = () => {
     <Router>
       <Navbar />
       <Switch>
+
+        {/* testing */}
+        <Route exact path='/coachbeta' component={CoachPageBeta} />
+
         <Route exact path="/" component={Home} />
         <Route exact path="/join" component={Join} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/forgot_password" component={ForgottenPassword} />
         <Route exact path="/test" component={Listings} />
-        {/*  */}
+
         <Route exact path="/companies" component={Companies} />
         <Route exact path="/companies/:id" component={IndividualCompany} />
-        {/*  */}
+  
         <Route exact path="/:id/profile" component={Profile} />
-        <Route
-          exact
-          path="/companyDashboard/messages"
-          component={CompanyMessages}
-        />
+        <Route exact path="/companyDashboard/messages" component={CompanyMessages}/>
         <Route exact path="/:id/messages" component={ClientMessages} />
-
         <Route exact path="/companyDashboard" component={CompanyDashboard} />
-
         <Route exact path="/companyDashboard/location" component={Location} />
-
-        <Route
-          exact
-          path="/companyDashboard/companyDetails"
-          component={CompanyDetails}
-        />
-        <Route
-          exact
-          path="/companyDashboard/editCompany"
-          component={EditCompany}
-        />
-        <Route
-          exact
-          path="/companyDashboard/companyDetailsApproved"
-          component={CompanyDetailsApproved}
-        />
-        <Route
-          exact
-          path="/companyDashboard/playersList"
-          component={PlayersList}
-        />
-        <Route
-          exact
-          path="/companyDashboard/addCoaches"
-          component={AddCoaches}
-        />
-        <Route
-          exact
-          path="/companyDashboard/editCoaches"
-          component={EditCoaches}
-        />
+        <Route exact path="/companyDashboard/addLocation" component={AddLocation} />
+        <Route exact path="/companyDashboard/editLocation" component={EditLocation} />
+        <Route exact path="/companyDashboard/companyDetails" component={CompanyDetails} />
+        <Route exact path="/companyDashboard/editCompany" component={EditCompany}/>
+        <Route exact path="/companyDashboard/companyDetailsApproved" component={CompanyDetailsApproved}/>
+        <Route exact path="/companyDashboard/playersList" component={PlayersList} />
+        <Route exact path="/companyDashboard/addCoaches" component={AddCoaches}/>
+        <Route exact path="/companyDashboard/editCoaches" component={EditCoaches} />
         <Route exact path="/companyDashboard/coaches" component={Coaches} />
-        <Route
-          exact
-          path="/companyDashboard/coachDetails"
-          component={CoachDetails}
-        />
+        <Route exact path="/companyDashboard/coachDetails" component={CoachDetails}/>
         <Route exact path="/companyDashboard/courses" component={Courses} />
-        <Route
-          exact
-          path="/companyDashboard/addCourses"
-          component={AddCourses}
-        />
+        <Route exact path="/companyDashboard/addCourses" component={AddCourses}/>
         <Route exact path="/companyDashboard/camps" component={Camps} />
-
-        <Route
-          exact
-          path="/companyDashboard/weeklyCourses"
-          component={WeeklyCourses}
-        />
-        <Route
-          exact
-          path="/companyDashboard/editWeeklyCourse"
-          component={EditWeeklyCourse}
-        />
-        <Route
-          exact
-          path="/companyDashboard/editSingleCampCourse"
-          component={EditSingleCampCourse}
-        />
-        <Route
-          exact
-          path="/companyDashboard/weeklyCourseDetails"
-          component={WeeklyCourseDetails}
-        />
-        <Route
-          exact
-          path="/companyDashboard/weeklyDetails"
-          component={WeeklyDetails}
-        />
-        <Route
-          exact
-          path="/companyDashboard/singleCampDetails"
-          component={SingleCampDetails}
-        />
+        <Route exact path="/companyDashboard/weeklyCourses" component={WeeklyCourses}/>
+        <Route exact path="/companyDashboard/editWeeklyCourse" component={EditWeeklyCourse}/>
+        <Route exact path="/companyDashboard/editSingleCampCourse" component={EditSingleCampCourse}/>
+        <Route exact path="/companyDashboard/weeklyCourseDetails" component={WeeklyCourseDetails}/>
+        <Route  exact path="/companyDashboard/weeklyDetails" component={WeeklyDetails}/>
+        <Route exact path="/companyDashboard/singleCampDetails" component={SingleCampDetails}/>
         <Route exact path="/companyDashboard/services" component={Services} />
-        <Route
-          exact
-          path="/companyDashboard/editServices"
-          component={EditServices}
-        />
-        <Route
-          exact
-          path="/companyDashboard/editCourses"
-          component={EditCourses}
-        />
-        <Route
-          exact
-          path="/companyDashboard/serviceDetails"
-          component={ServiceDetails}
-        />
-        <Route
-          exact
-          path="/companyDashboard/courseDetails"
-          component={CourseDetails}
-        />
-        <Route
-          exact
-          path="/companyDashboard/campOptions"
-          component={CampOptions}
-        />
-        <Route
-          exact
-          path="/companyDashboard/campMultiDetails"
-          component={CampMultiDetails}
-        />
-        <Route
-          exact
-          path="/companyDashboard/campSingleDetails"
-          component={CampSingleDetails}
-        />
-        <Route
-          exact
-          path="/companyDashboard/addServices"
-          component={AddServices}
-        />
-        <Route
-          exact
-          path="/companyDashboard/addAgeGroup"
-          component={AddAgeGroup}
-        />
+        <Route exact path="/companyDashboard/editServices" component={EditServices} />
+        <Route exact path="/companyDashboard/editCourses" component={EditCourses}/>
+        <Route exact path="/companyDashboard/serviceDetails" component={ServiceDetails} />
+        <Route exact path="/companyDashboard/courseDetails" component={CourseDetails}/>
+        <Route exact path="/companyDashboard/campOptions" component={CampOptions} />
+        <Route exact path="/companyDashboard/campMultiDetails" component={CampMultiDetails} />
+        <Route exact path="/companyDashboard/campSingleDetails" component={CampSingleDetails} />
+        <Route exact path="/companyDashboard/addServices" component={AddServices} />
+        <Route exact path="/companyDashboard/addAgeGroup" component={AddAgeGroup} />
         {/* {auth.isLoggedIn() && additionalRoutes()} */}
 
         {/* indulge admin */}
         <Route exact path="/admin/home" component={PopulateHome} />
+
+        <Route exact path="/tester" component={AdminDashboard} />
       </Switch>
     </Router>
   );

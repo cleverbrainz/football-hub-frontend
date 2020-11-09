@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ContainedButtons({ location, history }) {
   const classes = useStyles();
-  //const { service_description, service_name, serviceId } = location.state;
   const { courseId } = location.state;
   const [image, setImage] = React.useState(null);
   const [name, setName] = React.useState(courseId);
@@ -61,25 +60,25 @@ export default function ContainedButtons({ location, history }) {
         alert(error.message);
       });
 
-    if (image) {
-      const uploadTask = storage.ref(`courses/${image.name}`).put(image);
+    // if (image) {
+    //   const uploadTask = storage.ref(`courses/${image.name}`).put(image);
 
-      uploadTask.on(
-        "state_changed",
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          storage
-            .ref("images")
-            .child(image.name)
-            .getDownloadURL()
-            .then((url) => {
-              setUrl(url);
-            });
-        }
-      );
-    }
+    //   uploadTask.on(
+    //     "state_changed",
+    //     (error) => {
+    //       console.log(error);
+    //     },
+    //     () => {
+    //       storage
+    //         .ref("images")
+    //         .child(image.name)
+    //         .getDownloadURL()
+    //         .then((url) => {
+    //           setUrl(url);
+    //         });
+    //     }
+    //   );
+    // }
   };
 
   const handleUpload = (e) => {

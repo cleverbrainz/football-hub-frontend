@@ -6,8 +6,8 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-const TableComponent = ({ classes, updateCourseDays, Session }) => {
-  console.log(Session);
+const TableComponent = ({ classes, updateCourseDays, session }) => {
+
   const days = [
     "Monday",
     "Tuesday",
@@ -29,17 +29,12 @@ const TableComponent = ({ classes, updateCourseDays, Session }) => {
                 label="Day"
                 name="day"
                 onChange={updateCourseDays}
-                value={Session.day}
+                value={session.day}
               >
-                <MenuItem>
-                  {" "}
-                  <em>Select</em>{" "}
-                </MenuItem>
-
+    
                 {days.map((el, i) => (
                   <MenuItem key={i} value={el}>
-                    {" "}
-                    {el}{" "}
+                    {el}
                   </MenuItem>
                 ))}
               </Select>
@@ -52,9 +47,9 @@ const TableComponent = ({ classes, updateCourseDays, Session }) => {
                 label="Start"
                 name="startTime"
                 onChange={updateCourseDays}
-                value={Session.startTime}
+                value={session.startTime}
               >
-                <MenuItem aria-label="Select">None</MenuItem>
+
                 {times.map((el, i) => {
                   const time = i < 6 ? el + "am" : el + "pm";
                   return <MenuItem value={time}> {time} </MenuItem>;
@@ -69,9 +64,9 @@ const TableComponent = ({ classes, updateCourseDays, Session }) => {
                 label="Finish"
                 name="endTime"
                 onChange={updateCourseDays}
-                value={Session.endTime}
+                value={session.endTime}
               >
-                <MenuItem aria-label="Select">None</MenuItem>
+  
                 {times.map((el, i) => {
                   const time = i < 6 ? el + "am" : el + "pm";
                   return <MenuItem value={time}> {time} </MenuItem>;
@@ -87,7 +82,7 @@ const TableComponent = ({ classes, updateCourseDays, Session }) => {
                 id="spaces"
                 label="Spaces"
                 onChange={updateCourseDays}
-                value={Session.spaces}
+                value={session.spaces}
               />
             </FormControl>
           </td>
