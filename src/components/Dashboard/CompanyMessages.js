@@ -25,17 +25,21 @@ const drawerWidth = 350;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    justifySelf: 'flex-end',
     height: window.innerHeight - 56,
     [theme.breakpoints.up('sm')]: {
       height: window.innerHeight - 80,
+      // width: window.innerWidth - 313,
     },
+ 
   },
   drawer: {
     [theme.breakpoints.up('sm')]: {
       width: drawerWidth,
       flexShrink: 0,
       zIndex: 1,
-      overflow: 'hidden'
+      overflow: 'hidden',
+      transform: 'translateX(0)'
     },
   },
   menuButton: {
@@ -45,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
+  // toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
   },
@@ -54,12 +58,13 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    height: '100%'
   },
   messageListBox: {
     display: 'flex',
     alignItems: 'center',
-    padding: '35px 0',
+    padding: '30px 0',
     position: 'relative'
   },
   avatar: {
@@ -170,7 +175,7 @@ const CompanyMessages = (props) => {
 
   const drawer = (
     <div>
-      <div className={classes.toolbar} />
+      {/* <div className={classes.toolbar} /> */}
       <Divider />
 
       <List>
@@ -223,6 +228,7 @@ const CompanyMessages = (props) => {
 
   return (
     <div className={classes.root}>
+      {/* <h1> wfwvwr  </h1> */}
       <CssBaseline />
 
       <nav
@@ -245,8 +251,11 @@ const CompanyMessages = (props) => {
             {drawer}
           </Drawer>
         </Hidden>
-        <Hidden xsDown implementation="css">
+        <Hidden xsDown 
+        implementation="css"
+        >
           <Drawer
+          className={classes.messg}
             classes={{
               paper: classes.drawerPaper,
             }}

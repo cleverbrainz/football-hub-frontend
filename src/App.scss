@@ -126,4 +126,13 @@ body,
     width: 380px;
     // width: 45%
   }
+
+  .MuiTabs-flexContainer {
+    padding-top: 20px;
+    // box-shadow: none;
+    justify-content: space-evenly;
+  }
+  .MuiAppBar-positionStatic {
+    box-shadow: none;
+  }
 }

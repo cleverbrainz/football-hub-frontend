@@ -37,21 +37,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function EditLocation({ location, history }) {
-
-  const {venue, longitude, latitude, companyId, fullAddress, locationId} = location.state
+export default function AddLocation({ history }) {
 
   const [loginError, setLoginError] = useState()
   const [isLoading, setIsLoading] = useState(false)
   const [formDetails, setformDetails] = useState({
-    venue,
-    fullAddress,
-    longitude,
-    latitude,
-    companyId,
-    locationId
+    venue: '',
+    fullAddress: '',
+    longitude: '',
+    latitude: '',
+    companyId: auth.getUserId()
   })
-  const [address, setAddress] = useState(fullAddress)
+  const [address, setAddress] = useState()
   const classes = useStyles();
 
   function handleFormSubmit(e) {
@@ -59,18 +56,16 @@ export default function EditLocation({ location, history }) {
     setIsLoading(true)
     console.log(formDetails)
 
-    axios
-      .patch(
-        "/companies/array/locations", formDetails,
-        { headers: { Authorization: `Bearer ${auth.getToken()}` } }
-      )
-      .then((res) => {
-        console.log(res.data);
-        history.push("/companyDashboard/location");
+    axios.post("/companies/locations", formDetails)
+      .then(res => {
+        setIsLoading(false)
+        console.log(res.data)
+        history.push('/companyDashboard/location')
       })
-      .catch((error) => {
-        alert(error.message);
-      });
+      .catch(err => {
+        setIsLoading(false)
+        console.log(err)
+      })
   }
 
   const handleSelect = async (value) => {
@@ -79,7 +74,7 @@ export default function EditLocation({ location, history }) {
 
     setAddress(value)
     setformDetails({ ...formDetails, 
-      fullAddress: value, 
+      fullAddress: value,
       latitude: latLng.lat, 
       longitude: latLng.lng })
   };
@@ -99,7 +94,7 @@ export default function EditLocation({ location, history }) {
           <OutlinedInput
             type="text"
             label="Venue Name"
-            value={formDetails.venue}
+            // value={formDetails.cost}
             onChange={e => setformDetails({ ...formDetails, venue: e.target.value })}
           />
         </FormControl>

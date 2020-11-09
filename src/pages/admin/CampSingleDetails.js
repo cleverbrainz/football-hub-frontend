@@ -8,6 +8,8 @@ import {
   OutlinedInput,
   Button,
   TextField,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import SingleComponent from "./CampSingleComponent";
@@ -44,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MaterialUIPickers({ history }) {
   const classes = useStyles();
   const [rows, setRows] = React.useState([1]);
+  const locations = ["Epsom College", "Goals North Cheam"];
   const [courseDetails, setCourseDetails] = React.useState({
     startDate: "",
     dayCost: "",
@@ -88,6 +91,25 @@ export default function MaterialUIPickers({ history }) {
   return (
     <Container className={classes.container}>
       <form onSubmit={handleSubmit} className={classes.form}>
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel>Location</InputLabel>
+          <Select
+            label="Location"
+            name="location"
+            onChange={(e) => updateOtherCourseInfo(e)}
+          >
+            <MenuItem>
+              {" "}
+              <em>Select</em>{" "}
+            </MenuItem>
+            {locations.map((el, i) => (
+              <MenuItem key={i} value={el}>
+                {" "}
+                {el}{" "}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           id="date"
           label="Select date"

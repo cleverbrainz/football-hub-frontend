@@ -9,10 +9,9 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 export default function DeleteComponent({
   open,
   handleClose,
-  HandleDelete,
+  handleDelete,
   name,
 }) {
-  const [changeName, setChangeName] = React.useState(name);
 
   return (
     <div>
@@ -25,11 +24,11 @@ export default function DeleteComponent({
         <DialogTitle id="alert-dialog-title">{"Delete Alert"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete the {changeName}?
+            Are you sure you want to delete the {name}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={HandleDelete} color="primary">
+          <Button onClick={handleDelete} color="primary">
             Confirm Delete
           </Button>
           <Button onClick={handleClose} color="primary">
