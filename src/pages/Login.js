@@ -72,7 +72,7 @@ export default function Login({ history }) {
         await auth.setToken(res.data.token)
         setIsLoading(false)
 
-        if (res.data.accountCategory === 'player') {
+        if (res.data.accountCategory === 'player' || res.data.accountCategory === 'parent') {
           history.push(`/${auth.getUserId()}/profile`)
         } else history.push('/companyDashboard')
       })

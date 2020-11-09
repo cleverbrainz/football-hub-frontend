@@ -73,48 +73,53 @@ export default function FormPropsTextFields({ history, classes }) {
 
   const input = useRef();
 
-  // const HandleChange = (e) => {
-  //   //setDataChange(true);
-  //   const image = e.target.files;
-  //   const picture = new FormData();
-  //   picture.append("owner", auth.getUserId());
-  //   picture.append("picture", image[0], image[0].name);
+  const HandleChange = (e) => {
+    //setDataChange(true);
+    const image = e.target.files;
+    const picture = new FormData();
+    picture.append("owner", auth.getUserId());
+    picture.append("picture", image[0], image[0].name);
 
-  //   console.log(picture);
+    console.log(picture);
 
-  //   axios.patch(`/coach/:id/document`, picture, {
-  //     headers: { Authorization: `Bearer ${auth.getToken()}` },
-  //   });
-  // };
+    axios.patch(`/coach/:id/document`, picture, {
+      headers: { Authorization: `Bearer ${auth.getToken()}` },
+    });
+  };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  //   axios
-  //     .post("/companies/coaches", {
-  //       coach_name: name,
-  //       coach_email: email,
-  //       coach_number: phone,
-  //       coaching_level: level,
-  //       companyId: auth.getUserId(),
-  //     })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       history.push("/companyDashboard/coaches");
-  //     })
-  //     .catch((error) => {
-  //       alert(error.message);
-  //     });
+    axios
+      .post("/companies/coaches", {
+        coach_name: name,
+        coach_email: email,
+        coach_number: phone,
+        coaching_level: level,
+        companyId: auth.getUserId(),
+        documents: {
+          dbsCertificate: '',
+          coachingCertificate: ''
+        },
+        verified: false
+      })
+      .then((res) => {
+        console.log(res.data);
+        history.push("/companyDashboard/coaches");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
 
-  //   setName("");
-  //   setEmail("");
-  //   setPhone("");
-  //   setLevel("");
-  // };
+    setName("");
+    setEmail("");
+    setPhone("");
+    setLevel("");
+  };
 
-  // const handleChange = (event) => {
-  //   setState({ ...state, [event.target.name]: event.target.checked });
-  // };
+  const handleChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+  };
 
   
 
