@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-evenly",
-    height: `${window.innerHeight - 100}px`,
+    height: `${window.innerHeight}px`,
     textAlign: "center",
   },
   list: {
@@ -207,6 +207,7 @@ export default function ContainedButtons() {
             </Card>
           </Link>
         </td>
+
         <td>
           <Link to="/companyDashboard/services">
             <Card className={classes.cardroot}>
@@ -386,6 +387,62 @@ export default function ContainedButtons() {
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="h2">
                     Location
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                    Obcaecati at quo veritatis magnam alias omnis maiores
+                    laborum velit accusamus totam unde nemo, doloribus fugiat
+                    autem libero aliquam vitae vel rerum.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Link>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <Link to="/companyDashboard/playersList">
+            <Card className={classes.cardroot}>
+              <CardActionArea>
+                <CardMedia
+                  className={classes.cardmedia}
+                  image="https://images.unsplash.com/photo-1494778696781-8f23fd5553c4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=922&q=80"
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Players List
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                    Obcaecati at quo veritatis magnam alias omnis maiores
+                    laborum velit accusamus totam unde nemo, doloribus fugiat
+                    autem libero aliquam vitae vel rerum.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Link>
+        </td>
+        <td>
+          <Link to="/companyDashboard/camps">
+            <Card className={classes.cardroot}>
+              <CardActionArea>
+                <CardMedia
+                  className={classes.cardmedia}
+                  image="https://images.unsplash.com/photo-1534187886935-1e1236e856c3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=635&q=80"
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Camps
                   </Typography>
                   <Typography
                     variant="body2"

@@ -1,5 +1,5 @@
 // import "date-fns";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FormControl,
@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import TableComponent from "./TestComponent";
+import TableComponent from "./EditWeeklyCourseComponent";
 import axios from "axios";
 import auth from "../../lib/auth";
 
@@ -48,44 +48,55 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function MaterialUIPickers({ location, history }) {
   const classes = useStyles();
-  const [rows, setRows] = React.useState([1]);
-  const { courseId } = location.state;
+  const { courseId, courseDetails } = location.state;
   const {
     startDate,
     endDate,
     cost,
+    sessions,
     paymentInterval,
-  } = location.state.courseDetails;
-  const [StartDate, setStartDate] = React.useState(startDate);
-  const [EndDate, setEndDate] = React.useState(endDate);
-  const [Cost, setCost] = React.useState(cost);
-  const [PaymentInterval, setPaymentInterval] = React.useState(paymentInterval);
+  } = courseDetails;
+
+const [formDetails, setFormDetails] = useState({
+    startDate,
+    endDate,
+    cost,
+    sessions,
+    paymentInterval,
+})
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const requestBody = {...location.state, courseDetails: {...courseDetails, ...formDetails}}
+
+    console.log(requestBody)
+
     axios
       .patch(
-        "/companies/courses",
-        {
-          startDate: StartDate,
-          endDate: EndDate,
-          sessions: [],
-          cost: Cost,
-          paymentInterval: PaymentInterval,
-          //age: location.state,
-          courseId,
-        },
-        { headers: { Authorization: `Bearer ${auth.getToken()}` } }
-      )
+        "/companies/array/courses", requestBody,
+        { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then((res) => {
-        console.log(res.data);
-        history.push("/companyDashboard/weeklyDetails");
+        history.push("/companyDashboard/courses");
       })
       .catch((error) => {
         alert(error.message);
       });
   };
+
+  function updateCourseDays(index, event) {
+    const { name, value } = event.target;
+    const courseDays = formDetails.sessions
+    courseDays[index] = { ...courseDays[index], [name]: value };
+
+    setFormDetails({ ...formDetails, sessions: courseDays })
+
+  }
+
+  function updateOtherCourseDetails(event) {
+    const { name, value } = event.target;
+    setFormDetails({...formDetails, [name]: value})
+  }
 
   return (
     <Container className={classes.container}>
@@ -102,8 +113,8 @@ export default function MaterialUIPickers({ location, history }) {
             shrink: true,
           }}
           className={classes.formControl}
-          value={StartDate}
-          onChange={(e) => setStartDate(e.target.value)}
+          value={formDetails.startDate}
+          onChange={(e) => updateOtherCourseDetails(e)}
         />
         <TextField
           name="endDate"
@@ -115,21 +126,34 @@ export default function MaterialUIPickers({ location, history }) {
             shrink: true,
           }}
           className={classes.formControl}
-          value={EndDate}
-          onChange={(e) => setEndDate(e.target.value)}
+          value={formDetails.endDate}
+          onChange={(e) => updateOtherCourseDetails(e)}
         />
 
-        {rows.map((el, i) => {
-          return <TableComponent classes={classes} key={i} />;
+        {formDetails.sessions.map((el, i) => {
+          return (
+            <TableComponent
+              classes={classes}
+              key={i}
+              updateCourseDays={(e) => updateCourseDays(i, e)}
+              session={formDetails.sessions[i]}
+            />
+          );
         })}
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setRows([...rows, 1])}
-        >
-          Add another session
-        </Button>
+        {formDetails.sessions.length < 8 && <Button
+              variant="contained" color="primary"
+              onClick={() => {
+                  setFormDetails({ ...formDetails, sessions: [...formDetails.sessions, {
+                    day: '',
+                    endTime: '',
+                    startTime: '',
+                    spaces: ''
+                  }]})
+                }
+              }>
+              Add another reason
+          </Button>}
 
         <Typography variant="h5">Cost</Typography>
         <div>
@@ -140,18 +164,18 @@ export default function MaterialUIPickers({ location, history }) {
               type="number"
               id="cost"
               label="£"
-              value={Cost}
-              onChange={(e) => setCost(e.target.value)}
+              value={formDetails.cost}
+              onChange={(e) => updateOtherCourseDetails(e)}
             />
           </FormControl>
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel
-              value={PaymentInterval}
-              onChange={(e) => setPaymentInterval(e.target.value)}
+            <InputLabel>Select</InputLabel>
+            <Select
+              label="Select"
+              name="paymentInterval"
+              value={formDetails.paymentInterval}
+              onChange={(e) => updateOtherCourseDetails(e)}
             >
-              Select
-            </InputLabel>
-            <Select label="Select" name="paymentInterval">
               <MenuItem aria-label="Select">None</MenuItem>
               <MenuItem value="Session">Session</MenuItem>
               <MenuItem value="Course">Course</MenuItem>

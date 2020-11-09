@@ -17,59 +17,59 @@ import axios from "axios";
 import auth from "../../lib/auth";
 import BackupIcon from "@material-ui/icons/Backup";
 
-const useStyles = makeStyles((theme) => ({
-  spacing: {
-    margin: "10px 0",
-    textAlign: "center",
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 300,
-  },
-  container: {
-    margin: "100px auto",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-    height: `${window.innerHeight - 100}px`,
-    textAlign: "center",
-  },
-  form: {
-    width: "30%",
-    minWidth: "300px",
-    display: "flex",
-    flexDirection: "column",
-    height: "55%",
-    justifyContent: "space-around",
-  },
-  button: {
-    position: "relative",
-    margin: "10px 0",
-  },
-  upload: {
-    margin: "20px auto",
-    height: "20px",
-    width: "30px",
-  },
-  center: {
-    margin: "0 auto",
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   spacing: {
+//     margin: "10px 0",
+//     textAlign: "center",
+//   },
+//   formControl: {
+//     margin: theme.spacing(1),
+//     minWidth: 300,
+//   },
+//   container: {
+//     margin: "100px auto",
+//     display: "flex",
+//     flexDirection: "column",
+//     alignItems: "center",
+//     justifyContent: "space-evenly",
+//     height: `${window.innerHeight - 100}px`,
+//     textAlign: "center",
+//   },
+//   form: {
+//     width: "30%",
+//     minWidth: "300px",
+//     display: "flex",
+//     flexDirection: "column",
+//     height: "55%",
+//     justifyContent: "space-around",
+//   },
+//   button: {
+//     position: "relative",
+//     margin: "10px 0",
+//   },
+//   upload: {
+//     margin: "20px auto",
+//     height: "20px",
+//     width: "30px",
+//   },
+//   center: {
+//     margin: "0 auto",
+//   },
+// }));
 
-export default function FormPropsTextFields({ history }) {
-  const classes = useStyles();
-  const [state, setState] = React.useState({
-    checked: false,
-  });
+export default function FormPropsTextFields({ history, classes }) {
+  // const classes = useStyles();
+  // const [state, setState] = React.useState({
+  //   checked: false,
+  // });
 
-  const [image, setImage] = React.useState(null);
-  const [url, setUrl] = React.useState("");
+  // const [image, setImage] = React.useState(null);
+  // const [url, setUrl] = React.useState("");
 
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [phone, setPhone] = React.useState("");
-  const [level, setLevel] = React.useState("");
+  // const [name, setName] = React.useState("");
+  // const [email, setEmail] = React.useState("");
+  // const [phone, setPhone] = React.useState("");
+  // const [level, setLevel] = React.useState("");
 
   const input = useRef();
 
@@ -124,39 +124,41 @@ export default function FormPropsTextFields({ history }) {
   
 
   return (
-    <Container className={classes.container}>
-      <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-        <Typography variant="h4"> COACHES </Typography>
+ <>
 
-       
-
-        <FormControl variant="outlined" className={classes.spacing}>
+        <FormControl  className={classes.inputs} variant="outlined" 
+        >
           <InputLabel htmlFor="component-outlined"> Coach name </InputLabel>
           <OutlinedInput
+         
             label="Coach name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            // value={name}
+            // onChange={(e) => setName(e.target.value)}
           />
         </FormControl>
 
-        <FormControl variant="outlined" className={classes.spacing}>
+        <FormControl className={classes.inputs} variant="outlined" >
           <InputLabel htmlFor="component-outlined"> Coach email </InputLabel>
           <OutlinedInput
+          
             label="Coach email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            // value={email}
+            // onChange={(e) => setEmail(e.target.value)}
           />
         </FormControl>
 
-        <FormControl variant="outlined" className={classes.spacing}>
+        <FormControl  className={classes.inputs} variant="outlined" 
+        // className={classes.spacing}
+        >
           <InputLabel htmlFor="component-outlined">
             {" "}
             Coach phone number{" "}
           </InputLabel>
           <OutlinedInput
+         
             label="Coach phone number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            // value={phone}
+            // onChange={(e) => setPhone(e.target.value)}
           />
         </FormControl>
 
@@ -165,10 +167,11 @@ export default function FormPropsTextFields({ history }) {
             Coach Badges
           </InputLabel>
           <Select
+          className={classes.select}
             label="Coach Badges"
             id="select-level"
-            value={level}
-            onChange={(e) => setLevel(e.target.value)}
+            // value={level}
+            // onChange={(e) => setLevel(e.target.value)}
           >
             <MenuItem value="">
               <em>None</em>
@@ -190,21 +193,20 @@ export default function FormPropsTextFields({ history }) {
         <input
           ref={input}
           style={{ display: "none" }}
-          onChange={(e) => HandleChange(e)}
+          // onChange={(e) => HandleChange(e)}
           type="file"
         />
         <Button
           variant="contained"
           color="secondary"
+          className={classes.inputs}
           onClick={() => input.current.click()}
         >
           <BackupIcon />
           UPLOAD COACHING CERTIFICATE
         </Button>
 
-        <Typography variant="h5"> DBS Check </Typography>
-
-        <FormControlLabel
+        {/* <FormControlLabel
           control={
             <Checkbox
               color="default"
@@ -215,15 +217,16 @@ export default function FormPropsTextFields({ history }) {
           }
           className={classes.center}
           label="Yes, this coach has a clean record"
-        />
+        /> */}
 
         <input
           ref={input}
           style={{ display: "none" }}
-          onChange={(e) => HandleChange(e)}
+          // onChange={(e) => HandleChange(e)}
           type="file"
         />
         <Button
+        className={classes.inputs}
           variant="contained"
           color="secondary"
           onClick={() => input.current.click()}
@@ -233,20 +236,14 @@ export default function FormPropsTextFields({ history }) {
         </Button>
 
         <Button
-          className={classes.button}
+          // className={classes.button}
+          className={classes.inputs}
           type="submit"
           variant="contained"
           color="primary"
         >
           Save
         </Button>
-
-        <Link to="/companyDashboard/coaches">
-          <Button className={classes.button} variant="outlined" color="primary">
-            Back
-          </Button>
-        </Link>
-      </form>
-    </Container>
+    </>
   );
 }

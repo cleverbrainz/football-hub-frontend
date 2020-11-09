@@ -28,6 +28,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
+import auth from '../lib/auth'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -369,9 +370,11 @@ const IndividualCompany = ({ location }) => {
                     {el.service_description}
                     </Typography>
 
-                    <Button onClick={() => toggleModal(el.service_name)} variant="contained" style={{margin: '20px 0 5px 0'}}>
+                  {auth.isLoggedIn() ? (
+                  <Button onClick={() => toggleModal(el.service_name)} variant="contained" style={{margin: '20px 0 5px 0'}}>
                     Click to enquire
                   </Button>
+                  ) : <p  style={{margin: '20px 0 5px 0', color: 'blue'}}> Please login to make an enquiry </p>}  
                   </AccordionDetails>
 
                   
@@ -386,24 +389,27 @@ const IndividualCompany = ({ location }) => {
               </Box>
             </Typography>
 
+          {auth.isLoggedIn() ? (
             <FormControl variant="outlined" className={classes.formControl}>
-        <InputLabel id="demo-simple-select-outlined-label">Select Course</InputLabel>
-        <Select
-              labelId="demo-simple-select-filled-label"
-              id="demo-simple-select-filled"
-              label='Select Course'
-              value={selectedBooking && selectedBooking.course}
-              onChange={(e) => setSelectedBooking({ course: e.target.value })}>
-                
-               {courses.map((el, i) => {
-                 const { courseType, age } = el.courseDetails
-                  return (
-                    <MenuItem value={i}>{`${courseType} course for ${age}`}</MenuItem>
-                  )
-                })}
+            <InputLabel id="demo-simple-select-outlined-label">Select Course</InputLabel>
+            <Select
+                  labelId="demo-simple-select-filled-label"
+                  id="demo-simple-select-filled"
+                  label='Select Course'
+                  value={selectedBooking && selectedBooking.course}
+                  onChange={(e) => setSelectedBooking({ course: e.target.value })}>
+                    
+                  {courses.map((el, i) => {
+                    const { courseType, age } = el.courseDetails
+                      return (
+                        <MenuItem value={i}>{`${courseType} course for ${age}`}</MenuItem>
+                      )
+                    })}
 
-        </Select>
-      </FormControl>
+            </Select>
+            </FormControl>
+
+          ) : <p style={{color: 'blue'}}> Please login to book onto a course </p>}  
 
       {selectedBooking !== null &&  (
       

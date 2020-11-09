@@ -42,7 +42,9 @@ import auth from '../lib/auth'
 import Summary from '../components/Dashboard/Summary'
 import Messages from '../components/Dashboard/CompanyMessages'
 import Listings from '../components/Dashboard/Listings'
-import Coaches from '../components/Dashboard/Coaches'
+// import Coaches from '../components/Dashboard/Coaches'
+// import Coaches from '../pages/admin/Coaches'
+import CoachPageBeta from '../pages/admin/CoachPageBeta'
 import Sessions from '../components/Dashboard/Sessions'
 
 const drawerWidth = 240;
@@ -50,7 +52,7 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
+    // display: 'flex',
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -107,7 +109,12 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: `${100 - ((73 / window.innerWidth) * 100)}%`,
+      float: 'right'
+    },
+
   },
   contentLayout: {
     display: 'flex',
@@ -127,7 +134,7 @@ export default function Profile() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState('Sessions');
+  const [selectedComponent, setSelectedComponent] = useState('Coaches');
   // const { getUserDetails } = useContext(AuthContext)
 
   const [drawerItems, setDrawerItems] = useState({
@@ -140,7 +147,7 @@ export default function Profile() {
 
   const dashboardComponents = {
     Summary,
-    Coaches,
+    Coaches: CoachPageBeta,
     Listings,
     Sessions,
     Messages

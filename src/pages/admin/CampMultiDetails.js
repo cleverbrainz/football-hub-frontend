@@ -11,6 +11,10 @@ import {
   Typography,
   Checkbox,
   FormControlLabel,
+  Select,
+  MenuItem,
+  Radio,
+  RadioGroup,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import MultiComponent from "./CampMultiComponent";
@@ -53,6 +57,11 @@ const useStyles = makeStyles((theme) => ({
 export default function MaterialUIPickers({ location, history }) {
   const classes = useStyles();
   const [rows, setRows] = React.useState([1]);
+  const locations = ["Epsom College", "Goals North Cheam"];
+  const [value, setValue] = React.useState("");
+  const [showCamp, setShowCamp] = React.useState(false);
+  const [showDay, setShowDay] = React.useState(false);
+  const [error, setError] = React.useState(false);
   const [courseDetails, setCourseDetails] = React.useState({
     firstDay: "",
     lastDay: "",
@@ -63,6 +72,21 @@ export default function MaterialUIPickers({ location, history }) {
     dayCost: "",
   });
   const { firstDay, lastDay } = courseDetails;
+
+  const handleShowCamp = () => {
+    setShowCamp(true);
+    setShowDay(false);
+  };
+
+  const handleShowDay = () => {
+    setShowCamp(false);
+    setShowDay(true);
+  };
+
+  const handleRadioChange = (event) => {
+    setValue(event.target.value);
+    setError(false);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -96,6 +120,25 @@ export default function MaterialUIPickers({ location, history }) {
   return (
     <Container className={classes.container}>
       <form onSubmit={handleSubmit} className={classes.form}>
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel>Location</InputLabel>
+          <Select
+            label="Location"
+            name="location"
+            onChange={(e) => updateOtherCourseInfo(e)}
+          >
+            <MenuItem>
+              {" "}
+              <em>Select</em>{" "}
+            </MenuItem>
+            {locations.map((el, i) => (
+              <MenuItem key={i} value={el}>
+                {" "}
+                {el}{" "}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           id="date"
           label="First day"
@@ -174,13 +217,46 @@ export default function MaterialUIPickers({ location, history }) {
           color="primary"
           onClick={() => setRows([...rows, 1])}
         >
-          Add another row
+          Add another age group
         </Button>
 
-        <FormControl variant="outlined" className={classes.formControl}>
+        <Typography variant="h6" className={classes.spacing}>
+          Booking Options
+        </Typography>
+        <RadioGroup
+          aria-label="quiz"
+          name="quiz"
+          value={value}
+          onChange={handleRadioChange}
+        >
+          <FormControl component="fieldset">
+            <FormControlLabel
+              value="whole"
+              control={<Radio />}
+              label="Customers can book as a whole only"
+              onClick={() => handleShowCamp()}
+            />
+            <FormControlLabel
+              value="one or more"
+              control={<Radio />}
+              label="Customers can book onto one or more days"
+              onClick={() => handleShowDay()}
+            />
+          </FormControl>
+        </RadioGroup>
+
+        <FormControl
+          variant="outlined"
+          className={classes.formControl}
+          style={{
+            display: showCamp ? "block" : "none",
+            width: "200px",
+            margin: "10px auto",
+          }}
+        >
           <InputLabel>£ Cost per camp</InputLabel>
           <OutlinedInput
-            name="campCost"
+            name="£ Cost per camp"
             id="cost"
             label="£ Cost per camp"
             //value={campCost}
@@ -188,16 +264,25 @@ export default function MaterialUIPickers({ location, history }) {
           />
         </FormControl>
 
-        <FormControl variant="outlined" className={classes.formControl}>
+        <FormControl
+          variant="outlined"
+          className={classes.formControl}
+          style={{
+            display: showDay ? "block" : "none",
+            width: "200px",
+            margin: "10px auto",
+          }}
+        >
           <InputLabel>£ Cost per day</InputLabel>
           <OutlinedInput
-            name="dayCost"
+            name="£ Cost per day"
             id="cost"
             label="£ Cost per day"
             //value={dayCost}
             onChange={(e) => updateOtherCourseInfo(e)}
           />
         </FormControl>
+
         <Button
           className={classes.button}
           type="submit"
