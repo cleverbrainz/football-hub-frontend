@@ -32,7 +32,7 @@ export default function ContainedButtons() {
   return (
     <Container className={classes.container}>
       <Typography variant="h4">SELECT COURSE TYPE</Typography>
-      <Link to="/companyDashboard/weeklyCourses">
+      <Link to="/companyDashboard/weeklyCourseDetails">
         <Button className={classes.form} variant="contained" color="primary">
           WEEKLY
         </Button>

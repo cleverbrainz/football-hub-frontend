@@ -15,6 +15,8 @@ import {
   Typography,
   Card,
   CardContent,
+  OutlinedInput,
+  Button
 } from "@material-ui/core";
 import CancelSharpIcon from "@material-ui/icons/CancelSharp";
 import Box from '@material-ui/core/Box';
@@ -109,18 +111,30 @@ const useStyles = makeStyles((theme) => ({
 export default function CoachPageBeta() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [coaches, setCoaches] = useState()
+  const [companyCoaches, setCompanyCoaches] = useState()
+  const [allAppCoaches, setAllAppCoaches] = useState()
   const [newCoachDetail, setNewCoachDetail] = useState()
+  const [externalCoachDetail, setExternalCoachDetail] = useState()
   const [open, setOpen] = useState(false)
   const [deleteInProgress, setDeleteInProgress] = useState(false)
   const [coachIdToBeDeleted, setCoachIdToBeDeleted] = useState()
+  const [existingAppCoachToBeAdded, setExistingAppCoachToBeAdded] = useState()
+  const [newExternalCoachDetails, setNewExternalCoachDetails] = useState({
+    fullName: '',
+    email: ''
+  })
 
   useEffect(() => {
     axios
       .get(`/users/${auth.getUserId()}`)
       .then(res => {
-        console.log(res.data);
-        setCoaches(res.data[0].coaches);
+        setCompanyCoaches(res.data[0].coaches);
+
+        axios.get('/allCoaches')
+          .then(res => {
+            console.log(res.data)
+            setAllAppCoaches(res.data)
+          })
       })
       .catch(e => console.log(e))
   }, [!deleteInProgress]);
@@ -157,10 +171,6 @@ export default function CoachPageBeta() {
     <FormPropsTextFields classes={classes} />
   )
 
-  const ExternalCoachForm = (
-    <h1> bye</h1>
-  )
-
 
 
   const handleChange = (event, newValue) => {
@@ -188,9 +198,9 @@ export default function CoachPageBeta() {
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-        {coaches && <CoachPageBetaTable
+        {companyCoaches && <CoachPageBetaTable
           handleSetCoachId={(coachId) => handleSetCoachId(coachId)}
-          coaches={coaches} />}
+          coaches={companyCoaches} />}
       </TabPanel>
 
       {/* tab 2 content */}
@@ -214,7 +224,77 @@ export default function CoachPageBeta() {
             </Select>
           </FormControl>
 
-          {newCoachDetail ? newCoachDetail === 'myself' ? InternalCoachForm : ExternalCoachForm : null}
+          {newCoachDetail === 'someone' && (
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel id="demo-simple-select-outlined-label"> External or New? </InputLabel>
+              <Select
+                className={classes.select}
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                label='External or New?'
+                value={externalCoachDetail}
+                onChange={e => setExternalCoachDetail(e.target.value)}
+              >
+
+                <MenuItem value='existing'> Existing coach on system </MenuItem>
+                <MenuItem value='new'> New coach (not yet registered) </MenuItem>
+
+              </Select>
+            </FormControl>
+          )}
+
+          {newCoachDetail ? newCoachDetail === 'myself' ? InternalCoachForm : (
+            externalCoachDetail ? externalCoachDetail === 'existing' ? (
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label"> Select Existing Coach </InputLabel>
+                <Select
+                  className={classes.select}
+                  labelId="demo-simple-select-filled-label"
+                  id="demo-simple-select-filled"
+                  label='Select Existing Coach'
+                  value={existingAppCoachToBeAdded}
+                  onChange={e => setExistingAppCoachToBeAdded(e.target.value)}
+                >
+
+                  {allAppCoaches.map((el, i) => <MenuItem value={el.coachInfo.coach_name}> {el.coachInfo.coach_name} - {el.coachInfo.coach_email} </MenuItem>)}
+
+                </Select>
+              </FormControl>
+            ) : (
+                <>
+                  <FormControl className={classes.inputs} variant="outlined"
+                  >
+                    <InputLabel htmlFor="component-outlined"> Full Name </InputLabel>
+                    <OutlinedInput
+                      label="Full Name"
+                    value={newExternalCoachDetails.fullName}
+                    onChange={e => setNewExternalCoachDetails({ ...newExternalCoachDetails, fullName: e.target.value })}
+                    />
+                  </FormControl>
+
+                  <FormControl className={classes.inputs} variant="outlined"
+                  >
+                    <InputLabel htmlFor="component-outlined"> Email Address </InputLabel>
+                    <OutlinedInput
+                    label="Email Address"
+                    value={newExternalCoachDetails.email}
+                    onChange={e => setNewExternalCoachDetails({ ...newExternalCoachDetails, email: e.target.value })}
+                    />
+                  </FormControl>
+
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className={classes.inputs}
+                    // onClick={() => input.current.click()}
+                  >
+                    Send Registration Prompt
+                </Button>
+                </>
+              ) : null
+
+          ) : null}
+
 
         </form>
       </TabPanel>
