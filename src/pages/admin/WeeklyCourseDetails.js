@@ -1,5 +1,5 @@
 // import "date-fns";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   FormControl,
@@ -16,15 +16,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import TableComponent from "./TestComponent";
 import axios from "axios";
 import auth from "../../lib/auth";
+import ResetCampDetailsDialogue from '../../components/ResetCampDetailsDialogue'
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    margin: "100px auto",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-evenly",
-    height: `${window.innerHeight - 100}px`,
     textAlign: "center",
   },
   form: {
@@ -33,11 +32,11 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     height: "55%",
-    justifyContent: "space-around",
+    justifyContent: "space-evenly",
     margin: "20px 0",
   },
   formControl: {
-    margin: theme.spacing(1),
+    // margin: theme.spacing(1),
     minWidth: "100px",
     margin: "20px 10px",
   },
@@ -46,26 +45,57 @@ const useStyles = makeStyles((theme) => ({
     margin: "15px 0",
   },
 }));
-export default function MaterialUIPickers({ location, history }) {
+export default function WeeklyformDetails({ history, course, handleCampResetInformation,
+handleStateRefresh }) {
+  // console.log(course)
   const classes = useStyles();
   const [rows, setRows] = React.useState([1]);
+  const [locations, setLocations] = React.useState([]);
+  const [ageGroups, setAgeGroups] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
 
-  const [courseDetails, setCourseDetails] = React.useState({
-    startDate: "",
-    endDate: "",
+  const [formDetails, setFormDetails] = React.useState({
+    startDate: course ? course.courseDetails.startDate : "",
+    endDate: course ? course.courseDetails.endDate : "",
     sessions: [],
-    cost: "",
+    cost: course ? course.courseDetails.cost : "",
     courseType: "Weekly",
-    paymentInterval: "",
-    age: location.state,
+    paymentInterval: course ? course.courseDetails.paymentInterval : "",
+    age: course ? course.courseDetails.age : "",
+    location: course ? course.courseDetails.location : "",
+    latitude: "",
+    longitude: ""
   });
 
-  const { startDate, endDate } = courseDetails;
+  const { startDate, endDate, sessions, cost, courseType, paymentInterval, age, location } = formDetails;
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
+  useEffect(() => {
+    axios.get(`/users/${auth.getUserId()}`)
+      .then(res => {
+        const locationArr = []
+        const ageArr = []
+        res.data[0].locations.map(el => locationArr.push(el));
+        res.data[0].ageDetails.map(el => ageArr.push(el));
+        setLocations(locationArr)
+        setAgeGroups(ageArr)
+      })
+  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const courseDetails = { ...formDetails }
 
-    console.log(courseDetails);
+    locations.map(el => {
+      if (el.venue === formDetails.location) {
+        courseDetails.longitude = el.longitude
+        courseDetails.latitude = el.latitude
+      }
+    })
 
     axios
       .post("/companies/courses", {
@@ -73,8 +103,7 @@ export default function MaterialUIPickers({ location, history }) {
         companyId: auth.getUserId(),
       })
       .then((res) => {
-        console.log(res.data);
-        history.push("/companyDashboard/weeklyCourses");
+        handleStateRefresh()
       })
       .catch((error) => {
         alert(error.message);
@@ -82,22 +111,64 @@ export default function MaterialUIPickers({ location, history }) {
   };
 
   function updateCourseDays(index, event) {
+
     const { name, value } = event.target;
-    const courseDays = [...courseDetails.sessions];
+    const courseDays = [...formDetails.sessions];
     courseDays[index] = { ...courseDays[index], [name]: value };
 
-    setCourseDetails({ ...courseDetails, sessions: courseDays });
+    setFormDetails({ ...formDetails, sessions: courseDays });
   }
 
   function updateOtherCourseInfo(event) {
+
     const { name, value } = event.target;
-    setCourseDetails({ ...courseDetails, [name]: value });
+
+    if (course && (name === 'startDate' || name === 'endDate')) setOpen(true)
+    else setFormDetails({ ...formDetails, [name]: value });
   }
 
   return (
     <Container className={classes.container}>
       <form onSubmit={handleSubmit}>
-        <Typography variant="h4"> {location.state} </Typography>
+
+        <tr>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel>Location</InputLabel>
+            <Select
+              value={location}
+              label="Location"
+              name="location"
+              onChange={(e) => updateOtherCourseInfo(e)}
+            >
+              {locations && locations.map((el, i) => (
+                <MenuItem key={i} value={el.venue}>
+                  {el.venue}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel>Age Group</InputLabel>
+            <Select
+              value={age}
+              label="Age Group"
+              name="age"
+              onChange={(e) => updateOtherCourseInfo(e)}
+            >
+              {ageGroups && ageGroups.map((el, i) => {
+                const text = el.startAge === 'Adults' ? 'Adults' : `${el.startAge}-${el.endAge}`
+                return (
+                  <MenuItem key={i} value={text}>
+                    {text}
+                  </MenuItem>
+                )
+              })}
+            </Select>
+          </FormControl>
+        </tr>
+
+
+
 
         <TextField
           name="startDate"
@@ -153,6 +224,7 @@ export default function MaterialUIPickers({ location, history }) {
               type="number"
               id="cost"
               label="£"
+              value={cost}
               onChange={(e) => updateOtherCourseInfo(e)}
             />
           </FormControl>
@@ -161,9 +233,9 @@ export default function MaterialUIPickers({ location, history }) {
             <Select
               label="Select"
               name="paymentInterval"
+              value={paymentInterval}
               onChange={(e) => updateOtherCourseInfo(e)}
             >
-              <MenuItem aria-label="Select">None</MenuItem>
               <MenuItem value="Session">Session</MenuItem>
               <MenuItem value="Course">Course</MenuItem>
               <MenuItem value="Term">Term</MenuItem>
@@ -179,17 +251,13 @@ export default function MaterialUIPickers({ location, history }) {
           DONE
         </Button>
         <div>
-          <Link to="/companyDashboard/weeklyCourses">
-            <Button
-              className={classes.button}
-              variant="outlined"
-              color="primary"
-            >
-              Back
-            </Button>
-          </Link>
         </div>
       </form>
+
+      {open && <ResetCampDetailsDialogue open={open}
+        handleCampResetInformation={e => handleCampResetInformation()}
+        handleClose={() => handleClose()}
+      />}
     </Container>
   );
 }
