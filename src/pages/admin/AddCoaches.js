@@ -59,17 +59,17 @@ import BackupIcon from "@material-ui/icons/Backup";
 
 export default function FormPropsTextFields({ history, classes }) {
   // const classes = useStyles();
-  // const [state, setState] = React.useState({
-  //   checked: false,
-  // });
+  const [state, setState] = React.useState({
+    checked: false,
+  });
 
-  // const [image, setImage] = React.useState(null);
-  // const [url, setUrl] = React.useState("");
+  const [image, setImage] = React.useState(null);
+  const [url, setUrl] = React.useState("");
 
-  // const [name, setName] = React.useState("");
-  // const [email, setEmail] = React.useState("");
-  // const [phone, setPhone] = React.useState("");
-  // const [level, setLevel] = React.useState("");
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [level, setLevel] = React.useState("");
 
   const input = useRef();
 

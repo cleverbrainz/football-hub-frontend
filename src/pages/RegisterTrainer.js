@@ -145,9 +145,9 @@ export default function RegisterTrainer({ match }) {
 
       let requestObject = {}
 
-      if (registerFields.category === 'player') {
-        requestObject = { ...registerFields }
-      } else requestObject = { ...registerFields }
+      if (registerFields.category === 'coach') {
+        requestObject = { ...registerFields, requests: [], companies: [], coachInfo: {} }
+      } else requestObject = { ...registerFields, sentRequests: [], coaches: [], listings: [], locations: [], images: [], services: [], sessions: [] }
 
       setIsLoading(true)
 
