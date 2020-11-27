@@ -20,6 +20,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import MultiComponent from "./CampMultiComponent";
 import axios from "axios";
 import auth from "../../lib/auth";
+import { useEffect } from "react";
+import moment from 'moment'
+import ResetCampDetailsDialogue from '../../components/ResetCampDetailsDialogue'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -27,9 +30,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-evenly",
-    height: `${window.innerHeight - 100}px`,
+    // height: `${window.innerHeight - 100}px`,
     textAlign: "center",
-    margin: "200px auto",
+    // margin: "200px auto",
   },
   form: {
     display: "flex",
@@ -54,69 +57,106 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MaterialUIPickers({ location, history }) {
+export default function MaterialUIPickers({ history, course, handleCampResetInformation }) {
+
+
   const classes = useStyles();
-  const [rows, setRows] = React.useState([1]);
-  const locations = ["Epsom College", "Goals North Cheam"];
-  const [value, setValue] = React.useState("");
-  const [showCamp, setShowCamp] = React.useState(false);
-  const [showDay, setShowDay] = React.useState(false);
-  const [error, setError] = React.useState(false);
+  const [locations, setLocations] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const [ageGroups, setAgeGroups] = React.useState([]);
   const [courseDetails, setCourseDetails] = React.useState({
-    firstDay: "",
-    lastDay: "",
-    // excludeDays: "",
-    sessions: [],
+    firstDay: course ? course.courseDetails.firstDay : "",
+    lastDay: course ? course.courseDetails.lastDay : "",
+    location: course ? course.courseDetails.location : "",
+    excludeDays: course ? course.courseDetails.excludeDays : [],
+    sessions: course ? course.courseDetails.sessions : [],
     courseType: "Camp",
-    campCost: "",
-    dayCost: "",
+    campCost: course ? course.courseDetails.campCost : "",
+    dayCost: course ? course.courseDetails.dayCost : "",
+    age: course ? course.courseDetails.age : "",
+    individualDayBookings: course ? course.courseDetails.individualDayBookings : false,
+    spaces: course ? course.courseDetails.spaces : "",
+    startTime: course ? course.courseDetails.startTime : "",
+    endTime: course ? course.courseDetails.endTime : ""
   });
-  const { firstDay, lastDay } = courseDetails;
+  const { sessions, firstDay, lastDay, location, campCost, dayCost, age, excludeDays, individualDayBookings, spaces, startTime, endTime } = courseDetails;
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+  const times = [6, 7, 8, 9, 10, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-  const handleShowCamp = () => {
-    setShowCamp(true);
-    setShowDay(false);
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
-  const handleShowDay = () => {
-    setShowCamp(false);
-    setShowDay(true);
-  };
+  useEffect(() => {
+    axios.get(`/users/${auth.getUserId()}`)
+      .then(res => {
+        const locationArr = []
+        const ageArr = []
+        res.data[0].locations.map(el => locationArr.push(el.venue));
+        res.data[0].ageDetails.map(el => ageArr.push(el));
+        setLocations(locationArr)
+        setAgeGroups(ageArr)
+      })
+  }, [])
 
-  const handleRadioChange = (event) => {
-    setValue(event.target.value);
-    setError(false);
-  };
+
+  const handleExclusionDays = e => {
+    const { name } = e.target
+    const { excludeDays } = courseDetails
+    let comparisonArr
+
+    if (course) {
+      setOpen(true)
+    } else {
+      if (courseDetails.excludeDays.includes(name)) {
+        comparisonArr = excludeDays.filter(el => el !== name)
+      } else comparisonArr = [...excludeDays, name]
+
+      setCourseDetails({ ...courseDetails, excludeDays: comparisonArr })
+    }
+
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(courseDetails);
 
-    axios
-      .post("/companies/courses", {
-        courseDetails,
-        companyId: auth.getUserId(),
-      })
-      .then((res) => {
-        console.log(res.data);
-        history.push("/companyDashboard/campOptions");
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+
+    const requestObj = { ...courseDetails }
+    if (!requestObj.individualDayBookings) requestObj.dayCost = ''
+    console.log(course)
+    console.log(requestObj);
+
+    // axios
+    //   .post("/companies/courses", {
+    //     courseDetails,
+    //     companyId: auth.getUserId(),
+    //   })
+    //   .catch((error) => {
+    //     alert(error.message);
+    //   });
   };
 
-  function updateCourseDays(index, event) {
+  function updateOtherCourseInfo(event, index) {
     const { name, value } = event.target;
-    const courseDays = [...courseDetails.sessions];
-    courseDays[index] = { ...courseDays[index], [name]: value };
-    setCourseDetails({ ...courseDetails, sessions: courseDays });
+
+    if (course && (name === 'firstDay' || name === 'lastDay')) setOpen(true)
+    else if (name === 'spaces' || name === 'startTime' || name === 'endTime') {
+      const newSessionsArr = [...sessions] 
+      newSessionsArr[index] = {...newSessionsArr[index], [name]: value}
+
+      console.log(newSessionsArr)
+      setCourseDetails({ ...courseDetails, sessions: newSessionsArr })
+    }
+    else setCourseDetails({ ...courseDetails, [name]: value })
+
   }
-  function updateOtherCourseInfo(event) {
-    const { name, value } = event.target;
-    setCourseDetails({ ...courseDetails, [name]: value });
-  }
+
+
+
+
+
   return (
     <Container className={classes.container}>
       <form onSubmit={handleSubmit} className={classes.form}>
@@ -125,163 +165,244 @@ export default function MaterialUIPickers({ location, history }) {
           <Select
             label="Location"
             name="location"
+            value={location}
             onChange={(e) => updateOtherCourseInfo(e)}
           >
-            <MenuItem>
-              {" "}
-              <em>Select</em>{" "}
-            </MenuItem>
-            {locations.map((el, i) => (
+            {locations && locations.map((el, i) => (
               <MenuItem key={i} value={el}>
-                {" "}
-                {el}{" "}
+                {el}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
-        <TextField
-          id="date"
-          label="First day"
-          type="date"
-          variant="outlined"
-          defaultValue="2017-05-24"
-          className={classes.spacing}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          name="firstDay"
-          value={firstDay}
-          onChange={(e) => updateOtherCourseInfo(e)}
-        />
-        <TextField
-          id="date"
-          label="Last day"
-          type="date"
-          variant="outlined"
-          defaultValue="2017-05-24"
-          className={classes.spacing}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          name="lastDay"
-          value={lastDay}
-          onChange={(e) => updateOtherCourseInfo(e)}
-        />
+
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel>Age Group</InputLabel>
+          <Select
+            label="Age Group"
+            name="age"
+            value={age}
+            onChange={(e) => updateOtherCourseInfo(e)}
+          >
+            {ageGroups && ageGroups.map((el, i) => {
+              const text = `${el.startAge}-${el.endAge}`
+              return (
+                <MenuItem key={i} value={text}>
+                  {text}
+                </MenuItem>
+              )
+            })}
+          </Select>
+        </FormControl>
+
+        <tr>
+
+
+          <TextField
+            id="date"
+            label="First day"
+            type="date"
+            variant="outlined"
+            defaultValue="2017-05-24"
+            className={classes.spacing}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            name="firstDay"
+            value={firstDay}
+            onChange={(e) => updateOtherCourseInfo(e)}
+          />
+
+          <TextField
+            id="date"
+            label="Last day"
+            type="date"
+            variant="outlined"
+            defaultValue="2017-05-24"
+            className={classes.spacing}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            name="lastDay"
+            value={lastDay}
+            onChange={(e) => updateOtherCourseInfo(e)}
+          />
+        </tr>
+
+        {!course && (
+          <tr>
+            <td>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel>Start</InputLabel>
+                <Select label="Start" name="startTime"
+                  value={startTime}
+                  onChange={(e) => updateOtherCourseInfo(e)}
+                >
+                  {times.map((el, i) => {
+                    const time = i < 6 ? el + "am" : el + "pm";
+                    return <MenuItem value={time}> {time} </MenuItem>;
+                  })}
+                </Select>
+              </FormControl>
+            </td>
+            <td>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel>Finish</InputLabel>
+                <Select label="Finish" name="endTime"
+                  value={endTime}
+                  onChange={(e) => updateOtherCourseInfo(e)}
+                >
+                  {times.map((el, i) => {
+                    const time = i < 6 ? el + "am" : el + "pm";
+                    return <MenuItem value={time}> {time} </MenuItem>;
+                  })}
+                </Select>
+              </FormControl>
+            </td>
+            <td>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel>Spaces</InputLabel>
+                <OutlinedInput
+                  name="spaces"
+                  label="Spaces"
+                  value={spaces}
+                  onChange={(e) => updateOtherCourseInfo(e)}
+                />
+              </FormControl>
+            </td>
+          </tr>
+        )}
+
         <Typography variant="h6" className={classes.spacing}>
           Exclude any days
         </Typography>
 
         <table>
-          <tr>
-            <td className={classes.spacing}>
-              <FormControlLabel control={<Checkbox />} label="Monday" />
-            </td>
-            <td className={classes.spacing}>
-              <FormControlLabel control={<Checkbox />} label="Tuesday" />
-            </td>
-          </tr>
-          <tr>
-            <td className={classes.spacing}>
-              <FormControlLabel control={<Checkbox />} label="Wednesday" />
-            </td>
-            <td className={classes.spacing}>
-              <FormControlLabel control={<Checkbox />} label="Thursday" />
-            </td>
-          </tr>
-          <tr>
-            <td className={classes.spacing}>
-              <FormControlLabel control={<Checkbox />} label="Friday" />
-            </td>
-            <td className={classes.spacing}>
-              <FormControlLabel control={<Checkbox />} label="Saturday" />
-            </td>
-          </tr>
-          <tr>
-            <td className={classes.spacing}>
-              <FormControlLabel control={<Checkbox />} label="Sunday" />
-            </td>
-          </tr>
+
+          {days.map((el, i) => {
+            return (
+              <td className={classes.spacing}>
+                <FormControlLabel control={<Checkbox
+                  checked={excludeDays.includes(el)}
+                  name={el}
+                  onChange={(e) => handleExclusionDays(e)} />} label={el} />
+              </td>
+            )
+          })}
         </table>
 
-        {rows.map((el, i) => {
-          return (
-            <MultiComponent
-              classes={classes}
-              updateCampDays={(e) => updateCourseDays(i, e)}
-              key={i}
-            />
-          );
-        })}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setRows([...rows, 1])}
-        >
-          Add another age group
-        </Button>
+        {course && (
+          <>
+            <Typography variant="h6" className={classes.spacing}>
+              Sessions
+         </Typography>
+
+            {sessions.map((el, i) => {
+              function toDateTime(secs) {
+                var t = new Date(1970, 0, 1); // Epoch
+                t.setSeconds(secs);
+                return t;
+              }
+              return (
+                <tr>
+                  <td>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <InputLabel>Date</InputLabel>
+                      <OutlinedInput
+                        name="spaces"
+                        label="Spaces"
+                        disabled
+                        value={moment(toDateTime(el.sessionDate._seconds)).format('MMMM Do YYYY')}
+                      />
+                    </FormControl>
+                  </td>
+                  <td>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <InputLabel>Start Time</InputLabel>
+                      <Select label="Start Time" name="startTime"
+                        value={sessions[i].startTime}
+                        onChange={(e) => updateOtherCourseInfo(e, i)}
+                      >
+                        {times.map((el, i) => {
+                          const time = i < 6 ? el + "am" : el + "pm";
+                          return <MenuItem value={time}> {time} </MenuItem>;
+                        })}
+                      </Select>
+                    </FormControl>
+                  </td>
+                  <td>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <InputLabel>Finish Time</InputLabel>
+                      <Select label="Finish Time" name="endTime"
+                        value={sessions[i].endTime}
+                        onChange={(e) => updateOtherCourseInfo(e, i)}
+                      >
+                        {times.map((el, i) => {
+                          const time = i < 6 ? el + "am" : el + "pm";
+                          return <MenuItem value={time}> {time} </MenuItem>;
+                        })}
+                      </Select>
+                    </FormControl>
+                  </td>
+                  <td>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <InputLabel>Spaces</InputLabel>
+                      <OutlinedInput
+                        name="spaces"
+                        label="Spaces"
+                        value={sessions[i].spaces}
+                        onChange={(e) => updateOtherCourseInfo(e, i)}
+                      />
+                    </FormControl>
+                  </td>
+                </tr>
+              )
+            })}
+          </>
+        )}
+
 
         <Typography variant="h6" className={classes.spacing}>
           Booking Options
         </Typography>
-        <RadioGroup
-          aria-label="quiz"
-          name="quiz"
-          value={value}
-          onChange={handleRadioChange}
+
+
+        <FormControl
+          variant="outlined"
+          className={classes.formControl}
         >
-          <FormControl component="fieldset">
-            <FormControlLabel
-              value="whole"
-              control={<Radio />}
-              label="Customers can book as a whole only"
-              onClick={() => handleShowCamp()}
-            />
-            <FormControlLabel
-              value="one or more"
-              control={<Radio />}
-              label="Customers can book onto one or more days"
-              onClick={() => handleShowDay()}
+          <InputLabel>Total cost of camp (£)</InputLabel>
+          <OutlinedInput
+            name="campCost"
+            value={campCost}
+            label="Total cost of camp (£)"
+            onChange={(e) => updateOtherCourseInfo(e)}
+          />
+        </FormControl>
+
+
+        <FormControlLabel control={<Checkbox
+          checked={individualDayBookings}
+          onClick={() => setCourseDetails({
+            ...courseDetails, individualDayBookings:
+              !courseDetails.individualDayBookings
+          })} />} label='Customers can book individual days' />
+
+        {courseDetails.individualDayBookings && (
+          <FormControl
+            variant="outlined"
+            className={classes.formControl}
+          >
+            <InputLabel>Cost per day (£)</InputLabel>
+            <OutlinedInput
+              name="dayCost"
+              value={dayCost}
+              label="£ Cost per day"
+              onChange={(e) => updateOtherCourseInfo(e)}
             />
           </FormControl>
-        </RadioGroup>
 
-        <FormControl
-          variant="outlined"
-          className={classes.formControl}
-          style={{
-            display: showCamp ? "block" : "none",
-            width: "200px",
-            margin: "10px auto",
-          }}
-        >
-          <InputLabel>£ Cost per camp</InputLabel>
-          <OutlinedInput
-            name="£ Cost per camp"
-            id="cost"
-            label="£ Cost per camp"
-            //value={campCost}
-            onChange={(e) => updateOtherCourseInfo(e)}
-          />
-        </FormControl>
-
-        <FormControl
-          variant="outlined"
-          className={classes.formControl}
-          style={{
-            display: showDay ? "block" : "none",
-            width: "200px",
-            margin: "10px auto",
-          }}
-        >
-          <InputLabel>£ Cost per day</InputLabel>
-          <OutlinedInput
-            name="£ Cost per day"
-            id="cost"
-            label="£ Cost per day"
-            //value={dayCost}
-            onChange={(e) => updateOtherCourseInfo(e)}
-          />
-        </FormControl>
+        )}
 
         <Button
           className={classes.button}
@@ -291,12 +412,14 @@ export default function MaterialUIPickers({ location, history }) {
         >
           DONE
         </Button>
-        <Link to="/companyDashboard/campOptions">
-          <Button className={classes.button} variant="outlined" color="primary">
-            Back
-          </Button>
-        </Link>
+
       </form>
+
+      {open && <ResetCampDetailsDialogue
+        open={open}
+        handleCampResetInformation={e => handleCampResetInformation()}
+        handleClose={() => handleClose()}
+      />}
     </Container>
   );
 }

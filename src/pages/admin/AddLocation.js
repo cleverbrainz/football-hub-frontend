@@ -13,34 +13,9 @@ import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 
 import LocationFilter from '../../components/LocationFilter'
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    height: `${window.innerHeight - 80}px`,
-  },
-  form: {
-    width: '30%',
-    minWidth: '300px',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '60%',
-    justifyContent: 'space-evenly'
-  },
-  button: {
-    position: 'relative'
-  },
-  progress: {
-    position: 'absolute'
-  }
-}));
-
-export default function AddLocation({ history }) {
+export default function AddLocation({ history, handleStateRefresh, deleteInProgress, classes }) {
 
   const [loginError, setLoginError] = useState()
-  const [isLoading, setIsLoading] = useState(false)
   const [formDetails, setformDetails] = useState({
     venue: '',
     fullAddress: '',
@@ -49,21 +24,20 @@ export default function AddLocation({ history }) {
     companyId: auth.getUserId()
   })
   const [address, setAddress] = useState()
-  const classes = useStyles();
 
   function handleFormSubmit(e) {
     e.preventDefault()
-    setIsLoading(true)
+    handleStateRefresh()
     console.log(formDetails)
 
     axios.post("/companies/locations", formDetails)
       .then(res => {
-        setIsLoading(false)
         console.log(res.data)
+        handleStateRefresh()
         history.push('/companyDashboard/location')
       })
       .catch(err => {
-        setIsLoading(false)
+        handleStateRefresh()
         console.log(err)
       })
   }
@@ -73,45 +47,45 @@ export default function AddLocation({ history }) {
     const latLng = await getLatLng(results[0]);
 
     setAddress(value)
-    setformDetails({ ...formDetails, 
+    setformDetails({
+      ...formDetails,
       fullAddress: value,
-      latitude: latLng.lat, 
-      longitude: latLng.lng })
+      latitude: latLng.lat,
+      longitude: latLng.lng
+    })
   };
 
 
   return (
 
-    <div className={classes.container}>
-      <Typography variant='h4'> Address </Typography>
-      <form
-        onSubmit={(e) => handleFormSubmit(e)}
-        className={classes.form}>
 
+    <form
+      onSubmit={(e) => handleFormSubmit(e)}
+      className={classes.form}
+      >
 
-        <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel>Venue Name</InputLabel>
-          <OutlinedInput
-            type="text"
-            label="Venue Name"
-            // value={formDetails.cost}
-            onChange={e => setformDetails({ ...formDetails, venue: e.target.value })}
-          />
-        </FormControl>
+      <FormControl variant="outlined"
+     
+      className={classes.inputs}
+      style={{marginBottom: '10px'}}>
+        <InputLabel>Venue Name</InputLabel>
+        <OutlinedInput
+          type="text"
+          label="Venue Name"
+          onChange={e => setformDetails({ ...formDetails, venue: e.target.value })}
+        />
+      </FormControl>
 
-        <LocationFilter address={address} handleSelect={e => handleSelect(e)} setAddress={setAddress} />
+      <LocationFilter address={address} handleSelect={e => handleSelect(e)} setAddress={setAddress} />
 
-        {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
+      <Button disabled={deleteInProgress}
+        className={classes.input}
+        type='submit'
+        variant="contained" color="primary">
+        Save
+          {/* {isLoading && <CircularProgress size={30} className={classes.progress} />} */}
+      </Button>
 
-        <Button disabled={isLoading}
-          className={classes.button} type='submit'
-          variant="contained" color="primary">
-          Save
-          {isLoading && <CircularProgress size={30} className={classes.progress} />}
-        </Button>
-
-      </form>
-
-    </div>
+    </form>
   )
 }

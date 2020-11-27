@@ -25,26 +25,21 @@ import {
   ForumSharp,
   EventNoteSharp,
   FormatListNumberedSharp,
-  SupervisorAccountSharp
+  SupervisorAccountSharp,
+  LocationOnSharp,
+  DirectionsRunSharp,
+  SportsSoccerSharp
 } from '@material-ui/icons';
 
 import auth from '../lib/auth'
-// import { AuthContext } from '../lib/context'
-
-// import {
-//   Summary,
-//   Coaches,
-//   Listings,
-//   Sessions,
-//   Messages
-// } from '../components/Dashboard'
 
 import Summary from '../components/Dashboard/Summary'
 import Messages from '../components/Dashboard/CompanyMessages'
 import Listings from '../components/Dashboard/Listings'
-// import Coaches from '../components/Dashboard/Coaches'
-// import Coaches from '../pages/admin/Coaches'
 import CoachPageBeta from '../pages/admin/CoachPageBeta'
+import Calendar from '../components/Dashboard/Calendar'
+import Locations from '../components/Dashboard/Locations'
+import Players from '../components/Dashboard/Players'
 import Sessions from '../components/Dashboard/Sessions'
 
 const drawerWidth = 240;
@@ -134,23 +129,29 @@ export default function Profile() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState('Coaches');
+  const [selectedComponent, setSelectedComponent] = useState('Listings');
   // const { getUserDetails } = useContext(AuthContext)
 
   const [drawerItems, setDrawerItems] = useState({
     Summary: BubbleChartSharp,
     Messages: ForumSharp,
-    Sessions: EventNoteSharp,
+    Calendar: EventNoteSharp,
     Listings: FormatListNumberedSharp,
     Coaches: SupervisorAccountSharp,
+    Locations: LocationOnSharp,
+    Players: DirectionsRunSharp,
+    Sessions: SportsSoccerSharp
   })
 
   const dashboardComponents = {
     Summary,
     Coaches: CoachPageBeta,
     Listings,
-    Sessions,
-    Messages
+    Calendar,
+    Messages,
+    Locations,
+    Players,
+    Sessions
   }
 
   const DisplayedComponent = dashboardComponents[selectedComponent]

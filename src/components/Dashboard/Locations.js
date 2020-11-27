@@ -11,17 +11,14 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import {
   Typography,
-  Button,
-  Select
+  Button
 } from "@material-ui/core";
 import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import auth from '../../lib/auth'
 import DeleteComponent from '../../pages/admin/DeleteComponent'
-import SessionsPageTable from '../../components/SessionsPageTable'
-import MaterialUIPickers from '../../pages/admin/CampMultiDetails'
-import WeeklyCourseDetails from '../../pages/admin/WeeklyCourseDetails'
-
+import LocationPageTable from '../../components/LocationPageTable'
+import AddLocation from '../../pages/admin/AddLocation'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -104,28 +101,26 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function Sessions() {
+export default function Locations() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [companyCourses, setCompanyCourses] = useState()
+  const [companyLocations, setCompanyLocations] = useState()
   const [open, setOpen] = useState(false)
-  const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
-  const [courseIdToBeDeleted, setCourseIdToBeDeleted] = useState()
-  const [newCourseDetail, setNewCourseDetail] = useState()
-  const [courseToBeEdited, setCourseToBeEdited] = useState()
+  const [deleteInProgress, setDeleteInProgress] = useState(false)
+  const [locationIdToBeDeleted, setLocationIdToBeDeleted] = useState()
 
   useEffect(() => {
     axios
       .get(`/users/${auth.getUserId()}`)
       .then(res => {
-        setCompanyCourses(res.data[0].courses);
+        setCompanyLocations(res.data[0].locations);
       })
       .catch(e => console.log(e))
-  }, [!stateRefreshInProgress]);
+  }, [!deleteInProgress]);
 
   const handleSetLocationId = locationId => {
     setOpen(true)
-    setCourseIdToBeDeleted(locationId)
+    setLocationIdToBeDeleted(locationId)
   }
 
   const handleClose = () => {
@@ -133,41 +128,27 @@ export default function Sessions() {
   };
 
   function handleStateRefresh() {
-    setValue(0)
-    setStateRefreshInProgress(!stateRefreshInProgress)
-  }
-
-  function handleCampResetInformation(e) {
-    const { courseType } = courseToBeEdited.courseDetails
-    setValue(1)
-    if (courseType === 'Weekly') setNewCourseDetail('weekly')
-    else setNewCourseDetail('camp')
+    setDeleteInProgress(!deleteInProgress)
   }
 
   const handleDelete = () => {
-    setStateRefreshInProgress(true);
-    console.log(courseIdToBeDeleted);
+    setDeleteInProgress(true);
+    console.log(locationIdToBeDeleted);
     // axios
-    //   .delete(`/companies/locations/${courseIdToBeDeleted}`, {
+    //   .delete(`/companies/locations/${locationIdToBeDeleted}`, {
     //     headers: { Authorization: `Bearer ${auth.getToken()}` },
     //   })
     //   .then((res) => {
     //     console.log(res.data);
-    //     setStateRefreshInProgress(false);
+    //     setDeleteInProgress(false);
     //     handleClose();
     //   })
     //   .catch((err) => {
     //     console.error(err);
-    //     setStateRefreshInProgress(false);
+    //     setDeleteInProgress(false);
     //     handleClose();
     //   });
   };
-
-  const handleEditCourse = (course) => {
-    console.log(course)
-    setValue(2)
-    setCourseToBeEdited(course)
-  }
 
 
   const handleChange = (event, newValue) => {
@@ -188,54 +169,23 @@ export default function Sessions() {
           textColor="primary"
           aria-label="scrollable force tabs example"
         >
-          <Tab label="Current" icon={<ExploreSharpIcon />} {...a11yProps(0)} />
-          <Tab label="Add New" icon={<AddLocationSharpIcon />} {...a11yProps(2)} />
-          <Tab label="Edit Existing" icon={<AddLocationSharpIcon />} {...a11yProps(3)} />
+          <Tab label="Current Locations" icon={<ExploreSharpIcon />} {...a11yProps(0)} />
+          <Tab label="Add New Location" icon={<AddLocationSharpIcon />} {...a11yProps(1)} />
         </Tabs>
       </AppBar>
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-        <SessionsPageTable 
-        handleEditCourse={e => handleEditCourse(e)}
-        courseToBeEdited={courseToBeEdited} courses={companyCourses} />
+        {companyLocations && <LocationPageTable
+          handleSetLocationId={(locationId) => handleSetLocationId(locationId)}
+          locations={companyLocations} />}
       </TabPanel>
 
       {/* tab 2 content */}
       <TabPanel className={classes.formContainer} value={value} index={1}>
-        <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel id="demo-simple-select-outlined-label">Who type of course are you adding?</InputLabel>
-          <Select
-            className={classes.select}
-            labelId="demo-simple-select-filled-label"
-            id="demo-simple-select-filled"
-            label='Who type of course are you adding?'
-            value={newCourseDetail}
-            onChange={e => setNewCourseDetail(e.target.value)}
-          >
-
-            <MenuItem value='camp'> Camp </MenuItem>
-            <MenuItem value='weekly'> Weekly Course </MenuItem>
-
-          </Select>
-        </FormControl>
-
-        {newCourseDetail ? newCourseDetail === 'camp' ?   <MaterialUIPickers /> : (
-          <WeeklyCourseDetails />
-        ) : null}
-      
-      </TabPanel>
-
-      {/* tab 5 content */}
-      <TabPanel className={classes.formContainer} value={value} index={2}>
-      {courseToBeEdited ? courseToBeEdited.courseDetails.courseType === 'Camp' ?  <MaterialUIPickers 
-      handleCampResetInformation={e => handleCampResetInformation(e)}
-      course={courseToBeEdited}
-      /> : (
-          <WeeklyCourseDetails course={courseToBeEdited}
-          handleStateRefresh={() => handleStateRefresh()}
-          handleCampResetInformation={e => handleCampResetInformation(e)}/>
-        ) : null}
+        <AddLocation 
+        deleteInProgress={deleteInProgress}
+        handleStateRefresh={() => handleStateRefresh()} classes={classes} />
       </TabPanel>
 
       <DeleteComponent

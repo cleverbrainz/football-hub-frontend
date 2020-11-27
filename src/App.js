@@ -13,7 +13,7 @@ import Login from "./pages/Login";
 // import Register from "./pages/Register";
 import RegisterPlayer from "./pages/RegisterPlayer";
 import RegisterTrainer from "./pages/RegisterTrainer";
-// import AdminDashboard from './pages/AdminDashboard'
+import AdminDashboard from './pages/AdminDashboard'
 import Companies from "./pages/Companies";
 import IndividualCompany from "./pages/IndividualCompany";
 import ForgottenPassword from "./pages/ForgottenPassword";
@@ -25,6 +25,7 @@ import axios from "axios";
 
 import CompanyMessages from "./components/Dashboard/CompanyMessages";
 import Listings from "./components/Dashboard/Listings";
+import ListingTester from "./components/Dashboard/ListingTester";
 
 import AddCoaches from "./pages/admin/AddCoaches";
 import EditCoaches from "./pages/admin/EditCoaches";
@@ -165,6 +166,7 @@ const App = () => {
         <Route exact path="/companyDashboard/campSingleDetails" component={CampSingleDetails} />
         <Route exact path="/companyDashboard/addServices" component={AddServices} />
         <Route exact path="/companyDashboard/addAgeGroup" component={AddAgeGroup} />
+        <Route exact path="/testlisting" component={ListingTester} />
         {/* {auth.isLoggedIn() && additionalRoutes()} */}
 
         {/* indulge admin */}

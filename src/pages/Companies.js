@@ -111,7 +111,10 @@ export default function Companies({ history }) {
   const [selectedFilter, setSelectedFilter] = useState();
   const [address, setAddress] = useState();
   const [modalOpen, setModal] = useState(false);
-  const [selected, setSelected] = useState();
+  const [selected, setSelected] = useState({
+    company: null,
+    location: null
+  });
   const [coordinates, setCoordinates] = useState({
     lat: null,
     lng: null
@@ -175,9 +178,11 @@ export default function Companies({ history }) {
   });
 
   useEffect(() => {
-    console.log(filterDetails)
     axios.post('/filteredCompanies', filterDetails)
-      .then(res => setCompanies(res.data))
+      .then(res => {
+        console.log(res.data)
+        setCompanies(res.data)
+      })
   }, [clearFilter])
 
   function toggleModal(e) {
@@ -403,14 +408,14 @@ export default function Companies({ history }) {
           {/* map through companies */}
 
           {companies ? companies.map((el, i) => {
-            const { name, images, bio } = el.companyInfo
+            // console.log(el)
+            const { companyName, images, bio } = el.listingInfo
+
             return (
               <>
-
                 <Link key={i} to={{
                   pathname: `/companies/${el.companyId}`,
                   state: el.companyInfo
-
                 }}>
 
                   <Card className={classes.card}>
@@ -422,15 +427,12 @@ export default function Companies({ history }) {
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">
-                          {name}
+                          {companyName}
                         </Typography>
                         <Typography
-                          // className='company-bio-preview' 
                           variant="body2" color="textSecondary" component="p">
-                          {/* {bio} */}
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec congue faucibus felis,
-                          vel semper tellus eleifend eu. Vestibulum ullamcorper ultrices efficitur.
-                    </Typography>
+                          {bio}
+                        </Typography>
                       </CardContent>
                     </CardActionArea>
                   </Card>
@@ -441,6 +443,7 @@ export default function Companies({ history }) {
 
               </>
             )
+
           }) : <CircularProgress className={classes.progress} color="secondary" />}
 
         </section>
@@ -453,38 +456,43 @@ export default function Companies({ history }) {
               setViewport(viewport);
             }}
           >
-            {companies &&
-              companies.map((el) => {
-                if (el.companyInfo.location) {
-                  const { latitude, longitude } = el.companyInfo.location;
-                  return (
-                    <Marker
-                      key={el.companyId}
-                      anchor={"top-left"}
-                      offsetLeft={-20}
-                      offsetTop={-30}
-                      latitude={latitude}
-                      longitude={longitude}
-                    >
-                      <RoomSharpIcon
-                        onClick={() => {
-                          if (selected) {
-                            if (selected === el) {
-                              setSelected(null);
-                            } else setSelected(el);
-                          } else setSelected(el);
-                        }}
-                        style={{
-                          fontSize: "40px",
-                          color: "red",
-                        }}
-                      />
-                    </Marker>
-                  );
-                }
+            {companies && companies.map(el => {
+                const { courses } = el.listingInfo
+
+                // console.log('THIS IS' + courses)
+                return courses.map((course, i) => {
+                  const { latitude, longitude } = course.courseDetails
+                  // console.log(course)
+                  return <Marker
+                    key={i}
+                    anchor={"top-left"}
+                    offsetLeft={-20}
+                    offsetTop={-30}
+                    latitude={parseFloat(latitude)}
+                    longitude={parseFloat(longitude)}
+                  >
+                    <RoomSharpIcon
+                      onClick={() => {
+                        if (selected.company) {
+                          const {longitude} = selected.company.listingInfo.courses[selected.location].courseDetails;
+                          const {courseDetails} = el.listingInfo.courses[i]
+                          if (longitude === courseDetails.longitude) {
+                            setSelected({ company: null, location: null });
+                          } else setSelected({ company: el, location: i });
+                        } else setSelected({ company: el, location: i });
+                      }}
+                      style={{
+                        fontSize: "40px",
+                        color: "red",
+                      }}
+                    />
+                  </Marker>
+                })
+
+
               })}
 
-            {userCoordinates && (
+            {/* {userCoordinates && (
               <Marker
                 anchor={"top-left"}
                 offsetLeft={-20}
@@ -499,9 +507,9 @@ export default function Companies({ history }) {
                   }}
                 />
               </Marker>
-            )}
+            )} */}
 
-            {selected && <ReactMapPopup selected={selected} />}
+            {selected.company && <ReactMapPopup selected={selected} />}
           </ReactMapGL>
         </section>
       </div>
