@@ -11,23 +11,19 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormPropsTextFields from '../admin/AddCoaches'
+import Requests from '../Requests'
 import {
   Typography,
   Card,
   CardContent,
-  OutlinedInput,
-  Button
 } from "@material-ui/core";
 import CancelSharpIcon from "@material-ui/icons/CancelSharp";
 import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import auth from '../../lib/auth'
 import DeleteComponent from './DeleteComponent'
-import CoachEdit from '../CoachEdit'
-import CoachPageBetaTable from '../../components/CoachPageBetaTable'
-import { withRouter } from 'react-router-dom';
-import CompanyAddCoach from '../CompanyAddCoach';
-import CoachSearch from './CoachSearch';
+
+import CompanyPageBetaTable from '../../components/CompanyPageBetaTable'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -111,42 +107,30 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-function CoachPageBeta() {
+export default function CompanyPageBeta() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [coaches, setCoaches] = useState()
-  const [user, setUser] = useState({})
-
-  // const [companyCoaches, setCompanyCoaches] = useState()
-  // const [allAppCoaches, setAllAppCoaches] = useState()
-
+  const [companies, setCompanies] = useState()
   const [newCoachDetail, setNewCoachDetail] = useState()
-  const [externalCoachDetail, setExternalCoachDetail] = useState()
   const [open, setOpen] = useState(false)
   const [deleteInProgress, setDeleteInProgress] = useState(false)
   const [coachIdToBeDeleted, setCoachIdToBeDeleted] = useState()
-  const [existingAppCoachToBeAdded, setExistingAppCoachToBeAdded] = useState()
-  const [newExternalCoachDetails, setNewExternalCoachDetails] = useState({
-    fullName: '',
-    email: ''
-  })
 
 
   async function getData() {
-    let coachArray = []
+    let companyArray = []
     let user
     const response = await axios.get(`/users/${auth.getUserId()}`)
     const data = await response.data[0]
     user = data
     console.log(data)
-    for (const request of data.coaches) {
+    for (const request of data.companies) {
       const response = await axios.get(`/users/${request}`)
       const data = await response.data[0]
       console.log('data', data)
-      coachArray.push(data)
+      companyArray.push(data)
     }
-    setUser(user)
-    setCoaches(coachArray)
+    setCompanies(companyArray)
   }
 
   // useEffect(() => {
@@ -192,13 +176,13 @@ function CoachPageBeta() {
   };
 
   const InternalCoachForm = (
-    // <FormPropsTextFields classes={classes} />
-    <CompanyAddCoach info={user} />
+    <FormPropsTextFields classes={classes} />
   )
 
   const ExternalCoachForm = (
-    <CoachSearch />
+    <h1> bye</h1>
   )
+
 
 
   const handleChange = (event, newValue) => {
@@ -219,21 +203,22 @@ function CoachPageBeta() {
           textColor="primary"
           aria-label="scrollable force tabs example"
         >
-          <Tab label="Current Coaches" icon={<PeopleAltSharpIcon />} {...a11yProps(0)} />
-          <Tab label="Add New Coach" icon={<PersonAddSharpIcon />} {...a11yProps(1)} />
+          <Tab label="Current Companies" icon={<PeopleAltSharpIcon />} {...a11yProps(0)} />
+          <Tab label="New Requests" icon={<PersonAddSharpIcon />} {...a11yProps(1)} />
         </Tabs>
       </AppBar>
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-        {companyCoaches && <CoachPageBetaTable
+        {companies && <CompanyPageBetaTable
           handleSetCoachId={(coachId) => handleSetCoachId(coachId)}
-          coaches={companyCoaches} />}
+          companies={companies} />}
       </TabPanel>
 
       {/* tab 2 content */}
       <TabPanel className={classes.formContainer} value={value} index={1}>
-        <form className={classes.form} action="">
+        <Requests />
+        {/* <form className={classes.form} action="">
 
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel id="demo-simple-select-outlined-label">Who are you adding?</InputLabel>
@@ -252,79 +237,9 @@ function CoachPageBeta() {
             </Select>
           </FormControl>
 
-          {newCoachDetail === 'someone' && (
-            <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel id="demo-simple-select-outlined-label"> External or New? </InputLabel>
-              <Select
-                className={classes.select}
-                labelId="demo-simple-select-filled-label"
-                id="demo-simple-select-filled"
-                label='External or New?'
-                value={externalCoachDetail}
-                onChange={e => setExternalCoachDetail(e.target.value)}
-              >
+          {newCoachDetail ? newCoachDetail === 'myself' ? InternalCoachForm : ExternalCoachForm : null}
 
-                <MenuItem value='existing'> Existing coach on system </MenuItem>
-                <MenuItem value='new'> New coach (not yet registered) </MenuItem>
-
-              </Select>
-            </FormControl>
-          )}
-
-          {newCoachDetail ? newCoachDetail === 'myself' ? InternalCoachForm : (
-            externalCoachDetail ? externalCoachDetail === 'existing' ? (
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label"> Select Existing Coach </InputLabel>
-                <Select
-                  className={classes.select}
-                  labelId="demo-simple-select-filled-label"
-                  id="demo-simple-select-filled"
-                  label='Select Existing Coach'
-                  value={existingAppCoachToBeAdded}
-                  onChange={e => setExistingAppCoachToBeAdded(e.target.value)}
-                >
-
-                  {allAppCoaches.map((el, i) => <MenuItem value={el.coachInfo.coach_name}> {el.coachInfo.coach_name} - {el.coachInfo.coach_email} </MenuItem>)}
-
-                </Select>
-              </FormControl>
-            ) : (
-                <>
-                  <FormControl className={classes.inputs} variant="outlined"
-                  >
-                    <InputLabel htmlFor="component-outlined"> Full Name </InputLabel>
-                    <OutlinedInput
-                      label="Full Name"
-                    value={newExternalCoachDetails.fullName}
-                    onChange={e => setNewExternalCoachDetails({ ...newExternalCoachDetails, fullName: e.target.value })}
-                    />
-                  </FormControl>
-
-                  <FormControl className={classes.inputs} variant="outlined"
-                  >
-                    <InputLabel htmlFor="component-outlined"> Email Address </InputLabel>
-                    <OutlinedInput
-                    label="Email Address"
-                    value={newExternalCoachDetails.email}
-                    onChange={e => setNewExternalCoachDetails({ ...newExternalCoachDetails, email: e.target.value })}
-                    />
-                  </FormControl>
-
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    className={classes.inputs}
-                    // onClick={() => input.current.click()}
-                  >
-                    Send Registration Prompt
-                </Button>
-                </>
-              ) : null
-
-          ) : null}
-
-
-        </form>
+        </form> */}
       </TabPanel>
 
       <DeleteComponent
@@ -338,4 +253,3 @@ function CoachPageBeta() {
 
 
 
-export default withRouter(CoachPageBeta)

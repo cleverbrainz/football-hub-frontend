@@ -42,6 +42,7 @@ export default function ContainedButtons() {
   const classes = useStyles();
 
   const [state, setState] = React.useState();
+  const [coaches, setCoaches] = React.useState([{name: 'bob', userId: 'bob2.0'}])
   const [deleteCoach, setDeleteCoach] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [deleteCoachId, setDeleteCoachId] = React.useState();
@@ -53,16 +54,26 @@ export default function ContainedButtons() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  async function getData() {
+    let coachArray = []
+    let user
+    const response = await axios.get(`/users/${auth.getUserId()}`)
+    const data = await response.data[0]
+    user = data
+    console.log(data)
+    for (const request of data.coaches) {
+      const response = await axios.get(`/users/${request}`)
+      const data = await response.data[0]
+      console.log('data', data)
+      coachArray.push(data)
+    }
+    setState(user)
+    setCoaches(coachArray)
+  }
+
   useEffect(() => {
-    axios
-      .get(`/users/${auth.getUserId()}`)
-      .then((res) => {
-        console.log(res.data);
-        setState(res.data[0].coaches);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    getData()
   }, [!deleteCoach]);
 
   const HandleDelete = () => {
@@ -89,31 +100,33 @@ export default function ContainedButtons() {
     handleClickOpen();
   };
 
+  console.log(coaches)
+
   return (
     <Container className={classes.container}>
       <Typography variant="h4"> COACHES</Typography>
 
-      {state &&
-        state.map((data, i) => {
+      {coaches &&
+        coaches.map((data, i) => {
           return (
             <div key={i}>
               <CancelSharpIcon
                 id={i}
                 className={classes.icons}
-                onClick={() => Delete(data.coachId)}
+                // onClick={() => Delete(data.userId)}
               />
               <Card className={classes.card}>
-                <Link
+                {/* <Link
                   to={{
                     pathname: "/companyDashboard/coachDetails",
                     state: data,
                   }}
-                >
+                > */}
                   <CardContent>
-                    <Typography variant="h6">{data.coach_name}</Typography>
-                    <div>{data.coaching_level}</div>
+                    <Typography variant="h6">{data.name}</Typography>
+                    <div>{data.userId}</div>
                   </CardContent>
-                </Link>
+                {/* </Link> */}
               </Card>
             </div>
           );

@@ -1,7 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
-import auth from '../lib/auth'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -26,7 +24,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function CoachPageBetaTable({ coaches, handleSetCoachId }) {
+export default function CompanyPageBetaTable({ companies, handleSetCoachId }) {
   const classes = useStyles();
 
   return (
@@ -45,17 +43,15 @@ export default function CoachPageBetaTable({ coaches, handleSetCoachId }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {coaches.map((el, i) => (
+          {companies.map((el, i) => (
             <TableRow key={i}>
               <TableCell component="th" scope="row">
-              {el.userId === auth.getUserId() ? <Link to={`/${el.userId}/profile`}>{el.coachInfo.name}</Link> :
-              <Link to={`/${el.userId}/profile`}>{el.coachInfo.name}</Link>
-              }
+                {el.name}
               </TableCell>
               <TableCell align="right">{el.userId}</TableCell>
               <TableCell align="right">{el.email}</TableCell>
               <TableCell align="right">{el.main_contact_number}</TableCell>
-              <TableCell align="right">{el.coachInfo.coaching_level}</TableCell>
+              <TableCell align="right">{el.userId}</TableCell>
               <TableCell align="right">
               {el.verification.dbsDocumentationCheck ? <CheckSharpIcon style={{color: 'green'}} /> : <ClearSharpIcon style={{color: 'red'}} />}
               </TableCell>
