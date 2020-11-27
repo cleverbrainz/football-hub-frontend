@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { withRouter } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -102,8 +103,6 @@ const Requests = ({ match }) => {
   const [requests, setRequests] = useState([])
   // const input = useRef()
   // const [imageUpload, setImageUpload] = useState(false)
-  const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === profileId)
-  const [isCompany, setIsCompany] = useState(true)
   // const [requestSent, setRequestSent] = useState()
 
   console.log(requests)
@@ -111,16 +110,18 @@ const Requests = ({ match }) => {
   async function getData() {
     let companies = []
     let user
-    const response = await axios.get(`/users/${profileId}`)
+    const response = await axios.get(`/users/${auth.getUserId()}`)
     const data = await response.data[0]
     user = data
     console.log(data)
-    for (const request of data.requests) {
+    if (data.requests) {
+      for (const request of data.requests) {
       const response = await axios.get(`/users/${request}`)
       const data = await response.data[0]
       console.log('data', data)
       companies.push(data)
     }
+  }
     setUser(user)
     setRequests(companies)
 }
@@ -183,4 +184,4 @@ const Requests = ({ match }) => {
   )
 }
 
-export default Requests
+export default withRouter(Requests)

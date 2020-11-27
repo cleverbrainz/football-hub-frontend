@@ -11,6 +11,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormPropsTextFields from '../admin/AddCoaches'
+import Requests from '../Requests'
 import {
   Typography,
   Card,
@@ -21,11 +22,8 @@ import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import auth from '../../lib/auth'
 import DeleteComponent from './DeleteComponent'
-import CoachEdit from '../CoachEdit'
-import CoachPageBetaTable from '../../components/CoachPageBetaTable'
-import { withRouter } from 'react-router-dom';
-import CompanyAddCoach from '../CompanyAddCoach';
-import CoachSearch from './CoachSearch';
+
+import CompanyPageBetaTable from '../../components/CompanyPageBetaTable'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -109,11 +107,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-function CoachPageBeta() {
+export default function CompanyPageBeta() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [coaches, setCoaches] = useState()
-  const [user, setUser] = useState({})
+  const [companies, setCompanies] = useState()
   const [newCoachDetail, setNewCoachDetail] = useState()
   const [open, setOpen] = useState(false)
   const [deleteInProgress, setDeleteInProgress] = useState(false)
@@ -121,20 +118,19 @@ function CoachPageBeta() {
 
 
   async function getData() {
-    let coachArray = []
+    let companyArray = []
     let user
     const response = await axios.get(`/users/${auth.getUserId()}`)
     const data = await response.data[0]
     user = data
     console.log(data)
-    for (const request of data.coaches) {
+    for (const request of data.companies) {
       const response = await axios.get(`/users/${request}`)
       const data = await response.data[0]
       console.log('data', data)
-      coachArray.push(data)
+      companyArray.push(data)
     }
-    setUser(user)
-    setCoaches(coachArray)
+    setCompanies(companyArray)
   }
 
   // useEffect(() => {
@@ -180,12 +176,11 @@ function CoachPageBeta() {
   };
 
   const InternalCoachForm = (
-    // <FormPropsTextFields classes={classes} />
-    <CompanyAddCoach info={user} />
+    <FormPropsTextFields classes={classes} />
   )
 
   const ExternalCoachForm = (
-    <CoachSearch />
+    <h1> bye</h1>
   )
 
 
@@ -208,21 +203,22 @@ function CoachPageBeta() {
           textColor="primary"
           aria-label="scrollable force tabs example"
         >
-          <Tab label="Current Coaches" icon={<PeopleAltSharpIcon />} {...a11yProps(0)} />
-          <Tab label="Add New Coach" icon={<PersonAddSharpIcon />} {...a11yProps(1)} />
+          <Tab label="Current Companies" icon={<PeopleAltSharpIcon />} {...a11yProps(0)} />
+          <Tab label="New Requests" icon={<PersonAddSharpIcon />} {...a11yProps(1)} />
         </Tabs>
       </AppBar>
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-        {coaches && <CoachPageBetaTable
+        {companies && <CompanyPageBetaTable
           handleSetCoachId={(coachId) => handleSetCoachId(coachId)}
-          coaches={coaches} />}
+          companies={companies} />}
       </TabPanel>
 
       {/* tab 2 content */}
       <TabPanel className={classes.formContainer} value={value} index={1}>
-        <form className={classes.form} action="">
+        <Requests />
+        {/* <form className={classes.form} action="">
 
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel id="demo-simple-select-outlined-label">Who are you adding?</InputLabel>
@@ -243,7 +239,7 @@ function CoachPageBeta() {
 
           {newCoachDetail ? newCoachDetail === 'myself' ? InternalCoachForm : ExternalCoachForm : null}
 
-        </form>
+        </form> */}
       </TabPanel>
 
       <DeleteComponent
@@ -257,4 +253,3 @@ function CoachPageBeta() {
 
 
 
-export default withRouter(CoachPageBeta)
