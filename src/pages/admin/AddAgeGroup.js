@@ -44,7 +44,6 @@ export default function AddAgeGroup() {
         "/companies/age",
         {
           ageDetails,
-          companyId: auth.getUserId(),
         },
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
       )

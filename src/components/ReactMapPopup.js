@@ -39,8 +39,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ReactMapPopup = ({ selected }) => {
-  const { latitude, longitude } = selected.companyInfo.location;
-  const { name, images } = selected.companyInfo;
+
+  const {company, location} = selected
+  const { companyName, images, courses } = company.listingInfo;
+  const { latitude, longitude } = courses[location].courseDetails;
 
   const classes = useStyles();
 
@@ -83,8 +85,8 @@ const ReactMapPopup = ({ selected }) => {
     <Popup
       offsetLeft={0}
       offsetTop={-32}
-      latitude={latitude}
-      longitude={longitude}
+      latitude={parseFloat(latitude)}
+      longitude={parseFloat(longitude)}
     >
       <section
         style={{ width: "275px", height: "180px", position: "relative" }}
@@ -107,16 +109,16 @@ const ReactMapPopup = ({ selected }) => {
           </div>
         </div>
       </section>
-      <h1> {name} </h1>
+      <h1> {companyName} </h1>
 
-      <Link
+      {/* <Link
         to={{
-          pathname: `/companies/${selected.companyId}`,
-          state: selected.companyInfo,
+          pathname: `/companies/${company.companyId}`,
+          state: company.companyInfo,
         }}
       >
         <p> Know more!</p>
-      </Link>
+      </Link> */}
     </Popup>
   );
 };

@@ -74,7 +74,7 @@ export default function Login({ history }) {
 
         if (res.data.accountCategory === 'player' || res.data.accountCategory === 'parent') {
           history.push(`/${auth.getUserId()}/profile`)
-        } else history.push('/companyDashboard')
+        } else history.push('/tester')
       })
       .catch(err => {
         setIsLoading(false)
