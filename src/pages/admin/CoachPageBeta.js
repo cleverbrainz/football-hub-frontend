@@ -114,7 +114,7 @@ const useStyles = makeStyles((theme) => ({
 function CoachPageBeta() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [coaches, setCoaches] = useState()
+  const [coaches, setCoaches] = useState([])
   const [user, setUser] = useState({})
 
   const [companyCoaches, setCompanyCoaches] = useState()
@@ -140,10 +140,15 @@ function CoachPageBeta() {
     user = data
     console.log(data)
     for (const request of data.coaches) {
+      let coach
+      if (typeof request === 'string') {
       const response = await axios.get(`/users/${request}`)
-      const data = await response.data[0]
+      coach = await response.data[0]
       console.log('data', data)
-      coachArray.push(data)
+      } else {
+        coach = request
+      }
+      coachArray.push(coach)
     }
     setUser(user)
     setCoaches(coachArray)
@@ -226,9 +231,9 @@ function CoachPageBeta() {
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-        {companyCoaches && <CoachPageBetaTable
+        {coaches && <CoachPageBetaTable
           handleSetCoachId={(coachId) => handleSetCoachId(coachId)}
-          coaches={companyCoaches} />}
+          coaches={coaches} />}
       </TabPanel>
 
       {/* tab 2 content */}
