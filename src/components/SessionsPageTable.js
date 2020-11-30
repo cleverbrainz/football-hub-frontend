@@ -26,7 +26,6 @@ const useRowStyles = makeStyles({
     }
   },
   icons: {
-    color: "#EF5B5B",
     "&:hover": {
       cursor: "pointer",
     },
@@ -35,14 +34,14 @@ const useRowStyles = makeStyles({
 
 
 
-export default function SessionsPageTable({ courses, handleEditCourse }) {
+export default function SessionsPageTable({ courses, handleEditCourse, handleCourseDeletion }) {
 
   function WeeklyRow({ course }) {
     const { courseId } = course
     const { startDate, endDate, paymentInterval, cost, age, location } = course.courseDetails
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
-  
+
     return (
       <React.Fragment>
         <TableRow className={classes.root}>
@@ -51,8 +50,8 @@ export default function SessionsPageTable({ courses, handleEditCourse }) {
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
           </TableCell>
-  
-  
+
+
           <TableCell component="th" scope="row">
             {courseId}
           </TableCell>
@@ -66,21 +65,22 @@ export default function SessionsPageTable({ courses, handleEditCourse }) {
           <TableCell align="right">{paymentInterval}</TableCell>
           <TableCell align="right">
             <CreateSharpIcon
+              style={{ color: '#709995' }}
               onClick={() => handleEditCourse(course)}
               className={classes.icon}
             />
           </TableCell>
           <TableCell align="right">
             <DeleteForeverSharpIcon
-            style={{ color: '#EF5B5B' }}
-              // onClick={() => handleSetCoachId(el.coachId)}
+              style={{ color: '#EF5B5B' }}
+              onClick={() => handleCourseDeletion(courseId)}
               className={classes.icon}
             />
           </TableCell>
         </TableRow>
-  
-  
-  
+
+
+
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
@@ -98,8 +98,8 @@ export default function SessionsPageTable({ courses, handleEditCourse }) {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-  
-  
+
+
                     {course && course.courseDetails.sessions.map((session, i) => {
                       const { day, startTime, endTime, spaces } = session
                       return (
@@ -115,7 +115,7 @@ export default function SessionsPageTable({ courses, handleEditCourse }) {
                         </TableRow>
                       )
                     })}
-  
+
                   </TableBody>
                 </Table>
               </Box>
@@ -125,13 +125,13 @@ export default function SessionsPageTable({ courses, handleEditCourse }) {
       </React.Fragment >
     );
   }
-  
+
   function CampRow({ course }) {
     const { courseId } = course
     const { lastDay, firstDay, location, sessions, dayCost, campCost, age } = course.courseDetails
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
-  
+
     return (
       <React.Fragment>
         <TableRow className={classes.root}>
@@ -140,8 +140,8 @@ export default function SessionsPageTable({ courses, handleEditCourse }) {
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
           </TableCell>
-  
-  
+
+
           <TableCell component="th" scope="row">
             {courseId}
           </TableCell>
@@ -153,20 +153,22 @@ export default function SessionsPageTable({ courses, handleEditCourse }) {
           <TableCell align="right">{dayCost}</TableCell>
           <TableCell align="right">
             <CreateSharpIcon
+              style={{ color: '#709995' }}
               onClick={() => handleEditCourse(course)}
               className={classes.icon}
             />
           </TableCell>
           <TableCell align="right">
             <DeleteForeverSharpIcon
-              // onClick={() => handleSetCoachId(el.coachId)}
+              style={{ color: '#EF5B5B' }}
+              onClick={() => handleCourseDeletion(courseId)}
               className={classes.icon}
             />
           </TableCell>
         </TableRow>
-  
-  
-  
+
+
+
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
@@ -184,8 +186,8 @@ export default function SessionsPageTable({ courses, handleEditCourse }) {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-  
-  
+
+
                     {course && course.courseDetails.sessions.map((session, i) => {
                       function toDateTime(secs) {
                         var t = new Date(1970, 0, 1); // Epoch
@@ -193,7 +195,7 @@ export default function SessionsPageTable({ courses, handleEditCourse }) {
                         return t;
                       }
                       const { sessionDate, startTime, endTime, spaces } = session
-  
+
                       return (
                         <TableRow key={i} >
                           <TableCell component="th" scope="row">
@@ -205,7 +207,7 @@ export default function SessionsPageTable({ courses, handleEditCourse }) {
                         </TableRow>
                       )
                     })}
-  
+
                   </TableBody>
                 </Table>
               </Box>

@@ -11,6 +11,7 @@ export default function ResetCampDetailsDialogue({
   handleClose,
   handleCampResetInformation,
   name,
+  courseId
 }) {
 
   return (
@@ -29,7 +30,7 @@ export default function ResetCampDetailsDialogue({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCampResetInformation} color="primary">
+          <Button onClick={() => handleCampResetInformation(courseId)} color="primary">
             Confirm Reset
           </Button>
           <Button onClick={handleClose} color="primary">

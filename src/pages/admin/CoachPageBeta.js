@@ -117,8 +117,8 @@ function CoachPageBeta() {
   const [coaches, setCoaches] = useState()
   const [user, setUser] = useState({})
 
-  // const [companyCoaches, setCompanyCoaches] = useState()
-  // const [allAppCoaches, setAllAppCoaches] = useState()
+  const [companyCoaches, setCompanyCoaches] = useState()
+  const [allAppCoaches, setAllAppCoaches] = useState()
 
   const [newCoachDetail, setNewCoachDetail] = useState()
   const [externalCoachDetail, setExternalCoachDetail] = useState()

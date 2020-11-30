@@ -123,44 +123,57 @@ export default function Sessions() {
       .catch(e => console.log(e))
   }, [!stateRefreshInProgress]);
 
-  const handleSetLocationId = locationId => {
+  const handleCourseDeletion = courseId => {
     setOpen(true)
-    setCourseIdToBeDeleted(locationId)
+    setCourseIdToBeDeleted(courseId)
   }
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  function handleStateRefresh() {
+  const handleStateRefresh = () => {
     setValue(0)
     setStateRefreshInProgress(!stateRefreshInProgress)
   }
 
-  function handleCampResetInformation(e) {
+
+  function handleCampResetInformation(courseId) {
     const { courseType } = courseToBeEdited.courseDetails
-    setValue(1)
-    if (courseType === 'Weekly') setNewCourseDetail('weekly')
-    else setNewCourseDetail('camp')
+    setStateRefreshInProgress(true);
+    axios
+      .delete(`/companies/courses/${courseId}`, {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+      })
+      .then((res) => {
+        setValue(1)
+        setStateRefreshInProgress(false);
+        if (courseType === 'Weekly') setNewCourseDetail('weekly')
+        else setNewCourseDetail('camp')
+      })
+      .catch(err => {
+        setStateRefreshInProgress(false);
+        console.error(err)
+      });
   }
 
   const handleDelete = () => {
     setStateRefreshInProgress(true);
     console.log(courseIdToBeDeleted);
-    // axios
-    //   .delete(`/companies/locations/${courseIdToBeDeleted}`, {
-    //     headers: { Authorization: `Bearer ${auth.getToken()}` },
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     setStateRefreshInProgress(false);
-    //     handleClose();
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //     setStateRefreshInProgress(false);
-    //     handleClose();
-    //   });
+    axios
+      .delete(`/companies/courses/${courseIdToBeDeleted}`, {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setStateRefreshInProgress(false);
+        handleClose();
+      })
+      .catch((err) => {
+        console.error(err);
+        setStateRefreshInProgress(false);
+        handleClose();
+      });
   };
 
   const handleEditCourse = (course) => {
@@ -196,9 +209,12 @@ export default function Sessions() {
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-        <SessionsPageTable 
-        handleEditCourse={e => handleEditCourse(e)}
-        courseToBeEdited={courseToBeEdited} courses={companyCourses} />
+        <SessionsPageTable
+          classes={classes}
+          handleEditCourse={e => handleEditCourse(e)}
+          handleCourseDeletion={e => handleCourseDeletion(e)}
+          courseToBeEdited={courseToBeEdited} 
+          courses={companyCourses} />
       </TabPanel>
 
       {/* tab 2 content */}
@@ -220,29 +236,40 @@ export default function Sessions() {
           </Select>
         </FormControl>
 
-        {newCourseDetail ? newCourseDetail === 'camp' ?   <MaterialUIPickers /> : (
-          <WeeklyCourseDetails />
-        ) : null}
-      
+        {newCourseDetail ? newCourseDetail === 'camp' ?
+          <MaterialUIPickers
+            handleStateRefresh={() => handleStateRefresh()}
+          />
+          : (
+            <WeeklyCourseDetails
+              handleStateRefresh={() => handleStateRefresh()}
+            />
+          ) : null}
+
       </TabPanel>
 
       {/* tab 5 content */}
       <TabPanel className={classes.formContainer} value={value} index={2}>
-      {courseToBeEdited ? courseToBeEdited.courseDetails.courseType === 'Camp' ?  <MaterialUIPickers 
-      handleCampResetInformation={e => handleCampResetInformation(e)}
-      course={courseToBeEdited}
-      /> : (
-          <WeeklyCourseDetails course={courseToBeEdited}
-          handleStateRefresh={() => handleStateRefresh()}
-          handleCampResetInformation={e => handleCampResetInformation(e)}/>
-        ) : null}
+        {courseToBeEdited ? courseToBeEdited.courseDetails.courseType === 'Camp' ?
+          <MaterialUIPickers
+            handleCampResetInformation={e => handleCampResetInformation(e)}
+            handleStateRefresh={() => handleStateRefresh()}
+            course={courseToBeEdited}
+          />
+          :
+          (
+            <WeeklyCourseDetails
+              course={courseToBeEdited}
+              handleStateRefresh={() => handleStateRefresh()}
+              handleCampResetInformation={e => handleCampResetInformation(e)} />
+          ) : null}
       </TabPanel>
 
       <DeleteComponent
         open={open}
         handleDelete={e => handleDelete(e)}
         handleClose={e => handleClose(e)}
-        name='location' />
+        name='course/camp' />
     </div>
   );
 }

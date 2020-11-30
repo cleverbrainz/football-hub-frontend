@@ -57,7 +57,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MaterialUIPickers({ history, course, handleCampResetInformation }) {
+export default function MaterialUIPickers({ history, course,
+  handleCampResetInformation,
+  handleStateRefresh }) {
 
 
   const classes = useStyles();
@@ -121,40 +123,47 @@ export default function MaterialUIPickers({ history, course, handleCampResetInfo
   const handleSubmit = (e) => {
     e.preventDefault();
 
-
-
     const requestObj = { ...courseDetails }
     if (!requestObj.individualDayBookings) requestObj.dayCost = ''
-    console.log(course)
-    console.log(requestObj);
+    if (course) requestObj.courseId = course.courseId
 
-    // axios
-    //   .post("/companies/courses", {
-    //     courseDetails,
-    //     companyId: auth.getUserId(),
-    //   })
-    //   .catch((error) => {
-    //     alert(error.message);
-    //   });
+    console.log(requestObj)
+
+    if (course) {
+      console.log(course)
+      return axios
+        .patch("/companies/array/courses", { ...course, courseDetails: requestObj},
+          { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+        .then(res => handleStateRefresh())
+        .catch((error) => {
+          alert(error.message);
+        });
+    } else {
+      return axios
+        .post("/companies/courses", {
+          courseDetails,
+          companyId: auth.getUserId(),
+        })
+        .then(res => handleStateRefresh())
+        .catch((error) => {
+          alert(error.message);
+        });
+    }
+
   };
 
   function updateOtherCourseInfo(event, index) {
     const { name, value } = event.target;
+    const sessionsArr = ['spaces', 'startTime', 'endTime']
 
     if (course && (name === 'firstDay' || name === 'lastDay')) setOpen(true)
-    else if (name === 'spaces' || name === 'startTime' || name === 'endTime') {
-      const newSessionsArr = [...sessions] 
-      newSessionsArr[index] = {...newSessionsArr[index], [name]: value}
-
-      console.log(newSessionsArr)
+    else if (course && (sessionsArr.includes(name))) {
+      const newSessionsArr = [...sessions]
+      newSessionsArr[index] = { ...newSessionsArr[index], [name]: value }
       setCourseDetails({ ...courseDetails, sessions: newSessionsArr })
     }
     else setCourseDetails({ ...courseDetails, [name]: value })
-
   }
-
-
-
 
 
   return (
@@ -417,7 +426,8 @@ export default function MaterialUIPickers({ history, course, handleCampResetInfo
 
       {open && <ResetCampDetailsDialogue
         open={open}
-        handleCampResetInformation={e => handleCampResetInformation()}
+        courseId={course.courseId}
+        handleCampResetInformation={courseId => handleCampResetInformation(courseId)}
         handleClose={() => handleClose()}
       />}
     </Container>
