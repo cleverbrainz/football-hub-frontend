@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function WeeklyformDetails({ history, course, handleCampResetInformation,
-handleStateRefresh }) {
+  handleStateRefresh }) {
   // console.log(course)
   const classes = useStyles();
   const [rows, setRows] = React.useState([1]);
@@ -57,7 +57,7 @@ handleStateRefresh }) {
   const [formDetails, setFormDetails] = React.useState({
     startDate: course ? course.courseDetails.startDate : "",
     endDate: course ? course.courseDetails.endDate : "",
-    sessions: [],
+    sessions: course ? course.courseDetails.sessions : [],
     cost: course ? course.courseDetails.cost : "",
     courseType: "Weekly",
     paymentInterval: course ? course.courseDetails.paymentInterval : "",
@@ -97,7 +97,17 @@ handleStateRefresh }) {
       }
     })
 
-    axios
+    if (course) {
+
+      return axios
+        .patch("/companies/array/courses", { ...course, courseDetails },
+          { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+        .then(res => handleStateRefresh())
+        .catch((error) => {
+          alert(error.message);
+        });
+    } else {
+      return axios
       .post("/companies/courses", {
         courseDetails,
         companyId: auth.getUserId(),
@@ -108,6 +118,8 @@ handleStateRefresh }) {
       .catch((error) => {
         alert(error.message);
       });
+    }
+
   };
 
   function updateCourseDays(index, event) {
@@ -197,7 +209,7 @@ handleStateRefresh }) {
           onChange={(e) => updateOtherCourseInfo(e)}
         />
 
-        {rows.map((el, i) => {
+        {!course ? rows.map((el, i) => {
           return (
             <TableComponent
               classes={classes}
@@ -205,15 +217,27 @@ handleStateRefresh }) {
               key={i}
             />
           );
-        })}
+        }) : (
+            sessions.map((el, i) => {
+              return (
+                <TableComponent
+                  el={el}
+                  index={i}
+                  classes={classes}
+                  updateCourseDays={(e) => updateCourseDays(i, e)}
+                  key={i}
+                />
+              );
+            })
+          )}
 
-        <Button
+       {!course && <Button
           variant="contained"
           color="primary"
           onClick={() => setRows([...rows, 1])}
         >
           Add another session
-        </Button>
+        </Button>} 
 
         <Typography variant="h5">Cost</Typography>
         <div>
@@ -254,8 +278,10 @@ handleStateRefresh }) {
         </div>
       </form>
 
-      {open && <ResetCampDetailsDialogue open={open}
-        handleCampResetInformation={e => handleCampResetInformation()}
+      {open && <ResetCampDetailsDialogue 
+        open={open}
+        courseId={course.courseId}
+        handleCampResetInformation={(courseId) => handleCampResetInformation(courseId)}
         handleClose={() => handleClose()}
       />}
     </Container>
