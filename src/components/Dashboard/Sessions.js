@@ -108,19 +108,38 @@ export default function Sessions() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [companyCourses, setCompanyCourses] = useState()
+  const [registers, setRegisters] = useState([])
   const [open, setOpen] = useState(false)
   const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
   const [courseIdToBeDeleted, setCourseIdToBeDeleted] = useState()
   const [newCourseDetail, setNewCourseDetail] = useState()
   const [courseToBeEdited, setCourseToBeEdited] = useState()
 
+  async function getData() {
+    let registerArray = []
+    const response = await axios.get(`/users/${auth.getUserId()}`)
+    const data = await response.data[0]
+    console.log(data)
+    for (const course of data.courses) {
+    let register
+    const response = await axios.get(`/courses/${course.courseId}`)
+    register = await response.data
+    console.log(register.register)
+    // console.log('data', data)
+    if (register.register) registerArray.push(register)
+    }
+    setCompanyCourses(data.courses)
+    setRegisters(registerArray)
+    }
+
   useEffect(() => {
-    axios
-      .get(`/users/${auth.getUserId()}`)
-      .then(res => {
-        setCompanyCourses(res.data[0].courses);
-      })
-      .catch(e => console.log(e))
+    // axios
+    //   .get(`/users/${auth.getUserId()}`)
+    //   .then(res => {
+    //     setCompanyCourses(res.data[0].courses);
+    //   })
+    //   .catch(e => console.log(e))
+    getData()
   }, [!stateRefreshInProgress]);
 
   const handleCourseDeletion = courseId => {
@@ -214,7 +233,8 @@ export default function Sessions() {
           handleEditCourse={e => handleEditCourse(e)}
           handleCourseDeletion={e => handleCourseDeletion(e)}
           courseToBeEdited={courseToBeEdited} 
-          courses={companyCourses} />
+          courses={companyCourses}
+          registers={registers} />
       </TabPanel>
 
       {/* tab 2 content */}
