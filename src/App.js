@@ -68,7 +68,7 @@ import Requests from "./pages/Requests";
 import AddLocation from "./pages/admin/AddLocation";
 import CoachPageBeta from './pages/admin/CoachPageBeta'
 import CoachEdit from "./pages/CoachEdit";
-import CourseRegister from "./pages/CourseRegister";
+import CourseRegister from './pages/CourseRegister'
 
 // axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
 
