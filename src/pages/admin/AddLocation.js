@@ -13,9 +13,11 @@ import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 
 import LocationFilter from '../../components/LocationFilter'
 
-export default function AddLocation({ history, handleStateRefresh, deleteInProgress, classes }) {
+export default function AddLocation({
+  handleStateRefresh, 
+  stateRefreshInProgress, 
+  classes }) {
 
-  const [loginError, setLoginError] = useState()
   const [formDetails, setformDetails] = useState({
     venue: '',
     fullAddress: '',
@@ -25,20 +27,15 @@ export default function AddLocation({ history, handleStateRefresh, deleteInProgr
   })
   const [address, setAddress] = useState()
 
-  function handleFormSubmit(e) {
+  const handleFormSubmit = e => {
     e.preventDefault()
-    handleStateRefresh()
-    console.log(formDetails)
 
     axios.post("/companies/locations", formDetails)
       .then(res => {
-        console.log(res.data)
         handleStateRefresh()
-        history.push('/companyDashboard/location')
       })
       .catch(err => {
         handleStateRefresh()
-        console.log(err)
       })
   }
 
@@ -78,7 +75,7 @@ export default function AddLocation({ history, handleStateRefresh, deleteInProgr
 
       <LocationFilter address={address} handleSelect={e => handleSelect(e)} setAddress={setAddress} />
 
-      <Button disabled={deleteInProgress}
+      <Button
         className={classes.input}
         type='submit'
         variant="contained" color="primary">

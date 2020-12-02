@@ -23,8 +23,11 @@ const useStyles = makeStyles({
   }
 });
 
-export default function ListingsPageTable({ listings, handleSetCoachId,
-handleSetListingToBeEdited }) {
+export default function ListingsPageTable({
+  handleSetListingId,
+  listings,
+  handleSetCoachId,
+  handleSetListingToBeEdited }) {
   const classes = useStyles();
 
   return (
@@ -57,13 +60,13 @@ handleSetListingToBeEdited }) {
                 <CreateSharpIcon
                   onClick={() => handleSetListingToBeEdited(el)}
                   className={classes.icon}
-                  style={{color: "green"}}
+                  style={{ color: "green" }}
                 />
               </TableCell>
               <TableCell align="right">
                 <DeleteForeverSharpIcon
-                  // onClick={() => handleSetCoachId(el.coachId)}
-                  className={classes.icon} style={{color: "#EF5B5B"}} />
+                  onClick={() => handleSetListingId(el.listingId)}
+                  className={classes.icon} style={{ color: "#EF5B5B" }} />
               </TableCell>
             </TableRow>
           ))}

@@ -25,6 +25,8 @@ export default function DeleteComponent({
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Are you sure you want to delete the {name}?
+            {name === 'location' && <p> Please ensure all courses relating to this venue have been edited on the system. 
+              Courses/camps with this location on the system will also be deleted as a result. </p>}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

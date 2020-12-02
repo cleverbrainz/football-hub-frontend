@@ -106,50 +106,69 @@ export default function Locations() {
   const [value, setValue] = useState(0);
   const [companyLocations, setCompanyLocations] = useState()
   const [open, setOpen] = useState(false)
-  const [deleteInProgress, setDeleteInProgress] = useState(false)
-  const [locationIdToBeDeleted, setLocationIdToBeDeleted] = useState()
+  const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
+  const [locationToBeDeleted, setLocationToBeDeleted] = useState()
+
+  // company courses only in need if location is deleted, need to deleted courses related to location
+  const [companyCourses, setCompanyCourses] = useState()
 
   useEffect(() => {
     axios
       .get(`/users/${auth.getUserId()}`)
       .then(res => {
         setCompanyLocations(res.data[0].locations);
+        setCompanyCourses(res.data[0].courses);
       })
       .catch(e => console.log(e))
-  }, [!deleteInProgress]);
+  }, [!stateRefreshInProgress]);
 
-  const handleSetLocationId = locationId => {
+  const handleSetLocationId = (locationId, venue) => {
     setOpen(true)
-    setLocationIdToBeDeleted(locationId)
+    setLocationToBeDeleted({ id: locationId, venue })
   }
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  function handleStateRefresh() {
-    setDeleteInProgress(!deleteInProgress)
+  const handleStateRefresh = () => {
+    setStateRefreshInProgress(!stateRefreshInProgress)
+    setValue(0)
+  }
+
+  async function deleteCourses(coursesToBeDeletedArr) {
+
+    await coursesToBeDeletedArr.forEach(el => {
+      axios.delete(`/companies/courses/${el.courseId}`, {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+      })
+      // console.log(el.courseId)
+    })
   }
 
   const handleDelete = () => {
-    setDeleteInProgress(true);
-    console.log(locationIdToBeDeleted);
-    // axios
-    //   .delete(`/companies/locations/${locationIdToBeDeleted}`, {
-    //     headers: { Authorization: `Bearer ${auth.getToken()}` },
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     setDeleteInProgress(false);
-    //     handleClose();
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //     setDeleteInProgress(false);
-    //     handleClose();
-    //   });
-  };
-
+    setStateRefreshInProgress(true);
+    console.log(locationToBeDeleted);
+    axios
+      .delete(`/companies/locations/${locationToBeDeleted.id}`, {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+      })
+      .then(() => {
+        const coursesToBeDeleted = companyCourses.filter(el => {
+          return el.courseDetails.location === locationToBeDeleted.venue
+        })
+        deleteCourses(coursesToBeDeleted)
+      })
+      .then(() => {
+        setStateRefreshInProgress(false);
+        handleClose();
+      })
+      .catch((err) => {
+        console.error(err);
+        setStateRefreshInProgress(false);
+        handleClose();
+      });
+  }
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -177,22 +196,22 @@ export default function Locations() {
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
         {companyLocations && <LocationPageTable
-          handleSetLocationId={(locationId) => handleSetLocationId(locationId)}
+          handleSetLocationId={(locationId, venue) => handleSetLocationId(locationId, venue)}
           locations={companyLocations} />}
       </TabPanel>
 
       {/* tab 2 content */}
       <TabPanel className={classes.formContainer} value={value} index={1}>
-        <AddLocation 
-        deleteInProgress={deleteInProgress}
-        handleStateRefresh={() => handleStateRefresh()} classes={classes} />
+        <AddLocation
+          stateRefreshInProgress={stateRefreshInProgress}
+          handleStateRefresh={() => handleStateRefresh()} classes={classes} />
       </TabPanel>
 
-      <DeleteComponent
+      {open && <DeleteComponent
         open={open}
         handleDelete={e => handleDelete(e)}
         handleClose={e => handleClose(e)}
-        name='location' />
+        name='location' />}
     </div>
   );
 }

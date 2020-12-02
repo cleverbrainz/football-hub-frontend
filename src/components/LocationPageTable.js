@@ -48,7 +48,7 @@ export default function CoachPageBetaTable({ locations, handleSetLocationId }) {
               <TableCell align="right">{el.longitude}</TableCell>
               <TableCell align="right">
                 <DeleteForeverSharpIcon
-                onClick={() => handleSetLocationId(el.locationId)}
+                onClick={() => handleSetLocationId(el.locationId, el.venue)}
                 className={classes.icon} />
               </TableCell>
             </TableRow>
