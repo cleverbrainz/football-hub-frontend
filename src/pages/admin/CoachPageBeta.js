@@ -278,21 +278,22 @@ function CoachPageBeta() {
 
           {newCoachDetail ? newCoachDetail === 'myself' ? InternalCoachForm : (
             externalCoachDetail ? externalCoachDetail === 'existing' ? (
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label"> Select Existing Coach </InputLabel>
-                <Select
-                  className={classes.select}
-                  labelId="demo-simple-select-filled-label"
-                  id="demo-simple-select-filled"
-                  label='Select Existing Coach'
-                  value={existingAppCoachToBeAdded}
-                  onChange={e => setExistingAppCoachToBeAdded(e.target.value)}
-                >
+              // <FormControl variant="outlined" className={classes.formControl}>
+              //   <InputLabel id="demo-simple-select-outlined-label"> Select Existing Coach </InputLabel>
+              //   <Select
+              //     className={classes.select}
+              //     labelId="demo-simple-select-filled-label"
+              //     id="demo-simple-select-filled"
+              //     label='Select Existing Coach'
+              //     value={existingAppCoachToBeAdded}
+              //     onChange={e => setExistingAppCoachToBeAdded(e.target.value)}
+              //   >
 
-                  {allAppCoaches.map((el, i) => <MenuItem value={el.coachInfo.coach_name}> {el.coachInfo.coach_name} - {el.coachInfo.coach_email} </MenuItem>)}
+              //     {coaches.map((el, i) => <MenuItem value={el.coachInfo.coach_name}> {el.coachInfo.coach_name} - {el.coachInfo.coach_email} </MenuItem>)}
 
-                </Select>
-              </FormControl>
+              //   </Select>
+              // </FormControl>
+              ExternalCoachForm
             ) : (
                 <>
                   <FormControl className={classes.inputs} variant="outlined"
