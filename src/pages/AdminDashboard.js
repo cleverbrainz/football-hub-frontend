@@ -29,7 +29,8 @@ import {
   LocationOnSharp,
   DirectionsRunSharp,
   SportsSoccerSharp,
-  PhotoLibrarySharp
+  PhotoLibrarySharp,
+  SettingsSharp
 } from '@material-ui/icons';
 
 import auth from '../lib/auth'
@@ -43,6 +44,7 @@ import Locations from '../components/Dashboard/Locations'
 import Players from '../components/Dashboard/Players'
 import Sessions from '../components/Dashboard/Sessions'
 import Images from '../components/Dashboard/Images'
+import Misc from '../components/Dashboard/Misc'
 
 const drawerWidth = 240;
 
@@ -141,6 +143,7 @@ export default function Profile() {
     Sessions: SportsSoccerSharp,
     Images: PhotoLibrarySharp,
     Players: DirectionsRunSharp,
+    Misc: SettingsSharp,
     Calendar: EventNoteSharp,
     Summary: BubbleChartSharp,
   })
@@ -153,6 +156,7 @@ export default function Profile() {
     Images,
     Sessions,
     Players,
+    Misc,
     Summary,
     Calendar,
   }
@@ -223,7 +227,7 @@ export default function Profile() {
         <List>
           {Object.keys(drawerItems).map((text, index) => {
             const Icon = drawerItems[text]
-            const isDisabled = ['Summary', 'Calendar', 'Players'].includes(text)
+            const isDisabled = ['Summary', 'Calendar'].includes(text)
 
             return (
               <ListItem

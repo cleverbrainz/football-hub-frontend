@@ -86,7 +86,6 @@ export default function AddListings({
     listingToBeEdited.coaches : []);
 
   const [listingForm, setListingForm] = useState({
-    listingId: listingToBeEdited.listingId,
     bio: listingToBeEdited ? listingToBeEdited.bio : '',
     reasons_to_join: listingToBeEdited ? listingToBeEdited.reasons_to_join : [''],
     services: [],
@@ -166,24 +165,6 @@ export default function AddListings({
 
   }, [])
 
-  // function updateUser() {
-  //   axios.get(`/users/${auth.getUserId()}`)
-  //     .then(res => {
-  //       const { bio, reasons_to_join } = res.data[0]
-  //       // setUser(res.data[0])
-  //       setForm({
-  //         ...form,
-  //         bio,
-  //         reasons_to_join
-  //       })
-  //       const slotNumbers = []
-  //       for (let i = 0; i < 8 - res.data[0].images.length; i++) {
-  //         slotNumbers.push(1)
-  //       }
-  //       setEmptyImageSlots(slotNumbers)
-  //     })
-  // }
-
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -199,14 +180,9 @@ export default function AddListings({
     }
 
 
-
-
-
-
-
     if (listingToBeEdited) {
       return axios
-        .patch("/companies/array/listings", requestObj,
+        .patch("/companies/array/listings", { ...requestObj, listingId: listingToBeEdited.listingId },
           { headers: { Authorization: `Bearer ${auth.getToken()}` } })
         .then(res => handleStateRefresh())
         .catch((error) => {

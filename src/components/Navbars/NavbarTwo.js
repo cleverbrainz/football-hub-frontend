@@ -165,9 +165,9 @@ function NavbarTwo({ history }) {
               <Link to={`/${auth.getUserId()}/messages`}>
                 <IconButton className={classes.icon}
                   aria-label="show 4 new mails" >
-                  <Badge badgeContent={4} color="secondary">
+                  {/* <Badge badgeContent={4} color="secondary"> */}
                     <MailIcon style={{ color: '#3d3d3d' }} />
-                  </Badge>
+                  {/* </Badge> */}
                 </IconButton>
               </Link>
 

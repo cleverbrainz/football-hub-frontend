@@ -51,68 +51,68 @@ export default function CompanyPlayersList() {
 
 
 
-const [companyData, setCompanyData] = useState({})
-const [players, setPlayers] = useState({})
-const [filteredNames, setFilteredNames] = useState([])
-const [filters, setFilters] = useState({
-  // minimumAge: 0,
-  // maximumAge: 100,
-  ageRange: '0-100',
-  status: 'All'
-})
-const [open, setOpen] = useState(false)
+  const [companyData, setCompanyData] = useState({})
+  const [players, setPlayers] = useState({})
+  const [filteredNames, setFilteredNames] = useState([])
+  const [filters, setFilters] = useState({
+    // minimumAge: 0,
+    // maximumAge: 100,
+    ageRange: '0-100',
+    status: 'All'
+  })
+  const [open, setOpen] = useState(false)
 
-async function getData() {
-  let playerlist = {}
-  const response = await axios.get(`/users/${auth.getUserId()}`)
-  const data = await response.data[0]
-  console.log(data)
-  for (const player of Object.keys(data.players)) {
-  let playerInfo
-  const response = await axios.get(`/users/${player}`)
-  playerInfo = await response.data[0]
-  console.log(playerInfo)
-  // console.log('data', data)
-  playerlist[player] = playerInfo
-  }
-  setCompanyData(data)
-  setPlayers(playerlist)
-  setFilteredNames(Object.keys(playerlist))
-  
-  }
-
-
-useEffect(() => {
-  // axios.get(`/users/${auth.getUserId()}`)
-  //   .then(res => {
-  //     console.log(res.data[0])
-  //     if (res.data[0].players) {
-  //       setPlayers(res.data[0].players)
-  //       setFilteredNames(Object.keys(res.data[0].players))
-  //     }
-  //   })
-  getData()
-},[])
-
-const handleFilterChange = (event) => {
-  console.log(event)
-  const name = event.target.name;
-  const newFilters = {
-    ...filters,
-    [name]: event.target.value,
-  }
-  const [lowAge, highAge] = newFilters.ageRange.split('-')
-  const filteredPlayers = []
-  for (const player of Object.keys(players)) {
-    if (Number(players[player].age) >= lowAge && Number(players[player].age) <= highAge) {
-      companyData.players[player].status === newFilters.status || newFilters.status === 'All' ? filteredPlayers.push(player) : console.log('filtered')
+  async function getData() {
+    let playerlist = {}
+    const response = await axios.get(`/users/${auth.getUserId()}`)
+    const data = await response.data[0]
+    console.log(data)
+    for (const player of Object.keys(data.players)) {
+      let playerInfo
+      const response = await axios.get(`/users/${player}`)
+      playerInfo = await response.data[0]
+      console.log(playerInfo)
+      // console.log('data', data)
+      playerlist[player] = playerInfo
     }
+    setCompanyData(data)
+    setPlayers(playerlist)
+    setFilteredNames(Object.keys(playerlist))
+
   }
-  setFilters(newFilters)
-  setFilteredNames(filteredPlayers)
 
 
-};
+  useEffect(() => {
+    // axios.get(`/users/${auth.getUserId()}`)
+    //   .then(res => {
+    //     console.log(res.data[0])
+    //     if (res.data[0].players) {
+    //       setPlayers(res.data[0].players)
+    //       setFilteredNames(Object.keys(res.data[0].players))
+    //     }
+    //   })
+    getData()
+  }, [])
+
+  const handleFilterChange = (event) => {
+    console.log(event)
+    const name = event.target.name;
+    const newFilters = {
+      ...filters,
+      [name]: event.target.value,
+    }
+    const [lowAge, highAge] = newFilters.ageRange.split('-')
+    const filteredPlayers = []
+    for (const player of Object.keys(players)) {
+      if (Number(players[player].age) >= lowAge && Number(players[player].age) <= highAge) {
+        companyData.players[player].status === newFilters.status || newFilters.status === 'All' ? filteredPlayers.push(player) : console.log('filtered')
+      }
+    }
+    setFilters(newFilters)
+    setFilteredNames(filteredPlayers)
+
+
+  };
 
 
 
@@ -120,7 +120,7 @@ const handleFilterChange = (event) => {
   // if (!players) return null
   if (companyData && players) return (
     <>
-    <FormControl className={classes.formControl}>
+      <FormControl className={classes.formControl}>
         <InputLabel id="demo-simple-select-label">Age Range</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -138,8 +138,8 @@ const handleFilterChange = (event) => {
           <MenuItem value={'17-18'}>17 - Adults</MenuItem>
           <MenuItem value={'18-100'}>Adults</MenuItem>
         </Select>
-        </FormControl>
-        {/* <FormControl className={classes.formControl}>
+      </FormControl>
+      {/* <FormControl className={classes.formControl}>
         <InputLabel id="demo-simple-select-label">Maximum Age</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -156,7 +156,7 @@ const handleFilterChange = (event) => {
           <MenuItem value={30}>Thirty</MenuItem>
         </Select>
         </FormControl> */}
-        <FormControl className={classes.formControl}>
+      <FormControl className={classes.formControl}>
         <InputLabel id="demo-simple-select-label">Status</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -173,109 +173,109 @@ const handleFilterChange = (event) => {
           <MenuItem value={'Prospect'}>Prospect</MenuItem>
         </Select>
       </FormControl>
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="right">  </TableCell>
-            <TableCell align="right">Name</TableCell>
-            <TableCell align="right">Age</TableCell>
-            <TableCell align="right">ID</TableCell>
-            <TableCell align="right">Courses</TableCell>
-            <TableCell align="right">Status</TableCell>
-            <TableCell align="right"></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {filteredNames.map((el, i) => (
-            <>
-            <TableRow key={i}>
-              {/* <TableCell component="th" scope="row">
+      <TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="right">  </TableCell>
+              <TableCell align="right">Name</TableCell>
+              <TableCell align="right">Age</TableCell>
+              <TableCell align="right">ID</TableCell>
+              <TableCell align="right">Courses</TableCell>
+              <TableCell align="right">Status</TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredNames.map((el, i) => (
+              <>
+                <TableRow key={i}>
+                  {/* <TableCell component="th" scope="row">
                 {el.name}
               </TableCell> */}
-              <TableCell>
-            <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-          </TableCell>
-              <TableCell align="right"><Link to={`/${players[el].userId}/profile`}>{players[el].name}</Link></TableCell>
-              <TableCell align="right">{players[el].age}</TableCell>
-              <TableCell align="right">{players[el].userId}</TableCell>
-              <TableCell align="right">
-              <div className={classes.root}>
-      
+                  <TableCell>
+                    <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                      {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                    </IconButton>
+                  </TableCell>
+                  <TableCell align="right"><Link to={`/${players[el].userId}/profile`}>{players[el].name}</Link></TableCell>
+                  <TableCell align="right">{players[el].age}</TableCell>
+                  <TableCell align="right">{players[el].userId}</TableCell>
+                  <TableCell align="right">
+                    <div className={classes.root}>
 
-    </div>
-              </TableCell>
-              <TableCell align="right">{companyData['players'][el].status}</TableCell>
-              <TableCell align="right">
-                <DeleteForeverSharpIcon
-                  // onClick={() => handleSetCoachId(el.coachId)}
-                  className={classes.icon}
-                />
-              </TableCell>
-            </TableRow>
-                    <TableRow>
-                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                      <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box margin={1}>
-                          <Typography variant="h6" gutterBottom component="div">
-                            Course Info
-                          </Typography>
-                          <Typography variant="subtitle1" gutterBottom component="div">
-                            Current Courses: {players[el].courses[companyData.userId] ? `${players[el].courses[companyData.userId].active.length}` : '0' }
-                          </Typography>
-                         
-                              {
-                                
-                                players[el].courses[auth.getUserId()] &&
-                                
-                                <ul>
-                                {players[el].courses[companyData.userId].active.map((elCourse, i) => {
 
-                                  return (
-                                    <>
-                                    <li>{elCourse}</li>
-                                    <br/>
-                                    </>
-                                  )
-                                })
-                              }
-                              </ul>
-                              
-                              } 
-                              <Typography variant="subtitle1" gutterBottom component="div">
-                            Past Courses: {players[el].courses[companyData.userId].past ? `${players[el].courses[companyData.userId].past.length}` : '0' }
+                    </div>
+                  </TableCell>
+                  <TableCell align="right">{companyData['players'][el].status}</TableCell>
+                  <TableCell align="right">
+                    <DeleteForeverSharpIcon
+                      // onClick={() => handleSetCoachId(el.coachId)}
+                      className={classes.icon}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                      <Box margin={1}>
+                        <Typography variant="h6" gutterBottom component="div">
+                          Course Info
                           </Typography>
-                         
-                              {
-                                
-                                players[el].courses[companyData.userId].past &&
-                                
-                                <ul>
-                                {players[el].courses[companyData.userId].past.map((elCourse, i) => {
+                        <Typography variant="subtitle1" gutterBottom component="div">
+                          Current Courses: {players[el].courses[companyData.userId] ? `${players[el].courses[companyData.userId].active.length}` : '0'}
+                        </Typography>
 
-                                  return (
-                                    <li>{elCourse}</li>
-                                  )
-                                })
-                              }
-                              </ul>
-                              
-                              } 
-                              
-                            
-          
-                        </Box>
-                      </Collapse>
-                    </TableCell>
-                  </TableRow>
-                  </>
-            
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                        {
+
+                          players[el].courses[auth.getUserId()] &&
+
+                          <ul>
+                            {players[el].courses[companyData.userId].active.map((elCourse, i) => {
+
+                              return (
+                                <>
+                                  <li>{elCourse}</li>
+                                  <br />
+                                </>
+                              )
+                            })
+                            }
+                          </ul>
+
+                        }
+                        <Typography variant="subtitle1" gutterBottom component="div">
+                          Past Courses: {players[el].courses[companyData.userId].past ? `${players[el].courses[companyData.userId].past.length}` : '0'}
+                        </Typography>
+
+                        {
+
+                          players[el].courses[companyData.userId].past &&
+
+                          <ul>
+                            {players[el].courses[companyData.userId].past.map((elCourse, i) => {
+
+                              return (
+                                <li>{elCourse}</li>
+                              )
+                            })
+                            }
+                          </ul>
+
+                        }
+
+
+
+                      </Box>
+                    </Collapse>
+                  </TableCell>
+                </TableRow>
+              </>
+
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   )
 }
