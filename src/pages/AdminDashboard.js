@@ -28,7 +28,8 @@ import {
   SupervisorAccountSharp,
   LocationOnSharp,
   DirectionsRunSharp,
-  SportsSoccerSharp
+  SportsSoccerSharp,
+  PhotoLibrarySharp
 } from '@material-ui/icons';
 
 import auth from '../lib/auth'
@@ -41,6 +42,7 @@ import Calendar from '../components/Dashboard/Calendar'
 import Locations from '../components/Dashboard/Locations'
 import Players from '../components/Dashboard/Players'
 import Sessions from '../components/Dashboard/Sessions'
+import Images from '../components/Dashboard/Images'
 
 const drawerWidth = 240;
 
@@ -130,28 +132,29 @@ export default function Profile() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [selectedComponent, setSelectedComponent] = useState('Listings');
-  // const { getUserDetails } = useContext(AuthContext)
 
   const [drawerItems, setDrawerItems] = useState({
-    Summary: BubbleChartSharp,
     Messages: ForumSharp,
-    Calendar: EventNoteSharp,
     Listings: FormatListNumberedSharp,
     Coaches: SupervisorAccountSharp,
     Locations: LocationOnSharp,
+    Sessions: SportsSoccerSharp,
+    Images: PhotoLibrarySharp,
     Players: DirectionsRunSharp,
-    Sessions: SportsSoccerSharp
+    Calendar: EventNoteSharp,
+    Summary: BubbleChartSharp,
   })
 
   const dashboardComponents = {
-    Summary,
     Coaches: CoachPageBeta,
     Listings,
-    Calendar,
     Messages,
     Locations,
+    Images,
+    Sessions,
     Players,
-    Sessions
+    Summary,
+    Calendar,
   }
 
   const DisplayedComponent = dashboardComponents[selectedComponent]
@@ -220,8 +223,13 @@ export default function Profile() {
         <List>
           {Object.keys(drawerItems).map((text, index) => {
             const Icon = drawerItems[text]
+            const isDisabled = ['Summary', 'Calendar', 'Players'].includes(text)
+
             return (
-              <ListItem onClick={() => setSelectedComponent(text)} style={{ paddingLeft: '24px', marginTop: '25px' }} button key={text}>
+              <ListItem
+                disabled={isDisabled}
+                onClick={() => setSelectedComponent(text)}
+                style={{ paddingLeft: '24px', marginTop: '25px' }} button key={text}>
                 <ListItemIcon> <Icon /> </ListItemIcon>
                 <ListItemText primary={text} />
               </ListItem>

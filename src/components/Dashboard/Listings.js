@@ -109,7 +109,7 @@ export default function Listings() {
   const [companyListings, setCompanyListings] = useState()
   const [open, setOpen] = useState(false)
   const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
-  const [locationIdToBeDeleted, setLocationIdToBeDeleted] = useState()
+  const [listingIdToBeDeleted, setListingIdToBeDeleted] = useState()
   const [listingToBeEdited, setListingToBeEdited] = useState()
 
 
@@ -133,9 +133,9 @@ export default function Listings() {
       .catch(e => console.log(e))
   }, [!stateRefreshInProgress]);
 
-  const handleSetLocationId = locationId => {
+  const handleSetListingId = listingId => {
     setOpen(true)
-    setLocationIdToBeDeleted(locationId)
+    setListingIdToBeDeleted(listingId)
   }
 
   const handleClose = () => {
@@ -149,21 +149,23 @@ export default function Listings() {
 
   const handleDelete = () => {
     setStateRefreshInProgress(true);
-    console.log(locationIdToBeDeleted);
-    // axios
-    //   .delete(`/companies/locations/${locationIdToBeDeleted}`, {
-    //     headers: { Authorization: `Bearer ${auth.getToken()}` },
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     setStateRefreshInProgress(false);
-    //     handleClose();
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //     setStateRefreshInProgress(false);
-    //     handleClose();
-    //   });
+
+    console.log(listingIdToBeDeleted)
+
+    axios
+      .delete(`/companies/listings/${listingIdToBeDeleted}`, {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setStateRefreshInProgress(false);
+        handleClose();
+      })
+      .catch((err) => {
+        console.error(err);
+        setStateRefreshInProgress(false);
+        handleClose();
+      });
   };
 
 
@@ -198,8 +200,11 @@ export default function Listings() {
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-        {companyListings && <ListingsPageTable listings={companyListings}
-        handleSetListingToBeEdited={listing => handleSetListingToBeEdited(listing)} />}
+        {companyListings &&
+          <ListingsPageTable
+            listings={companyListings}
+            handleSetListingId={listingId => handleSetListingId(listingId)}
+            handleSetListingToBeEdited={listing => handleSetListingToBeEdited(listing)} />}
       </TabPanel>
 
       {/* tab 2 content */}
@@ -211,17 +216,18 @@ export default function Listings() {
 
       {/* tab 2 content */}
       <TabPanel className={classes.formContainer} value={value} index={2}>
-        {listingToBeEdited && <AddListings
-          listingToBeEdited={listingToBeEdited}
-          listingTransferListInfo={listingTransferListInfo}
-          handleStateRefresh={() => handleStateRefresh()} classes={classes} />}
+        {listingToBeEdited &&
+          <AddListings
+            listingToBeEdited={listingToBeEdited}
+            listingTransferListInfo={listingTransferListInfo}
+            handleStateRefresh={() => handleStateRefresh()} classes={classes} />}
       </TabPanel>
 
       <DeleteComponent
         open={open}
         handleDelete={e => handleDelete(e)}
         handleClose={e => handleClose(e)}
-        name='location' />
+        name='listing' />
     </div>
   );
 }
