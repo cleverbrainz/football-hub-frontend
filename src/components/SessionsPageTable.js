@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom'
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
@@ -34,13 +35,14 @@ const useRowStyles = makeStyles({
 
 
 
-export default function SessionsPageTable({ courses, handleEditCourse, handleCourseDeletion }) {
+export default function SessionsPageTable({ courses, handleEditCourse, handleCourseDeletion, registers }) {
 
   function WeeklyRow({ course }) {
     const { courseId } = course
     const { startDate, endDate, paymentInterval, cost, age, location } = course.courseDetails
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
+    console.log(registers)
 
     return (
       <React.Fragment>
@@ -115,6 +117,17 @@ export default function SessionsPageTable({ courses, handleEditCourse, handleCou
                         </TableRow>
                       )
                     })}
+                    {
+                      registers && registers.map(register => {
+                        if (register.courseId === course.courseId) {
+                          return <Link to={`/courses/${register.courseId}/register`} state={{register}}>
+                            <Typography>
+                              View Register
+                            </Typography>
+                            </Link>
+                        }                        
+                      })
+                    }
 
                   </TableBody>
                 </Table>
