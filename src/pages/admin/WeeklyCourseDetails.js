@@ -55,6 +55,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
   const [open, setOpen] = React.useState(false);
 
   const [formDetails, setFormDetails] = React.useState({
+    optionalName: course ? course.courseDetails.optionalName : '',
     startDate: course ? course.courseDetails.startDate : "",
     endDate: course ? course.courseDetails.endDate : "",
     sessions: course ? course.courseDetails.sessions : [],
@@ -67,7 +68,8 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
     longitude: ""
   });
 
-  const { startDate, endDate, sessions, cost, courseType, paymentInterval, age, location } = formDetails;
+  const { startDate, endDate, sessions, cost, optionalName,
+    courseType, paymentInterval, age, location } = formDetails;
 
   const handleClose = () => {
     setOpen(false);
@@ -108,16 +110,16 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
         });
     } else {
       return axios
-      .post("/companies/courses", {
-        courseDetails,
-        companyId: auth.getUserId(),
-      })
-      .then((res) => {
-        handleStateRefresh()
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+        .post("/companies/courses", {
+          courseDetails,
+          companyId: auth.getUserId(),
+        })
+        .then((res) => {
+          handleStateRefresh()
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
     }
 
   };
@@ -143,7 +145,20 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
     <Container className={classes.container}>
       <form onSubmit={handleSubmit}>
 
+
+
         <tr>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel>Optional Name</InputLabel>
+            <OutlinedInput
+              label='Optional Name'
+              name="optionalName"
+              type="text"
+              value={optionalName}
+              onChange={(e) => updateOtherCourseInfo(e)}
+            />
+          </FormControl>
+
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel>Location</InputLabel>
             <Select
@@ -231,13 +246,13 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
             })
           )}
 
-       {!course && <Button
+        {!course && <Button
           variant="contained"
           color="primary"
           onClick={() => setRows([...rows, 1])}
         >
           Add another session
-        </Button>} 
+        </Button>}
 
         <Typography variant="h5">Cost</Typography>
         <div>
@@ -278,7 +293,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
         </div>
       </form>
 
-      {open && <ResetCampDetailsDialogue 
+      {open && <ResetCampDetailsDialogue
         open={open}
         courseId={course.courseId}
         handleCampResetInformation={(courseId) => handleCampResetInformation(courseId)}

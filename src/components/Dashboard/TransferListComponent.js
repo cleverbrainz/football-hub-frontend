@@ -49,15 +49,14 @@ const TransferListComponent = ({ classes,
           let value
           const labelId = `transfer-list-item-${value}-label`;
 
-          // console.log(el)
-
           switch (listItems) {
             case 'camps':
-              value = el.courseDetails.location + ' Camp'
+              value = el.courseDetails.optionalName !== '' ? 
+              el.courseDetails.optionalName : `${el.courseDetails.location} ${el.courseDetails.age} Camp`
               break;
 
             case 'services':
-              value = el.service_name
+              value = el.name
               break;
 
             case 'coaches':
@@ -65,7 +64,8 @@ const TransferListComponent = ({ classes,
               break;
 
             case 'courses':
-              value = 'Weekly ' + el.courseDetails.age
+              value = el.courseDetails.optionalName !== '' ? 
+              el.courseDetails.optionalName : `Weekly ${el.courseDetails.location} ${el.courseDetails.age}`
               break;
 
             default:

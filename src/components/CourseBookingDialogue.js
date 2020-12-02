@@ -41,7 +41,7 @@ const CourseBookingDialogue = ({
 
   const { course, session } = selectedBooking
   const { day, startTime, endTime } = courses[course].courseDetails.sessions[session]
-  const { age, cost, paymentInterval } = courses[course].courseDetails
+  const { age, cost, paymentInterval, location } = courses[course].courseDetails
 
   const [bookingForm, setBookingForm] = useState({
     name: '',
@@ -112,6 +112,7 @@ const CourseBookingDialogue = ({
         Age Group: {age} <br />
         Session Details: {day} {startTime} - {endTime} <br />
         Price: £{cost} per {paymentInterval} <br />
+        Location: {location}<br />
       </DialogTitle>
 
  

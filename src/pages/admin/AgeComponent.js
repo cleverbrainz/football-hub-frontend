@@ -36,14 +36,9 @@ const AgeComponent = ({ classes, updateAges }) => {
             <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel>From Age</InputLabel>
               <Select label="From Age" name="startAge" onChange={updateAges}>
-                <MenuItem>
-                  {" "}
-                  <em>Select</em>{" "}
-                </MenuItem>
                 {ages.map((el, i) => (
                   <MenuItem key={i} value={el}>
-                    {" "}
-                    {el}{" "}
+                    {el}
                   </MenuItem>
                 ))}
               </Select>
@@ -53,14 +48,9 @@ const AgeComponent = ({ classes, updateAges }) => {
             <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel>To Age</InputLabel>
               <Select label="To Age" name="endAge" onChange={updateAges}>
-                <MenuItem>
-                  {" "}
-                  <em>Select</em>{" "}
-                </MenuItem>
                 {ages.map((el, i) => (
                   <MenuItem key={i} value={el}>
-                    {" "}
-                    {el}{" "}
+                    {el}
                   </MenuItem>
                 ))}
               </Select>

@@ -71,13 +71,14 @@ const useStyles = makeStyles((theme) => ({
   cardSubcontainer: {
     [theme.breakpoints.up("sm")]: {
       display: "flex",
+      justifyContent: 'flex-start'
     },
   },
   media: {
     height: 300,
     width: "100%",
     [theme.breakpoints.up("sm")]: {
-      width: 640,
+      width: 340,
       height: 200,
     },
     borderRadius: "8px",
@@ -409,13 +410,13 @@ export default function Companies({ history }) {
 
           {companies ? companies.map((el, i) => {
             // console.log(el)
-            const { companyName, images, bio } = el.listingInfo
+            const { companyName, images, bio, companyId } = el.listingInfo
 
             return (
               <>
                 <Link key={i} to={{
-                  pathname: `/companies/${el.companyId}`,
-                  state: el.companyInfo
+                  pathname: `/companies/${companyId}`,
+                  state: el.listingInfo
                 }}>
 
                   <Card className={classes.card}>
@@ -492,7 +493,7 @@ export default function Companies({ history }) {
 
               })}
 
-            {/* {userCoordinates && (
+            {userCoordinates && (
               <Marker
                 anchor={"top-left"}
                 offsetLeft={-20}
@@ -507,7 +508,7 @@ export default function Companies({ history }) {
                   }}
                 />
               </Marker>
-            )} */}
+            )}
 
             {selected.company && <ReactMapPopup selected={selected} />}
           </ReactMapGL>

@@ -161,8 +161,10 @@ const IndividualCompany = ({ location }) => {
 
   const [modalOpen, setModal] = useState(false)
   const [selectedService, setSelectedService] = useState()
-  const { name, images, bio, reasons_to_join, coaches, services, userId, courses } = location.state
-  const companyName = name.charAt(0).toUpperCase() + name.slice(1)
+  const { companyName, images, bio, reasons_to_join, coaches, services, courses, companyId } = location.state
+  const name = companyName.charAt(0).toUpperCase() + companyName.slice(1)
+
+  console.log(location.state)
 
   const [open, setOpen] = React.useState(false);
   
@@ -235,7 +237,7 @@ const IndividualCompany = ({ location }) => {
             <Typography style={{ margin: '50px 0' }} component='div' >
               <Box
                 fontSize={40} fontWeight="fontWeightBold" m={0}>
-                {companyName}
+                {name}
               </Box>
             </Typography>
 
@@ -307,7 +309,7 @@ const IndividualCompany = ({ location }) => {
 
 
             {/* card */}
-
+{/* 
             {coaches.map((el, i) => {
               return (
 
@@ -335,7 +337,7 @@ const IndividualCompany = ({ location }) => {
                    
 
               )
-            })}
+            })} */}
 
           </div>
         </section>
@@ -446,7 +448,7 @@ const IndividualCompany = ({ location }) => {
 
                 {open && 
                 <CourseBookingDialogue
-                companyId={userId}
+                companyId={companyId}
                 companyName={companyName}
                     selectedBooking={selectedBooking}
                     courses={courses}
@@ -544,7 +546,7 @@ const IndividualCompany = ({ location }) => {
         modalOpen && <EnquiryModal
           toggleModal={() => toggleModal()}
           selectedService={selectedService}
-          companyId={userId}
+          companyId={companyId}
           companyName={companyName} />
       }
 
