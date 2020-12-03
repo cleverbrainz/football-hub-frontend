@@ -19,6 +19,14 @@ import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 import moment from 'moment'
 import { toDate } from 'date-fns';
 import CreateSharpIcon from '@material-ui/icons/CreateSharp';
+import axios from 'axios'
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import ListItemText from '@material-ui/core/ListItemText';
+import Select from '@material-ui/core/Select';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const useRowStyles = makeStyles({
   root: {
@@ -35,14 +43,34 @@ const useRowStyles = makeStyles({
 
 
 
-export default function SessionsPageTable({ courses, handleEditCourse, handleCourseDeletion, registers }) {
+export default function SessionsPageTable({ companyCoaches, courses, handleEditCourse, handleCourseDeletion, registers }) {
 
   function WeeklyRow({ course }) {
-    const { courseId } = course
+    const { courseId, companyId, coaches } = course
     const { startDate, endDate, paymentInterval, cost, age, location } = course.courseDetails
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
-    console.log(registers)
+    const [courseCoaches, setCourseCoaches] = React.useState(coaches)
+    console.log(courseCoaches, companyCoaches)
+
+    const handleChange = (event) => {
+      setCourseCoaches(event.target.value);
+      axios.patch(`/courses/${courseId}/coaches`, { coaches: event.target.value, companyId: companyId, courseId: courseId })
+      .then(res => {
+        console.log(res)
+      })
+    };
+  
+    const handleChangeMultiple = (event) => {
+      const { options } = event.target;
+      const value = [];
+      for (let i = 0, l = options.length; i < l; i += 1) {
+        if (options[i].selected) {
+          value.push(options[i].value);
+        }
+      }
+      setCourseCoaches(value);
+    };
 
     return (
       <React.Fragment>
@@ -117,23 +145,58 @@ export default function SessionsPageTable({ courses, handleEditCourse, handleCou
                         </TableRow>
                       )
                     })}
-                    {
-                      registers && registers.map(register => {
-                        if (register.courseId === course.courseId) {
-                          return <Link to={`/courses/${register.courseId}/register`} state={{register}}>
+
+          
+
+                      <Typography variant="h6" gutterBottom component="div">
+                              Register
+                          </Typography>
+                          {
+                        (registers.length !== 0) ? registers.map(register => {
+                          if (register.courseId === course.courseId) {
+                          return (
+                          <Link to={`/courses/${register.courseId}/register`} state={{register}}></Link> 
+                          )
+                        }}) :               
                             <Typography>
-                              View Register
+                              No students yet
                             </Typography>
-                            </Link>
-                        }                        
-                      })
-                    }
+                          }
 
                   </TableBody>
                 </Table>
               </Box>
             </Collapse>
           </TableCell>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box margin={1}>
+          <Typography variant="h6" gutterBottom component="div">
+                  Assigned Coaches
+                </Typography>
+                    <FormControl className={classes.formControl}>
+                      <InputLabel id="demo-mutiple-checkbox-label">Select Coaches</InputLabel>
+                      <Select
+                        labelId="demo-mutiple-checkbox-label"
+                        id="demo-mutiple-checkbox"
+                        multiple
+                        value={courseCoaches}
+                        onChange={handleChange}
+                        input={<Input />}
+                        renderValue={(selected) => selected.join(', ')}
+                        // MenuProps={MenuProps}
+                        >
+                          {companyCoaches.map((name) => (
+                            <MenuItem key={name} value={name}>
+                              <Checkbox checked={courseCoaches.indexOf(name) > -1} />
+                              <ListItemText primary={name} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      </Box>
+                      </Collapse>
+                      </TableCell>
         </TableRow>
       </React.Fragment >
     );
@@ -255,7 +318,7 @@ export default function SessionsPageTable({ courses, handleEditCourse, handleCou
           <TableBody>
             {courses && courses.map((course, i) => {
               const { courseType } = course.courseDetails
-              if (courseType === 'Weekly') return <WeeklyRow key={i} course={course} />
+              if (courseType === 'Weekly') return <WeeklyRow key={i} course={course} companyCoaches={companyCoaches} />
             }
             )}
           </TableBody>
