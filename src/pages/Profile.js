@@ -391,7 +391,7 @@ const Profile = ({ match }) => {
           <Typography style={{textAlign: 'center'}}  component='div' >
               <Box className={classes.name}
                 fontSize={35} fontWeight="fontWeightBold" m={0}>
-                {user && user.name}
+                {user && user.coachInfo.name}
               </Box>
               {isAlreadyCoach && <Box className={classes.name}
                 fontSize={20} fontWeight="fontWeightBold" m={0}>

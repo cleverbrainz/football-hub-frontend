@@ -76,12 +76,12 @@ export default function CoachEdit({ location, history }) {
 
   console.log(location.state)
 
-  const { userId, imageURL } = location.state;
+  const { userId, imageURL, category } = location.state;
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
   const [dataChange, setDataChange] = useState(false);
   const [avatarImage, setAvatarImage] = useState(location.state.imageURL)
-  const [name, setName] = React.useState(location.state.name);
+  const [name, setName] = React.useState(location.state.coachInfo.name);
   const [email, setEmail] = React.useState(location.state.email);
   const [phone, setPhone] = React.useState(location.state.main_contact_number);
   const [level, setLevel] = React.useState(location.state.coachInfo.coaching_level);
@@ -100,27 +100,37 @@ export default function CoachEdit({ location, history }) {
   });
 
   const handleSubmit = (e) => {
+    const updates = category === 'company' ?  {
+        'coachInfo.imageURL': avatarImage,
+        'coachInfo.name': name,
+        email: email,
+        main_contact_number: phone,
+        'coachInfo.coaching_level': level,
+        'coachInfo.documents': documents
+      } :
+      {
+        'coachInfo.imageURL': avatarImage,
+        'coachInfo.name': name,
+        name: name,
+        email: email,
+        main_contact_number: phone,
+        'coachInfo.coaching_level': level,
+        'coachInfo.documents': documents
+      }
     e.preventDefault();
     console.log(imageURL)
     axios
       .patch(
         `/users/${userId}`,
         { userId,
-          updates: {
-          'coachInfo.imageURL': avatarImage,
-          name: name,
-          'coachInfo.name': name,
-          email: email,
-          main_contact_number: phone,
-          'coachInfo.coaching_level': level,
-          'coachInfo.documents': documents
-        }
+          updates: updates
         },
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
       )
       .then((res) => {
         console.log(res.data);
-        history.push("/testercoach");
+        category === 'company' ? history.push("/tester") : history.push("/testercoach")
+        
       })
       .catch((error) => {
         alert(error.message);
