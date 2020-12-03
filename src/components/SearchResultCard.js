@@ -19,15 +19,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SearchResultCard = ({ results }) => {
+const SearchResultCard = ({ results, companyInfo }) => {
   console.log({results})
   const classes = useStyles();
 
   return (
     <List className={classes.root}>
       { results.map(result => {
-        return ( <Link to={`/${result.userId}/profile`}>
+        const tagIcon = companyInfo.coaches.some(id => id === result.userId) ? 'Part Of Your Team' : companyInfo.sentRequests.some(id => id === result.userId) ? 'Request Sent' : ''
+        return ( 
+        <>
         <ListItem alignItems="flex-start">
+        <Link to={`/${result.userId}/profile`}>
         <ListItemAvatar>
           <Avatar alt={`photo of ${result.fullName}`} src={result.coachInfo.imageURL} />
         </ListItemAvatar>
@@ -46,9 +49,11 @@ const SearchResultCard = ({ results }) => {
             </React.Fragment>
           }
           />
+          </Link>
       </ListItem>
+          <Typography align="right">{tagIcon}</Typography>
       <Divider variant="inset" component="li" />
-      </Link>
+      </>
       )
     })
       }
