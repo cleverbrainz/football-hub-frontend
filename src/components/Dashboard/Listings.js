@@ -122,13 +122,27 @@ export default function Listings() {
     images: []
   })
 
+  async function getData(data) {
+    let coachArray = []
+
+    for (const request of data) {
+      let coach
+      const response = await axios.get(`/users/${request}`)
+      coach = await response.data[0]
+      coachArray.push(coach)
+    }
+    return coachArray
+  }
+
   useEffect(() => {
     axios
       .get(`/users/${auth.getUserId()}`)
-      .then(res => {
-        const { coaches, services, courses, name, images } = res.data[0]
-        setCompanyListings(res.data[0].listings);
-        setListingTransferListInfo({ coaches, services, courses, companyName: name, images })
+      .then(async res => {
+        const { services, courses, name, images, listings } = res.data[0]
+        let { coaches } = res.data[0]
+        coaches = await getData(coaches)
+        setCompanyListings(listings);
+        setListingTransferListInfo({...listingTransferListInfo, coaches, services, courses, companyName: name, images })
       })
       .catch(e => console.log(e))
   }, [!stateRefreshInProgress]);
@@ -142,9 +156,9 @@ export default function Listings() {
     setOpen(false);
   };
 
-  function handleStateRefresh() {
+  async function handleStateRefresh() {
+    await setStateRefreshInProgress(!stateRefreshInProgress)
     setValue(0)
-    setStateRefreshInProgress(!stateRefreshInProgress)
   }
 
   const handleDelete = () => {

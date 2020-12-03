@@ -110,8 +110,11 @@ export default function AddListings({
   const coachesNotIncludedChecked = intersection(coachesChecked, coachesNotIncluded);
   const coachesIncludedChecked = intersection(coachesChecked, coachesIncluded);
 
+ 
+
   useEffect(() => {
-    // updateUser()
+   
+    console.log(listingTransferListInfo.coaches)
 
     if (listingToBeEdited) {
 
@@ -123,7 +126,7 @@ export default function AddListings({
       }
 
       Object.keys(obj).map(key => {
-        const id = key === 'coaches' ? key.slice(0, -2) : key.slice(0, -1)
+        const id = key === 'coaches' ? 'user' : key.slice(0, -1)
 
         if (listingToBeEdited[key].length === 0) return
         else {

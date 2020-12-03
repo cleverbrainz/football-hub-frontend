@@ -143,8 +143,8 @@ export default function Misc() {
     setOpen(false);
   };
 
-  const handleStateRefresh = () => {
-    setStateRefreshInProgress(!stateRefreshInProgress)
+  const handleStateRefresh = async () => {
+    await setStateRefreshInProgress(!stateRefreshInProgress)
     setValue(0)
   }
 

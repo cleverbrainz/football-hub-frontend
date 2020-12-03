@@ -37,11 +37,24 @@ const CourseBookingDialogue = ({
   courses,
   selectedBooking,
   companyId,
+  camps,
   companyName }) => {
 
-  const { course, session } = selectedBooking
-  const { day, startTime, endTime } = courses[course].courseDetails.sessions[session]
-  const { age, cost, paymentInterval, location } = courses[course].courseDetails
+
+  let subject
+
+  const { course, courseType } = selectedBooking
+
+  if (courseType === 'course') {
+    const { session } = selectedBooking
+    const { day, startTime, endTime } = courses[course].courseDetails.sessions[session]
+    const { age } = courses[course].courseDetails
+
+    subject = `Weekly Course - ${age} ${day} ${startTime} to ${endTime}`
+  } else {
+    const { age, firstDay, lastDay } = camps[course].courseDetails
+    subject = `Camp - ${age} ${firstDay} to ${lastDay}`
+  }
 
   const [bookingForm, setBookingForm] = useState({
     name: '',
@@ -50,9 +63,9 @@ const CourseBookingDialogue = ({
     dob: new Date(),
     gender: '',
     enquiryType: 'booking',
-    message: 'Hi, I would like to make a booking for the above course listed',
+    message: `Hi, I would like to make a booking for the above ${courseType} listed`,
     company: companyName,
-    subject: `${age} ${day} ${startTime} - ${endTime}`,
+    subject,
     userId: auth.getUserId(),
     companyId,
   })
@@ -94,16 +107,12 @@ const CourseBookingDialogue = ({
 
   const classes = useStyles()
 
+  const courseDetails = () => {
+    const { session } = selectedBooking
+    const { day, startTime, endTime } = courses[course].courseDetails.sessions[session]
+    const { age, cost, paymentInterval, location } = courses[course].courseDetails
 
-  return (
-    <Dialog
-      open={open}
-      TransitionComponent={Transition}
-      keepMounted
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-slide-title"
-      aria-describedby="alert-dialog-slide-description"
-    >
+    return (
       <DialogTitle style={{ margin: '30px 0' }} id="alert-dialog-slide-title">
         <Box
           fontSize={25} fontWeight="fontWeightBold" m={0}>
@@ -114,15 +123,46 @@ const CourseBookingDialogue = ({
         Price: £{cost} per {paymentInterval} <br />
         Location: {location}<br />
       </DialogTitle>
+    )
+  }
 
- 
+  const campDetails = () => {
+    const { age, firstDay, lastDay, campCost, location } = camps[course].courseDetails
+
+    return (
+      <DialogTitle style={{ margin: '30px 0' }} id="alert-dialog-slide-title">
+        <Box
+          fontSize={25} fontWeight="fontWeightBold" m={0}>
+          {companyName}
+        </Box>
+        Age Group: {age} <br />
+        Camp Dates: {firstDay} - {lastDay} <br />
+        Price: £{campCost} entire camp <br />
+        Location: {location} <br />
+      </DialogTitle>
+    )
+  }
+
+
+  return (
+    <Dialog
+      open={open}
+      TransitionComponent={Transition}
+      keepMounted
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-slide-title"
+      aria-describedby="alert-dialog-slide-description"
+    >
+
+      {selectedBooking.courseType === 'course' ? courseDetails() : campDetails()}
+
 
       <DialogContent>
-      <Box
+        <Box
           fontSize={20} fontWeight="fontWeightBold" m={0}>
           Player Details
         </Box>
-        
+
         <form
           noValidate autoComplete="off"
         >
@@ -172,8 +212,6 @@ const CourseBookingDialogue = ({
 
           <FormControlLabel
             control={<Checkbox
-              // checked={state.checkedA} 
-              // onChange={handleChange} 
               name="checkedA" />}
             label="I agree to the Terms & Conditions"
           />

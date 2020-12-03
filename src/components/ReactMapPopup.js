@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 const ReactMapPopup = ({ selected }) => {
 
   const {company, location} = selected
-  const { companyName, images, courses } = company.listingInfo;
+  const { companyName, images, courses, companyId } = company.listingInfo;
   const { latitude, longitude } = courses[location].courseDetails;
 
   const classes = useStyles();
@@ -111,14 +111,14 @@ const ReactMapPopup = ({ selected }) => {
       </section>
       <h1> {companyName} </h1>
 
-      {/* <Link
+      <Link
         to={{
-          pathname: `/companies/${company.companyId}`,
-          state: company.companyInfo,
+          pathname: `/companies/${companyId}`,
+          state: company.listingInfo,
         }}
       >
         <p> Know more!</p>
-      </Link> */}
+      </Link>
     </Popup>
   );
 };
