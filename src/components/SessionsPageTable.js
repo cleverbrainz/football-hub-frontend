@@ -43,15 +43,15 @@ const useRowStyles = makeStyles({
 
 
 
-export default function SessionsPageTable({ companyCoaches, courses, handleEditCourse, handleCourseDeletion, registers }) {
+export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, courses, handleEditCourse, handleCourseDeletion, registers }) {
 
   function WeeklyRow({ course }) {
     const { courseId, companyId, coaches } = course
-    const { startDate, endDate, paymentInterval, cost, age, location } = course.courseDetails
+    const { startDate, endDate, paymentInterval, cost, age, location, optionalName } = course.courseDetails
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
     const [courseCoaches, setCourseCoaches] = React.useState(coaches)
-    console.log(courseCoaches, companyCoaches)
+    console.log(courseCoaches, companyCoachInfo)
 
     const handleChange = (event) => {
       setCourseCoaches(event.target.value);
@@ -83,7 +83,7 @@ export default function SessionsPageTable({ companyCoaches, courses, handleEditC
 
 
           <TableCell component="th" scope="row">
-            {courseId}
+            {optionalName}
           </TableCell>
           <TableCell align='right'>
             {location}
@@ -183,13 +183,20 @@ export default function SessionsPageTable({ companyCoaches, courses, handleEditC
                         value={courseCoaches}
                         onChange={handleChange}
                         input={<Input />}
-                        renderValue={(selected) => selected.join(', ')}
+                        renderValue={(selected) => selected.map(item => {
+                          console.log('selected', selected)
+                          for (const coach of companyCoachInfo) {
+                            if (item === coach.userId) {
+                              return coach.coachInfo.name
+                            }
+                          }
+                        }).join(', ')}
                         // MenuProps={MenuProps}
                         >
-                          {companyCoaches.map((name) => (
-                            <MenuItem key={name} value={name}>
-                              <Checkbox checked={courseCoaches.indexOf(name) > -1} />
-                              <ListItemText primary={name} />
+                          {companyCoachInfo.map((name) => (
+                            <MenuItem key={name.userId} value={name.userId}>
+                              <Checkbox checked={courseCoaches.indexOf(name.userId) > -1} />
+                              <ListItemText primary={name.coachInfo.name} />
                             </MenuItem>
                           ))}
                         </Select>
@@ -304,7 +311,7 @@ export default function SessionsPageTable({ companyCoaches, courses, handleEditC
           <TableHead>
             <TableRow>
               <TableCell />
-              <TableCell>ID </TableCell>
+              <TableCell>Name</TableCell>
               <TableCell align="right">Venue </TableCell>
               <TableCell align="right">Start Date</TableCell>
               <TableCell align="right">End Date</TableCell>
@@ -318,7 +325,7 @@ export default function SessionsPageTable({ companyCoaches, courses, handleEditC
           <TableBody>
             {courses && courses.map((course, i) => {
               const { courseType } = course.courseDetails
-              if (courseType === 'Weekly') return <WeeklyRow key={i} course={course} companyCoaches={companyCoaches} />
+              if (courseType === 'Weekly') return <WeeklyRow key={i} course={course} companyCoaches={companyCoachIds} />
             }
             )}
           </TableBody>

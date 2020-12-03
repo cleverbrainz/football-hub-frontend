@@ -5,13 +5,25 @@ import {
   Button,
   CircularProgress
 } from '@material-ui/core'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SearchResultCard from '../../components/SearchResultCard'
 import axios from 'axios'
+import auth from '../../lib/auth'
 
 
 const CoachSearch = () => {
   const [searchResults, setSearchResults] = useState([])
+  const [companyInfo, setCompanyInfo] = useState([])
+  
+  useEffect(() => {
+    axios.get(`/users/${auth.getUserId()}`)
+      .then(res => {
+        setCompanyInfo(res.data[0])
+      })
+  },[])
+  
+  console.log(companyInfo)
+  
   const handleSearch = (event) => {
     event.preventDefault()
     const query = event.target.value
@@ -30,7 +42,7 @@ const CoachSearch = () => {
   return (
     <FormControl>
     <TextField type="search" placeholder="Search for coaches here" onChange={(event) => handleSearch(event)}/>
-    <SearchResultCard results={searchResults}/>
+    <SearchResultCard companyInfo={companyInfo} results={searchResults}/>
 
     
     {/* {searchResults.map(user => {
