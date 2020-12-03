@@ -173,9 +173,10 @@ export default function CoachSessions() {
     setOpen(false);
   };
 
-  const handleStateRefresh = () => {
+  const handleStateRefresh = async () => {
+    await setStateRefreshInProgress(!stateRefreshInProgress)
     setValue(0)
-    setStateRefreshInProgress(!stateRefreshInProgress)
+  
   }
 
 

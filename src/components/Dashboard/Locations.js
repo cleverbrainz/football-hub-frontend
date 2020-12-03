@@ -131,8 +131,8 @@ export default function Locations() {
     setOpen(false);
   };
 
-  const handleStateRefresh = () => {
-    setStateRefreshInProgress(!stateRefreshInProgress)
+  const handleStateRefresh = async () => {
+    await setStateRefreshInProgress(!stateRefreshInProgress)
     setValue(0)
   }
 

@@ -60,7 +60,7 @@ const TransferListComponent = ({ classes,
               break;
 
             case 'coaches':
-              value = el.coach_name
+              value = el.coachInfo.name
               break;
 
             case 'courses':

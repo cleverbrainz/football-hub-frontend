@@ -161,7 +161,7 @@ const IndividualCompany = ({ location }) => {
 
   const [modalOpen, setModal] = useState(false)
   const [selectedService, setSelectedService] = useState()
-  const { companyName, images, bio, reasons_to_join, coaches, services, courses, companyId } = location.state
+  const { companyName, images, bio, reasons_to_join, coaches, camps, services, courses, companyId } = location.state
   const name = companyName.charAt(0).toUpperCase() + companyName.slice(1)
 
   console.log(location.state)
@@ -173,7 +173,10 @@ const IndividualCompany = ({ location }) => {
     setOpen(false);
   };
 
-  const [selectedBooking, setSelectedBooking] = useState(null)
+  const [selectedBooking, setSelectedBooking] = useState({
+    courseType: null,
+    course: null
+  })
  
   const classes = useStyles()
 
@@ -309,23 +312,26 @@ const IndividualCompany = ({ location }) => {
 
 
             {/* card */}
-{/* 
+
             {coaches.map((el, i) => {
+
+              const { name, coaching_level } = el.coachInfo
               return (
 
                 <>
+
                 <div key={i} className={classes.staffRoot}>
                   <Avatar className={classes.avatar} alt="Remy Sharp" src={el.imageURL} />
 
                   <div>
                     <Typography variant='h6' gutterBottom>
-                      {el.coach_name}
+                      {name}
                   </Typography>
 
                     <Typography component='div' >
                       <Box
                         style={{ display: 'flex', alignItems: 'center' }} fontSize={17} fontWeight="fontWeightRegular" m={0}>
-                        {el.coaching_level} Verified
+                        {coaching_level} Verified
                   <VerifiedUserSharpIcon style={{ color: 'goldenrod', marginLeft: '10px' }} />
                       </Box>
                     </Typography>
@@ -337,7 +343,7 @@ const IndividualCompany = ({ location }) => {
                    
 
               )
-            })} */}
+            })}
 
           </div>
         </section>
@@ -351,38 +357,7 @@ const IndividualCompany = ({ location }) => {
             <section className={classes.section}>
 
               <div className={classes.description}>
-              <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
-              <Box
-                fontSize={25} fontWeight="fontWeightBold" m={0}>
-                Services & Courses
-              </Box>
-            </Typography>
-
-            {services.map((el, i) => {
-              return (
-                <Accordion key={i}>
-                  <AccordionSummary
-                    style={{minHeight: '70px'}}
-                    expandIcon={<ExpandMoreIcon />}
-                  >
-                    <Typography className={classes.accordion}> {el.service_name} </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails style={{display: 'block'}}>
-                    <Typography>
-                    {el.service_description}
-                    </Typography>
-
-                  {auth.isLoggedIn() ? (
-                  <Button onClick={() => toggleModal(el.service_name)} variant="contained" style={{margin: '20px 0 5px 0'}}>
-                    Click to enquire
-                  </Button>
-                  ) : <p  style={{margin: '20px 0 5px 0', color: 'blue'}}> Please login to make an enquiry </p>}  
-                  </AccordionDetails>
-
-                  
-                </Accordion>
-              )
-            })}
+              
 
             <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
               <Box
@@ -398,13 +373,14 @@ const IndividualCompany = ({ location }) => {
                   labelId="demo-simple-select-filled-label"
                   id="demo-simple-select-filled"
                   label='Select Course'
-                  value={selectedBooking && selectedBooking.course}
-                  onChange={(e) => setSelectedBooking({ course: e.target.value })}>
+                  value={selectedBooking.courseType === 'course' && selectedBooking.course}
+                  onChange={(e) => setSelectedBooking({ ...selectedBooking, 
+                  courseType: 'course', course: e.target.value })}>
                     
                   {courses.map((el, i) => {
-                    const { courseType, age } = el.courseDetails
+                    const { age, location } = el.courseDetails
                       return (
-                        <MenuItem value={i}>{`${courseType} course for ${age}`}</MenuItem>
+                        <MenuItem value={i}>{`Weekly course for ${age} at ${location}`}</MenuItem>
                       )
                     })}
 
@@ -413,7 +389,7 @@ const IndividualCompany = ({ location }) => {
 
           ) : <p style={{color: 'blue'}}> Please login to book onto a course </p>}  
 
-      {selectedBooking !== null &&  (
+      {selectedBooking.courseType === 'course' &&  (
       
       <FormControl variant="outlined" style={{margin: '15px 0'}} className={classes.formControl}>
         <InputLabel id="demo-simple-select-outlined-label">Select Session</InputLabel>
@@ -421,7 +397,6 @@ const IndividualCompany = ({ location }) => {
               labelId="demo-simple-select-filled-label"
               id="demo-simple-select-filled"
               label='Select Session'
-              // value={}
               onChange={(e) => {
                 setOpen(true)
                 setSelectedBooking({ ...selectedBooking, session: e.target.value })
@@ -442,7 +417,38 @@ const IndividualCompany = ({ location }) => {
       
       )}
 
-           
+<Typography style={{ margin: '70px 0 30px 0' }} component='div' >
+              <Box
+                fontSize={19} fontWeight="fontWeightBold" m={0}>
+                Book onto a camp
+              </Box>
+            </Typography>
+
+          {auth.isLoggedIn() ? (
+            <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel id="demo-simple-select-outlined-label">Select Camp</InputLabel>
+            <Select
+                  labelId="demo-simple-select-filled-label"
+                  id="demo-simple-select-filled"
+                  label='Select Course'
+                  value={selectedBooking.courseType === 'camp' && selectedBooking.course}
+                  onChange={(e) => {
+                    setOpen(true)
+                    setSelectedBooking({ ...selectedBooking, 
+                    courseType: 'camp', course: e.target.value })}}>
+                    
+                  {camps.map((el, i) => {
+                    const { age, location } = el.courseDetails
+                    console.log(el)
+                      return (
+                        <MenuItem value={i}>{`${location} football camp for ${age}`}</MenuItem>
+                      )
+                    })}
+
+            </Select>
+            </FormControl>
+
+          ) : <p style={{color: 'blue'}}> Please login to book onto a camp</p>}  
 
           
 
@@ -450,6 +456,7 @@ const IndividualCompany = ({ location }) => {
                 <CourseBookingDialogue
                 companyId={companyId}
                 companyName={companyName}
+                camps={camps}
                     selectedBooking={selectedBooking}
                     courses={courses}
                     Transition={Transition}
@@ -461,6 +468,39 @@ const IndividualCompany = ({ location }) => {
               </div>
 
               <div className={classes.coachContainer}>
+              <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
+              <Box
+                fontSize={25} fontWeight="fontWeightBold" m={0}>
+                Services 
+              </Box>
+            </Typography>
+
+            {services.map((el, i) => {
+              return (
+                <Accordion key={i}>
+                  <AccordionSummary
+                    style={{minHeight: '70px'}}
+                    expandIcon={<ExpandMoreIcon />}
+                  >
+                    <Typography className={classes.accordion}> {el.name} </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails style={{display: 'block'}}>
+                    <Typography>
+                    {el.description}
+                    </Typography>
+
+                  {auth.isLoggedIn() ? (
+                  <Button onClick={() => toggleModal(el.name)} variant="contained" style={{margin: '20px 0 5px 0'}}>
+                    Click to enquire
+                  </Button>
+                  ) : <p  style={{margin: '20px 0 5px 0', color: 'blue'}}> Please login to make an enquiry </p>}  
+                  </AccordionDetails>
+
+                  
+                </Accordion>
+              )
+            })}
+            
               <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
               <Box
                 fontSize={25} fontWeight="fontWeightBold" m={0}>
