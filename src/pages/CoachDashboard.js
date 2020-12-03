@@ -47,8 +47,9 @@ import Listings from '../components/Dashboard/Listings'
 import CoachPageBeta from '../pages/admin/CoachPageBeta'
 import Sessions from '../components/Dashboard/Sessions'
 import Requests from '../pages/Requests'
-import ProfileCoach from './CoachProfile';
+import Profile from './Profile'
 import CompanyPageBeta from './admin/CompanyPageBeta';
+import CoachSessions from '../components/Dashboard/CoachSessions';
 
 const drawerWidth = 240;
 
@@ -148,9 +149,9 @@ export default function CoachProfile() {
   })
 
   const dashboardComponents = {
-    Summary: ProfileCoach,
+    Summary: Profile,
     Companies: CompanyPageBeta,
-    Sessions,
+    Sessions: CoachSessions,
     Messages
   }
 

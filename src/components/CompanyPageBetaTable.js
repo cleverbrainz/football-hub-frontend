@@ -33,12 +33,9 @@ export default function CompanyPageBetaTable({ companies, handleSetCoachId }) {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell align="right">ID</TableCell>
             <TableCell align="right">Email Address</TableCell>
             <TableCell align="right">Phone Number</TableCell>
-            <TableCell align="right">Coaching Level</TableCell>
-            <TableCell align="right">DBS Certificate</TableCell>
-            <TableCell align="right">Coaching Certificate</TableCell>
+            <TableCell align="right">Courses Running</TableCell>
             <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
@@ -48,16 +45,9 @@ export default function CompanyPageBetaTable({ companies, handleSetCoachId }) {
               <TableCell component="th" scope="row">
                 {el.name}
               </TableCell>
-              <TableCell align="right">{el.userId}</TableCell>
               <TableCell align="right">{el.email}</TableCell>
               <TableCell align="right">{el.main_contact_number}</TableCell>
-              <TableCell align="right">{el.userId}</TableCell>
-              <TableCell align="right">
-              {el.verification.dbsDocumentationCheck ? <CheckSharpIcon style={{color: 'green'}} /> : <ClearSharpIcon style={{color: 'red'}} />}
-              </TableCell>
-              <TableCell align="right">
-              {el.verification.coachDocumentationCheck ? <CheckSharpIcon style={{color: 'green'}} /> : <ClearSharpIcon style={{color: 'red'}} />}
-              </TableCell>
+              <TableCell align="right">{el.courses ? el.courses.length : '0'}</TableCell>
               <TableCell align="right">
                 <DeleteForeverSharpIcon
                 onClick={() => handleSetCoachId(el.coachId)}

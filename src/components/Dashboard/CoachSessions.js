@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -6,6 +7,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import ExploreSharpIcon from '@material-ui/icons/ExploreSharp';
 import AddLocationSharpIcon from '@material-ui/icons/AddLocationSharp';
+import HistoryIcon from '@material-ui/icons/History';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -17,6 +19,16 @@ import {
 import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import auth from '../../lib/auth'
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
+import ClearSharpIcon from '@material-ui/icons/ClearSharp';
+import CheckSharpIcon from '@material-ui/icons/CheckSharp';
 import DeleteComponent from '../../pages/admin/DeleteComponent'
 import SessionsPageTable from '../../components/SessionsPageTable'
 import MaterialUIPickers from '../../pages/admin/CampMultiDetails'
@@ -104,10 +116,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function Sessions() {
+export default function CoachSessions() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [companyCourses, setCompanyCourses] = useState()
+  const [courses, setCourses] = useState([])
   const [registers, setRegisters] = useState([])
   const [open, setOpen] = useState(false)
   const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
@@ -117,20 +129,26 @@ export default function Sessions() {
   const [companyCoaches, setCompanyCoaches] = useState([])
 
   async function getData() {
-    let registerArray = []
+    let coursesArray = []
+    const registerArray = []
     const response = await axios.get(`/users/${auth.getUserId()}`)
     const data = await response.data[0]
     console.log(data)
-    for (const course of data.courses) {
-    let register
-    const response = await axios.get(`/courses/${course.courseId}`)
-    register = await response.data
-    console.log(register.register)
-    // console.log('data', data)
-    if (register.register) registerArray.push(register)
+    for (const course of Object.keys(data.courses)) {
+    console.log('objkeys', course, data.courses[course])
+    let courses
+    const response = await axios.get(`/users/${course}`)
+    courses = await response.data[0].courses
+    for (const compCourse of courses) {
+      if (data.courses[course].active.some(id => id === compCourse.courseId)) {
+        coursesArray.push(compCourse)
+      }
+      if (compCourse.register) registerArray.push(compCourse.register)
     }
-    setCompanyCoaches(data.coaches)
-    setCompanyCourses(data.courses)
+    // console.log('data', data)
+    // 
+    }
+    setCourses(coursesArray)
     setRegisters(registerArray)
     }
 
@@ -143,6 +161,8 @@ export default function Sessions() {
     //   .catch(e => console.log(e))
     getData()
   }, [!stateRefreshInProgress]);
+
+  console.log(courses, registers)
 
   const handleCourseDeletion = courseId => {
     setOpen(true)
@@ -208,6 +228,7 @@ export default function Sessions() {
     setValue(newValue);
   };
 
+  if (courses.length === 0) return null
   return (
     <div className={classes.root}>
 
@@ -222,77 +243,52 @@ export default function Sessions() {
           textColor="primary"
           aria-label="scrollable force tabs example"
         >
-          <Tab label="Current" icon={<ExploreSharpIcon />} {...a11yProps(0)} />
-          <Tab label="Add New" icon={<AddLocationSharpIcon />} {...a11yProps(2)} />
-          <Tab label="Edit Existing" icon={<AddLocationSharpIcon />} {...a11yProps(3)} />
+          <Tab label="Current Courses" icon={<ExploreSharpIcon />} {...a11yProps(0)} />
+          <Tab label="Past Courses" icon={<HistoryIcon />} {...a11yProps(2)} />
         </Tabs>
       </AppBar>
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-        <SessionsPageTable
-          classes={classes}
-          handleEditCourse={e => handleEditCourse(e)}
-          handleCourseDeletion={e => handleCourseDeletion(e)}
-          courseToBeEdited={courseToBeEdited} 
-          courses={companyCourses}
-          companyCoaches={companyCoaches}
-          registers={registers} />
+      <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell align="right">ID</TableCell>
+            <TableCell align="right">Course Location</TableCell>
+            <TableCell align="right">Start Date</TableCell>
+            <TableCell align="right">End Date</TableCell>
+            <TableCell align="right">Age Group</TableCell>
+            <TableCell align="right"></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {courses.map((el, i) => (
+            <TableRow key={i}>
+              <TableCell component="th" scope="row">
+                {el.courseDetails.optionalName}
+              </TableCell>
+              <TableCell component="th" scope="row">
+            {el.courseId}
+          </TableCell>
+          <TableCell align='right'>
+            {el.courseDetails.location}
+          </TableCell>
+          <TableCell align="right">{el.courseDetails.startDate}</TableCell>
+          <TableCell align="right">{el.courseDetails.endDate}</TableCell>
+          <TableCell align="right">{el.courseDetails.age}</TableCell>
+              <TableCell align="right">
+                <Link to={`/courses/${el.courseId}/register`}>View Register</Link>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
       </TabPanel>
 
-      {/* tab 2 content */}
-      <TabPanel className={classes.formContainer} value={value} index={1}>
-        <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel id="demo-simple-select-outlined-label">Who type of course are you adding?</InputLabel>
-          <Select
-            className={classes.select}
-            labelId="demo-simple-select-filled-label"
-            id="demo-simple-select-filled"
-            label='Who type of course are you adding?'
-            value={newCourseDetail}
-            onChange={e => setNewCourseDetail(e.target.value)}
-          >
-
-            <MenuItem value='camp'> Camp </MenuItem>
-            <MenuItem value='weekly'> Weekly Course </MenuItem>
-
-          </Select>
-        </FormControl>
-
-        {newCourseDetail ? newCourseDetail === 'camp' ?
-          <MaterialUIPickers
-            handleStateRefresh={() => handleStateRefresh()}
-          />
-          : (
-            <WeeklyCourseDetails
-              handleStateRefresh={() => handleStateRefresh()}
-            />
-          ) : null}
-
-      </TabPanel>
-
-      {/* tab 5 content */}
-      <TabPanel className={classes.formContainer} value={value} index={2}>
-        {courseToBeEdited ? courseToBeEdited.courseDetails.courseType === 'Camp' ?
-          <MaterialUIPickers
-            handleCampResetInformation={e => handleCampResetInformation(e)}
-            handleStateRefresh={() => handleStateRefresh()}
-            course={courseToBeEdited}
-          />
-          :
-          (
-            <WeeklyCourseDetails
-              course={courseToBeEdited}
-              handleStateRefresh={() => handleStateRefresh()}
-              handleCampResetInformation={e => handleCampResetInformation(e)} />
-          ) : null}
-      </TabPanel>
-
-      <DeleteComponent
-        open={open}
-        handleDelete={e => handleDelete(e)}
-        handleClose={e => handleClose(e)}
-        name='course/camp' />
+     
     </div>
   );
 }
