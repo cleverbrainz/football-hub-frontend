@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SearchResultCard = ({ results }) => {
+  console.log({results})
   const classes = useStyles();
 
   return (

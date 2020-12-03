@@ -93,7 +93,7 @@ name: {
 const Profile = ({ match }) => {
 
   
-  const profileId = match.params.id
+  const profileId = match ? match.params.id : auth.getUserId()
   const [user, setUser] = useState([])
   const input = useRef()
   const [imageUpload, setImageUpload] = useState(false)
@@ -108,7 +108,7 @@ const Profile = ({ match }) => {
 
 
   useEffect(() => {
-    axios.get(`/users/${match.params.id}`)
+    axios.get(`/users/${profileId}`)
       .then(res => {
         const { requests, companies } = res.data[0]
         console.log(res.data)
@@ -444,17 +444,18 @@ const Profile = ({ match }) => {
               </Box>
             </Typography>
   
-            <Link to={{
+            { isOwnProfile && <Link to={{
               pathname: '/testercoach/edit',
               state: user
             }}>
+            
             <Button
               // className={classes.button}
               variant="contained" color="primary">
               Edit Details
           </Button>
           </Link>
-  
+          }
             
           </div>
         </div>

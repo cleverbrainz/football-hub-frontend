@@ -16,6 +16,7 @@ import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Icon from '@material-ui/core/Icon';
 import SaveIcon from '@material-ui/icons/Save';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles({
   table: {
@@ -45,7 +46,7 @@ const CourseRegister = ({ match }) => {
         console.log('axios!')
         console.log(res.data.playerList)
         setCourse(res.data)
-        setRegister(res.data.register)
+        res.data.register ? setRegister(res.data.register) : setRegister(register)
 
       })
   },[])
@@ -69,7 +70,17 @@ const CourseRegister = ({ match }) => {
   }
 
   console.log(register)
-  if (register.length === 0) return null
+  if (register.length === 0) return (
+    <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="simple table">
+        <TableHead>
+          <TableCell>
+    <Typography variant='h5'>No player data currently available</Typography>
+    </TableCell>
+        </TableHead>
+        </Table>
+        </TableContainer>
+  )
   return (
     <>
     <TableContainer component={Paper}>
