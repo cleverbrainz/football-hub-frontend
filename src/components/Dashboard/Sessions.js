@@ -114,10 +114,12 @@ export default function Sessions() {
   const [courseIdToBeDeleted, setCourseIdToBeDeleted] = useState()
   const [newCourseDetail, setNewCourseDetail] = useState()
   const [courseToBeEdited, setCourseToBeEdited] = useState()
-  const [companyCoaches, setCompanyCoaches] = useState([])
-
+  const [companyCoachIds, setCompanyCoachIds] = useState([])
+  const [companyCoachInfo, setCompanyCoachInfo] = useState([])
+  
   async function getData() {
     let registerArray = []
+    let coachArray = []
     const response = await axios.get(`/users/${auth.getUserId()}`)
     const data = await response.data[0]
     console.log(data)
@@ -129,7 +131,14 @@ export default function Sessions() {
     // console.log('data', data)
     if (register.register) registerArray.push(register)
     }
-    setCompanyCoaches(data.coaches)
+    for (const coach of data.coaches) {
+      let coachdetails
+      const response = await axios.get(`users/${coach}`)
+      coachdetails = await response.data[0]
+      coachArray.push(coachdetails)
+    }
+    setCompanyCoachIds(data.coaches)
+    setCompanyCoachInfo(coachArray)
     setCompanyCourses(data.courses)
     setRegisters(registerArray)
     }
@@ -236,7 +245,8 @@ export default function Sessions() {
           handleCourseDeletion={e => handleCourseDeletion(e)}
           courseToBeEdited={courseToBeEdited} 
           courses={companyCourses}
-          companyCoaches={companyCoaches}
+          companyCoachIds={companyCoachIds}
+          companyCoachInfo={companyCoachInfo}
           registers={registers} />
       </TabPanel>
 
