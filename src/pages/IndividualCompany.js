@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect } from 'react'
 import { Typography, 
   Box, 
   Card, 
@@ -29,6 +29,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import auth from '../lib/auth'
+import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -163,6 +164,18 @@ const IndividualCompany = ({ location }) => {
   const [selectedService, setSelectedService] = useState()
   const { companyName, images, bio, reasons_to_join, coaches, camps, services, courses, companyId } = location.state
   const name = companyName.charAt(0).toUpperCase() + companyName.slice(1)
+  const [userCategory, setUserCategory] = useState('')
+
+  useEffect(() => {
+    if (!auth.getUserId()) return
+    axios.get(`/users/${auth.getUserId()}`)
+      .then(res => {
+        const category = res.data[0].category
+        setUserCategory(category)
+      })
+  },[])
+
+  console.log({userCategory})
 
   console.log(location.state)
 
@@ -366,7 +379,7 @@ const IndividualCompany = ({ location }) => {
               </Box>
             </Typography>
 
-          {auth.isLoggedIn() ? (
+          { (auth.isLoggedIn() && ['company', 'coach'].some(item => item !== userCategory)) ?  (
             <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel id="demo-simple-select-outlined-label">Select Course</InputLabel>
             <Select
@@ -424,7 +437,7 @@ const IndividualCompany = ({ location }) => {
               </Box>
             </Typography>
 
-          {auth.isLoggedIn() ? (
+          { (auth.isLoggedIn() && ['company', 'coach'].some(item => item !== userCategory)) ? (
             <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel id="demo-simple-select-outlined-label">Select Camp</InputLabel>
             <Select
