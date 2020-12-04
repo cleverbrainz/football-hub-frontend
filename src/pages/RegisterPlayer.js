@@ -146,7 +146,7 @@ export default function RegisterPlayer({ match }) {
 
       setIsLoading(true)
 
-      axios.post(`/user/${registrationSuccessMessage.userId}/signup`, requestObject)
+      axios.post(`/user/${registrationSuccessMessage.userId}/signup`, { requestObject, userId: registrationSuccessMessage.userId })
         .then(res => {
           console.log(res.data)
           setIsLoading(false)
