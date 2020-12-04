@@ -147,7 +147,7 @@ export default function RegisterTrainer({ match }) {
 
       if (registerFields.category === 'coach') {
         requestObject = { ...registerFields, requests: [], companies: [], coachInfo: {} }
-      } else requestObject = { ...registerFields, sentRequests: [], coaches: [], listings: [], locations: [], images: [], services: [], sessions: [] }
+      } else requestObject = { ...registerFields, sentRequests: [], coaches: [], listings: [], locations: [], images: [], services: [], sessions: [], courses: [], players: [], ageDetails: [] }
 
       setIsLoading(true)
 
