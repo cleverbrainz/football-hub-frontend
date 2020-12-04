@@ -117,7 +117,7 @@ export default function RegisterPlayer({ match }) {
       for (var key in registerFields) {
         if (!registerFields[key]) delete registerFields[key]
       }
-
+      localStorage.removeItem('token').then(() => {
       axios.post('/signup', registerFields)
         .then(res => {
           setRegistrationSuccessMessage(res.data)
@@ -128,6 +128,7 @@ export default function RegisterPlayer({ match }) {
           setRegisterFields({ ...registerFields, name: '', email: '', password: '', confirmPassword: '' })
           setActiveStep((prevActiveStep) => prevActiveStep + 1)
         })
+      })
         .catch(err => {
           setIsLoading(false)
           setFieldErrors(err.response.data)
