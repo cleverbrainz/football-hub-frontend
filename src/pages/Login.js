@@ -16,31 +16,33 @@ import IconButton from '@material-ui/core/IconButton';
 
 import auth from '../lib/auth'
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    height: `${window.innerHeight - 80}px`,
-  },
-  form: {
-    width: '30%',
-    minWidth: '300px',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '40%',
-    justifyContent: 'space-evenly'
-  },
-  button: {
-    position: 'relative'
-  },
-  progress: {
-    position: 'absolute'
-  }
-}));
 
-export default function Login({ history }) {
+
+export default function Login({ history, location }) {
+
+  const useStyles = makeStyles((theme) => ({
+    container: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: location.pathname === '/admin/login' ? 'center' : 'space-evenly',
+      height: `${window.innerHeight - 80}px`,
+    },
+    form: {
+      width: '30%',
+      minWidth: '300px',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '40%',
+      justifyContent: 'space-evenly'
+    },
+    button: {
+      position: 'relative'
+    },
+    progress: {
+      position: 'absolute'
+    }
+  }));
 
   const [loginError, setLoginError] = useState()
   const [isLoading, setIsLoading] = useState(false)
@@ -50,6 +52,12 @@ export default function Login({ history }) {
   })
   const [showPassword, setShowPassword] = useState(false)
   const classes = useStyles();
+
+  const { email } = loginFields
+
+  useEffect(() => {
+    console.log(history, location)
+  }, [])
 
   function handleFormChange(e) {
     const { name, value } = e.target
@@ -61,29 +69,44 @@ export default function Login({ history }) {
     event.preventDefault();
   };
 
-  // useEffect(() => console.log(props, updateUser), [])
 
   function handleFormSubmit(e) {
     e.preventDefault()
     setIsLoading(true)
 
-    axios.post('/login', loginFields)
-      .then(async res => {
-        await auth.setToken(res.data.token)
+    if (location.pathname === '/admin/login') {
+      if (email !== 'admin@indulgefootball.com') {
+        setLoginError({ message: 'Invalid credentials' })
         setIsLoading(false)
+      } else {
+        axios.post('/login', loginFields)
+          .then(async res => {
+            await auth.setToken(res.data.token)
+            setIsLoading(false)
+            history.push('/admin')
+          })
+          .catch(err => {
+            setIsLoading(false)
+            if (err) err.response && setLoginError(err.response.data)
+          })
+      }
+    } else {
+      axios.post('/login', loginFields)
+        .then(async res => {
+          await auth.setToken(res.data.token)
+          setIsLoading(false)
 
-        if (res.data.accountCategory === 'player' || res.data.accountCategory === 'parent') {
-          history.push(`/${auth.getUserId()}/profile`)
-        } else history.push('/tester')
-      })
-      .catch(err => {
-        setIsLoading(false)
-        if (err) {
-          if (err.response) {
-            setLoginError(err.response.data)
-          } else setLoginError(err)
-        }
-      })
+          if (res.data.accountCategory === 'player' || res.data.accountCategory === 'parent') {
+            history.push(`/${auth.getUserId()}/profile`)
+          } else history.push('/tester')
+        })
+        .catch(err => {
+          setIsLoading(false)
+          setLoginError(err.response.data)
+        })
+    }
+
+
   }
 
   return (
@@ -138,11 +161,12 @@ export default function Login({ history }) {
           {isLoading && <CircularProgress size={30} className={classes.progress} />}
         </Button>
 
-        <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>
+        {location.pathname !== '/admin/login' &&
+          <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
 
       </form>
 
-      <Link to='/register'> Don't have an account? Sign up </Link>
+      {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>}
     </div>
   )
 }

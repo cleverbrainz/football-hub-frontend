@@ -39,20 +39,25 @@ export default function CoachPageBetaTable({ locations, handleSetLocationId }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {locations.map((el, i) => (
-            <TableRow key={i}>
-              <TableCell align="right">{el.venue}</TableCell>
-              <TableCell align="right">{el.locationId}</TableCell>
-              <TableCell align="right">{el.fullAddress}</TableCell>
-              <TableCell align="right">{el.latitude}</TableCell>
-              <TableCell align="right">{el.longitude}</TableCell>
-              <TableCell align="right">
-                <DeleteForeverSharpIcon
-                onClick={() => handleSetLocationId(el.locationId, el.venue)}
-                className={classes.icon} />
-              </TableCell>
-            </TableRow>
-          ))}
+          {locations.map((el, i) => {
+            console.log(el)
+            return (
+              <TableRow key={i}>
+                <TableCell align="right">{el.venue}</TableCell>
+                <TableCell align="right">{el.locationId}</TableCell>
+                <TableCell align="right">{el.fullAddress}</TableCell>
+                <TableCell align="right">{el.latitude}</TableCell>
+                <TableCell align="right">{el.longitude}</TableCell>
+                <TableCell align="right">
+                  <DeleteForeverSharpIcon
+                    onClick={() => handleSetLocationId(el.locationId, el.venue)}
+                    className={classes.icon} />
+                </TableCell>
+              </TableRow>
+
+            )
+          })}
+
         </TableBody>
       </Table>
     </TableContainer>
