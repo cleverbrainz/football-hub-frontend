@@ -123,7 +123,10 @@ export default function RegisterTrainer({ match }) {
         if (!registerFields[key]) delete registerFields[key]
       }
 
-      axios.post('/signup', registerFields)
+      if (localStorage.token) localStorage.removeItem('token')
+
+      
+        axios.post('/signup', registerFields)
         .then(res => {
           setRegistrationSuccessMessage(res.data)
           console.log(res.data)
@@ -150,8 +153,8 @@ export default function RegisterTrainer({ match }) {
       } else requestObject = { ...registerFields, sentRequests: [], coaches: [], listings: [], locations: [], images: [], services: [], sessions: [], courses: [], players: [], ageDetails: [] }
 
       setIsLoading(true)
-
-      axios.post(`/user/${registrationSuccessMessage.userId}/signup`, requestObject)
+      console.log('code hello', registrationSuccessMessage.userId)
+      axios.post(`/user/${registrationSuccessMessage.userId}/signup`, {...requestObject, userId: registrationSuccessMessage.userId })
         .then(res => {
           console.log(res.data)
           setIsLoading(false)

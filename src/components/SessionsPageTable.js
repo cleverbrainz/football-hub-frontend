@@ -193,12 +193,18 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
                         }).join(', ')}
                         // MenuProps={MenuProps}
                         >
-                          {companyCoachInfo.map((name) => (
-                            <MenuItem key={name.userId} value={name.userId}>
+                          {companyCoachInfo.map((name) => {
+                            return (
+                            <MenuItem 
+                              disabled={name.message === 'Documents verifed' ? false : true} 
+                              key={name.userId} 
+                              value={name.userId}
+                              >
                               <Checkbox checked={courseCoaches.indexOf(name.userId) > -1} />
                               <ListItemText primary={name.coachInfo.name} />
                             </MenuItem>
-                          ))}
+                          )})
+                        }
                         </Select>
                       </FormControl>
                       </Box>
