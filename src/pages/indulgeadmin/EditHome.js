@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
   },
   image: {
     filter: 'blur(0.7px) brightness(75%)',
-    zIndex: -1,
     objectFit: 'none',
     height: '100vh',
     width: '100%',

@@ -7,6 +7,13 @@ import {
 } from "react-router-dom";
 import "./App.scss";
 import bulma from "bulma";
+// import SignUp from './pages/SignupDraft'
+import auth from "./lib/auth";
+import jwt from "jsonwebtoken";
+import axios from "axios";
+
+
+
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -20,10 +27,7 @@ import Companies from "./pages/Companies";
 import IndividualCompany from "./pages/IndividualCompany";
 import ForgottenPassword from "./pages/ForgottenPassword";
 import Profile from "./pages/Profile";
-// import SignUp from './pages/SignupDraft'
-import auth from "./lib/auth";
-import jwt from "jsonwebtoken";
-import axios from "axios";
+
 
 import CompanyMessages from "./components/Dashboard/CompanyMessages";
 import Listings from "./components/Dashboard/Listings";
@@ -61,15 +65,17 @@ import AddAgeGroup from "./pages/admin/AddAgeGroup";
 import ClientMessages from "./pages/ClientMessages";
 import Join from "./pages/Join";
 import Location from "./pages/admin/Location";
-import PopulateHome from './pages/indulge admin/PopulateHome'
-import PopulateWhyJoin from './pages/indulge admin/PopulateWhyJoin'
-import AdminHome from './pages/indulge admin/AdminHome'
+import PopulateHome from './pages/indulgeadmin/PopulateHome'
+import PopulateWhyJoin from './pages/indulgeadmin/PopulateWhyJoin'
+import AdminHome from './pages/indulgeadmin/AdminHome'
 import Requests from "./pages/Requests";
 import AddLocation from "./pages/admin/AddLocation";
 import CoachPageBeta from './pages/admin/CoachPageBeta'
 import CoachEdit from "./pages/CoachEdit";
 import CourseRegister from './pages/CourseRegister'
 import CompanyDetailsEdit from "./pages/CompanyDetailsEdit";
+
+import AdminHomeBeta from './pages/indulgeadmin/AdminHomeBeta'
 
 // axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
 
@@ -87,31 +93,6 @@ const App = () => {
       }
     }
   }, []);
-
-  const CustomerRoutes = (
-    <>
-      <Route exact path="/companies" component={Companies} />
-      <Route exact path="/companies/:id" component={IndividualCompany} />
-      <Route exact path="/companyDashboard" component={CompanyDashboard} />
-
-    </>
-  );
-
-  const AdminRoutes = <></>;
-
-  const additionalRoutes = () => {
-    let route;
-
-    axios.get(`/users/${auth.getUserId()}`).then(async (res) => {
-      await setUserType(res.data[0].category);
-
-      // if (res.data[0].category === 'player') {
-      //   route = CustomerRoutes
-      // } else route = AdminRoutes
-    });
-
-    return CustomerRoutes;
-  };
 
   return (
     <Router>
@@ -179,8 +160,11 @@ const App = () => {
         {/* {auth.isLoggedIn() && additionalRoutes()} */}
 
         {/* indulge admin */}
+        <Route exact path="/admin/login" component={Login} />
         <Route exact path="/admin/home" component={PopulateHome} />
         <Route exact path="/admin" component={AdminHome} />
+        <Route exact path="/adminbeta" component={AdminHomeBeta} />
+
 
         <Route exact path="/tester" component={AdminDashboard} />
         <Route exact path="/tester/edit" component={CompanyDetailsEdit} />

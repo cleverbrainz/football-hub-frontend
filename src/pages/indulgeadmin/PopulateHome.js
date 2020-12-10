@@ -6,7 +6,6 @@ import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100vw',
     height: window.innerHeight - 80,
     display: 'flex'
   },
