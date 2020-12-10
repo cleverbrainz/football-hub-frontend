@@ -73,6 +73,7 @@ import AddLocation from "./pages/admin/AddLocation";
 import CoachPageBeta from './pages/admin/CoachPageBeta'
 import CoachEdit from "./pages/CoachEdit";
 import CourseRegister from './pages/CourseRegister'
+import CompanyDetailsEdit from "./pages/CompanyDetailsEdit";
 
 import AdminHomeBeta from './pages/indulgeadmin/AdminHomeBeta'
 
@@ -166,6 +167,7 @@ const App = () => {
 
 
         <Route exact path="/tester" component={AdminDashboard} />
+        <Route exact path="/tester/edit" component={CompanyDetailsEdit} />
         <Route exact path="/testercoach" component={CoachDashboard} />
         <Route exact path="/testercoach/edit" component={CoachEdit} />
       </Switch>

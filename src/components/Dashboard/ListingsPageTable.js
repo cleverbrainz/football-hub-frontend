@@ -41,6 +41,7 @@ export default function ListingsPageTable({
             <TableCell align="right">Camps</TableCell>
             <TableCell align="right">Courses</TableCell>
             <TableCell align="right">Coaches</TableCell>
+            <TableCell align="right">Status</TableCell>
             <TableCell align="right"></TableCell>
             <TableCell align="right"></TableCell>
           </TableRow>
@@ -56,6 +57,7 @@ export default function ListingsPageTable({
               <TableCell align="right">{el.camps.length}</TableCell>
               <TableCell align="right">{el.courses.length}</TableCell>
               <TableCell align="right">{el.coaches.length}</TableCell>
+              <TableCell align="right">{el.status}</TableCell>
               <TableCell align="right">
                 <CreateSharpIcon
                   onClick={() => handleSetListingToBeEdited(el)}
