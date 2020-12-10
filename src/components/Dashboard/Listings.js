@@ -6,21 +6,20 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import PlaylistAddSharpIcon from '@material-ui/icons/PlaylistAddSharp';
 import FormatListNumberedSharpIcon from '@material-ui/icons/FormatListNumberedSharp';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
+import AssignmentSharpIcon from '@material-ui/icons/AssignmentSharp';
 import {
   Typography,
+  Fab,
   Button
 } from "@material-ui/core";
 import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import auth from '../../lib/auth'
 import DeleteComponent from '../../pages/admin/DeleteComponent'
-import LocationPageTable from '../../components/LocationPageTable'
 import AddListings from './AddListings'
 import EditSharpIcon from '@material-ui/icons/EditSharp';
 import ListingsPageTable from './ListingsPageTable'
+import ListingInstructionDialogue from './ListingInstructionDialogue'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -59,6 +58,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     width: '100%',
+    position: 'relative',
+    height: window.innerHeight - 80
   },
   AppBar: {
     // backgroundColor: 'white',
@@ -97,6 +98,11 @@ const useStyles = makeStyles((theme) => ({
   inputs: {
     margin: '7px 0',
     width: `${(window.innerWidth - 100) / 3}px`
+  },
+  fab: {
+    position: 'absolute',
+    right: '3%',
+    bottom: '3%'
   }
 }));
 
@@ -111,6 +117,7 @@ export default function Listings() {
   const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
   const [listingIdToBeDeleted, setListingIdToBeDeleted] = useState()
   const [listingToBeEdited, setListingToBeEdited] = useState()
+  const [instructionsOpen, setInstructionsOpen] = React.useState(false);
 
 
   const [listingTransferListInfo, setListingTransferListInfo] = useState({
@@ -142,7 +149,7 @@ export default function Listings() {
         let { coaches } = res.data[0]
         coaches = await getData(coaches)
         setCompanyListings(listings);
-        setListingTransferListInfo({...listingTransferListInfo, coaches, services, courses, companyName: name, images })
+        setListingTransferListInfo({ ...listingTransferListInfo, coaches, services, courses, companyName: name, images })
       })
       .catch(e => console.log(e))
   }, [!stateRefreshInProgress]);
@@ -154,6 +161,10 @@ export default function Listings() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleInstructionsClose = () => {
+    setInstructionsOpen(false);
   };
 
   async function handleStateRefresh() {
@@ -237,11 +248,23 @@ export default function Listings() {
             handleStateRefresh={() => handleStateRefresh()} classes={classes} />}
       </TabPanel>
 
+      <Fab variant="extended"
+        onClick={() => setInstructionsOpen(!instructionsOpen)}
+        color="primary" className={classes.fab}>
+        <AssignmentSharpIcon style={{ marginRight: '10px' }} />
+        Listing Instructions
+      </Fab>
+
       <DeleteComponent
         open={open}
         handleDelete={e => handleDelete(e)}
         handleClose={e => handleClose(e)}
         name='listing' />
+
+      <ListingInstructionDialogue
+        open={instructionsOpen}
+        handleClose={e => handleInstructionsClose(e)}
+      />
     </div>
   );
 }

@@ -43,6 +43,9 @@ export default function AddLocation({
     const results = await geocodeByAddress(value);
     const latLng = await getLatLng(results[0]);
 
+    console.log(value)
+    console.log(results)
+
     setAddress(value)
     setformDetails({
       ...formDetails,

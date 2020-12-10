@@ -105,9 +105,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function Misc() {
+export default function Misc({ componentTabValue }) {
   const classes = useStyles();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(componentTabValue);
 
   const [companyAgeGroups, setCompanyAgeGroups] = useState()
   const [companyServices, setCompanyServices] = useState()
