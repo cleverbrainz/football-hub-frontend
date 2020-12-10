@@ -1,6 +1,9 @@
 import React, { useState, useContext } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import EditPagesTab from './EditPagesTab'
+import MasterList from './MasterLists'
+import VerificationPage from './VerificationPage'
 
 import {
   Drawer,
@@ -21,30 +24,14 @@ import {
   Menu,
   ChevronLeft,
   ChevronRight,
-  BubbleChartSharp,
-  ForumSharp,
-  EventNoteSharp,
+  People,
+  VerifiedUser,
+  Home,
   FormatListNumberedSharp,
-  SupervisorAccountSharp,
-  LocationOnSharp,
-  DirectionsRunSharp,
-  SportsSoccerSharp,
-  PhotoLibrarySharp,
-  SettingsSharp
+
 } from '@material-ui/icons';
+import MasterLists from './MasterLists';
 
-import auth from '../lib/auth'
-
-import Summary from '../components/Dashboard/Summary'
-import Messages from '../components/Dashboard/CompanyMessages'
-import Listings from '../components/Dashboard/Listings'
-import CoachPageBeta from '../pages/admin/CoachPageBeta'
-import Calendar from '../components/Dashboard/Calendar'
-import Locations from '../components/Dashboard/Locations'
-import Players from '../components/Dashboard/Players'
-import Sessions from '../components/Dashboard/Sessions'
-import Images from '../components/Dashboard/Images'
-import Misc from '../components/Dashboard/Misc'
 
 const drawerWidth = 240;
 
@@ -129,45 +116,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function Profile() {
+export default function AdminHomeBeta() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState('Summary');
-  const [componentTabValue, setComponentTabValue] = useState(0)
+  const [selectedComponent, setSelectedComponent] = useState('Verifications');
 
   const [drawerItems, setDrawerItems] = useState({
-    Summary: BubbleChartSharp,
-    Messages: ForumSharp,
-    Listings: FormatListNumberedSharp,
-    Coaches: SupervisorAccountSharp,
-    Locations: LocationOnSharp,
-    Sessions: SportsSoccerSharp,
-    Images: PhotoLibrarySharp,
-    Players: DirectionsRunSharp,
-    Misc: SettingsSharp,
-    Calendar: EventNoteSharp,
+    Master: People,
+    Verifications: VerifiedUser,
+    Home,
   })
 
   const dashboardComponents = {
-    Coaches: CoachPageBeta,
-    Listings,
-    Messages,
-    Locations,
-    Images,
-    Sessions,
-    Players,
-    Misc,
-    Summary,
-    Calendar,
+    Master: MasterList,
+    Verifications: VerificationPage,
+    Home: EditPagesTab,
+    // Join: PopulateWhyJoin
   }
 
   const DisplayedComponent = dashboardComponents[selectedComponent]
-
-  const handleComponentChange = (selectedComponent, tabValue) => {
-    setSelectedComponent(selectedComponent)
-    setComponentTabValue(tabValue)
-  }
 
 
   return (
@@ -203,7 +171,7 @@ export default function Profile() {
           </div>
 
           <Typography className={classes.greeting} align="right" variant="subtitle1" noWrap>
-            Welcome back
+            Indulge Admin
           </Typography>
         </Toolbar>
       </AppBar>
@@ -233,7 +201,7 @@ export default function Profile() {
         <List>
           {Object.keys(drawerItems).map((text, index) => {
             const Icon = drawerItems[text]
-            const isDisabled = ['Calendar'].includes(text)
+            const isDisabled = ['Summary', 'Calendar'].includes(text)
 
             return (
               <ListItem
@@ -250,11 +218,7 @@ export default function Profile() {
       </Drawer>
       <main className={classes.content}>
 
-        <DisplayedComponent
-          // props for summary tab
-          handleComponentChange={(component, tab) => handleComponentChange(component, tab)}
-          componentTabValue={componentTabValue}
-        />
+        <DisplayedComponent />
 
       </main>
     </div>

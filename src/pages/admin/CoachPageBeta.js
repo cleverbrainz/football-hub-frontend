@@ -111,9 +111,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-function CoachPageBeta() {
+function CoachPageBeta({ componentTabValue }) {
   const classes = useStyles();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(componentTabValue);
   const [coaches, setCoaches] = useState([])
   const [user, setUser] = useState({})
 

@@ -23,6 +23,11 @@ import auth from "../../lib/auth";
 import { useEffect } from "react";
 import moment from 'moment'
 import ResetCampDetailsDialogue from '../../components/ResetCampDetailsDialogue'
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  KeyboardTimePicker,
+  MuiPickersUtilsProvider,
+} from '@material-ui/pickers';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -173,7 +178,7 @@ export default function MaterialUIPickers({ history, course,
       <form onSubmit={handleSubmit} className={classes.form}>
 
         <FormControl variant="outlined" className={classes.formControl}>
-        <InputLabel>Optional Name</InputLabel>
+          <InputLabel>Optional Name</InputLabel>
           <OutlinedInput
             label='Optional Name'
             name="optionalName"
@@ -254,6 +259,22 @@ export default function MaterialUIPickers({ history, course,
 
         {!course && (
           <tr>
+{/* 
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+
+              <KeyboardTimePicker
+                margin="normal"
+                id="time-picker"
+                label="Time picker"
+                // value={selectedDate}
+                onChange={(e) => console.log(e.target.value)}
+                KeyboardButtonProps={{
+                  'aria-label': 'change time',
+                }}
+              />
+            </MuiPickersUtilsProvider> */}
+
+
             <td>
               <FormControl variant="outlined" className={classes.formControl}>
                 <InputLabel>Start</InputLabel>
