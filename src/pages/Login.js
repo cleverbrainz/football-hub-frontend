@@ -66,7 +66,9 @@ export default function Login({ history }) {
   function handleFormSubmit(e) {
     e.preventDefault()
     setIsLoading(true)
-
+    
+    if (localStorage.token) localStorage.removeItem('token')
+    
     axios.post('/login', loginFields)
       .then(async res => {
         await auth.setToken(res.data.token)
@@ -84,6 +86,7 @@ export default function Login({ history }) {
           } else setLoginError(err)
         }
       })
+    
   }
 
   return (

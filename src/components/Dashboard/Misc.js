@@ -276,6 +276,10 @@ export default function Misc() {
         />}
       </TabPanel>
 
+      <TabPanel className={classes.formContainer} value={value} index={3}>
+          
+      </TabPanel>
+
       <DeleteComponent
         open={open}
         handleDelete={e => handleDelete(e)}

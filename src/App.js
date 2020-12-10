@@ -69,8 +69,9 @@ import AddLocation from "./pages/admin/AddLocation";
 import CoachPageBeta from './pages/admin/CoachPageBeta'
 import CoachEdit from "./pages/CoachEdit";
 import CourseRegister from './pages/CourseRegister'
+import CompanyDetailsEdit from "./pages/CompanyDetailsEdit";
 
-axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
+// axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
 
 const App = () => {
   const [userType, setUserType] = useState();
@@ -182,6 +183,7 @@ const App = () => {
         <Route exact path="/admin" component={AdminHome} />
 
         <Route exact path="/tester" component={AdminDashboard} />
+        <Route exact path="/tester/edit" component={CompanyDetailsEdit} />
         <Route exact path="/testercoach" component={CoachDashboard} />
         <Route exact path="/testercoach/edit" component={CoachEdit} />
       </Switch>
