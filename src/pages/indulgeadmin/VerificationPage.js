@@ -44,14 +44,18 @@ const VerificationPage = () => {
       .catch(error => console.log(error))
   }, [!stateRefreshInProgress])
 
-  const acceptDocuments = event => {
+  const acceptDocuments = (event, type) => {
     event.preventDefault()
     setStateRefreshInProgress(true)
     const [verificationId, userId] = event.target.id.split('-')
     console.log(event.target)
-    const accepted = {
+    const accepted = type === 'coachInfo' ?{
       coachDocumentationCheck: true,
       dbsDocumentationCheck: true,
+      paymentCheck: true
+    } : {
+      coachDocumentationCheck: true,
+      companyDetailsCheck: true,
       paymentCheck: true
     }
     const message = 'Documents verifed'
@@ -66,6 +70,7 @@ const VerificationPage = () => {
   const CoachVerificationRows = () => {
 
     return awaitingVerification.map(([id, user], i) => {
+      
       return (
 
         <TableRow key={i}>
@@ -94,8 +99,55 @@ const VerificationPage = () => {
           <TableCell align="right">
             <button
               id={`${id}-${user.userId}`}
-              onClick={event => acceptDocuments(event)}>
+              onClick={event => acceptDocuments(event, 'coachInfo')}>
               Verifiy Coach
+           </button>
+          </TableCell>
+        </TableRow>
+      )
+    })
+  }
+
+  const CompanyVerificationRows = () => {
+
+    return awaitingVerification.map(([id, user], i) => {
+      if (user.type === 'companyInfo')
+      return (
+
+        <TableRow key={i}>
+          <TableCell>
+          <Link to={`/${user.userId}/profile`}>
+            <h2>{user.name}</h2>
+            </Link>
+          </TableCell>
+
+          <TableCell align="right">
+              <h2>{user.company_registration_number}</h2>   
+          </TableCell>
+
+          <TableCell align="right">
+            <h2>{user.vat_number}</h2>
+          </TableCell>
+
+          <TableCell align="right">
+      <p>{user.professional_indemnity_insurance}</p>
+            <a href={user.documents.professional_indemnity_insurance}
+              rel="noopener noreferrer"
+              target='_blank'> Click to open </a>
+          </TableCell>
+
+          <TableCell align="right">
+          <p>{user.public_liability_insurance}</p>
+            <a href={user.documents.public_liability_insurance}
+              rel="noopener noreferrer"
+              target='_blank'> Click to open </a>
+          </TableCell>
+
+          <TableCell align="right">
+            <button
+              id={`${id}-${user.userId}`}
+              onClick={event => acceptDocuments(event, user.type)}>
+              Verifiy Company
            </button>
           </TableCell>
         </TableRow>
@@ -136,15 +188,16 @@ const VerificationPage = () => {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell align="right">User ID</TableCell>
-              <TableCell align="right">Coach Name</TableCell>
-              <TableCell align="right">DBS Document</TableCell>
-              <TableCell align="right">Coaching Certificate</TableCell>
+              <TableCell align="right">Company Name</TableCell>
+              <TableCell align="right">Company Registration Number</TableCell>
+              <TableCell align="right">VAT Number</TableCell>
+              <TableCell align="right">PLI Document</TableCell>
+              <TableCell align="right">Professional Indemnity Document</TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* <CoachVerificationRows /> */}
+          <CompanyVerificationRows />
           </TableBody>
         </Table>
       </TableContainer>
