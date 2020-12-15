@@ -32,7 +32,8 @@ const SearchResultCard = ({ results, companyInfo }) => {
         <ListItem alignItems="flex-start">
         <Link to={`/${result.userId}/profile`}>
         <ListItemAvatar>
-          <Avatar alt={`photo of ${result.fullName}`} src={result.coachInfo.imageURL} />
+          {/* <Avatar alt={`photo of ${result.fullName}`} src={result.coachInfo.imageURL} /> */}
+          <Avatar alt={`photo of ${result.fullName}`} src={''} />
         </ListItemAvatar>
         <ListItemText
           primary={result.name}

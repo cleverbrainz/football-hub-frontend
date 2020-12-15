@@ -43,8 +43,8 @@ const useStyles = makeStyles({
 })
 
 export default function CompanyPlayersList() {
-  const [companyData, setCompanyData] = useState({})
-  const [players, setPlayers] = useState({})
+  const [companyData, setCompanyData] = useState([])
+  const [players, setPlayers] = useState([])
   const [filteredNames, setFilteredNames] = useState([])
   const [filters, setFilters] = useState({
     // minimumAge: 0,
@@ -172,7 +172,11 @@ export default function CompanyPlayersList() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredNames.map((el, i) => (
+              {filteredNames.map((el, i) => {
+                console.log(players[el])
+                const activeCourses = players[el].courses[companyData.userId] ? players[el].courses[companyData.userId].active : []
+                const pastCourses = players[el].courses[companyData.userId] ? players[el].courses[companyData.userId].past : []
+                return (
                 <>
                   <TableRow key={i}>
                     {/* <TableCell component="th" scope="row">
@@ -224,12 +228,10 @@ export default function CompanyPlayersList() {
                             component="div"
                           >
                             Current Courses:{' '}
-                            {players[el].courses[companyData.userId]
-                              ? `${
-                                  players[el].courses[companyData.userId].active
-                                    .length
-                                }`
-                              : '0'}
+                            { activeCourses ? 
+                              `${activeCourses.length}`
+                              : 
+                              '0' }
                           </Typography>
 
                           {players[el].courses[auth.getUserId()] && (
@@ -259,9 +261,7 @@ export default function CompanyPlayersList() {
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                  {players[el].courses[
-                                    companyData.userId
-                                  ].active.map((elCourse, i) => {
+                                  {activeCourses && activeCourses.map((elCourse, i) => {
                                     console.log({elCourse, companyData})
                                     for (const correctCourse of companyData.courses) {
                                       if (elCourse === correctCourse.courseId)
@@ -307,17 +307,16 @@ export default function CompanyPlayersList() {
                             component="div"
                           >
                             Past Courses:{' '}
-                            {players[el].courses[companyData.userId]
+                            { pastCourses
                               ? `${
-                                  players[el].courses[companyData.userId].past
-                                    .length
+                                  pastCourses.length
                                 }`
                               : '0'}
                           </Typography>
 
-                          {players[el].courses[companyData.userId] && (
+                          {pastCourses && (
                             <ul>
-                              {players[el].courses[companyData.userId].past.map(
+                              {pastCourses.map(
                                 (elCourse, i) => {
                                   return <li>{elCourse}</li>
                                 }
@@ -329,7 +328,7 @@ export default function CompanyPlayersList() {
                     </TableCell>
                   </TableRow>
                 </>
-              ))}
+              )})}
             </TableBody>
           </Table>
         </TableContainer>

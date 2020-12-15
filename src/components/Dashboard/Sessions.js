@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'
+import moment from 'moment'
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -12,7 +14,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import {
   Typography,
   Button,
-  Select
+  Select,
+  Container
 } from "@material-ui/core";
 import Box from '@material-ui/core/Box';
 import axios from 'axios'
@@ -105,6 +108,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function Sessions({ componentTabValue }) {
+  const date = moment()
   const classes = useStyles();
   const [value, setValue] = useState(componentTabValue);
   const [companyCourses, setCompanyCourses] = useState()
@@ -116,6 +120,7 @@ export default function Sessions({ componentTabValue }) {
   const [courseToBeEdited, setCourseToBeEdited] = useState()
   const [companyCoachIds, setCompanyCoachIds] = useState([])
   const [companyCoachInfo, setCompanyCoachInfo] = useState([])
+  const [thisWeek, setThisWeek] = useState([])
   
   async function getData() {
     let registerArray = []
@@ -129,7 +134,7 @@ export default function Sessions({ componentTabValue }) {
     register = await response.data
     console.log(register.register)
     // console.log('data', data)
-    if (register.register) registerArray.push(register)
+    if (register.register) registerArray.push([course.courseDetails, course.courseId, register.register.sessions])
     }
     for (const coach of data.coaches) {
       let coachdetails
@@ -141,7 +146,30 @@ export default function Sessions({ componentTabValue }) {
     setCompanyCoachInfo(coachArray)
     setCompanyCourses(data.courses)
     setRegisters(registerArray)
+    setThisWeek(sortRegisters(registerArray))
     }
+
+
+    const sortRegisters = (registers) => {
+      const monday = date.startOf('week')
+      const weekdays = {}
+      for (let i = 1; i <= 7; i++) {
+        weekdays[(monday.add(1, 'days').format('YYYY-MM-DD'))] = []
+      }
+
+      registers.forEach(([courseDetails, id, sessionDates]) => {
+        for (const session of sessionDates) {
+          if (Object.keys(weekdays).indexOf(session) !== -1) {
+            const correctSession = courseDetails.sessions.filter(infoSession => infoSession.day === moment(session).format('dddd'))[0]
+            weekdays[session].push([courseDetails, id, correctSession])
+          }
+        }
+      })
+
+      console.log(weekdays)
+      
+      return weekdays
+    } 
 
   useEffect(() => {
     // axios
@@ -248,6 +276,32 @@ export default function Sessions({ componentTabValue }) {
           companyCoachIds={companyCoachIds}
           companyCoachInfo={companyCoachInfo}
           registers={registers} />
+
+<br></br>
+    <Typography variant="h4" >This Weeks Sessions</Typography>
+    <Container>
+
+    { Object.keys(thisWeek).map(day => {
+      if (thisWeek[day].length !== 0) {
+        return (
+        <>
+        <Typography gutterBottom={true} variant="h5">{moment(day).format('dddd')}</Typography>
+        {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
+          return (
+            <Typography gutterBottom={true} variant="h6">
+            {sessionInfo.startTime} - {sessionInfo.endTime}, {courseDetails.location}: 
+            <Link to={`/courses/${id}/register/${day}`}>
+                {` ${courseDetails.optionalName}`}
+            </Link>
+            </Typography>
+          )
+        })}
+        </>
+        )
+      }
+    })}
+</Container>
+
       </TabPanel>
 
       {/* tab 2 content */}

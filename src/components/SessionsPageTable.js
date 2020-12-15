@@ -152,10 +152,11 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
                               Register
                           </Typography>
                           {
-                        (registers.length !== 0) ? registers.map(register => {
-                          if (register.courseId === course.courseId) {
+                        (registers.length !== 0) ? registers.map(([courseInfo, id, sessions]) => {
+                          console.log({registers})
+                          if (id === course.courseId) {
                           return (
-                          <Link to={`/courses/${register.courseId}/register`} state={{register}}></Link> 
+                          <Link to={`/courses/${id}/register/full`}>View Register</Link> 
                           )
                         }}) :               
                             <Typography>
