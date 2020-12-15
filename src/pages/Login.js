@@ -105,24 +105,6 @@ export default function Login({ history, location }) {
           setLoginError(err.response.data)
         })
     }
-
-
-<<<<<<< HEAD
-        if (res.data.accountCategory === 'player' || res.data.accountCategory === 'parent') {
-          history.push(`/${auth.getUserId()}/profile`)
-        } else history.push('/tester')
-      })
-      .catch(err => {
-        setIsLoading(false)
-        if (err) {
-          if (err.response) {
-            setLoginError(err.response.data)
-          } else setLoginError(err)
-        }
-      })
-    
-=======
->>>>>>> ee67e6f39bf0596f2332e40750e12a7dbb8be085
   }
 
   return (

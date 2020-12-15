@@ -45,6 +45,7 @@ import Players from '../components/Dashboard/Players'
 import Sessions from '../components/Dashboard/Sessions'
 import Images from '../components/Dashboard/Images'
 import Misc from '../components/Dashboard/Misc'
+import Setup from '../components/Dashboard/Setup'
 
 const drawerWidth = 240;
 
@@ -138,21 +139,23 @@ export default function Profile() {
 
   const [drawerItems, setDrawerItems] = useState({
     Summary: BubbleChartSharp,
+    Calendar: EventNoteSharp,
     Messages: ForumSharp,
     Listings: FormatListNumberedSharp,
-    Coaches: SupervisorAccountSharp,
-    Locations: LocationOnSharp,
-    Sessions: SportsSoccerSharp,
-    Images: PhotoLibrarySharp,
+    // Coaches: SupervisorAccountSharp,
+    // Locations: LocationOnSharp,
+    // Sessions: SportsSoccerSharp,
+    // Images: PhotoLibrarySharp,
     Players: DirectionsRunSharp,
-    Misc: SettingsSharp,
-    Calendar: EventNoteSharp,
+    // Misc: SettingsSharp,
+    Setup: SettingsSharp,
   })
 
   const dashboardComponents = {
     Coaches: CoachPageBeta,
     Listings,
     Messages,
+    Setup,
     Locations,
     Images,
     Sessions,
@@ -233,12 +236,15 @@ export default function Profile() {
         <List>
           {Object.keys(drawerItems).map((text, index) => {
             const Icon = drawerItems[text]
-            const isDisabled = ['Calendar'].includes(text)
+
 
             return (
               <ListItem
-                disabled={isDisabled}
-                onClick={() => setSelectedComponent(text)}
+
+                onClick={() => {
+                  setOpen(false)
+                  setSelectedComponent(text)
+                }}
                 style={{ paddingLeft: '24px', marginTop: '25px' }} button key={text}>
                 <ListItemIcon> <Icon /> </ListItemIcon>
                 <ListItemText primary={text} />

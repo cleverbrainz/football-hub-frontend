@@ -172,7 +172,7 @@ export default function CompanyPlayersList() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredNames.map((el, i) => (
+              {filteredNames && filteredNames.map((el, i) => (
                 <>
                   <TableRow key={i}>
                     {/* <TableCell component="th" scope="row">
