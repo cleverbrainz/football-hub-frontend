@@ -34,7 +34,7 @@ const useStyles = makeStyles({
 
 const CourseRegister = ({ match }) => {
   console.log(match)
-  const courseId = match.params.courseId
+  const { courseId, sessionDate } = match.params
   const [register, setRegister] = useState([])
   const [course, setCourse] = useState([])
   const classes = useStyles();
@@ -91,7 +91,10 @@ const CourseRegister = ({ match }) => {
             <TableCell>Player Name</TableCell>
             {
               register.sessions.map(session => {
-                return <TableCell align="right">{session}</TableCell>
+                if (sessionDate === 'full' || sessionDate === session) {
+                  return <TableCell align="right">{session}</TableCell>
+                }
+                // return week === 'full' ? <TableCell align="right">{session}</TableCell> : week === session ? <TableCell align="right">{session}</TableCell> : <></>
               })
             }
           </TableRow>
@@ -105,6 +108,7 @@ const CourseRegister = ({ match }) => {
               </TableCell>
               {register.sessions.map(week => {
                 const { attendance, notes } = register[player][week]
+                if (sessionDate === 'full' || week === sessionDate) {
                 return (
                   <TableCell align="right">
                     <FormControl className={classes.formControl}>
@@ -144,7 +148,7 @@ const CourseRegister = ({ match }) => {
       }
                   </TableCell>
                 )
-              })
+              }})
             }
             </TableRow>
             )

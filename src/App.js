@@ -74,6 +74,7 @@ import CoachPageBeta from './pages/admin/CoachPageBeta'
 import CoachEdit from "./pages/CoachEdit";
 import CourseRegister from './pages/CourseRegister'
 import CompanyDetailsEdit from "./pages/CompanyDetailsEdit";
+import PlayerSearch from './pages/admin/PlayerSearch'
 
 import AdminHomeBeta from './pages/indulgeadmin/AdminHomeBeta'
 
@@ -121,7 +122,7 @@ const App = () => {
           component={CompanyMessages}
         />
 
-        <Route exact path="/courses/:courseId/register" component={CourseRegister}/>
+        <Route path="/courses/:courseId/register/:sessionDate" component={CourseRegister}/>
 
 
         <Route exact path="/:id/messages" component={ClientMessages} />
@@ -168,6 +169,7 @@ const App = () => {
 
         <Route exact path="/tester" component={AdminDashboard} />
         <Route exact path="/tester/edit" component={CompanyDetailsEdit} />
+        <Route exact path="/tester/search" component={PlayerSearch} />
         <Route exact path="/testercoach" component={CoachDashboard} />
         <Route exact path="/testercoach/edit" component={CoachEdit} />
       </Switch>
