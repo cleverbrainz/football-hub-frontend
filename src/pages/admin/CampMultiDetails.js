@@ -92,7 +92,6 @@ export default function MaterialUIPickers({ history, course,
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   const times = [6, 7, 8, 9, 10, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -130,7 +129,7 @@ export default function MaterialUIPickers({ history, course,
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const requestObj = { ...courseDetails }
+    const requestObj = { ...courseDetails, startTime: moment(courseDetails.startTime).format('h:mm a') }
     if (!requestObj.individualDayBookings) requestObj.dayCost = ''
     if (course) requestObj.courseId = course.courseId
 
@@ -160,9 +159,12 @@ export default function MaterialUIPickers({ history, course,
   };
 
   function updateOtherCourseInfo(event, index) {
-    const { name, value } = event.target;
+
+    const { name, value } = event.target
     const sessionsArr = ['spaces', 'startTime', 'endTime']
 
+
+    // console.log(event)
     if (course && (name === 'firstDay' || name === 'lastDay')) setOpen(true)
     else if (course && (sessionsArr.includes(name))) {
       const newSessionsArr = [...sessions]
@@ -171,6 +173,7 @@ export default function MaterialUIPickers({ history, course,
     }
     else setCourseDetails({ ...courseDetails, [name]: value })
   }
+
 
 
   return (
@@ -259,19 +262,25 @@ export default function MaterialUIPickers({ history, course,
 
         {!course && (
           <tr>
+
 {/* 
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
 
-              <KeyboardTimePicker
-                margin="normal"
-                id="time-picker"
-                label="Time picker"
-                // value={selectedDate}
-                onChange={(e) => console.log(e.target.value)}
-                KeyboardButtonProps={{
-                  'aria-label': 'change time',
-                }}
-              />
+                <KeyboardTimePicker
+                  margin="normal"
+                  id="startTime"
+                  label="Time picker"
+                  value={startTime}
+                  onChange={(value) => {
+                    console.log(moment(value).format('h:mm a'))
+                    setCourseDetails({ ...courseDetails, startTime: value})
+                  }}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change time',
+                  }}
+                />
+
+
             </MuiPickersUtilsProvider> */}
 
 
