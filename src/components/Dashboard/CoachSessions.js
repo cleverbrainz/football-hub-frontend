@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import moment from 'moment'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -117,6 +119,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function CoachSessions() {
+  const date = moment()
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [courses, setCourses] = useState([])
@@ -127,6 +130,7 @@ export default function CoachSessions() {
   const [newCourseDetail, setNewCourseDetail] = useState()
   const [courseToBeEdited, setCourseToBeEdited] = useState()
   const [companyCoaches, setCompanyCoaches] = useState([])
+  const [thisWeek, setThisWeek] = useState([])
 
   async function getData() {
     let coursesArray = []
@@ -142,15 +146,40 @@ export default function CoachSessions() {
     for (const compCourse of courses) {
       if (data.courses[course].active.some(id => id === compCourse.courseId)) {
         coursesArray.push(compCourse)
+        const registerResponse = await axios.get(`/courses/${compCourse.courseId}`)
+        const registerData = await registerResponse.data
+        if (registerData.register) registerArray.push([compCourse.courseDetails, compCourse.courseId, registerData.register.sessions])
       }
-      if (compCourse.register) registerArray.push(compCourse.register)
     }
     // console.log('data', data)
     // 
     }
     setCourses(coursesArray)
     setRegisters(registerArray)
+    setThisWeek(sortRegisters(registerArray))
     }
+
+
+    const sortRegisters = registers => {
+      const monday = date.startOf('week')
+      const weekdays = {}
+      for (let i = 1; i <= 7; i++) {
+        weekdays[(monday.add(1, 'days').format('YYYY-MM-DD'))] = []
+      }
+
+      registers.forEach(([courseDetails, id, sessionDates]) => {
+        for (const session of sessionDates) {
+          if (Object.keys(weekdays).indexOf(session) !== -1) {
+            const correctSession = courseDetails.sessions.filter(infoSession => infoSession.day === moment(session).format('dddd'))[0]
+            weekdays[session].push([courseDetails, id, correctSession])
+          }
+        }
+      })
+
+      console.log(weekdays)
+      
+      return weekdays
+    } 
 
   useEffect(() => {
     // axios
@@ -162,7 +191,7 @@ export default function CoachSessions() {
     getData()
   }, [!stateRefreshInProgress]);
 
-  console.log(courses, registers)
+  console.log({courses, registers, date})
 
   const handleCourseDeletion = courseId => {
     setOpen(true)
@@ -280,13 +309,61 @@ export default function CoachSessions() {
           <TableCell align="right">{el.courseDetails.endDate}</TableCell>
           <TableCell align="right">{el.courseDetails.age}</TableCell>
               <TableCell align="right">
-                <Link to={`/courses/${el.courseId}/register`}>View Register</Link>
+                <Link to={`/courses/${el.courseId}/register/full`}>View Full Register</Link>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
+<br></br>
+    <Typography variant="h4" >This Weeks Sessions</Typography>
+    <Container>
+
+    { Object.keys(thisWeek).map(day => {
+      if (thisWeek[day].length !== 0) {
+        return (
+        <>
+        <Typography gutterBottom={true} variant="h5">{moment(day).format('dddd')}</Typography>
+        {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
+          return (
+            <Typography gutterBottom={true} variant="h6">
+            {sessionInfo.startTime} - {sessionInfo.endTime}, {courseDetails.location}: 
+            <Link to={`/courses/${id}/register/${day}`}>
+                {` ${courseDetails.optionalName}`}
+            </Link>
+            </Typography>
+          )
+        })}
+        </>
+        )
+      }
+    })}
+</Container>
+
+
+    {/* <TableContainer component={Paper}>
+    <Table className={classes.table} aria-label="simple table">
+    <TableHead>
+          <TableRow>
+            <TableCell align="right">Monday</TableCell>
+            <TableCell align="right">Tuesday</TableCell>
+            <TableCell align="right">Wednesday</TableCell>
+            <TableCell align="right">Thursday</TableCell>
+            <TableCell align="right">Friday</TableCell>
+            <TableCell align="right">Saturday</TableCell>
+            <TableCell align="right">Sunday</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {Object.keys(thisWeek).map(day => {
+            if (thisWeek[day].length === 0) return <h1>hello</h1>
+          })}
+        </TableBody>
+    </Table>
+    </TableContainer> */}
+
+
       </TabPanel>
 
      
