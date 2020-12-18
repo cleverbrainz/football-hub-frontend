@@ -111,7 +111,7 @@ const App = () => {
         <Route exact path="/privacy-policy" component={PrivacyPolicy} />
         <Route exact path="/join" component={Join} />
         <Route exact path="/login" component={Login} />
-        <Route exact path="/register/player" component={RegisterPlayer} />
+        <Route exact path="/register/player/:companyLink?" component={RegisterPlayer} />
         <Route exact path="/register/trainer" component={RegisterTrainer} />
         <Route exact path="/forgot_password" component={ForgottenPassword} />
         <Route exact path="/test" component={Listings} />
