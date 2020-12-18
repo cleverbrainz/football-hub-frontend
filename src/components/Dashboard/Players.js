@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import AssignPlayerToCourse from './AssignPlayerToCourse'
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
@@ -52,7 +53,7 @@ export default function CompanyPlayersList() {
     ageRange: '0-100',
     status: 'All',
   })
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState({})
 
   async function getData() {
     let playerlist = {}
@@ -63,9 +64,10 @@ export default function CompanyPlayersList() {
       let playerInfo
       const response = await axios.get(`/users/${player}`)
       playerInfo = await response.data[0]
-      console.log(playerInfo)
+      console.log('playerinfo', playerInfo)
       // console.log('data', data)
       playerlist[player] = playerInfo
+      setOpen({...open, [playerInfo.userId]: false })
     }
     setCompanyData(data)
     setPlayers(playerlist)
@@ -106,6 +108,16 @@ export default function CompanyPlayersList() {
     }
     setFilters(newFilters)
     setFilteredNames(filteredPlayers)
+  }
+
+  const handleOpen = (event, item) => {
+    event.preventDefault()
+      const newOpen = {...open}
+      const prev = open[item]
+      for (const key of Object.keys(newOpen)) {
+        newOpen[key] = false
+      }
+      setOpen({...newOpen, [item]: !prev})
   }
 
   const classes = useStyles()
@@ -186,9 +198,9 @@ export default function CompanyPlayersList() {
                       <IconButton
                         aria-label="expand row"
                         size="small"
-                        onClick={() => setOpen(!open)}
+                        onClick={(event) => handleOpen(event, el)}
                       >
-                        {open ? (
+                        {open[el] ? (
                           <KeyboardArrowUpIcon />
                         ) : (
                           <KeyboardArrowDownIcon />
@@ -217,7 +229,7 @@ export default function CompanyPlayersList() {
                       style={{ paddingBottom: 0, paddingTop: 0 }}
                       colSpan={6}
                     >
-                      <Collapse in={open} timeout="auto" unmountOnExit>
+                      <Collapse in={open[el]} timeout="auto" unmountOnExit>
                         <Box margin={1}>
                           <Typography variant="h6" gutterBottom component="div">
                             Course Info
@@ -267,7 +279,7 @@ export default function CompanyPlayersList() {
                                       if (elCourse === correctCourse.courseId)
                                         {
                                           return (
-                                            <>
+                                            <TableRow>
                                               <TableCell align="right">
                                               {correctCourse.courseDetails.optionalName}
                                               </TableCell>
@@ -290,7 +302,7 @@ export default function CompanyPlayersList() {
                                                 Day Cost
                                               </TableCell>
                                               <TableCell align="right"></TableCell>
-                                            </>
+                                            </TableRow>
                                           )
                                         }
                                     }
@@ -324,6 +336,8 @@ export default function CompanyPlayersList() {
                             </ul>
                           )}
                         </Box>
+
+                        <AssignPlayerToCourse player={players[el]} courses={companyData.courses} companyId={companyData.userId}/>
                       </Collapse>
                     </TableCell>
                   </TableRow>
