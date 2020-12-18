@@ -75,6 +75,8 @@ function getSteps() {
 
 export default function RegisterPlayer({ match }) {
 
+
+  console.log(match)
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
@@ -88,6 +90,7 @@ export default function RegisterPlayer({ match }) {
     password: '',
     confirmPassword: '',
     category: '',
+    companyLink: match.params.companyLink ? match.params.companyLink : undefined
   })
   const [fieldErrors, setFieldErrors] = useState()
   const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState()
