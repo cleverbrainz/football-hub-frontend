@@ -7,6 +7,7 @@ import DirectionsRunSharpIcon from '@material-ui/icons/DirectionsRunSharp';
 import BusinessSharpIcon from '@material-ui/icons/BusinessSharp';
 import PeopleAltSharpIcon from '@material-ui/icons/PeopleAltSharp';
 import axios from 'axios'
+import Footer from '../components/Footer'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -86,10 +87,10 @@ const Join = () => {
 
 
               <p style={{ textAlign: "justify" }}>
-                {joinDetails.whyJoin.mainText}
+                {/* {joinDetails.whyJoin.mainText} */}
               </p>
 
-              {joinDetails.whyJoin.reasons.map((el, i) => {
+              {/* {joinDetails.whyJoin.reasons.map((el, i) => {
                 return (
                   <Typography component='div' >
                     <Box
@@ -100,7 +101,7 @@ const Join = () => {
                   </Typography>
 
                 )
-              })}
+              })} */}
             </div>
 
             <div className={classes.whatYouGet}>
@@ -112,10 +113,10 @@ const Join = () => {
               </Typography>
 
               <p style={{ textAlign: "justify" }}>
-                {joinDetails.whatYouGet.mainText}
+                {/* {joinDetails.whatYouGet.mainText} */}
               </p>
 
-              {joinDetails.whatYouGet.reasons.map((el, i) => {
+              {/* {joinDetails.whatYouGet.reasons.map((el, i) => {
                 return (
                   <Typography component='div' >
                     <Box
@@ -126,7 +127,7 @@ const Join = () => {
                   </Typography>
 
                 )
-              })}
+              })} */}
             </div>
           </>
         )}
@@ -182,6 +183,10 @@ const Join = () => {
         </Link>
 
       </Typography>
+
+      <Divider style={{ width: '80%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.2)', margin: '55px 0 30px 0' }} />
+
+      <Footer />
     </div>
   );
 };

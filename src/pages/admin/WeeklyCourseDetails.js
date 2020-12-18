@@ -277,7 +277,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
             >
               <MenuItem value="Session">Session</MenuItem>
               <MenuItem value="Course">Course</MenuItem>
-              <MenuItem value="Term">Term</MenuItem>
+              <MenuItem value="Term">Monthly</MenuItem>
             </Select>
           </FormControl>
         </div>

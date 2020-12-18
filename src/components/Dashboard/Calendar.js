@@ -17,6 +17,8 @@ import {
 import axios from 'axios'
 import Grid from '@material-ui/core/Grid';
 import auth from '../../lib/auth'
+import Room from '@material-ui/icons/Room';
+import PeopleAltSharpIcon from '@material-ui/icons/PeopleAltSharp';
 import moment from 'moment'
 import { withStyles } from '@material-ui/core/styles';
 
@@ -102,6 +104,7 @@ const Calendar = (props) => {
         const appointments = []
 
         courses.forEach(el => {
+          const { coaches } = el
           const { optionalName, startDate, endDate, location, courseType, sessions } = el.courseDetails
 
           if (courseType === 'Camp') {
@@ -118,7 +121,8 @@ const Calendar = (props) => {
                 startDate: start,
                 endDate: end,
                 id: appointments.length + 1,
-                location: location
+                location: location,
+                coaches: coaches
               })
             })
 
@@ -135,7 +139,8 @@ const Calendar = (props) => {
                   startDate: start,
                   endDate: end,
                   id: appointments.length + 1,
-                  location: location
+                  location: location,
+                  coaches: coaches
                 })
               })
             })
@@ -156,17 +161,24 @@ const Calendar = (props) => {
   const Content = withStyles(style, { name: 'Content' })(({
     children, appointmentData, classes, ...restProps
   }) => (
-    <AppointmentTooltip.Content {...restProps} appointmentData={appointmentData}>
-      <Grid container alignItems="center">
-        <Grid item xs={2} className={classes.textCenter}>
-          <p> hewllooo </p>
+      <AppointmentTooltip.Content {...restProps} appointmentData={appointmentData}>
+        <Grid container alignItems="center">
+          <Grid style={{marginTop: '7px'}}item xs={2} className={classes.textCenter}>
+            <Room className={classes.icon} />
+          </Grid>
+          <Grid item xs={10}>
+            <span> {appointmentData.location} </span>
+          </Grid>
+
+          <Grid item xs={2} style={{marginTop: '7px'}} className={classes.textCenter}>
+            <PeopleAltSharpIcon className={classes.icon} />
+          </Grid>
+          <Grid item xs={10}>
+            {appointmentData.coaches.map(el => <span> {el} </span>)}
+          </Grid>
         </Grid>
-        <Grid item xs={10}>
-          <span> byeebyee </span>
-        </Grid>
-      </Grid>
-    </AppointmentTooltip.Content>
-  ));
+      </AppointmentTooltip.Content>
+    ));
 
 
   return (
@@ -193,7 +205,7 @@ const Calendar = (props) => {
           showCloseButton
           contentComponent={Content}
           showOpenButton>
-        
+
         </AppointmentTooltip>
       </Scheduler>
     </Paper>

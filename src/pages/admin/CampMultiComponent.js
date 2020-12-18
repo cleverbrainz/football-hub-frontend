@@ -9,7 +9,7 @@ import {
 const MultiComponent = ({ classes, updateCampDays }) => {
   const ages = ["4-6", "7-9", "10-12"];
 
-  const times = [6, 7, 8, 9, 10, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  const times = [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   return (
     <table>

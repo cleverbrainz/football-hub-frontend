@@ -53,6 +53,10 @@ const Setup = ({ handleComponentChange }) => {
     {
       text: 'Images', component: 'Images',
       description: 'Add your professional images, these will be show cased on your listing'
+    },
+    {
+      text: 'Contact Info', component: 'Contact',
+      description: 'Add your social media handles and contact info for people to get in touch with you'
     }
   ]
 
