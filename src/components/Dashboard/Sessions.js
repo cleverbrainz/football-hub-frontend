@@ -160,7 +160,10 @@ export default function Sessions({ componentTabValue }) {
       registers.forEach(([courseDetails, id, sessionDates]) => {
         for (const session of sessionDates) {
           if (Object.keys(weekdays).indexOf(session) !== -1) {
-            const correctSession = courseDetails.sessions.filter(infoSession => infoSession.day === moment(session).format('dddd'))[0]
+            const correctSession = courseDetails.courseType === 'Camp' ?
+              courseDetails.sessions.filter(infoSession => moment.unix(infoSession.sessionDate._seconds).format('dddd') === moment(session).format('dddd'))[0] 
+              : 
+              courseDetails.sessions.filter(infoSession => infoSession.day === moment(session).format('dddd'))[0] 
             weekdays[session].push([courseDetails, id, correctSession])
           }
         }
