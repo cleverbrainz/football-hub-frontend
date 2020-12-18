@@ -26,6 +26,7 @@ import EmojiPeopleSharpIcon from "@material-ui/icons/EmojiPeopleSharp";
 import RoomSharpIcon from "@material-ui/icons/RoomSharp";
 import ReactMapPopup from "../components/ReactMapPopup";
 import { fi } from "date-fns/locale";
+import Footer from '../components/Footer'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -514,6 +515,10 @@ export default function Companies({ history }) {
           </ReactMapGL>
         </section>
       </div>
+
+
+
+      <Footer />
 
       {modalOpen && (
         <FilterModal

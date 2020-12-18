@@ -27,9 +27,11 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-
+import Footer from '../components/Footer'
+import Snackbar from '@material-ui/core/Snackbar';
 import auth from '../lib/auth'
 import axios from 'axios'
+import MuiAlert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -159,12 +161,23 @@ const useStyles = makeStyles((theme) => ({
 
 
 const IndividualCompany = ({ location }) => {
-
+  const classes = useStyles()
   const [modalOpen, setModal] = useState(false)
   const [selectedService, setSelectedService] = useState()
   const { companyName, images, bio, reasons_to_join, coaches, camps, services, courses, companyId } = location.state
   const name = companyName.charAt(0).toUpperCase() + companyName.slice(1)
   const [userCategory, setUserCategory] = useState('')
+  const [open, setOpen] = React.useState(false);
+  const [snackBarOpen, setSnackBarOpen] = useState(false)
+  const [selectedBooking, setSelectedBooking] = useState({
+    courseType: null,
+    course: null
+  })
+  const reviews = [...Array(6).keys()]
+
+  let count = 1
+  let currentPosition = 0
+
 
   useEffect(() => {
     if (!auth.getUserId()) return
@@ -175,33 +188,23 @@ const IndividualCompany = ({ location }) => {
       })
   },[])
 
-  console.log({userCategory})
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
 
-  console.log(location.state)
+  const closeSnackBar = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setSnackBarOpen(false);
+  };
 
-  const [open, setOpen] = React.useState(false);
-  
- 
   const handleClose = () => {
     setOpen(false);
   };
-
-  const [selectedBooking, setSelectedBooking] = useState({
-    courseType: null,
-    course: null
-  })
- 
-  const classes = useStyles()
-
-  const reviews = [...Array(6).keys()]
 
   const toggleModal = service => {
     if (modalOpen === false) setSelectedService(service)
     setModal(!modalOpen)
   }
-
-  let count = 1
-  let currentPosition = 0
 
   const HandleSlide = (e) => {
   
@@ -238,15 +241,11 @@ const IndividualCompany = ({ location }) => {
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
- 
-
 
 
   return (
     <>
       <div className={classes.root}>
-
-     
 
         <section className={classes.section}>
           <div>
@@ -467,9 +466,10 @@ const IndividualCompany = ({ location }) => {
 
                 {open && 
                 <CourseBookingDialogue
-                companyId={companyId}
-                companyName={companyName}
-                camps={camps}
+                    openSnackBar={() => setSnackBarOpen(true)}
+                    companyId={companyId}
+                    companyName={companyName}
+                    camps={camps}
                     selectedBooking={selectedBooking}
                     courses={courses}
                     Transition={Transition}
@@ -591,12 +591,23 @@ const IndividualCompany = ({ location }) => {
             
             </div>
         </section>
-
+        <Divider style={{width: '80%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.2)', marginTop: '55px'}} />
       </div>
+
+   
+
+      <Footer />
+
+      <Snackbar open={snackBarOpen} autoHideDuration={2000} onClose={closeSnackBar}>
+        <Alert onClose={closeSnackBar} severity="success">
+          Message sent successfully!
+        </Alert>
+      </Snackbar>
 
 
       {
         modalOpen && <EnquiryModal
+        openSnackBar={() => setSnackBarOpen(true)}
           toggleModal={() => toggleModal()}
           selectedService={selectedService}
           companyId={companyId}

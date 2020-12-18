@@ -13,6 +13,9 @@ import jwt from "jsonwebtoken";
 import axios from "axios";
 
 
+import About from './pages/About'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+
 
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -104,6 +107,8 @@ const App = () => {
         <Route exact path='/coachbeta' component={CoachPageBeta} />
 
         <Route exact path="/" component={Home} />
+        <Route exact path="/about" component={About} />
+        <Route exact path="/privacy-policy" component={PrivacyPolicy} />
         <Route exact path="/join" component={Join} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register/player" component={RegisterPlayer} />

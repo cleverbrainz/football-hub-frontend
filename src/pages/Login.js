@@ -12,8 +12,6 @@ import VisibilityOffSharpIcon from '@material-ui/icons/VisibilityOffSharp';
 import VisibilitySharpIcon from '@material-ui/icons/VisibilitySharp';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
-
-
 import auth from '../lib/auth'
 
 
@@ -54,10 +52,6 @@ export default function Login({ history, location }) {
   const classes = useStyles();
 
   const { email } = loginFields
-
-  useEffect(() => {
-    console.log(history, location)
-  }, [])
 
   function handleFormChange(e) {
     const { name, value } = e.target
