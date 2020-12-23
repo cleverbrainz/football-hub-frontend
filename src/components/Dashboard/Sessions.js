@@ -123,30 +123,47 @@ export default function Sessions({ componentTabValue }) {
   const [thisWeek, setThisWeek] = useState([])
   
   async function getData() {
-    let registerArray = []
+    let activeRegisterArray = []
+    let pastRegisterArray = []
     let coachArray = []
     const response = await axios.get(`/users/${auth.getUserId()}`)
     const data = await response.data[0]
     console.log(data)
-    for (const course of data.courses) {
-    let register
-    const response = await axios.get(`/courses/${course.courseId}`)
-    register = await response.data
-    console.log(register.register)
-    // console.log('data', data)
-    if (register.register) registerArray.push([course.courseDetails, course.courseId, register.register.sessions])
-    }
-    for (const coach of data.coaches) {
-      let coachdetails
-      const response = await axios.get(`users/${coach}`)
-      coachdetails = await response.data[0]
-      coachArray.push(coachdetails)
-    }
+    // for (const course of data.courses) {
+    // let register
+    // const response = await axios.get(`/courses/${course.courseId}`)
+    // register = await response.data
+    // console.log(register.register)
+    // // console.log('data', data)
+    // if (register.register) registerArray.push([course.courseDetails, course.courseId, register.register.sessions])
+    // }
+    for (const course of data.courses.active) {
+      let register
+      const response = await axios.get(`/courses/${course.courseId}`)
+      register = await response.data
+      console.log(register.register)
+      // console.log('data', data)
+      if (register.register) activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+      }
+      for (const course of data.courses.past) {
+        let register
+        const response = await axios.get(`/courses/${course.courseId}`)
+        register = await response.data
+        console.log(register.register)
+        // console.log('data', data)
+        if (register.register) pastRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+        }
+        for (const coach of data.coaches) {
+          let coachInfo
+          const response = await axios.get(`/users/${coach}`)
+          coachInfo = await response.data[0]
+          coachArray.push(coachInfo)
+        }
     setCompanyCoachIds(data.coaches)
     setCompanyCoachInfo(coachArray)
     setCompanyCourses(data.courses)
-    setRegisters(registerArray)
-    setThisWeek(sortRegisters(registerArray))
+    setRegisters({active: activeRegisterArray, past: pastRegisterArray})
+    setThisWeek(sortRegisters(pastRegisterArray.concat(activeRegisterArray)))
     }
 
 

@@ -122,7 +122,7 @@ const App = () => {
           component={CompanyMessages}
         />
 
-        <Route path="/courses/:courseId/register/:sessionDate" component={CourseRegister}/>
+        <Route path="/courses/:courseId/register/:sessionDate?" component={CourseRegister}/>
 
 
         <Route exact path="/:id/messages" component={ClientMessages} />

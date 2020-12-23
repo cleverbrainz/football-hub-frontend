@@ -76,7 +76,7 @@ function getSteps() {
 export default function RegisterPlayer({ match }) {
 
 
-  console.log(match)
+  // console.log(match)
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
@@ -90,7 +90,10 @@ export default function RegisterPlayer({ match }) {
     password: '',
     confirmPassword: '',
     category: '',
-    companyLink: match.params.companyLink ? match.params.companyLink : undefined
+    companyLink: match.params.companyLink ? match.params.companyLink : undefined,
+    birthdayMonth: '',
+    birthdayDay: '',
+    BirthdayYear: ''
   })
   const [fieldErrors, setFieldErrors] = useState()
   const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState()
@@ -110,6 +113,7 @@ export default function RegisterPlayer({ match }) {
     const fields = { ...registerFields, [name]: value }
     // console.log(e.target.tagName)
     setRegisterFields(fields)
+    console.log(registerFields)
 
   }
 
@@ -288,6 +292,7 @@ export default function RegisterPlayer({ match }) {
 
 
     const UserSetupFields = registerFields.category === 'player' ? ['Best Career Highlight', 'Favourite Football Player', 'Preferred Position', 'Favourite Football Team'] : ['Favourite Football Player', 'Preferred Position', 'Favourite Football Team', 'Child\'s name']
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
       const formFields = UserSetupFields.map(el => {
         return (
@@ -319,6 +324,19 @@ export default function RegisterPlayer({ match }) {
               }}
             />
           </MuiPickersUtilsProvider> */}
+
+          <form>
+            <select name="birthdayMonth" id="">
+              <>
+              <option value="" selected disabled>Month</option>
+              {months.map((month, i) => {
+                return <option value={i+1}>{month}</option>
+              })}
+              </>
+            </select>
+            <input type="number" placeholder="Day" name="birthdayDay" id="" min={1} max={31}/>
+            <input type="number" placeholder="Year" name="birthdayYear" id="" min={1920} max={2020}/>
+          </form>
 
 
           <FormControl variant="outlined">

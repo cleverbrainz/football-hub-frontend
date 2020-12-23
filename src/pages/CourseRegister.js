@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
+import { Link} from 'react-router-dom'
 import axios from 'axios'
+import moment from 'moment'
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -34,7 +36,9 @@ const useStyles = makeStyles({
 
 const CourseRegister = ({ match }) => {
   console.log(match)
-  const { courseId, sessionDate } = match.params
+  const { courseId } = match.params
+
+  const sessionDate = match.params.sessionDate ? match.params.sessionDate : 'full'
   const [register, setRegister] = useState([])
   const [course, setCourse] = useState([])
   const classes = useStyles();
@@ -92,7 +96,7 @@ const CourseRegister = ({ match }) => {
             {
               register.sessions.map(session => {
                 if (sessionDate === 'full' || sessionDate === session) {
-                  return <TableCell align="right">{session}</TableCell>
+                  return <TableCell align="right">{moment(session).format('DD/MM/YYYY')}</TableCell>
                 }
                 // return week === 'full' ? <TableCell align="right">{session}</TableCell> : week === session ? <TableCell align="right">{session}</TableCell> : <></>
               })
@@ -177,6 +181,13 @@ const CourseRegister = ({ match }) => {
       >
         Save Changes
       </Button>
+      { sessionDate !== 'full' && <Link to={`/courses/${courseId}/register`}><Button
+        variant="contained"
+        color="secondary"
+        className={classes.button}
+      >
+        View Full Register
+      </Button></Link>}
     </div>
     </>
   )

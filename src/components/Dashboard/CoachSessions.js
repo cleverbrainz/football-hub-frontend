@@ -143,9 +143,9 @@ export default function CoachSessions() {
     let courses
     const response = await axios.get(`/users/${course}`)
     courses = await response.data[0].courses
-    for (const compCourse of courses) {
+    for (const compCourse of courses.active) {
       if (data.courses[course].active.some(id => id === compCourse.courseId)) {
-        coursesArray.push(compCourse)
+        coursesArray.push([compCourse, response.data[0].name])
         const registerResponse = await axios.get(`/courses/${compCourse.courseId}`)
         const registerData = await registerResponse.data
         if (registerData.register) registerArray.push([compCourse.courseDetails, compCourse.courseId, registerData.register.sessions])
@@ -180,6 +180,7 @@ export default function CoachSessions() {
       
       return weekdays
     } 
+
 
   useEffect(() => {
     // axios
@@ -285,7 +286,7 @@ export default function CoachSessions() {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell align="right">ID</TableCell>
+            <TableCell align="right">Company</TableCell>
             <TableCell align="right">Course Location</TableCell>
             <TableCell align="right">Start Date</TableCell>
             <TableCell align="right">End Date</TableCell>
@@ -294,13 +295,13 @@ export default function CoachSessions() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {courses.map((el, i) => (
+          {courses.map(([el, id], i) => (
             <TableRow key={i}>
               <TableCell component="th" scope="row">
                 {el.courseDetails.optionalName}
               </TableCell>
               <TableCell component="th" scope="row">
-            {el.courseId}
+            {id}
           </TableCell>
           <TableCell align='right'>
             {el.courseDetails.location}
@@ -324,7 +325,7 @@ export default function CoachSessions() {
       if (thisWeek[day].length !== 0) {
         return (
         <>
-        <Typography gutterBottom={true} variant="h5">{moment(day).format('dddd')}</Typography>
+        <Typography gutterBottom={true} variant="h5">{moment(day).format('dddd Do')}</Typography>
         {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
           return (
             <Typography gutterBottom={true} variant="h6">
