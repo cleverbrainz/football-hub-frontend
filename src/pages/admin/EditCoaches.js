@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     margin: "100px auto",
     display: "flex",
-    flexDirection: "column",
+    // flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-evenly",
     height: `${window.innerHeight - 100}px`,
@@ -172,7 +172,6 @@ export default function FormPropsTextFields({ location, history }) {
   return (
     <Container className={classes.container}>
       <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-        <Typography variant="h4"> EDIT COACHES </Typography>
 
         <input
           ref={imageInput}

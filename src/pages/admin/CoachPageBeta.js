@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     margin: '0 auto',
-    width: '50%',
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',

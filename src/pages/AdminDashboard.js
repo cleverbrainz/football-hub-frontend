@@ -36,7 +36,7 @@ import {
 import auth from '../lib/auth'
 
 import Summary from '../components/Dashboard/Summary'
-import Messages from '../components/Dashboard/CompanyMessages'
+import CompanyMessages from '../components/Dashboard/CompanyMessages'
 import Listings from '../components/Dashboard/Listings'
 import CoachPageBeta from '../pages/admin/CoachPageBeta'
 import Calendar from '../components/Dashboard/Calendar'
@@ -143,19 +143,14 @@ export default function Profile() {
     Calendar: EventNoteSharp,
     Messages: ForumSharp,
     Listings: FormatListNumberedSharp,
-    // Coaches: SupervisorAccountSharp,
-    // Locations: LocationOnSharp,
-    // Sessions: SportsSoccerSharp,
-    // Images: PhotoLibrarySharp,
     Players: DirectionsRunSharp,
-    // Misc: SettingsSharp,
     Setup: SettingsSharp,
   })
 
   const dashboardComponents = {
     Coaches: CoachPageBeta,
     Listings,
-    Messages,
+    Messages: CompanyMessages,
     Setup,
     Locations,
     Images,
@@ -169,9 +164,11 @@ export default function Profile() {
 
   const DisplayedComponent = dashboardComponents[selectedComponent]
 
-  const handleComponentChange = (selectedComponent, tabValue) => {
-    setSelectedComponent(selectedComponent)
+  const handleComponentChange = async (selectedComponent, tabValue) => {
+
     setComponentTabValue(tabValue)
+
+    setSelectedComponent(selectedComponent)
   }
 
 

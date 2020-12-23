@@ -81,6 +81,9 @@ import PlayerSearch from './pages/admin/PlayerSearch'
 
 import AdminHomeBeta from './pages/indulgeadmin/AdminHomeBeta'
 
+
+import StripePayment from './pages/Stripe'
+
 // axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
 
 const App = () => {
@@ -177,6 +180,11 @@ const App = () => {
         <Route exact path="/tester/search" component={PlayerSearch} />
         <Route exact path="/testercoach" component={CoachDashboard} />
         <Route exact path="/testercoach/edit" component={CoachEdit} />
+
+
+        <Route exact path="/stripe-payment" component={StripePayment} />
+
+
       </Switch>
     </Router>
   );
