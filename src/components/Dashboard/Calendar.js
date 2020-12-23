@@ -103,8 +103,7 @@ const Calendar = (props) => {
         const { courses } = res.data[0]
         const appointments = []
 
-        courses.forEach(el => {
-          const { coaches } = el
+        courses.active.forEach(el => {
           const { optionalName, startDate, endDate, location, courseType, sessions } = el.courseDetails
 
           if (courseType === 'Camp') {

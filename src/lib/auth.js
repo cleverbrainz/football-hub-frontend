@@ -38,11 +38,33 @@ function getUserId() {
 //     .then(res => res.data[0])
 // }
 
+
+function dobToAge(age) {
+  const dobArr = age.split('-').map(Number)
+  console.log(dobArr)
+  const millisecondsDOB = new Date(age)
+  console.log({dobArr, millisecondsDOB})
+  const millisecondsNow = new Date()
+  const ageInMilliseconds = millisecondsNow-millisecondsDOB;
+//--We will leverage Date.parse and now method to calculate age in milliseconds refer here https://www.w3schools.com/jsref/jsref_parse.asp
+
+  const second = 1000;
+  const minute = second*60;
+  const hour = minute*60;
+  const day = hour*24;
+  const year = day*365;
+
+  //let the age conversion begin
+  const years = Math.round(ageInMilliseconds/year);
+  return years
+}
+
 export default {
   setToken,
   getToken,
   isLoggedIn,
   logOut,
   getUserId,
+  dobToAge
   // getUserInfo
 }

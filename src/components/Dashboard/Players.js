@@ -54,6 +54,8 @@ export default function CompanyPlayersList() {
     status: 'All',
   })
   const [open, setOpen] = useState({})
+  const [dataChange, setDataChange] = useState([false, '']);
+
 
   async function getData() {
     let playerlist = {}
@@ -67,7 +69,7 @@ export default function CompanyPlayersList() {
       console.log('playerinfo', playerInfo)
       // console.log('data', data)
       playerlist[player] = playerInfo
-      setOpen({...open, [playerInfo.userId]: false })
+      setOpen({...open, [playerInfo.userId]: playerInfo.Id === dataChange[1] ? true : false })
     }
     setCompanyData(data)
     setPlayers(playerlist)
@@ -84,7 +86,7 @@ export default function CompanyPlayersList() {
     //     }
     //   })
     getData()
-  }, [])
+  }, [!dataChange[0]])
 
   const handleFilterChange = (event) => {
     console.log(event)
@@ -97,8 +99,8 @@ export default function CompanyPlayersList() {
     const filteredPlayers = []
     for (const player of Object.keys(players)) {
       if (
-        Number(players[player].age) >= lowAge &&
-        Number(players[player].age) <= highAge
+        Number(auth.dobToAge(players[player].dob)) >= lowAge &&
+        Number(auth.dobToAge(players[player].dob)) <= highAge
       ) {
         companyData.players[player].status === newFilters.status ||
         newFilters.status === 'All'
@@ -212,7 +214,7 @@ export default function CompanyPlayersList() {
                         {players[el].name}
                       </Link>
                     </TableCell>
-                    <TableCell align="right">{players[el].age}</TableCell>
+                    <TableCell align="right">{auth.dobToAge(players[el].dob)}</TableCell>
                     <TableCell align="right">{players[el].email}</TableCell>
                     <TableCell align="right">
                       {companyData['players'][el].status}
@@ -275,7 +277,7 @@ export default function CompanyPlayersList() {
                                 <TableBody>
                                   {activeCourses && activeCourses.map((elCourse, i) => {
                                     console.log({elCourse, companyData})
-                                    for (const correctCourse of companyData.courses) {
+                                    for (const correctCourse of companyData.courses.active) {
                                       if (elCourse === correctCourse.courseId)
                                         {
                                           return (
@@ -337,7 +339,11 @@ export default function CompanyPlayersList() {
                           )}
                         </Box>
 
-                        <AssignPlayerToCourse player={players[el]} courses={companyData.courses} companyId={companyData.userId}/>
+                        <AssignPlayerToCourse
+                          setDataChange={setDataChange}
+                          player={players[el]}
+                          courses={companyData.courses.active} 
+                          companyId={companyData.userId}/>
                       </Collapse>
                     </TableCell>
                   </TableRow>

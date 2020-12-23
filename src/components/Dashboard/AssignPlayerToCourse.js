@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import { FormControl, FormHelperText, Select, InputLabel, MenuItem, Button } from '@material-ui/core'
 
-const AssignPlayerToCourse = ({player, courses, companyId}) => {
+const AssignPlayerToCourse = ({player, courses, companyId, setDataChange}) => {
   const [assignedCourse, setAssignedCourse] = React.useState('');
 
   const handleChange = (event) => {
@@ -12,17 +12,22 @@ const AssignPlayerToCourse = ({player, courses, companyId}) => {
   const handleAssign = (event) => {
     event.preventDefault()
     console.log('button!')
+    setDataChange([true, player.userId])
     const body = {
       companyId: companyId,
       playerId: player.userId,
       playerName: player.name,
-      playerAge: player.age ? player.age : 16 
+      playerDob: player.dob
     }
     axios.patch(`/courses/${assignedCourse}/players`, body)
       .then(res => {
         console.log(res)
+        setDataChange([false, player.userId])
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        console.log(err)
+        setDataChange([false, player.userId])
+      })
   }
 
   return (

@@ -51,7 +51,7 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
     const [courseCoaches, setCourseCoaches] = React.useState(coaches)
-    console.log(courseCoaches, companyCoachInfo)
+    console.log(courseCoaches, companyCoachInfo, registers)
 
     const handleChange = (event) => {
       setCourseCoaches(event.target.value);
@@ -152,11 +152,11 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
                               Register
                           </Typography>
                           {
-                        (registers.length !== 0) ? registers.map(([courseInfo, id, sessions]) => {
+                        (registers.active && registers.active.length !== 0) ? registers.active.map(([courseInfo, id, sessions]) => {
                           console.log({registers})
                           if (id === course.courseId) {
                           return (
-                          <Link to={`/courses/${id}/register/full`}>View Register</Link> 
+                          <Link to={`/courses/${id}/register`}>View Full Register</Link> 
                           )
                         }}) :               
                             <Typography>
@@ -330,7 +330,7 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
             </TableRow>
           </TableHead>
           <TableBody>
-            {courses && courses.map((course, i) => {
+            {courses && courses.active.map((course, i) => {
               const { courseType } = course.courseDetails
               if (courseType === 'Weekly') return <WeeklyRow key={i} course={course} companyCoaches={companyCoachIds} />
             }
@@ -359,7 +359,7 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
             </TableRow>
           </TableHead>
           <TableBody>
-            {courses && courses.map((course, i) => {
+            {courses && courses.active.map((course, i) => {
               const { courseType } = course.courseDetails
               if (courseType === 'Camp') return <CampRow key={i} course={course} />
             }

@@ -112,25 +112,27 @@ const Summary = ({ handleComponentChange }) => {
     getData()
   }, [])
 
+  console.log(user)
   function renderRecentlyAdded(detail) {
 
     const textArr = []
 
-    const length = user && user[detail].length
+    const length = user && (detail === 'courses' ? user[detail].active.length : user[detail].length)
     for (let i = length - 1; i >= 0; i--) {
       switch (detail) {
         case 'services':
           textArr.push(`Added ${user[detail][i].name} service - ${user[detail][i].description}`)
           break;
         case 'courses':
-          textArr.push(`Added ${user[detail][i].courseDetails.courseType} for ${user[detail][i].courseDetails.age} at 
-          ${user[detail][i].courseDetails.location}`)
+          textArr.push(`Added ${user[detail].active[i].courseDetails.courseType} for ${user[detail].active[i].courseDetails.age} at 
+          ${user[detail].active[i].courseDetails.location}`)
           break;
 
         default:
           break;
       }
     }
+    
 
     return textArr
   }
@@ -230,9 +232,9 @@ const Summary = ({ handleComponentChange }) => {
                 </Typography>
 
                 <Typography gutterBottom variant="p">
-                  {user && user[el.userObject].length !== 0 ? (
+                  {user && (el.userObject === 'courses' ? user[el.userObject].active.length !== 0 : user[el.userObject].length !== 0) ? (
                     <p> You currently have
-                      <span style={{ fontWeight: 'bold' }}> {user[el.userObject].length} {el.text.slice(0, -1) + '(s)'}
+                      <span style={{ fontWeight: 'bold' }}> {el.userObject === 'courses' ? user[el.userObject].active.length : user[el.userObject].length} {el.text.slice(0, -1) + '(s)'}
                       </span> added to your profile </p>
                   ) : <p> There are currently <span style={{ fontWeight: 'bold' }}> 0 {el.text} </span> on your profile, please select the + icon to add {el.text} </p>}
                 </Typography>
