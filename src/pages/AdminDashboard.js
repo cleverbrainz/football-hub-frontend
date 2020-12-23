@@ -46,7 +46,9 @@ import Sessions from '../components/Dashboard/Sessions'
 import Images from '../components/Dashboard/Images'
 import Misc from '../components/Dashboard/Misc'
 import Setup from '../components/Dashboard/Setup'
+import RegisterTab from '../components/Dashboard/RegisterTab'
 import ContactInfo from '../components/Dashboard/ContactInfo'
+
 
 const drawerWidth = 240;
 
@@ -143,6 +145,7 @@ export default function Profile() {
     Calendar: EventNoteSharp,
     Messages: ForumSharp,
     Listings: FormatListNumberedSharp,
+    Registers: SportsSoccerSharp,
     Players: DirectionsRunSharp,
     Setup: SettingsSharp,
   })
@@ -154,6 +157,7 @@ export default function Profile() {
     Setup,
     Locations,
     Images,
+    Registers: RegisterTab,
     Sessions,
     Players,
     Misc,

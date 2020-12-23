@@ -65,7 +65,7 @@ export default function AddListings({
   const [coachesChecked, setCoachesChecked] = useState([]);
 
   // camps list
-  const [campsNotIncluded, setCampsNotIncluded] = useState(courses.filter(el => el.courseDetails.courseType === 'Camp'));
+  const [campsNotIncluded, setCampsNotIncluded] = useState(courses.active.filter(el => el.courseDetails.courseType === 'Camp'));
   const [campsIncluded, setCampsIncluded] = useState(listingToBeEdited ?
     listingToBeEdited.camps : []);
 
@@ -76,7 +76,7 @@ export default function AddListings({
     listingToBeEdited.services : []);
 
   // course list
-  const [coursesNotIncluded, setCoursesNotIncluded] = useState(courses.filter(el => el.courseDetails.courseType === 'Weekly'));
+  const [coursesNotIncluded, setCoursesNotIncluded] = useState(courses.active.filter(el => el.courseDetails.courseType === 'Weekly'));
   const [coursesIncluded, setCoursesIncluded] = useState(listingToBeEdited ?
     listingToBeEdited.courses : []);
 

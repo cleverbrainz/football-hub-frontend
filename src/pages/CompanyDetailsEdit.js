@@ -87,7 +87,7 @@ export default function CompanyDetailsEdit({history}) {
   // const [documents, setDocuments] = React.useState(coachInfo.documents);
   // const [verified, setVerified] = React.useState(verified);
   const [imageUpload, setImageUpload] = useState(false)
-
+  // const [dataChange, setDataChange] = useState(false)
   const [companyInfo, setCompanyInfo] = useState(null)
   const [uploadedDocs, setUploadedDocs] = useState([])
     // name: location.state.name,
@@ -107,7 +107,7 @@ export default function CompanyDetailsEdit({history}) {
         console.log(res.data[0])
         setCompanyInfo(res.data[0])
       })
-  },[])
+  },[!dataChange])
 
 
   const public_liability_insuranceInput = useRef();
@@ -165,6 +165,8 @@ export default function CompanyDetailsEdit({history}) {
     document.append("owner", auth.getUserId());
     document.append("document", image[0], image[0].name);
 
+    setDataChange(true)
+
 
     axios
       .patch(`/companies/${userId}/document/${e.target.name}`, document, {
@@ -175,11 +177,11 @@ export default function CompanyDetailsEdit({history}) {
         // setDocuments(res.data.documents)
         setCompanyInfo({...companyInfo, documents: res.data.documents})
         
-        // setDataChange(false);
+        setDataChange(false);
       })
       .catch((err) => {
         console.error(err);
-        // setDataChange(false);
+        setDataChange(false);
       });
   };
 
