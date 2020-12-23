@@ -46,6 +46,7 @@ import Sessions from '../components/Dashboard/Sessions'
 import Images from '../components/Dashboard/Images'
 import Misc from '../components/Dashboard/Misc'
 import Setup from '../components/Dashboard/Setup'
+import RegisterTab from '../components/Dashboard/RegisterTab'
 
 const drawerWidth = 240;
 
@@ -143,7 +144,7 @@ export default function Profile() {
     Messages: ForumSharp,
     Listings: FormatListNumberedSharp,
     // Coaches: SupervisorAccountSharp,
-    // Locations: LocationOnSharp,
+    Registers: SportsSoccerSharp,
     // Sessions: SportsSoccerSharp,
     // Images: PhotoLibrarySharp,
     Players: DirectionsRunSharp,
@@ -158,6 +159,7 @@ export default function Profile() {
     Setup,
     Locations,
     Images,
+    Registers: RegisterTab,
     Sessions,
     Players,
     Misc,

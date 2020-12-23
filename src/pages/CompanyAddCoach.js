@@ -128,7 +128,7 @@ export default function CompanyAddCoach({info}) {
 
   const handleDocumentUpload = (e) => {
     console.log("hellooo", e.target.name);
-    const image = e.target.files;
+    const image = e.target.files; 
     const document = new FormData();
 
     document.append("owner", auth.getUserId());
