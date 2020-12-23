@@ -5,9 +5,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { FormControl, FormLabel, FormControlLabel, Checkbox, Box } from '@material-ui/core';
+import { FormControl, FormLabel, FormControlLabel, Checkbox, Box, Select, InputLabel, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import 'date-fns';
+import CircularProgress from '@material-ui/core/CircularProgress'
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
@@ -27,6 +28,12 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-evenly',
     margin: '15px 0'
+  },
+  button: {
+    position: 'relative'
+  },
+  progress: {
+    position: 'absolute'
   }
 }))
 
@@ -38,6 +45,7 @@ const CourseBookingDialogue = ({
   selectedBooking,
   companyId,
   camps,
+  openSnackBar,
   companyName }) => {
 
 
@@ -57,6 +65,7 @@ const CourseBookingDialogue = ({
   }
 
   const [bookingForm, setBookingForm] = useState({
+    enquiryName: '',
     name: '',
     email: '',
     number: '',
@@ -66,6 +75,7 @@ const CourseBookingDialogue = ({
     message: `Hi, I would like to make a booking for the above ${courseType} listed`,
     company: companyName,
     subject,
+    customGender: '',
     userId: auth.getUserId(),
     companyId,
   })
@@ -75,6 +85,7 @@ const CourseBookingDialogue = ({
     female: false,
     custom: false
   })
+  const [isLoading, setIsLoading] = useState(false)
 
 
   const handleBookingFormChange = (e) => {
@@ -84,16 +95,14 @@ const CourseBookingDialogue = ({
 
   const handleBookingSubmit = (e) => {
     e.preventDefault()
+    setIsLoading(true)
     axios.post('/enquiries', bookingForm)
       .then(res => {
-        console.log(res.data.message)
+        setIsLoading(false)
         handleClose()
-        // setIsLoading(false)
+        openSnackBar()
       })
-      .catch(err => {
-        // setIsLoading(false)
-        console.log(err.response.data)
-      })
+      .catch(err => setIsLoading(false))
   }
 
   const handleGenderChange = e => {
@@ -169,6 +178,10 @@ const CourseBookingDialogue = ({
 
           <TextField className={classes.input}
             onChange={e => handleBookingFormChange(e)}
+            id="outlined-basic" label="Enquiring Name" name='enquiringName' variant="outlined" />
+
+          <TextField className={classes.input}
+            onChange={e => handleBookingFormChange(e)}
             id="outlined-basic" label="Player Name" name='name' variant="outlined" />
           <TextField className={classes.input}
             onChange={e => handleBookingFormChange(e)}
@@ -208,7 +221,38 @@ const CourseBookingDialogue = ({
               )
             })}
 
+
           </div>
+
+          {genders.custom && (
+            <div>
+                <FormControl className={classes.input} variant="outlined">
+                  <InputLabel id="demo-simple-select-outlined-label">Select Your Pronoun</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-filled-label"
+                    id="demo-simple-select-filled"
+                    label='Select Your Pronoun'
+                    value={['he', 'she', 'they'].includes(bookingForm.customGender) ? bookingForm.customGender : null}
+                    onChange={e => setBookingForm({ ...bookingForm, customGender: e.target.value })}>
+
+                    <MenuItem value='he'> He </MenuItem>
+                    <MenuItem value='she'> She </MenuItem>
+                    <MenuItem value='they'> They </MenuItem>
+
+                  </Select>
+                </FormControl>
+
+                <FormControl variant="outlined" className={classes.input}>
+                  <TextField className={classes.input}
+                  value={['he', 'she', 'they'].includes(bookingForm.customGender) ? '' : bookingForm.customGender }
+                    onChange={e => setBookingForm({ ...bookingForm, customGender: e.target.value })}
+                    id="outlined-basic" label="Custom Gender" name='customerGender' variant="outlined" />
+                </FormControl>
+            </div>
+
+          )}
+
+
 
           <FormControlLabel
             control={<Checkbox
@@ -225,10 +269,12 @@ const CourseBookingDialogue = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={e => handleBookingSubmit(e)}
+        <Button className={classes.button} onClick={e => handleBookingSubmit(e)}
+          variant="contained"
           color="primary">
           Submit Booking
-          </Button>
+          {isLoading && <CircularProgress size={30} className={classes.progress} />}
+        </Button>
       </DialogActions>
     </Dialog>
   );

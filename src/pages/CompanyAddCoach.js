@@ -26,24 +26,25 @@ const useStyles = makeStyles((theme) => ({
   },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 300,
+
   },
-  container: {
-    margin: "100px auto",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-    height: `${window.innerHeight - 100}px`,
-    textAlign: "center",
+  subContainer: {
+    width: "100%",
+    [theme.breakpoints.up('sm')]: {
+      width: "30%",
+    },
+    display: 'flex',
+    flexDirection: 'column'
   },
   form: {
-    width: "30%",
-    minWidth: "300px",
+    width: "100%",
     display: "flex",
-    flexDirection: "column",
     height: "55%",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
+    flexDirection: 'column',
+    [theme.breakpoints.up('sm')]: {
+      flexDirection: 'row'
+    },
   },
   button: {
     position: "relative",
@@ -56,10 +57,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 auto",
   },
   avatar: {
-    // [theme.breakpoints.up('sm')]: {
-    //   width: theme.spacing(38),
-    //   height: theme.spacing(38),
-    // },
+
     width: theme.spacing(30),
     height: theme.spacing(30),
     margin: '0 auto',
@@ -67,11 +65,10 @@ const useStyles = makeStyles((theme) => ({
       cursor: 'pointer',
       filter: 'grayscale(50%)'
     },
-    // boxShadow: '1px 1px 2px 2px grey'
   },
 }));
 
-export default function CompanyAddCoach({info}) {
+export default function CompanyAddCoach({ info }) {
   const classes = useStyles();
 
   console.log(info)
@@ -105,15 +102,16 @@ export default function CompanyAddCoach({info}) {
     axios
       .patch(
         `/companies/addSelfCoach`,
-        { userId,
+        {
+          userId,
           updates: {
-          'coachInfo.imageURL': avatarImage,
-          'coachInfo.name': name,
-          'coachInfo.email': email,
-          main_contact_number: phone,
-          'coachInfo.coaching_level': level,
-          'coachInfo.documents': documents
-        }
+            'coachInfo.imageURL': avatarImage,
+            'coachInfo.name': name,
+            'coachInfo.email': email,
+            main_contact_number: phone,
+            'coachInfo.coaching_level': level,
+            'coachInfo.documents': documents
+          }
         },
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
       )
@@ -141,7 +139,7 @@ export default function CompanyAddCoach({info}) {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
-        console.log(res.data);
+        console.log(res.data.documents);
         setDocuments(res.data.documents)
         // setDataChange(false);
       })
@@ -171,24 +169,28 @@ export default function CompanyAddCoach({info}) {
       .catch(err => console.error(err))
   }
 
-  
+
 
   return (
-    <Container className={classes.container}>
-      <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-        <Typography variant="h4"> EDIT COACHES </Typography>
+    <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
 
-        <input
-          ref={imageInput}
-          style={{ display: "none" }}
-          onChange={(e) => handleMediaChange(e)}
-          type="file"
+      <input
+        ref={imageInput}
+        style={{ display: "none" }}
+        onChange={(e) => handleMediaChange(e)}
+        type="file"
+      />
+
+      <div className={classes.subContainer}>
+        <Avatar
+          onClick={(e) => imageInput.current.click()}
+          className={classes.avatar} src={avatarImage}
         />
 
-        <Avatar
-            onClick={(e) => imageInput.current.click()}
-            className={classes.avatar} src={avatarImage}
-          />
+      </div>
+
+
+      <div className={classes.subContainer}>
 
         <FormControl variant="outlined" className={classes.spacing}>
           <InputLabel htmlFor="component-outlined"> Coach name </InputLabel>
@@ -220,7 +222,13 @@ export default function CompanyAddCoach({info}) {
           />
         </FormControl>
 
-        <FormControl variant="outlined">
+
+
+      </div>
+
+
+      <div className={classes.subContainer}>
+        <FormControl variant="outlined" className={classes.spacing}>
           <InputLabel htmlFor="component-outlined" id="level">
             Coach Badges
           </InputLabel>
@@ -230,9 +238,6 @@ export default function CompanyAddCoach({info}) {
             value={level}
             onChange={(e) => setLevel(e.target.value)}
           >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
             <MenuItem value={"FA Level 1"}>FA Level 1</MenuItem>
             <MenuItem value={"FA Level 2"}>FA Level 2</MenuItem>
             <MenuItem value={"FA Level 3 (UEFA B)"}>
@@ -263,7 +268,7 @@ export default function CompanyAddCoach({info}) {
           UPLOAD COACHING CERTIFICATE
         </Button>
 
-        <Typography variant="h5"> DBS Check </Typography>
+        <Typography variant="p"> DBS Check </Typography>
 
         <FormControlLabel
           control={
@@ -274,7 +279,6 @@ export default function CompanyAddCoach({info}) {
               name="checked"
             />
           }
-          className={classes.center}
           label="Yes, this coach has a clean record"
         />
 
@@ -285,14 +289,14 @@ export default function CompanyAddCoach({info}) {
           onChange={(e) => handleDocumentUpload(e)}
           type="file"
         />
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => dbsInput.current.click()}
-        >
-          <BackupIcon />
-          UPLOAD DBS CERTIFICATE
-        </Button>
+
+
+
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <BackupIcon style={{ color: 'blue' }} onClick={() => dbsInput.current.click()} />
+          <p> {documents && documents.dbsCertificate ? documents.dbsCertificate : 'Upload DBS Cerificate'}  </p>
+        </div>
 
         <Button
           className={classes.button}
@@ -302,18 +306,8 @@ export default function CompanyAddCoach({info}) {
         >
           Save
         </Button>
+      </div>
 
-        {/* <Link
-          to={{
-            pathname: "/companyDashboard/coachDetails",
-            state: location.state,
-          }}
-        > */}
-          {/* <Button className={classes.button} variant="outlined" color="primary">
-            Back
-          </Button>
-        </Link> */}
-      </form>
-    </Container>
+    </form>
   );
 }

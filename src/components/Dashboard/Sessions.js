@@ -121,7 +121,7 @@ export default function Sessions({ componentTabValue }) {
   const [companyCoachIds, setCompanyCoachIds] = useState([])
   const [companyCoachInfo, setCompanyCoachInfo] = useState([])
   const [thisWeek, setThisWeek] = useState([])
-  
+
   async function getData() {
     let activeRegisterArray = []
     let pastRegisterArray = []
@@ -129,6 +129,7 @@ export default function Sessions({ componentTabValue }) {
     const response = await axios.get(`/users/${auth.getUserId()}`)
     const data = await response.data[0]
     console.log(data)
+
     // for (const course of data.courses) {
     // let register
     // const response = await axios.get(`/courses/${course.courseId}`)
@@ -138,11 +139,13 @@ export default function Sessions({ componentTabValue }) {
     // if (register.register) registerArray.push([course.courseDetails, course.courseId, register.register.sessions])
     // }
     for (const course of data.courses.active) {
+
       let register
       const response = await axios.get(`/courses/${course.courseId}`)
       register = await response.data
       console.log(register.register)
       // console.log('data', data)
+
       if (register.register) activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
       }
       for (const course of data.courses.past) {
@@ -167,12 +170,13 @@ export default function Sessions({ componentTabValue }) {
     }
 
 
-    const sortRegisters = (registers) => {
-      const monday = date.startOf('week')
-      const weekdays = {}
-      for (let i = 1; i <= 7; i++) {
-        weekdays[(monday.add(1, 'days').format('YYYY-MM-DD'))] = []
-      }
+
+  const sortRegisters = (registers) => {
+    const monday = date.startOf('week')
+    const weekdays = {}
+    for (let i = 1; i <= 7; i++) {
+      weekdays[(monday.add(1, 'days').format('YYYY-MM-DD'))] = []
+    }
 
       registers.forEach(([courseDetails, id, sessionDates]) => {
         for (const session of sessionDates) {
@@ -185,11 +189,8 @@ export default function Sessions({ componentTabValue }) {
           }
         }
       })
-
-      console.log(weekdays)
-      
-      return weekdays
-    } 
+    return weekdays
+  }
 
   useEffect(() => {
     // axios
@@ -291,36 +292,36 @@ export default function Sessions({ componentTabValue }) {
           classes={classes}
           handleEditCourse={e => handleEditCourse(e)}
           handleCourseDeletion={e => handleCourseDeletion(e)}
-          courseToBeEdited={courseToBeEdited} 
+          courseToBeEdited={courseToBeEdited}
           courses={companyCourses}
           companyCoachIds={companyCoachIds}
           companyCoachInfo={companyCoachInfo}
           registers={registers} />
 
-<br></br>
-    <Typography variant="h4" >This Weeks Sessions</Typography>
-    <Container>
+        <br></br>
+        <Typography variant="h4" >This Weeks Sessions</Typography>
+        <Container>
 
-    { Object.keys(thisWeek).map(day => {
-      if (thisWeek[day].length !== 0) {
-        return (
-        <>
-        <Typography gutterBottom={true} variant="h5">{moment(day).format('dddd')}</Typography>
-        {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
-          return (
-            <Typography gutterBottom={true} variant="h6">
-            {sessionInfo.startTime} - {sessionInfo.endTime}, {courseDetails.location}: 
+          {Object.keys(thisWeek).map(day => {
+            if (thisWeek[day].length !== 0) {
+              return (
+                <>
+                  <Typography gutterBottom={true} variant="h5">{moment(day).format('dddd')}</Typography>
+                  {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
+                    return (
+                      <Typography gutterBottom={true} variant="h6">
+                        {sessionInfo.startTime} - {sessionInfo.endTime}, {courseDetails.location}:
             <Link to={`/courses/${id}/register/${day}`}>
-                {` ${courseDetails.optionalName}`}
-            </Link>
-            </Typography>
-          )
-        })}
-        </>
-        )
-      }
-    })}
-</Container>
+                          {` ${courseDetails.optionalName}`}
+                        </Link>
+                      </Typography>
+                    )
+                  })}
+                </>
+              )
+            }
+          })}
+        </Container>
 
       </TabPanel>
 
