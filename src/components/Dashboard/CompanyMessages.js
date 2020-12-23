@@ -107,7 +107,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const CompanyMessages = (props) => {
+export default function CompanyMessages({componentTabValue}, props) {
 
   const { window } = props;
   const classes = useStyles();
@@ -115,16 +115,18 @@ const CompanyMessages = (props) => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [messages, setMessages] = useState()
-  const [selectedMessage, setSelectedMessage] = useState()
+  const [selectedMessage, setSelectedMessage] = useState(componentTabValue)
   const [typedMessage, setTypedMessage] = useState({
     message: '',
     from: auth.getUserId()
   })
 
   useEffect(() => {
+ 
+
     axios.get('/enquiries/company', { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(async res => {
-        console.log(res.data)
+
         const orderedMessages = res.data.sort((a, b) => {
           const messageA = a.enquiryInfo.messages[a.enquiryInfo.messages.length - 1]
           const messageB = b.enquiryInfo.messages[b.enquiryInfo.messages.length - 1]
@@ -143,6 +145,8 @@ const CompanyMessages = (props) => {
         }
       })
 
+      console.log(componentTabValue)
+
   }, [!isLoading])
 
   const handleDrawerToggle = () => {
@@ -155,6 +159,7 @@ const CompanyMessages = (props) => {
   }
 
   const handleMessageSelect = async el => {
+    console.log(el)
     await setSelectedMessage(el)
     scroll()
   }
@@ -361,5 +366,3 @@ const CompanyMessages = (props) => {
     </div>
   );
 }
-
-export default CompanyMessages;

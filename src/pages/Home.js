@@ -26,6 +26,7 @@ import TextField from "@material-ui/core/TextField";
 import axios from "axios";
 import SearchBar from "./HomeSearch";
 import ExploreIcon from "@material-ui/icons/Explore";
+import Footer from '../components/Footer'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -219,7 +220,7 @@ const Home = () => {
           alt=""
         />
 
-          <SearchBar classes={classes} />
+        <SearchBar classes={classes} />
 
 
       </div>
@@ -227,23 +228,23 @@ const Home = () => {
         <Typography style={{ textAlign: 'center', margin: '40px 0' }} variant='h5' > Pathway to greatness </Typography>
         <section id='home-scroll-section' className={classes.section}>
           {['Your pathway', 'Get advice', 'What to look for'].map((el, i) => {
-               let text
-               if (homeDetails) {
-                switch (i) {
-                  case 0:
-                    text = homeDetails.pathwayBox
-                    break;
-                  case 1:
-                    text = homeDetails.adviceBox
-                    break;
-                  case 2:
-                    text = homeDetails.lookingForBox
-                    break;
-                  default:
-                    break;
-                }
-               }
-               
+            let text
+            if (homeDetails) {
+              switch (i) {
+                case 0:
+                  text = homeDetails.pathwayBox
+                  break;
+                case 1:
+                  text = homeDetails.adviceBox
+                  break;
+                case 2:
+                  text = homeDetails.lookingForBox
+                  break;
+                default:
+                  break;
+              }
+            }
+
             return (
               <Card key={i} className={classes.root}>
                 <CardActionArea>
@@ -258,7 +259,7 @@ const Home = () => {
 
                     <Typography variant="body2" color="textSecondary" component="p">
                       {text}
-                </Typography>
+                    </Typography>
 
                   </CardContent>
                 </CardActionArea>
@@ -339,7 +340,8 @@ const Home = () => {
         </Card>
       </section>
 
-      <Divider style={{ margin: "70px 0" }} />
+      <Divider style={{ marginTop: "70px" }} />
+      <Footer />
     </>
   );
 };

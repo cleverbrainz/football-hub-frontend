@@ -36,7 +36,7 @@ import {
 import auth from '../lib/auth'
 
 import Summary from '../components/Dashboard/Summary'
-import Messages from '../components/Dashboard/CompanyMessages'
+import CompanyMessages from '../components/Dashboard/CompanyMessages'
 import Listings from '../components/Dashboard/Listings'
 import CoachPageBeta from '../pages/admin/CoachPageBeta'
 import Calendar from '../components/Dashboard/Calendar'
@@ -47,6 +47,8 @@ import Images from '../components/Dashboard/Images'
 import Misc from '../components/Dashboard/Misc'
 import Setup from '../components/Dashboard/Setup'
 import RegisterTab from '../components/Dashboard/RegisterTab'
+import ContactInfo from '../components/Dashboard/ContactInfo'
+
 
 const drawerWidth = 240;
 
@@ -143,19 +145,15 @@ export default function Profile() {
     Calendar: EventNoteSharp,
     Messages: ForumSharp,
     Listings: FormatListNumberedSharp,
-    // Coaches: SupervisorAccountSharp,
     Registers: SportsSoccerSharp,
-    // Sessions: SportsSoccerSharp,
-    // Images: PhotoLibrarySharp,
     Players: DirectionsRunSharp,
-    // Misc: SettingsSharp,
     Setup: SettingsSharp,
   })
 
   const dashboardComponents = {
     Coaches: CoachPageBeta,
     Listings,
-    Messages,
+    Messages: CompanyMessages,
     Setup,
     Locations,
     Images,
@@ -165,13 +163,16 @@ export default function Profile() {
     Misc,
     Summary,
     Calendar,
+    Contact: ContactInfo
   }
 
   const DisplayedComponent = dashboardComponents[selectedComponent]
 
-  const handleComponentChange = (selectedComponent, tabValue) => {
-    setSelectedComponent(selectedComponent)
+  const handleComponentChange = async (selectedComponent, tabValue) => {
+
     setComponentTabValue(tabValue)
+
+    setSelectedComponent(selectedComponent)
   }
 
 

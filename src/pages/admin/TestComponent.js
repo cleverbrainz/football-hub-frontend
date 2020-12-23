@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 const TableComponent = ({ classes, updateCourseDays, el, index }) => {
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-  const times = [6, 7, 8, 9, 10, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  const times = [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
   return (
     <table>
       <tbody>

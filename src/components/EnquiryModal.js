@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const EnquiryModal = ({ toggleModal, selectedService, companyId, companyName }) => {
+const EnquiryModal = ({ toggleModal, selectedService, companyId, companyName, openSnackBar }) => {
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -70,7 +70,7 @@ const EnquiryModal = ({ toggleModal, selectedService, companyId, companyName }) 
 
     axios.post('/enquiries', enquiryBody)
       .then(res => {
-        console.log(res.data.message)
+        openSnackBar()
         toggleModal()
         setIsLoading(false)
       })

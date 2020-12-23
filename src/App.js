@@ -13,6 +13,9 @@ import jwt from "jsonwebtoken";
 import axios from "axios";
 
 
+import About from './pages/About'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+
 
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -78,6 +81,9 @@ import PlayerSearch from './pages/admin/PlayerSearch'
 
 import AdminHomeBeta from './pages/indulgeadmin/AdminHomeBeta'
 
+
+import StripePayment from './pages/Stripe'
+
 // axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
 
 const App = () => {
@@ -104,6 +110,8 @@ const App = () => {
         <Route exact path='/coachbeta' component={CoachPageBeta} />
 
         <Route exact path="/" component={Home} />
+        <Route exact path="/about" component={About} />
+        <Route exact path="/privacy-policy" component={PrivacyPolicy} />
         <Route exact path="/join" component={Join} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register/player/:companyLink?" component={RegisterPlayer} />
@@ -172,6 +180,11 @@ const App = () => {
         <Route exact path="/tester/search" component={PlayerSearch} />
         <Route exact path="/testercoach" component={CoachDashboard} />
         <Route exact path="/testercoach/edit" component={CoachEdit} />
+
+
+        <Route exact path="/stripe-payment" component={StripePayment} />
+
+
       </Switch>
     </Router>
   );

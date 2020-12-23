@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
   },
   spacing: {
-    margin: "20px 0",
+    margin: "15px 0",
   },
   form: {
     width: "40%",
@@ -39,12 +39,12 @@ export default function ContainedButtons({ history, service, handleStateRefresh 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
 
     if (service) {
       return axios
-        .patch("/companies/array/services", {...form, serviceId: service.serviceId },
-        { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+        .patch("/companies/array/services", { ...form, serviceId: service.serviceId },
+          { headers: { Authorization: `Bearer ${auth.getToken()}` } })
         .then((res) => {
           console.log(res.data);
           handleStateRefresh()
@@ -64,7 +64,7 @@ export default function ContainedButtons({ history, service, handleStateRefresh 
         .catch((error) => {
           console.log(error);
           handleStateRefresh()
-        }); 
+        });
     }
 
   };
@@ -84,6 +84,7 @@ export default function ContainedButtons({ history, service, handleStateRefresh 
         autoComplete="off"
         onSubmit={handleSubmit}
       >
+
         <TextField
           className={classes.spacing}
           id="outlined-basic"
@@ -98,6 +99,8 @@ export default function ContainedButtons({ history, service, handleStateRefresh 
           id="outlined-basic"
           label="Service description"
           name='description'
+          multiline
+          rows={8}
           variant="outlined"
           value={description}
           onChange={(e) => updateFormDetails(e)}

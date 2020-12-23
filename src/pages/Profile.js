@@ -159,6 +159,12 @@ const Profile = ({ match }) => {
       })
       .catch(err => console.error(err))
     }
+
+    function toDateTime(secs) {
+      var t = new Date(1970, 0, 1); // Epoch
+      t.setSeconds(secs);
+      return t;
+    }
   
     return (
     <div className={classes.root}>
@@ -185,7 +191,7 @@ const Profile = ({ match }) => {
           <Box
             fontSize={16} fontWeight="fontWeightRegular" m={0}>
             <span style={{ fontWeight: 'bold', display: 'block' }}> DOB </span>
-            {/* {user && moment(new Date(user.dob._seconds * 1000 + user.dob._nanoseconds / 1000000)).format('DD-MM-YYYY')} */}
+            {user && moment(user.dob).format('MMMM Do YYYY')}
           </Box>
         </Typography>
   
