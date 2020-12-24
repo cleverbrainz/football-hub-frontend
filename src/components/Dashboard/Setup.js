@@ -1,5 +1,6 @@
 import React from 'react';
 import { Paper, Grid, Typography } from '@material-ui/core'
+import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
@@ -64,6 +65,7 @@ const Setup = ({ handleComponentChange }) => {
     <div className={classes.root}>
       <Grid container
         spacing={3}>
+          <>
 
         {cards.map((el, i) => {
           return (
@@ -100,6 +102,27 @@ const Setup = ({ handleComponentChange }) => {
             </Grid>
           )
         })}
+        <Grid item xs={12} sm={3}>
+              <Paper elevation={4}
+                className={classes.paper}>
+                <Typography gutterBottom variant="h5">
+                  Company Details
+                </Typography>
+
+
+                <Typography gutterBottom variant="p">
+                  Edit company details and upload documentation
+                </Typography>
+
+                <Link to="/tester/edit"><Fab className={classes.fab}
+                  size="small"
+                  color="secondary"
+                  aria-label="edit">
+                  <EditIcon />
+                </Fab></Link>
+              </Paper>
+            </Grid>
+        </>
       </Grid>
     </div>
   );

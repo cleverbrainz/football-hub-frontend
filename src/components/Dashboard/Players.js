@@ -19,6 +19,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import FormControl from '@material-ui/core/FormControl'
+import Button from '@material-ui/core/Button'
 import Select from '@material-ui/core/Select'
 import ClearSharpIcon from '@material-ui/icons/ClearSharp'
 import CheckSharpIcon from '@material-ui/icons/CheckSharp'
@@ -29,6 +30,7 @@ import Box from '@material-ui/core/Box'
 import Collapse from '@material-ui/core/Collapse'
 import axios from 'axios'
 import auth from '../../lib/auth'
+import { TextField } from '@material-ui/core'
 
 const useStyles = makeStyles({
   table: {
@@ -44,6 +46,7 @@ const useStyles = makeStyles({
 })
 
 export default function CompanyPlayersList() {
+  console.log(window.location)
   const [companyData, setCompanyData] = useState([])
   const [players, setPlayers] = useState([])
   const [filteredNames, setFilteredNames] = useState([])
@@ -53,6 +56,8 @@ export default function CompanyPlayersList() {
     ageRange: '0-100',
     status: 'All',
   })
+  const [emailRequest, setEmailRequest] = useState('')
+  const [message, setMessage] = useState('')
   const [open, setOpen] = useState({})
   const [dataChange, setDataChange] = useState([false, '']);
 
@@ -120,6 +125,23 @@ export default function CompanyPlayersList() {
         newOpen[key] = false
       }
       setOpen({...newOpen, [item]: !prev})
+  }
+
+  const handleEmailChange = (event) => {
+    event.preventDefault()
+    setEmailRequest(event.target.value)
+    setMessage('')
+    console.log(emailRequest)
+  }
+
+  const sendEmailRequest = (event) => {
+    event.preventDefault()
+    axios.post(`/emailRequest`, { email: emailRequest, companyName: companyData.name, companyId: companyData.userId, type: window.location.hostname })
+      .then(res => {
+        console.log(res)
+        setMessage('Email Sent!')
+        setEmailRequest('')
+      })
   }
 
   const classes = useStyles()
@@ -352,6 +374,14 @@ export default function CompanyPlayersList() {
             </TableBody>
           </Table>
         </TableContainer>
+        <Box>
+        <Typography>Add new player</Typography>
+        <FormControl>
+          <TextField placeholder="Enter email address" value={emailRequest} onChange={(e) => handleEmailChange(e)}/>
+          <Typography>{message}</Typography>
+          <Button variant="contained" color={message ? 'secondary' : 'primary'} onClick={(e) => sendEmailRequest(e)}>{message ? message : 'Send Request'}</Button>
+        </FormControl>
+        </Box>
       </>
     )
 }
