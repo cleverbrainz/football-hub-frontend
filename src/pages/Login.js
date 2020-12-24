@@ -87,12 +87,16 @@ export default function Login({ history, location }) {
     } else {
       axios.post('/login', loginFields)
         .then(async res => {
-          await auth.setToken(res.data.token)
+          auth.setToken(res.data.token)
           setIsLoading(false)
 
           if (res.data.accountCategory === 'player' || res.data.accountCategory === 'parent') {
             history.push(`/${auth.getUserId()}/profile`)
-          } else history.push('/tester')
+          } else if (res.data.accountCategory === 'company') {
+            history.push('/tester')
+          } else {
+            history.push('/testercoach')
+          }
         })
         .catch(err => {
           setIsLoading(false)
