@@ -56,7 +56,7 @@ const Summary = ({ handleComponentChange }) => {
     let registerArray = []
     const response = await axios.get(`/users/${auth.getUserId()}`)
     const data = await response.data[0]
-    for (const course of data.courses) {
+    for (const course of data.courses.active) {
       let register
       const response = await axios.get(`/courses/${course.courseId}`)
       register = await response.data
