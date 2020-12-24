@@ -13,6 +13,10 @@ import HistoryIcon from '@material-ui/icons/History';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {
   Typography,
   Button,
@@ -281,6 +285,43 @@ export default function CoachSessions() {
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
+      <Accordion defaultExpanded={true}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography className={classes.heading}>This Weeks Sessions</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+  <Container>
+
+  { Object.keys(thisWeek).map(day => {
+    if (thisWeek[day].length !== 0) {
+      return (
+      <>
+      <Typography gutterBottom={true} variant="h5">{moment(day).format('dddd Do')}</Typography>
+      {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
+        return (
+          <Typography gutterBottom={true} variant="h6">
+          {`${courseDetails.optionalName}: ${sessionInfo.startTime} - ${sessionInfo.endTime}, ${courseDetails.location} : `}
+          <Link to={`/courses/${id}/register/${day}`}>
+            View Register
+          </Link>
+          </Typography>
+        )
+      })}
+      
+      </>
+
+      )
+    }
+  })}
+</Container>
+</AccordionDetails>
+</Accordion>
+<br />
+<Typography>All Active Courses</Typography>
       <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
@@ -317,7 +358,7 @@ export default function CoachSessions() {
         </TableBody>
       </Table>
     </TableContainer>
-<br></br>
+{/* <br></br>
     <Typography variant="h4" >This Weeks Sessions</Typography>
     <Container>
 
@@ -339,8 +380,8 @@ export default function CoachSessions() {
         </>
         )
       }
-    })}
-</Container>
+    })} */}
+{/* </Container> */}
 
 
     {/* <TableContainer component={Paper}>
