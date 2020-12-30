@@ -13,6 +13,7 @@ import {
   Container,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { storage } from "../lib/firebase";
 import axios from "axios";
 import auth from '../lib/auth'
@@ -69,6 +70,18 @@ const useStyles = makeStyles((theme) => ({
     },
     // boxShadow: '1px 1px 2px 2px grey'
   },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
+  buttonProgress: {
+    color: 'green',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
 }));
 
 export default function CompanyDetailsEdit({history}) {
@@ -80,7 +93,7 @@ export default function CompanyDetailsEdit({history}) {
   const userId = auth.getUserId()
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
-  const [dataChange, setDataChange] = useState(false);
+  const [dataChange, setDataChange] = useState({ public_liability_insurance: false, public_indemnity_insurance: false });
   // const [avatarImage, setAvatarImage] = useState(imageURL)
   // const [name, setName] = React.useState();
   // const [level, setLevel] = React.useState(coachInfo.coaching_level);
@@ -159,17 +172,18 @@ export default function CompanyDetailsEdit({history}) {
 
   const handleDocumentUpload = (e) => {
     console.log("hellooo", e.target.name);
+    const target = e.target.name
     const image = e.target.files;
     const document = new FormData();
 
     document.append("owner", auth.getUserId());
     document.append("document", image[0], image[0].name);
 
-    setDataChange(true)
+    setDataChange({ ...dataChange, [target]: true })
 
 
     axios
-      .patch(`/companies/${userId}/document/${e.target.name}`, document, {
+      .patch(`/companies/${userId}/document/${target}`, document, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
@@ -177,11 +191,11 @@ export default function CompanyDetailsEdit({history}) {
         // setDocuments(res.data.documents)
         setCompanyInfo({...companyInfo, documents: res.data.documents})
         
-        setDataChange(false);
+        setDataChange({ ...dataChange, [target]: false });
       })
       .catch((err) => {
         console.error(err);
-        setDataChange(false);
+        setDataChange({ ...dataChange, [target]: false });
       });
   };
 
@@ -329,12 +343,17 @@ export default function CompanyDetailsEdit({history}) {
           variant="contained"
           color="secondary"
           onClick={() => eval(`${item}Input`).current.click()}
+          
         >
           <BackupIcon />
           UPLOAD {sentence.toUpperCase()} CERTIFICATE
         </Button>
         {companyInfo.documents && companyInfo.documents[item] ?
-        <a target="_blank" rel="noopener noreferrer" href={companyInfo.documents[item]}>uploaded document</a> :
+        <div className={classes.wrapper}>
+        <a target="_blank" rel="noopener noreferrer" href={companyInfo.documents[item]}><Button variant="contained"
+        color="primary" disabled={dataChange[item]}>Uploaded Document</Button></a>
+        {dataChange[item] && <CircularProgress size={24} className={classes.buttonProgress} />}
+        </div> :
         <p>no document uploaded</p>
         }
         </div>
