@@ -12,6 +12,7 @@ import {
   OutlinedInput,
   Container,
 } from "@material-ui/core";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from "@material-ui/core/styles";
 import { storage } from "../lib/firebase";
 import axios from "axios";
@@ -69,6 +70,18 @@ const useStyles = makeStyles((theme) => ({
     },
     // boxShadow: '1px 1px 2px 2px grey'
   },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
+  buttonProgress: {
+    color: 'green',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
 }));
 
 export default function CoachEdit({ location, history }) {
@@ -79,13 +92,13 @@ export default function CoachEdit({ location, history }) {
   const { userId, imageURL, category } = location.state;
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
-  const [dataChange, setDataChange] = useState(false);
+  const [dataChange, setDataChange] = useState({ coachingCertificate: false, dbsCertificate: false });
   const [avatarImage, setAvatarImage] = useState(location.state.imageURL)
   const [name, setName] = React.useState(location.state.coachInfo.name);
   const [email, setEmail] = React.useState(location.state.email);
   const [phone, setPhone] = React.useState(location.state.main_contact_number);
   const [level, setLevel] = React.useState(location.state.coachInfo.coaching_level);
-  const [documents, setDocuments] = React.useState(location.state.coachInfo.documents);
+  const [coachInfo, setCoachInfo] = React.useState(location.state.coachInfo);
   const [verified, setVerified] = React.useState(location.state.verified);
   const [imageUpload, setImageUpload] = useState(false)
 
@@ -106,7 +119,8 @@ export default function CoachEdit({ location, history }) {
         email: email,
         main_contact_number: phone,
         'coachInfo.coaching_level': level,
-        'coachInfo.documents': documents
+        'coachInfo.coachingCertificate': coachInfo.coachingCertificate,
+        'coachInfo.dbsCertificate': coachInfo.dbsCertificate
       } :
       {
         'coachInfo.imageURL': avatarImage,
@@ -115,7 +129,8 @@ export default function CoachEdit({ location, history }) {
         email: email,
         main_contact_number: phone,
         'coachInfo.coaching_level': level,
-        'coachInfo.documents': documents
+        'coachInfo.coachingCertificate': coachInfo.coachingCertificate,
+        'coachInfo.dbsCertificate': coachInfo.dbsCertificate
       }
     e.preventDefault();
     console.log(imageURL)
@@ -138,6 +153,7 @@ export default function CoachEdit({ location, history }) {
   };
 
   const handleDocumentUpload = (e) => {
+    setDataChange({ ...dataChange, [e.target.name]: true })
     console.log("hellooo", e.target.name);
     const image = e.target.files;
     const document = new FormData();
@@ -153,12 +169,12 @@ export default function CoachEdit({ location, history }) {
       })
       .then((res) => {
         console.log(res.data);
-        setDocuments(res.data.documents)
-        // setDataChange(false);
+        setCoachInfo(res.data.coachInfo)
+        setDataChange({ ...dataChange, [e.target.name]: false });
       })
       .catch((err) => {
         console.error(err);
-        // setDataChange(false);
+        setDataChange(false);
       });
   };
 
@@ -265,6 +281,7 @@ export default function CoachEdit({ location, history }) {
           onChange={(e) => handleDocumentUpload(e)}
           type="file"
         />
+        
         <Button
           variant="contained"
           color="secondary"
@@ -273,6 +290,14 @@ export default function CoachEdit({ location, history }) {
           <BackupIcon />
           UPLOAD COACHING CERTIFICATE
         </Button>
+        {coachInfo.coachingCertificate ?
+        <div className={classes.wrapper}>
+          <a target="_blank" rel="noopener noreferrer" href={coachInfo.coachingCertificate}><Button variant="contained"
+        color="primary" disabled={dataChange.coachingCertificate} >Uploaded Document</Button></a>
+        {dataChange.coachingCertificate && <CircularProgress size={24} className={classes.buttonProgress} />}
+        </div> :
+        <p>no document uploaded</p>
+        }
 
         <Typography variant="h5"> DBS Check </Typography>
 
@@ -304,6 +329,14 @@ export default function CoachEdit({ location, history }) {
           <BackupIcon />
           UPLOAD DBS CERTIFICATE
         </Button>
+        {coachInfo.dbsCertificate ?
+         <div className={classes.wrapper}>
+        <a target="_blank" rel="noopener noreferrer" href={coachInfo.dbsCertificate}><Button variant="contained"
+        color="primary" disabled={dataChange.dbsCertificate}>Uploaded Document</Button></a>
+        {dataChange.dbsCertificate && <CircularProgress size={24} className={classes.buttonProgress} />}
+        </div> :
+        <p>no document uploaded</p>
+        }
 
         <Button
           className={classes.button}
@@ -313,10 +346,11 @@ export default function CoachEdit({ location, history }) {
         >
           Save
         </Button>
+        
 
         <Link
           to={{
-            pathname: "/testercoach",
+            pathname: category === 'coach' ? "/testercoach" : '/tester' ,
             state: location.state,
           }}
         >

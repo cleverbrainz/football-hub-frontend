@@ -115,7 +115,7 @@ const App = () => {
         <Route exact path="/join" component={Join} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register/player/:companyLink?" component={RegisterPlayer} />
-        <Route exact path="/register/trainer" component={RegisterTrainer} />
+        <Route exact path="/register/trainer/:companyLink?" component={RegisterTrainer} />
         <Route exact path="/forgot_password" component={ForgottenPassword} />
         <Route exact path="/test" component={Listings} />
 
