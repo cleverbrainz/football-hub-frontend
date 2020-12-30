@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -116,6 +117,7 @@ function CoachPageBeta({ componentTabValue }) {
   const [value, setValue] = useState(componentTabValue);
   const [coaches, setCoaches] = useState([])
   const [user, setUser] = useState({})
+  const [alreadyCoach, setAlreadyCoach] = useState(false)
 
   const [companyCoaches, setCompanyCoaches] = useState()
   const [allAppCoaches, setAllAppCoaches] = useState()
@@ -130,6 +132,7 @@ function CoachPageBeta({ componentTabValue }) {
     fullName: '',
     email: ''
   })
+  const [message, setMessage] = useState('')
 
 
   async function getData() {
@@ -148,6 +151,7 @@ function CoachPageBeta({ componentTabValue }) {
       } else {
         coach = request
       }
+      if (coach.userId === auth.getUserId()) setAlreadyCoach(true)
       coachArray.push(coach)
     }
     setUser(user)
@@ -196,9 +200,38 @@ function CoachPageBeta({ componentTabValue }) {
     //   });
   };
 
+  const sendEmailRequest = (event) => {
+    event.preventDefault()
+    axios.post(`/emailRequestCoach`, { email: newExternalCoachDetails.email, name: newExternalCoachDetails.fullName, companyName: user.name, companyId: user.userId, type: window.location.hostname })
+      .then(res => {
+        console.log(res)
+        setMessage('Email Sent!')
+        setNewExternalCoachDetails({ email: '', fullName: '' })
+      })
+  }
+
   const InternalCoachForm = (
     // <FormPropsTextFields classes={classes} />
+
     <CompanyAddCoach info={user} />
+  )
+
+  const Already = (
+    <>
+    <h2>Already Registered. Click below to edit details</h2>
+    <Link to={{
+      pathname: '/testercoach/edit',
+      state: user
+    }}>
+    
+    <Button
+      // className={classes.button}
+      variant="contained" color="primary">
+      Edit Details
+  </Button>
+  </Link>
+  </>
+  // <CoachEdit location={{ state: user }}/>
   )
 
   const ExternalCoachForm = (
@@ -276,7 +309,7 @@ function CoachPageBeta({ componentTabValue }) {
             </FormControl>
           )}
 
-          {newCoachDetail ? newCoachDetail === 'myself' ? InternalCoachForm : (
+          {newCoachDetail ? newCoachDetail === 'myself' ? alreadyCoach ? Already : InternalCoachForm : (
             externalCoachDetail ? externalCoachDetail === 'existing' ? (
               // <FormControl variant="outlined" className={classes.formControl}>
               //   <InputLabel id="demo-simple-select-outlined-label"> Select Existing Coach </InputLabel>
@@ -318,11 +351,12 @@ function CoachPageBeta({ componentTabValue }) {
 
                   <Button
                     variant="contained"
-                    color="secondary"
+                    color={message ? "primary" : 'secondary'}
                     className={classes.inputs}
+                    onClick={(event) => sendEmailRequest(event)}
                     // onClick={() => input.current.click()}
                   >
-                    Send Registration Prompt
+                    {message ? message : 'Send Registration Prompt'}
                 </Button>
                 </>
               ) : null
