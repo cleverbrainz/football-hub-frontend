@@ -76,23 +76,24 @@ function getSteps() {
 export default function RegisterTrainer({ match }) {
 
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(match.params.companyLink ? 1 : 0);
   const steps = getSteps();
   const [isLoading, setIsLoading] = useState(false)
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [type, setType] = useState(match.params.type)
+  // const [type, setType] = useState(match.params.type)
   
-  console.log(type)
+  // console.log(type)
 
   const [registerFields, setRegisterFields] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    category: '',
+    category: match.params.companyLink ? 'coach' : '',
     public_liability_insurance: '',
     professional_indemnity_insurance: '',
+    companyLink: match.params.companyLink ? match.params.companyLink : undefined
   })
   const [fieldErrors, setFieldErrors] = useState()
   const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState()

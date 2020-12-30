@@ -49,18 +49,10 @@ const VerificationPage = () => {
     setStateRefreshInProgress(true)
     const [verificationId, userId] = event.target.id.split('-')
     console.log(event.target)
-    const accepted = type === 'coachInfo' ?{
-      coachDocumentationCheck: true,
-      dbsDocumentationCheck: true,
-      paymentCheck: true
-    } : {
-      coachDocumentationCheck: true,
-      companyDetailsCheck: true,
-      paymentCheck: true
-    }
+    const accepted = type === 'coachInfo' ? 'coachDocumentationCheck': 'companyDetailsCheck'
     const message = 'Documents verifed'
     axios.put(`/admin/awaitingVerification/${verificationId}`, 
-    { accepted, userId, message, verificationId })
+    { type, accepted, userId, message, verificationId })
       .then(setStateRefreshInProgress(false))
       .catch(setStateRefreshInProgress(false))
   }
@@ -70,7 +62,7 @@ const VerificationPage = () => {
   const CoachVerificationRows = () => {
 
     return awaitingVerification.map(([id, user], i) => {
-      
+      if (user.type === 'coachInfo') {
       return (
 
         <TableRow key={i}>
@@ -85,13 +77,13 @@ const VerificationPage = () => {
           </TableCell>
 
           <TableCell align="right">
-            <a href={user.documents.dbsCertificate}
+            <a href={user.coachInfo.dbsCertificate}
               rel="noopener noreferrer"
               target='_blank'> Click to open </a>
           </TableCell>
 
           <TableCell align="right">
-            <a href={user.documents.coachingCertificate}
+            <a href={user.coachInfo.coachingCertificate}
               rel="noopener noreferrer"
               target='_blank'> Click to open </a>
           </TableCell>
@@ -105,7 +97,8 @@ const VerificationPage = () => {
           </TableCell>
         </TableRow>
       )
-    })
+    }
+  })  
   }
 
   const CompanyVerificationRows = () => {
@@ -146,7 +139,7 @@ const VerificationPage = () => {
           <TableCell align="right">
             <button
               id={`${id}-${user.userId}`}
-              onClick={event => acceptDocuments(event, user.type)}>
+              onClick={event => acceptDocuments(event, 'companyInfo')}>
               Verifiy Company
            </button>
           </TableCell>
