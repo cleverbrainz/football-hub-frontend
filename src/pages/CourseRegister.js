@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link} from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
 import { makeStyles } from '@material-ui/core/styles';
@@ -37,6 +37,8 @@ const useStyles = makeStyles({
 const CourseRegister = ({ match }) => {
   console.log(match)
   const { courseId } = match.params
+  const history = useHistory()
+  console.log(history)
 
   const sessionDate = match.params.sessionDate ? match.params.sessionDate : 'full'
   const [register, setRegister] = useState([])
