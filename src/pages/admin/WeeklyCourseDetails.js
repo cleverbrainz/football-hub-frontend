@@ -81,7 +81,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
       .then(res => {
         const locationArr = []
         const ageArr = []
-        res.data[0].locations.map(el => locationArr.push(el));
+        res.data[0].locations.map(el => locationArr.push(el))
         res.data[0].ageDetails.map(el => ageArr.push(el));
         setLocations(locationArr)
         setAgeGroups(ageArr)
@@ -93,7 +93,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
     const courseDetails = { ...formDetails }
 
     locations.map(el => {
-      if (el.venue === formDetails.location) {
+      if (el.venue === formDetails.location.replace(/ *\([^)]*\) */g, "")) {
         courseDetails.longitude = el.longitude
         courseDetails.latitude = el.latitude
       }
@@ -168,8 +168,8 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
               onChange={(e) => updateOtherCourseInfo(e)}
             >
               {locations && locations.map((el, i) => (
-                <MenuItem key={i} value={el.venue}>
-                  {el.venue}
+                <MenuItem key={i} value={`${el.venue} (${el.postCode && el.postCode})`}>
+                  {`${el.venue} (${el.postCode && el.postCode})`}
                 </MenuItem>
               ))}
             </Select>

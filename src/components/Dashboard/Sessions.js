@@ -138,36 +138,38 @@ export default function Sessions({ componentTabValue }) {
     // // console.log('data', data)
     // if (register.register) registerArray.push([course.courseDetails, course.courseId, register.register.sessions])
     // }
+
     for (const course of data.courses.active) {
 
       let register
       const response = await axios.get(`/courses/${course.courseId}`)
       register = await response.data
-      console.log(register.register)
-      // console.log('data', data)
-
       if (register.register) activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
-      }
-      for (const course of data.courses.past) {
-        let register
-        const response = await axios.get(`/courses/${course.courseId}`)
-        register = await response.data
-        console.log(register.register)
-        // console.log('data', data)
-        if (register.register) pastRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
-        }
-        for (const coach of data.coaches) {
-          let coachInfo
-          const response = await axios.get(`/users/${coach}`)
-          coachInfo = await response.data[0]
-          coachArray.push(coachInfo)
-        }
+    }
+
+
+    for (const course of data.courses.past) {
+      let register
+      const response = await axios.get(`/courses/${course.courseId}`)
+      register = await response.data
+
+      if (register.register) pastRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+    }
+
+
+
+    for (const coach of data.coaches) {
+      let coachInfo
+      const response = await axios.get(`/users/${coach}`)
+      coachInfo = await response.data[0]
+      coachArray.push(coachInfo)
+    }
     setCompanyCoachIds(data.coaches)
     setCompanyCoachInfo(coachArray)
     setCompanyCourses(data.courses)
-    setRegisters({active: activeRegisterArray, past: pastRegisterArray})
+    setRegisters({ active: activeRegisterArray, past: pastRegisterArray })
     setThisWeek(sortRegisters(pastRegisterArray.concat(activeRegisterArray)))
-    }
+  }
 
 
 
@@ -178,27 +180,21 @@ export default function Sessions({ componentTabValue }) {
       weekdays[(monday.add(1, 'days').format('YYYY-MM-DD'))] = []
     }
 
-      registers.forEach(([courseDetails, id, sessionDates]) => {
-        for (const session of sessionDates) {
-          if (Object.keys(weekdays).indexOf(session) !== -1) {
-            const correctSession = courseDetails.courseType === 'Camp' ?
-              courseDetails.sessions.filter(infoSession => moment.unix(infoSession.sessionDate._seconds).format('dddd') === moment(session).format('dddd'))[0] 
-              : 
-              courseDetails.sessions.filter(infoSession => infoSession.day === moment(session).format('dddd'))[0] 
-            weekdays[session].push([courseDetails, id, correctSession])
-          }
+    registers.forEach(([courseDetails, id, sessionDates]) => {
+      for (const session of sessionDates) {
+        if (Object.keys(weekdays).indexOf(session) !== -1) {
+          const correctSession = courseDetails.courseType === 'Camp' ?
+            courseDetails.sessions.filter(infoSession => moment.unix(infoSession.sessionDate._seconds).format('dddd') === moment(session).format('dddd'))[0]
+            :
+            courseDetails.sessions.filter(infoSession => infoSession.day === moment(session).format('dddd'))[0]
+          weekdays[session].push([courseDetails, id, correctSession])
         }
-      })
+      }
+    })
     return weekdays
   }
 
   useEffect(() => {
-    // axios
-    //   .get(`/users/${auth.getUserId()}`)
-    //   .then(res => {
-    //     setCompanyCourses(res.data[0].courses);
-    //   })
-    //   .catch(e => console.log(e))
     getData()
   }, [!stateRefreshInProgress]);
 

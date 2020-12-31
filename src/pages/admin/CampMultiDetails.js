@@ -101,7 +101,7 @@ export default function MaterialUIPickers({ history, course,
       .then(res => {
         const locationArr = []
         const ageArr = []
-        res.data[0].locations.map(el => locationArr.push(el.venue));
+        res.data[0].locations.map(el => locationArr.push(`${el.venue} (${el.postCode && el.postCode})`))
         res.data[0].ageDetails.map(el => ageArr.push(el));
         setLocations(locationArr)
         setAgeGroups(ageArr)
