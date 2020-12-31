@@ -15,12 +15,11 @@ import VisibilityOffSharpIcon from '@material-ui/icons/VisibilityOffSharp';
 import VisibilitySharpIcon from '@material-ui/icons/VisibilitySharp';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
-// import 'date-fns';
-// import DateFnsUtils from '@date-io/date-fns';
-// import {
-//   MuiPickersUtilsProvider,
-//   KeyboardDatePicker,
-// } from '@material-ui/pickers';
+import Popper from '@material-ui/core/Popper';
+import Box from '@material-ui/core/Box';
+import Fade from '@material-ui/core/Fade';
+import Paper from '@material-ui/core/Paper';
+import InfoSharpIcon from '@material-ui/icons/InfoSharp';
 import axios from 'axios'
 import AttachFileSharpIcon from '@material-ui/icons/AttachFileSharp';
 import { Link } from 'react-router-dom'
@@ -84,6 +83,11 @@ export default function RegisterPlayer({ match }) {
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = React.useState();
+
   const [registerFields, setRegisterFields] = useState({
     name: '',
     email: '',
@@ -126,7 +130,7 @@ export default function RegisterPlayer({ match }) {
       }
       if (localStorage.token) localStorage.removeItem('token')
 
-      
+
       axios.post('/signup', registerFields)
         .then(res => {
           setRegistrationSuccessMessage(res.data)
@@ -181,15 +185,56 @@ export default function RegisterPlayer({ match }) {
     setActiveStep(0);
   };
 
+  const handleClick = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
+  };
+
   const form = (
     <>
+
+      <Popper open={open} anchorEl={anchorEl} placement={placement} transition>
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={350}>
+            <Paper>
+              <Typography component='div'>
+                <Box fontSize={20} fontWeight="fontWeightRegular" m={3}>
+                  Password Requirements
+              </Box>
+
+                <ul>
+                  <li> - Contain 1 uppercase and 1 lowercase letter </li>
+                  <li> - Contain at least 1 number </li>
+                  <li> - Must be longer than 8 characters </li>
+                </ul>
+
+              </Typography>
+
+
+            </Paper>
+          </Fade>
+        )}
+      </Popper>
+
+      {registerFields.category === 'parent' && (
+        <FormControl variant="outlined">
+          <TextField id="outlined-basic"
+            type='text'
+            variant="outlined"
+            error={fieldErrors ? fieldErrors.fullName ? true : false : null}
+            helperText={fieldErrors ? fieldErrors.fullName : null}
+            name='parentName' label='Parent Name' />
+        </FormControl>
+      )}
+
       <FormControl variant="outlined">
         <TextField id="outlined-basic"
           type='text'
           variant="outlined"
           error={fieldErrors ? fieldErrors.fullName ? true : false : null}
           helperText={fieldErrors ? fieldErrors.fullName : null}
-          name='name' label='Name' />
+          name='name' label='Player Name' />
       </FormControl>
 
       <FormControl variant="outlined">
@@ -221,6 +266,14 @@ export default function RegisterPlayer({ match }) {
               >
                 {showPassword ? <VisibilitySharpIcon /> : <VisibilityOffSharpIcon />}
               </IconButton>
+
+              <IconButton
+                onClick={handleClick('right')}
+                edge="end"
+              >
+                <InfoSharpIcon />
+              </IconButton>
+
             </InputAdornment>
           }
           labelWidth={70}
@@ -294,21 +347,21 @@ export default function RegisterPlayer({ match }) {
     const UserSetupFields = registerFields.category === 'player' ? ['Best Career Highlight', 'Favourite Football Player', 'Preferred Position', 'Favourite Football Team'] : ['Favourite Football Player', 'Preferred Position', 'Favourite Football Team', 'Child\'s name']
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
-      const formFields = UserSetupFields.map(el => {
-        return (
-          <FormControl variant="outlined">
-            <TextField id="outlined-basic"
-              type='text'
-              variant="outlined"
+    const formFields = UserSetupFields.map(el => {
+      return (
+        <FormControl variant="outlined">
+          <TextField id="outlined-basic"
+            type='text'
+            variant="outlined"
 
-              name={el.toLowerCase().replace(/ /g, '_')} label={el} />
-          </FormControl>
-        )
-      })
+            name={el.toLowerCase().replace(/ /g, '_')} label={el} />
+        </FormControl>
+      )
+    })
 
-      return formFields.concat(
-        <>
-          {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    return formFields.concat(
+      <>
+        {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
 
             <KeyboardDatePicker
               disableToolbar
@@ -325,36 +378,36 @@ export default function RegisterPlayer({ match }) {
             />
           </MuiPickersUtilsProvider> */}
 
-          <form>
-            <select name="birthdayMonth" id="">
-              <>
+        <form>
+          <select name="birthdayMonth" id="">
+            <>
               <option value="" selected disabled>Month</option>
               {months.map((month, i) => {
-                return <option value={i+1}>{month}</option>
+                return <option value={i + 1}>{month}</option>
               })}
-              </>
-            </select>
-            <input type="number" placeholder="Day" name="birthdayDay" id="" min={1} max={31}/>
-            <input type="number" placeholder="Year" name="birthdayYear" id="" min={1920} max={2020}/>
-          </form>
+            </>
+          </select>
+          <input type="number" placeholder="Day" name="birthdayDay" id="" min={1} max={31} />
+          <input type="number" placeholder="Year" name="birthdayYear" id="" min={1920} max={2020} />
+        </form>
 
 
-          <FormControl variant="outlined">
-            <TextField
-              id="outlined-multiline-static"
-              label="Write a short bio"
-              multiline
-              rows={3}
-              name='bio'
-              variant="outlined"
-            />
-          </FormControl>
+        <FormControl variant="outlined">
+          <TextField
+            id="outlined-multiline-static"
+            label="Write a short bio"
+            multiline
+            rows={3}
+            name='bio'
+            variant="outlined"
+          />
+        </FormControl>
 
 
-        </>
+      </>
 
 
-      ).reverse()
+    ).reverse()
 
 
 
@@ -382,8 +435,8 @@ export default function RegisterPlayer({ match }) {
     switch (stepIndex) {
       case 0:
         return basicInfo;
-        case 1:
-          return form;
+      case 1:
+        return form;
       case 2:
         return userProfileSetup();
       case 3:

@@ -189,8 +189,7 @@ export default function CompanyDetailsEdit({history}) {
       .then((res) => {
         console.log(res.data);
         // setDocuments(res.data.documents)
-        setCompanyInfo({...companyInfo, documents: res.data.documents})
-        
+        setCompanyInfo({...companyInfo, documents: res.data.data.documents})
         setDataChange({ ...dataChange, [target]: false });
       })
       .catch((err) => {
