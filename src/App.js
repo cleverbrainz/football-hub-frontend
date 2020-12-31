@@ -84,7 +84,7 @@ import AdminHomeBeta from './pages/indulgeadmin/AdminHomeBeta'
 
 import StripePayment from './pages/Stripe'
 
-axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
+// axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
 
 const App = () => {
   const [userType, setUserType] = useState();

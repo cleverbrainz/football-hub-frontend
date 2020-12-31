@@ -248,12 +248,13 @@ export default function Listings() {
             handleStateRefresh={() => handleStateRefresh()} classes={classes} />}
       </TabPanel>
 
-      <Fab variant="extended"
+      {value === 0 && <Fab variant="extended"
         onClick={() => setInstructionsOpen(!instructionsOpen)}
         color="primary" className={classes.fab}>
         <AssignmentSharpIcon style={{ marginRight: '10px' }} />
         Listing Instructions
-      </Fab>
+      </Fab>}
+
 
       <DeleteComponent
         open={open}

@@ -190,8 +190,8 @@ export default function CompanyDetailsEdit({history}) {
         console.log(res.data);
         console.log(res.data.data.documents)
         // setDocuments(res.data.documents)
+
         setCompanyInfo({...companyInfo, documents: res.data.data.documents, verificationId: res.data.data.verificationId })
-        
         setDataChange({ ...dataChange, [target]: false });
       })
       .catch((err) => {
