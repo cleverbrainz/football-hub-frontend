@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const Requests = ({ match }) => {
+const Requests = ({ match, setPanel, refreshRequests }) => {
   const profileId = match.params.id
   const [user, setUser] = useState()
   const [requests, setRequests] = useState([])
@@ -131,14 +131,18 @@ const Requests = ({ match }) => {
 }, [])
 
 
-  const handleRequest = (event, decision) => {
+  const handleRequest = (event, id, decision) => {
+    event.preventDefault()
+    console.log(decision)
     
-    const id = decision ? event.nativeEvent.path[1].id.slice(7) : event.nativeEvent.path[1].id.slice(8)
     const user = auth.getUserId()
     axios.put(`/user/${user}/requests`, { userId: user, companyId: id, bool: decision })
       .then(res => {
         console.log(res)
-        getData()
+        refreshRequests()
+        .then(() => {
+          setPanel(0)
+        })
       })
       .catch(err => {
         console.log(err)
@@ -169,10 +173,10 @@ const Requests = ({ match }) => {
             </CardContent>
           </CardActionArea>
           <CardActions>
-            <Button id={`accept-${request.userId}`} onClick={(event) => handleRequest(event, true)} size="small" color="primary">
+            <Button id={`accept-${request.userId}`} onClick={(event) => handleRequest(event, request.userId, true)} size="small" color="primary">
               Accept
             </Button>
-            <Button id={`decline-${request.userId}`} onClick={(event) => handleRequest(event, false)} size="small" color="primary">
+            <Button id={`decline-${request.userId}`} onClick={(event) => handleRequest(event, request.userId, false)} size="small" color="primary">
               Decline
             </Button>
           </CardActions>

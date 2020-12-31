@@ -217,7 +217,7 @@ export default function CompanyPageBeta() {
 
       {/* tab 2 content */}
       <TabPanel className={classes.formContainer} value={value} index={1}>
-        <Requests />
+        <Requests setPanel={setValue} refreshRequests={getData}/>
         {/* <form className={classes.form} action="">
 
           <FormControl variant="outlined" className={classes.formControl}>
