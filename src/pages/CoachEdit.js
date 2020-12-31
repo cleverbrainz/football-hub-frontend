@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Checkbox,
   Button,
@@ -11,50 +11,50 @@ import {
   Typography,
   OutlinedInput,
   Container,
-} from "@material-ui/core";
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { makeStyles } from "@material-ui/core/styles";
-import { storage } from "../lib/firebase";
-import axios from "axios";
+} from '@material-ui/core'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import { makeStyles } from '@material-ui/core/styles'
+import { storage } from '../lib/firebase'
+import axios from 'axios'
 import auth from '../lib/auth'
-import Avatar from '@material-ui/core/Avatar';
-import BackupIcon from "@material-ui/icons/Backup";
+import Avatar from '@material-ui/core/Avatar'
+import BackupIcon from '@material-ui/icons/Backup'
 
 const useStyles = makeStyles((theme) => ({
   spacing: {
-    margin: "10px 0",
-    textAlign: "center",
+    margin: '10px 0',
+    textAlign: 'center',
   },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 300,
   },
   container: {
-    margin: "100px auto",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-evenly",
+    margin: '100px auto',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
     height: `${window.innerHeight - 100}px`,
-    textAlign: "center",
+    textAlign: 'center',
   },
   form: {
-    width: "30%",
-    minWidth: "300px",
-    display: "flex",
-    flexDirection: "column",
-    height: "55%",
-    justifyContent: "space-around",
+    width: '30%',
+    minWidth: '300px',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '55%',
+    justifyContent: 'space-around',
   },
   button: {
-    position: "relative",
-    margin: "10px 0",
+    position: 'relative',
+    margin: '10px 0',
   },
   upload: {
-    margin: "20px auto",
+    margin: '20px auto',
   },
   center: {
-    margin: "0 auto",
+    margin: '0 auto',
   },
   avatar: {
     // [theme.breakpoints.up('sm')]: {
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 auto',
     '&:hover': {
       cursor: 'pointer',
-      filter: 'grayscale(50%)'
+      filter: 'grayscale(50%)',
     },
     // boxShadow: '1px 1px 2px 2px grey'
   },
@@ -82,105 +82,98 @@ const useStyles = makeStyles((theme) => ({
     marginTop: -12,
     marginLeft: -12,
   },
-}));
+}))
 
-export default function CoachEdit({ location, history }) {
-  const classes = useStyles();
+export default function CoachEdit({ history }) {
+  const classes = useStyles()
 
-  console.log(location.state)
+  // console.log(location.state)
 
-  const { userId, imageURL, category } = location.state;
-  const [image, setImage] = React.useState(null);
-  const [url, setUrl] = React.useState("");
-  const [dataChange, setDataChange] = useState({ coachingCertificate: false, dbsCertificate: false });
-  const [avatarImage, setAvatarImage] = useState(location.state.imageURL)
-  const [name, setName] = React.useState(location.state.coachInfo.name);
-  const [email, setEmail] = React.useState(location.state.email);
-  const [phone, setPhone] = React.useState(location.state.main_contact_number);
-  const [level, setLevel] = React.useState(location.state.coachInfo.coaching_level);
-  const [coachInfo, setCoachInfo] = React.useState(location.state.coachInfo);
-  const [verified, setVerified] = React.useState(location.state.verified);
+  const userId = auth.getUserId()
+  const [user, setUser] = useState(null)
+  // const [image, setImage] = React.useState(null);
+  // const [url, setUrl] = React.useState("");
+  const [dataChange, setDataChange] = useState({
+    coachingCertificate: false,
+    dbsCertificate: false,
+  })
+  // const [avatarImage, setAvatarImage] = useState(location.state.imageURL)
+  // const [name, setName] = React.useState(location.state.coachInfo.name);
+  // const [email, setEmail] = React.useState(location.state.email);
+  // const [phone, setPhone] = React.useState(location.state.main_contact_number);
+  // const [level, setLevel] = React.useState(location.state.coachInfo.coaching_level);
+  // const [coachInfo, setCoachInfo] = React.useState(location.state.coachInfo);
+  // const [verified, setVerified] = React.useState(location.state.verified);
   const [imageUpload, setImageUpload] = useState(false)
 
+  useEffect(() => {
+    console.log('usefect')
+    axios.get(`/users/${auth.getUserId()}`).then((res) => {
+      console.log(res.data[0])
+      setUser(res.data[0])
+    })
+  }, [])
 
-  const dbsInput = useRef();
-  const coachingInput = useRef();
-  const imageInput = useRef();
+  const dbsInput = useRef()
+  const coachingInput = useRef()
+  const imageInput = useRef()
 
   const [state, setState] = React.useState({
     checked: false,
     details: null,
-  });
+  })
 
   const handleSubmit = (e) => {
-    const updates = category === 'company' ?  {
-        'coachInfo.imageURL': avatarImage,
-        'coachInfo.name': name,
-        email: email,
-        main_contact_number: phone,
-        'coachInfo.coaching_level': level,
-        'coachInfo.coachingCertificate': coachInfo.coachingCertificate,
-        'coachInfo.dbsCertificate': coachInfo.dbsCertificate
-      } :
-      {
-        'coachInfo.imageURL': avatarImage,
-        'coachInfo.name': name,
-        name: name,
-        email: email,
-        main_contact_number: phone,
-        'coachInfo.coaching_level': level,
-        'coachInfo.coachingCertificate': coachInfo.coachingCertificate,
-        'coachInfo.dbsCertificate': coachInfo.dbsCertificate
-      }
-    e.preventDefault();
-    console.log(imageURL)
+    const updates = user
+    e.preventDefault()
+    console.log(user.imageURL)
     axios
       .patch(
         `/users/${userId}`,
-        { userId,
-          updates: updates
-        },
+        { userId, updates: updates },
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
       )
       .then((res) => {
-        console.log(res.data);
-        category === 'company' ? history.push("/tester") : history.push("/testercoach")
-        
+        console.log(res.data)
+        user.category === 'company'
+          ? history.push('/tester')
+          : history.push('/testercoach')
       })
       .catch((error) => {
-        alert(error.message);
-      });
-  };
+        alert(error.message)
+      })
+  }
 
   const handleDocumentUpload = (e) => {
     setDataChange({ ...dataChange, [e.target.name]: true })
-    console.log("hellooo", e.target.name);
-    const image = e.target.files;
-    const document = new FormData();
+    console.log('hellooo', e.target.name)
+    const image = e.target.files
+    const document = new FormData()
 
-    document.append("owner", auth.getUserId());
-    document.append("document", image[0], image[0].name);
+    document.append('owner', auth.getUserId())
+    document.append('document', image[0], image[0].name)
 
-    console.log(document);
+    console.log(document)
 
     axios
       .patch(`/coaches/${userId}/document/${e.target.name}`, document, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
-        console.log(res.data);
-        setCoachInfo(res.data.coachInfo)
-        setDataChange({ ...dataChange, [e.target.name]: false });
+        console.log(res.data)
+        setUser({ ...user, coachInfo: res.data.data.coachInfo })
+        // setCoachInfo(res.data.coachInfo)
+        setDataChange({ ...dataChange, [e.target.name]: false })
       })
       .catch((err) => {
-        console.error(err);
-        setDataChange(false);
-      });
-  };
+        console.error(err)
+        setDataChange(false)
+      })
+  }
 
   const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
-  };
+    setState({ ...state, [event.target.name]: event.target.checked })
+  }
 
   const handleMediaChange = (e) => {
     setImageUpload(true)
@@ -189,40 +182,44 @@ export default function CoachEdit({ location, history }) {
     picture.append('owner', auth.getUserId())
     picture.append('picture', image[0], image[0].name)
 
-    axios.post(`/coaches/image/${userId}`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
-      .then(res => {
+    axios
+      .post(`/coaches/image/${userId}`, picture, {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+      })
+      .then((res) => {
         console.log(res.data)
         setImageUpload(false)
-        setAvatarImage(res.data.message)
+        setUser({ ...user, imageURL: res.data.message })
+        // setAvatarImage(res.data.message)
       })
-      .catch(err => console.error(err))
+      .catch((err) => console.error(err))
   }
 
-  
-
+  if (!user) return null
   return (
     <Container className={classes.container}>
       <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-        <Typography variant="h4"> EDIT COACHES </Typography>
+        <Typography variant="h4"> EDIT COACH INFO </Typography>
 
         <input
           ref={imageInput}
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
           onChange={(e) => handleMediaChange(e)}
           type="file"
         />
 
         <Avatar
-            onClick={(e) => imageInput.current.click()}
-            className={classes.avatar} src={avatarImage}
-          />
+          onClick={(e) => imageInput.current.click()}
+          className={classes.avatar}
+          src={user.imageURL}
+        />
 
         <FormControl variant="outlined" className={classes.spacing}>
           <InputLabel htmlFor="component-outlined"> Coach name </InputLabel>
           <OutlinedInput
             label="Coach name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={user.name}
+            onChange={(e) => setUser({ ...user, name: e.target.value })}
           ></OutlinedInput>
         </FormControl>
 
@@ -230,20 +227,22 @@ export default function CoachEdit({ location, history }) {
           <InputLabel htmlFor="component-outlined"> Coach email </InputLabel>
           <OutlinedInput
             label="Coach email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={user.email}
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
           />
         </FormControl>
 
         <FormControl variant="outlined" className={classes.spacing}>
           <InputLabel htmlFor="component-outlined">
-            {" "}
-            Coach phone number{" "}
+            {' '}
+            Coach phone number{' '}
           </InputLabel>
           <OutlinedInput
             label="Coach phone number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            value={user.main_contact_number}
+            onChange={(e) =>
+              setUser({ ...user, main_contact_number: e.target.value })
+            }
           />
         </FormControl>
 
@@ -254,21 +253,26 @@ export default function CoachEdit({ location, history }) {
           <Select
             label="Coach Badges"
             id="select-level"
-            value={level}
-            onChange={(e) => setLevel(e.target.value)}
+            value={user.coachInfo.coaching_level}
+            onChange={(e) =>
+              setUser({
+                ...user,
+                coachInfo: { ...user.coachInfo, coaching_level: e.target.value },
+              })
+            }
           >
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            <MenuItem value={"FA Level 1"}>FA Level 1</MenuItem>
-            <MenuItem value={"FA Level 2"}>FA Level 2</MenuItem>
-            <MenuItem value={"FA Level 3 (UEFA B)"}>
+            <MenuItem value={'FA Level 1'}>FA Level 1</MenuItem>
+            <MenuItem value={'FA Level 2'}>FA Level 2</MenuItem>
+            <MenuItem value={'FA Level 3 (UEFA B)'}>
               FA Level 3 (UEFA B)
             </MenuItem>
-            <MenuItem value={"FA Level 4 (UEFA A)"}>
+            <MenuItem value={'FA Level 4 (UEFA A)'}>
               FA Level 4 (UEFA A)
             </MenuItem>
-            <MenuItem value={"FA Level 5 (UEFA PRO)"}>
+            <MenuItem value={'FA Level 5 (UEFA PRO)'}>
               FA Level 5 (UEFA PRO)
             </MenuItem>
           </Select>
@@ -277,11 +281,11 @@ export default function CoachEdit({ location, history }) {
         <input
           name="coachingCertificate"
           ref={coachingInput}
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
           onChange={(e) => handleDocumentUpload(e)}
           type="file"
         />
-        
+
         <Button
           variant="contained"
           color="secondary"
@@ -290,14 +294,28 @@ export default function CoachEdit({ location, history }) {
           <BackupIcon />
           UPLOAD COACHING CERTIFICATE
         </Button>
-        {coachInfo.coachingCertificate ?
-        <div className={classes.wrapper}>
-          <a target="_blank" rel="noopener noreferrer" href={coachInfo.coachingCertificate}><Button variant="contained"
-        color="primary" disabled={dataChange.coachingCertificate} >Uploaded Document</Button></a>
-        {dataChange.coachingCertificate && <CircularProgress size={24} className={classes.buttonProgress} />}
-        </div> :
-        <p>no document uploaded</p>
-        }
+        {user.coachInfo.coachingCertificate ? (
+          <div className={classes.wrapper}>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={user.coachInfo.coachingCertificate}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={dataChange.coachingCertificate}
+              >
+                Uploaded Document
+              </Button>
+            </a>
+            {dataChange.coachingCertificate && (
+              <CircularProgress size={24} className={classes.buttonProgress} />
+            )}
+          </div>
+        ) : (
+          <p>no document uploaded</p>
+        )}
 
         <Typography variant="h5"> DBS Check </Typography>
 
@@ -317,7 +335,7 @@ export default function CoachEdit({ location, history }) {
         <input
           name="dbsCertificate"
           ref={dbsInput}
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
           onChange={(e) => handleDocumentUpload(e)}
           type="file"
         />
@@ -329,14 +347,28 @@ export default function CoachEdit({ location, history }) {
           <BackupIcon />
           UPLOAD DBS CERTIFICATE
         </Button>
-        {coachInfo.dbsCertificate ?
-         <div className={classes.wrapper}>
-        <a target="_blank" rel="noopener noreferrer" href={coachInfo.dbsCertificate}><Button variant="contained"
-        color="primary" disabled={dataChange.dbsCertificate}>Uploaded Document</Button></a>
-        {dataChange.dbsCertificate && <CircularProgress size={24} className={classes.buttonProgress} />}
-        </div> :
-        <p>no document uploaded</p>
-        }
+        {user.coachInfo.dbsCertificate ? (
+          <div className={classes.wrapper}>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={user.coachInfo.dbsCertificate}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={dataChange.dbsCertificate}
+              >
+                Uploaded Document
+              </Button>
+            </a>
+            {dataChange.dbsCertificate && (
+              <CircularProgress size={24} className={classes.buttonProgress} />
+            )}
+          </div>
+        ) : (
+          <p>no document uploaded</p>
+        )}
 
         <Button
           className={classes.button}
@@ -346,12 +378,10 @@ export default function CoachEdit({ location, history }) {
         >
           Save
         </Button>
-        
 
         <Link
           to={{
-            pathname: category === 'coach' ? "/testercoach" : '/tester' ,
-            state: location.state,
+            pathname: user.category === 'coach' ? '/testercoach' : '/tester'
           }}
         >
           <Button className={classes.button} variant="outlined" color="primary">
@@ -360,5 +390,5 @@ export default function CoachEdit({ location, history }) {
         </Link>
       </form>
     </Container>
-  );
+  )
 }
