@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'
 import { Link } from 'react-router-dom'
-import { Typography, Box, Button, TextField } from "@material-ui/core";
+import { Typography, Box, Button, TextField, Select, MenuItem } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -27,12 +27,78 @@ const useStyles = makeStyles({
   }
 });
 
+const verificationOutcomes = {
+  coachInfo: {
+    1: {
+      dbsDocumentationCheck: true,
+      coachDocumentationCheck: true
+    },
+    2: {
+      dbsDocumentationCheck: true,
+      coachDocumentationCheck: false
+    },
+    3: {
+      dbsDocumentationCheck: false,
+      coachDocumentationCheck: true
+    },
+    4: {
+      dbsDocumentationCheck: false,
+      coachDocumentationCheck: false
+    }
+  },
+  companyInfo: {
+    1: {
+      liabilityDocumentCheck: true,
+      indemnityDocumentCheck: true,
+      companyDetailsCheck: true
+    },
+    2: {
+      liabilityDocumentCheck: false,
+      indemnityDocumentCheck: true,
+      companyDetailsCheck: true
+    },
+    3: {
+      liabilityDocumentCheck: true,
+      indemnityDocumentCheck: false,
+      companyDetailsCheck: true
+    },
+    4: {
+      liabilityDocumentCheck: false,
+      indemnityDocumentCheck: false,
+      companyDetailsCheck: true
+    },
+    5: {
+      liabilityDocumentCheck: true,
+      indemnityDocumentCheck: true,
+      companyDetailsCheck: false
+    },
+    6: {
+      liabilityDocumentCheck: false,
+      indemnityDocumentCheck: true,
+      companyDetailsCheck: false
+    },
+    7: {
+      liabilityDocumentCheck: true,
+      indemnityDocumentCheck: false,
+      companyDetailsCheck: false
+    },
+    8: {
+      liabilityDocumentCheck: false,
+      indemnityDocumentCheck: false,
+      companyDetailsCheck: false
+    },
+
+
+  }
+}
+
 
 
 const VerificationPage = () => {
 
   const [awaitingVerification, setAwaitingVerification] = useState([])
   const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
+  const [verificationChoice, setVerificationChoice] = useState({})
 
 
   useEffect(() => {
@@ -40,19 +106,30 @@ const VerificationPage = () => {
       .then(res => {
         console.log('resdata', res.data)
         setAwaitingVerification(res.data)
+        for (const item of res.data) {
+          const [id, user] = item
+          setVerificationChoice({ ...verificationChoice, [id]: 0 })
+        }
       })
       .catch(error => console.log(error))
-  }, [!stateRefreshInProgress])
+  }, [stateRefreshInProgress])
 
-  const acceptDocuments = (event, type) => {
+  console.log(verificationChoice)
+
+  const acceptDocuments = (event, [verificationId, userId], type) => {
     event.preventDefault()
     setStateRefreshInProgress(true)
-    const [verificationId, userId] = event.target.id.split('-')
+    // const [verificationId, userId] = event.target.id.split('-')
     console.log(event.target)
-    const accepted = type === 'coachInfo' ? 'coachDocumentationCheck': 'companyDetailsCheck'
+    const currentVerification = awaitingVerification.filter(item => item[0] === verificationId)[0][1].verification
+    console.log(currentVerification)
+    const updatedVerification = { ...currentVerification, ...verificationOutcomes[type][verificationChoice[verificationId]] }
+    console.log({updatedVerification})
+    // const accepted = type === 'coachInfo' ? 'coachDocumentationCheck': 'companyDetailsCheck'
+
     const message = 'Documents verifed'
     axios.put(`/admin/awaitingVerification/${verificationId}`, 
-    { type, accepted, userId, message, verificationId })
+    { type, updatedVerification, userId, message, verificationId })
       .then(setStateRefreshInProgress(false))
       .catch(setStateRefreshInProgress(false))
   }
@@ -89,9 +166,23 @@ const VerificationPage = () => {
           </TableCell>
 
           <TableCell align="right">
+          <Select
+            // label={sentence}
+            id="select-level"
+            value={verificationChoice[id]}
+            // onChange={(e) => setCompanyInfo({ ...companyInfo, [item]: e.target.value })}
+            onChange={event => setVerificationChoice({ ...verificationChoice, [id]: event.target.value })}
+          >
+              <MenuItem value={0} disabled={true}>Select documents for approval</MenuItem>
+              <MenuItem value={1}>Approve DBS and coaching certificate</MenuItem>
+              <MenuItem value={2}>Approve DBS only</MenuItem>
+              <MenuItem value={3}>Approve coaching certificate only</MenuItem>
+              <MenuItem value={4}>Approve neither</MenuItem>
+          </Select>
             <button
               id={`${id}-${user.userId}`}
-              onClick={event => acceptDocuments(event, 'coachInfo')}>
+              onClick={event => acceptDocuments(event, [id, user.userId], 'coachInfo')}
+              disabled={verificationChoice[id] === 0 ? true : false}>
               Verifiy Coach
            </button>
           </TableCell>
@@ -137,9 +228,27 @@ const VerificationPage = () => {
           </TableCell>
 
           <TableCell align="right">
+          <Select
+            // label={sentence}
+            id="select-level"
+            value={verificationChoice[id]}
+            // onChange={(e) => setCompanyInfo({ ...companyInfo, [item]: e.target.value })}
+            onChange={event => setVerificationChoice({ ...verificationChoice, [id]: event.target.value })}
+          >
+              <MenuItem value={0} disabled={true}>Select documents for approval</MenuItem>
+              <MenuItem value={1}>Approve company details, both certificates</MenuItem>
+              <MenuItem value={2}>Approve company details, public indemnity certificate only</MenuItem>
+              <MenuItem value={3}>Approve company details, public liability certificate only</MenuItem>
+              <MenuItem value={4}>Approve company details, neither certificate</MenuItem>
+              <MenuItem value={5}>Approve both certificates only</MenuItem>
+              <MenuItem value={6}>Approve public indemnity certificate only</MenuItem>
+              <MenuItem value={7}>Approve public liability certificate only</MenuItem>
+              <MenuItem value={8}>Approve nothing</MenuItem>
+          </Select>
             <button
               id={`${id}-${user.userId}`}
-              onClick={event => acceptDocuments(event, 'companyInfo')}>
+              onClick={event => acceptDocuments(event, [id, user.userId], 'companyInfo')}
+              disabled={verificationChoice[id] === 0 ? true : false}>
               Verifiy Company
            </button>
           </TableCell>

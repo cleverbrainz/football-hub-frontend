@@ -263,7 +263,7 @@ export default function CoachSessions() {
     setValue(newValue);
   };
 
-  if (courses.length === 0) return null
+  // if (courses.length === 0) return null
   return (
     <div className={classes.root}>
 
