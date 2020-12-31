@@ -101,9 +101,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function Locations() {
+export default function Locations({ componentTabValue }) {
   const classes = useStyles();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(componentTabValue);
   const [companyLocations, setCompanyLocations] = useState()
   const [open, setOpen] = useState(false)
   const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)

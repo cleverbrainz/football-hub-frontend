@@ -41,7 +41,7 @@ const Summary = ({ handleComponentChange }) => {
   const classes = useStyles();
 
   const cards = [
-    { text: 'Services', component: 'Misc', userObject: 'services' },
+    { text: 'Players', component: 'Players', userObject: 'players' },
     { text: 'Courses & Camps', component: 'Sessions', userObject: 'courses' },
     { text: 'Coaches', component: 'Coaches', userObject: 'coaches' }
   ]
@@ -56,12 +56,14 @@ const Summary = ({ handleComponentChange }) => {
     let registerArray = []
     const response = await axios.get(`/users/${auth.getUserId()}`)
     const data = await response.data[0]
-    for (const course of data.courses.active) {
-      let register
-      const response = await axios.get(`/courses/${course.courseId}`)
-      register = await response.data
-      if (register.register) registerArray.push([course.courseDetails, course.courseId, register.register.sessions])
-    }
+
+      for (const course of data.courses.active) {
+        let register
+        const response = await axios.get(`/courses/${course.courseId}`)
+        register = await response.data
+        if (register.register) registerArray.push([course.courseDetails, course.courseId, register.register.sessions])
+      }
+    
     setUser(data)
     setRegisters(registerArray)
     setThisWeek(sortRegisters(registerArray))
@@ -70,7 +72,7 @@ const Summary = ({ handleComponentChange }) => {
   const getMessages = () => {
     axios.get('/enquiries/company', { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(async res => {
-        console.log(res.data)
+        // console.log(res.data)
         const orderedMessages = res.data.sort((a, b) => {
           const messageA = a.enquiryInfo.messages[a.enquiryInfo.messages.length - 1]
           const messageB = b.enquiryInfo.messages[b.enquiryInfo.messages.length - 1]
@@ -101,7 +103,7 @@ const Summary = ({ handleComponentChange }) => {
         }
       }
     })
-    console.log(weekdays)
+    // console.log(weekdays)
 
     return weekdays
   }
@@ -112,12 +114,15 @@ const Summary = ({ handleComponentChange }) => {
     getData()
   }, [])
 
-  console.log(user)
+  // console.log(user)
+
   function renderRecentlyAdded(detail) {
 
     const textArr = []
 
-    const length = user && (detail === 'courses' ? user[detail].active.length : user[detail].length)
+    const length = user && (detail === 'courses' && user.courses.active ? user[detail].active.length : 
+    detail === 'players' ? Object.keys(user.players).length : null)
+
     for (let i = length - 1; i >= 0; i--) {
       switch (detail) {
         case 'services':
@@ -132,7 +137,14 @@ const Summary = ({ handleComponentChange }) => {
           break;
       }
     }
-    
+
+    if (detail === 'players' && user) {
+      Object.keys(user[detail]).map((key, index) => {
+        const { name, status, dob } = user[detail][key]
+        textArr.push(`Added ${name} as ${status} player (${dob})`)
+      })
+    }
+
 
     return textArr
   }
@@ -202,12 +214,12 @@ const Summary = ({ handleComponentChange }) => {
                       {!sameDay && moment(currentDate).format('DD-MM-YYYY')}
                     </Typography>
 
-                    <Typography gutterBottom={true} variant="p" 
-                    style={{ display: 'flex', alignItems: 'center', margin: 0}}>
+                    <Typography gutterBottom={true} variant="p"
+                      style={{ display: 'flex', alignItems: 'center', margin: 0 }}>
                       {messages[0].enquiryType ? 'Booking' : 'General'} Enquiry sent from {name}
 
-                    <ArrowForwardSharpIcon style={{marginLeft: '10px'}}
-                      onClick={() => handleComponentChange('Messages', el)} />
+                      <ArrowForwardSharpIcon style={{ marginLeft: '10px' }}
+                        onClick={() => handleComponentChange('Messages', el)} />
                     </Typography>
 
                   </Grid>
@@ -223,6 +235,7 @@ const Summary = ({ handleComponentChange }) => {
 
 
         {cards.map((el, i) => {
+
           return (
             <Grid item xs={12} sm={4}>
               <Paper elevation={4}
@@ -232,9 +245,10 @@ const Summary = ({ handleComponentChange }) => {
                 </Typography>
 
                 <Typography gutterBottom variant="p">
-                  {user && (el.userObject === 'courses' ? user[el.userObject].active.length !== 0 : user[el.userObject].length !== 0) ? (
+                  {user && (user[el.userObject].active ? user[el.userObject].active.length !== 0 : user[el.userObject].length !== 0) ? (
                     <p> You currently have
-                      <span style={{ fontWeight: 'bold' }}> {el.userObject === 'courses' ? user[el.userObject].active.length : user[el.userObject].length} {el.text.slice(0, -1) + '(s)'}
+                      <span style={{ fontWeight: 'bold' }}> {el.userObject === 'courses' ? user[el.userObject].active.length : 
+                     el.userObject === 'players' ? Object.keys(user.players).length : user[el.userObject].length} {el.text.slice(0, -1) + '(s)'}
                       </span> added to your profile </p>
                   ) : <p> There are currently <span style={{ fontWeight: 'bold' }}> 0 {el.text} </span> on your profile, please select the + icon to add {el.text} </p>}
                 </Typography>

@@ -82,14 +82,6 @@ export default function CompanyPlayersList() {
   }
 
   useEffect(() => {
-    // axios.get(`/users/${auth.getUserId()}`)
-    //   .then(res => {
-    //     console.log(res.data[0])
-    //     if (res.data[0].players) {
-    //       setPlayers(res.data[0].players)
-    //       setFilteredNames(Object.keys(res.data[0].players))
-    //     }
-    //   })
     getData()
   }, [!dataChange[0]])
 
@@ -142,6 +134,7 @@ export default function CompanyPlayersList() {
         setMessage('Email Sent!')
         setEmailRequest('')
       })
+      .catch(err => setMessage(err.response.data.message))
   }
 
   const classes = useStyles()

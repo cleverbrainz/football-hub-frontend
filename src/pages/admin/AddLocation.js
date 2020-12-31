@@ -14,8 +14,8 @@ import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import LocationFilter from '../../components/LocationFilter'
 
 export default function AddLocation({
-  handleStateRefresh, 
-  stateRefreshInProgress, 
+  handleStateRefresh,
+  stateRefreshInProgress,
   classes }) {
 
   const [formDetails, setformDetails] = useState({
@@ -23,6 +23,7 @@ export default function AddLocation({
     fullAddress: '',
     longitude: '',
     latitude: '',
+    postCode: '',
     companyId: auth.getUserId()
   })
   const [address, setAddress] = useState()
@@ -62,12 +63,12 @@ export default function AddLocation({
     <form
       onSubmit={(e) => handleFormSubmit(e)}
       className={classes.form}
-      >
+    >
 
       <FormControl variant="outlined"
-     
-      className={classes.inputs}
-      style={{marginBottom: '10px'}}>
+
+        className={classes.inputs}
+        style={{ marginBottom: '10px' }}>
         <InputLabel>Venue Name</InputLabel>
         <OutlinedInput
           type="text"
@@ -77,6 +78,17 @@ export default function AddLocation({
       </FormControl>
 
       <LocationFilter address={address} handleSelect={e => handleSelect(e)} setAddress={setAddress} />
+
+      <FormControl variant="outlined"
+        className={classes.inputs}
+        style={{ marginBottom: '10px' }}>
+        <InputLabel>Post Code</InputLabel>
+        <OutlinedInput
+          type="text"
+          label="Post Code"
+          onChange={e => setformDetails({ ...formDetails, postCode: e.target.value })}
+        />
+      </FormControl>
 
       <Button
         className={classes.input}

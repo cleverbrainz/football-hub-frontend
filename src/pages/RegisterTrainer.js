@@ -15,14 +15,15 @@ import VisibilityOffSharpIcon from '@material-ui/icons/VisibilityOffSharp';
 import VisibilitySharpIcon from '@material-ui/icons/VisibilitySharp';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
-// import 'date-fns';
-// import DateFnsUtils from '@date-io/date-fns';
-// import {
-//   MuiPickersUtilsProvider,
-//   KeyboardDatePicker,
-// } from '@material-ui/pickers';
+import Popper from '@material-ui/core/Popper';
+import Box from '@material-ui/core/Box';
+import Fade from '@material-ui/core/Fade';
+import Paper from '@material-ui/core/Paper';
+import InfoSharpIcon from '@material-ui/icons/InfoSharp';
 import axios from 'axios'
+
 import AttachFileSharpIcon from '@material-ui/icons/AttachFileSharp';
+
 import { Link } from 'react-router-dom'
 
 import { CircularProgress } from '@material-ui/core'
@@ -82,7 +83,7 @@ export default function RegisterTrainer({ match }) {
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   // const [type, setType] = useState(match.params.type)
-  
+
   // console.log(type)
 
   const [registerFields, setRegisterFields] = useState({
@@ -98,11 +99,9 @@ export default function RegisterTrainer({ match }) {
   const [fieldErrors, setFieldErrors] = useState()
   const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState()
 
-  // const [selectedDate, setSelectedDate] = useState(new Date('2020-08-10T21:11:54'));
-
-  // const handleDateChange = (date) => {
-  //   setSelectedDate(date);
-  // };
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = React.useState();
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault()
@@ -126,8 +125,8 @@ export default function RegisterTrainer({ match }) {
 
       if (localStorage.token) localStorage.removeItem('token')
 
-      
-        axios.post('/signup', registerFields)
+
+      axios.post('/signup', registerFields)
         .then(res => {
           setRegistrationSuccessMessage(res.data)
           console.log(res.data)
@@ -155,7 +154,7 @@ export default function RegisterTrainer({ match }) {
 
       setIsLoading(true)
       console.log('code hello', registrationSuccessMessage.userId)
-      axios.post(`/user/${registrationSuccessMessage.userId}/signup`, {...requestObject, userId: registrationSuccessMessage.userId })
+      axios.post(`/user/${registrationSuccessMessage.userId}/signup`, { ...requestObject, userId: registrationSuccessMessage.userId })
         .then(res => {
           console.log(res.data)
           setIsLoading(false)
@@ -181,15 +180,45 @@ export default function RegisterTrainer({ match }) {
     setActiveStep(0);
   };
 
+  const handleClick = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
+  };
+
   const form = (
     <>
+
+      <Popper open={open} anchorEl={anchorEl} placement={placement} transition>
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={350}>
+            <Paper>
+              <Typography component='div'>
+                <Box fontSize={20} fontWeight="fontWeightRegular" m={3}>
+                  Password Requirements
+              </Box>
+
+             <ul>
+               <li> - Contain 1 uppercase and 1 lowercase letter </li>
+               <li> - Contain at least 1 number </li>
+               <li> - Must be longer than 8 characters </li>
+             </ul>
+
+              </Typography>
+
+            
+            </Paper>
+          </Fade>
+        )}
+      </Popper>
+
       <FormControl variant="outlined">
         <TextField id="outlined-basic"
           type='text'
           variant="outlined"
           error={fieldErrors ? fieldErrors.fullName ? true : false : null}
           helperText={fieldErrors ? fieldErrors.fullName : null}
-          name='name' label={ registerFields.category === 'coach' ? 'Full Name' : 'Company Name'} />
+          name='name' label={registerFields.category === 'coach' ? 'Full Name' : 'Company Name'} />
       </FormControl>
 
       <FormControl variant="outlined">
@@ -221,9 +250,17 @@ export default function RegisterTrainer({ match }) {
               >
                 {showPassword ? <VisibilitySharpIcon /> : <VisibilityOffSharpIcon />}
               </IconButton>
+
+              <IconButton
+                onClick={handleClick('right')}
+                edge="end"
+              >
+                <InfoSharpIcon />
+              </IconButton>
             </InputAdornment>
           }
           labelWidth={70}
+
         />
 
       </FormControl>
@@ -265,7 +302,7 @@ export default function RegisterTrainer({ match }) {
       <Typography variant='h5'>
         Who are you?
       </Typography>
-      
+
 
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel id="demo-simple-select-outlined-label">Category</InputLabel>
@@ -290,51 +327,51 @@ export default function RegisterTrainer({ match }) {
 
     const userSetupFields = registerFields.category === 'company' ? ['VAT Number', 'Company Registration Number', 'Main Contact Number',
       'Main Email', 'Accounts Contact Number', 'Accounts Email'] : ['Main Contact Number',
-      'Main Email']
+        'Main Email']
     const insuranceFields = ['Public Liability Insurance', 'Professional Indemnity Insurance']
-    
-      const formFields = userSetupFields.map(el => {
-        return (
-          <FormControl variant="outlined">
-            <TextField id="outlined-basic"
-              type='text'
-              variant="outlined"
-              // error={fieldErrors ? fieldErrors[fieldName] ? true : false : null}
-              // helperText={fieldErrors ? fieldErrors[fieldName] : null}
-              name={el.toLowerCase().replace(/ /g, '_')} label={el} />
-          </FormControl>
-        )
-      })
 
-      return formFields.concat(insuranceFields.map(el => {
-        const name = el.toLowerCase().replace(/ /g, '_')
-        return (
-          <>
-            <FormControl variant="outlined" className={classes.formControl} >
-              <InputLabel id="demo-simple-select-outlined-label">{el}</InputLabel>
-              <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
-                value={registerFields[name]}
-                onChange={(e) => setRegisterFields({ ...registerFields, [name]: e.target.value })}
-                label={el}
-              >
-                <MenuItem value='No insurance'>I don't have any insurance</MenuItem>
-                <MenuItem value='£250,000'>£250,000</MenuItem>
-                <MenuItem value='£500,000'>£500,000</MenuItem>
-                <MenuItem value='£1,000,000'>£1,000,000</MenuItem>
-                <MenuItem value='£2,000,000'>£2,000,000</MenuItem>
-                <MenuItem value='£5,000,000'>£5,000,000</MenuItem>
-                <MenuItem value='£10,000,000'>£10,000,000</MenuItem>
-                <MenuItem value='Other'>Other</MenuItem>
-              </Select>
-
-            </FormControl >
-
-          </>
-        )
-      })
+    const formFields = userSetupFields.map(el => {
+      return (
+        <FormControl variant="outlined">
+          <TextField id="outlined-basic"
+            type='text'
+            variant="outlined"
+            // error={fieldErrors ? fieldErrors[fieldName] ? true : false : null}
+            // helperText={fieldErrors ? fieldErrors[fieldName] : null}
+            name={el.toLowerCase().replace(/ /g, '_')} label={el} />
+        </FormControl>
       )
+    })
+
+    return formFields.concat(insuranceFields.map(el => {
+      const name = el.toLowerCase().replace(/ /g, '_')
+      return (
+        <>
+          <FormControl variant="outlined" className={classes.formControl} >
+            <InputLabel id="demo-simple-select-outlined-label">{el}</InputLabel>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              value={registerFields[name]}
+              onChange={(e) => setRegisterFields({ ...registerFields, [name]: e.target.value })}
+              label={el}
+            >
+              <MenuItem value='No insurance'>I don't have any insurance</MenuItem>
+              <MenuItem value='£250,000'>£250,000</MenuItem>
+              <MenuItem value='£500,000'>£500,000</MenuItem>
+              <MenuItem value='£1,000,000'>£1,000,000</MenuItem>
+              <MenuItem value='£2,000,000'>£2,000,000</MenuItem>
+              <MenuItem value='£5,000,000'>£5,000,000</MenuItem>
+              <MenuItem value='£10,000,000'>£10,000,000</MenuItem>
+              <MenuItem value='Other'>Other</MenuItem>
+            </Select>
+
+          </FormControl >
+
+        </>
+      )
+    })
+    )
   }
 
   const completedRegistration = (
@@ -359,8 +396,8 @@ export default function RegisterTrainer({ match }) {
     switch (stepIndex) {
       case 0:
         return basicInfo;
-        case 1:
-          return form;
+      case 1:
+        return form;
       case 2:
         return userProfileSetup();
       case 3:
