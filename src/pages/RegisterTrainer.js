@@ -149,8 +149,8 @@ export default function RegisterTrainer({ match }) {
       let requestObject = {}
 
       if (registerFields.category === 'coach') {
-        requestObject = { ...registerFields, requests: [], companies: [], coachInfo: {} }
-      } else requestObject = { ...registerFields, sentRequests: [], coaches: [], listings: [], locations: [], images: [], services: [], sessions: [], courses: [], players: [], ageDetails: [] }
+        requestObject = { ...registerFields, requests: [], companies: [], coachInfo: {}, courses: {} }
+      } else requestObject = { ...registerFields, sentRequests: [], coaches: [], listings: [], locations: [], images: [], services: [], sessions: [], courses: { active: [], past: []}, players: [], ageDetails: [] }
 
       setIsLoading(true)
       console.log('code hello', registrationSuccessMessage.userId)
