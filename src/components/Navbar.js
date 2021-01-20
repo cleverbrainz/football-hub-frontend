@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { withRouter, useLocation } from 'react-router-dom';
+import { AuthContext } from '../lib/context';
 import HomeNav from './Navbars/HomeNav'
 import NavTwo from './Navbars/NavbarTwo'
 
@@ -7,15 +8,24 @@ function Navbar() {
 
   const location = useLocation();
   const [pathName, setPathName] = useState('/')
+  const [loggedIn, setLoggedIn] = useState(false)
+  const authUser = useContext(AuthContext)
+  console.log(authUser)
 
-  useEffect(() => setPathName(location.pathname), [location])
+  useEffect(() => {
+    setPathName(location.pathname)
+    console.log((authUser.user))
+    setLoggedIn(authUser.user !== null ? authUser.user.user !== null ? true : false : false)
+  }, [location.pathname, authUser.user])
+
+  console.log('nav', loggedIn)
 
   return (
     <>
       {pathName === '/' ? (
-        <HomeNav />
+        <HomeNav loggedIn={loggedIn}/>
       ) : (
-          <NavTwo />
+          <NavTwo loggedIn={loggedIn}/>
         )}
     </>
   )

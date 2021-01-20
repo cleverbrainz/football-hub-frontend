@@ -49,6 +49,8 @@ import Misc from '../components/Dashboard/Misc'
 import Setup from '../components/Dashboard/Setup'
 import Registers from '../components/Dashboard/RegisterTab'
 import ContactInfo from '../components/Dashboard/ContactInfo'
+import CompanyDetailsEdit from './CompanyDetailsEdit';
+import CompanyDetailsEditBeta from './CompanyDetailsEditBeta';
 
 const drawerWidth = 240;
 
@@ -163,8 +165,8 @@ export default function Profile({ history }) {
     Misc,
     Summary,
     Calendar,
-    Contact: ContactInfo
-    
+    Contact: ContactInfo,
+    Edit: CompanyDetailsEditBeta,
   }
 
   const DisplayedComponent = dashboardComponents[selectedComponent]
