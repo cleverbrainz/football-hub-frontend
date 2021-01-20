@@ -131,12 +131,12 @@ const Requests = ({ match, setPanel, refreshRequests }) => {
 }, [])
 
 
-  const handleRequest = (event, id, decision) => {
+  const handleRequest = (event, id, email, decision) => {
     event.preventDefault()
     console.log(decision)
     
-    const user = auth.getUserId()
-    axios.put(`/user/${user}/requests`, { userId: user, companyId: id, bool: decision })
+    const userId = auth.getUserId()
+    axios.put(`/user/${userId}/requests`, { userId, coachName: user.name, companyId: id, bool: decision, companyEmail: email })
       .then(res => {
         console.log(res)
         refreshRequests()
@@ -158,6 +158,7 @@ const Requests = ({ match, setPanel, refreshRequests }) => {
       </Typography>
       
       {requests.map((request, index) => {
+        console.log(request)
         return (
           <Card key={`card-${index}`} className={classes.card}>
           <CardActionArea>
@@ -173,10 +174,10 @@ const Requests = ({ match, setPanel, refreshRequests }) => {
             </CardContent>
           </CardActionArea>
           <CardActions>
-            <Button id={`accept-${request.userId}`} onClick={(event) => handleRequest(event, request.userId, true)} size="small" color="primary">
+            <Button id={`accept-${request.userId}`} onClick={(event) => handleRequest(event, request.userId, request.email, true)} size="small" color="primary">
               Accept
             </Button>
-            <Button id={`decline-${request.userId}`} onClick={(event) => handleRequest(event, request.userId, false)} size="small" color="primary">
+            <Button id={`decline-${request.userId}`} onClick={(event) => handleRequest(event, request.userId, request.email, false)} size="small" color="primary">
               Decline
             </Button>
           </CardActions>

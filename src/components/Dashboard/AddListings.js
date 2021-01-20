@@ -56,7 +56,7 @@ export default function AddListings({
   handleStateRefresh,
   listingToBeEdited }) {
 
-  const { coaches, services, courses } = listingTransferListInfo
+  const { coaches, services, courses, stripe_account } = listingTransferListInfo
 
   const classes = useStyles();
   const [campsChecked, setCampsChecked] = useState([]);
@@ -193,7 +193,7 @@ export default function AddListings({
         });
     } else {
       return axios
-        .post("/companies/listings", requestObj)
+        .post("/companies/listings", { ...requestObj, accountId: stripe_account.id })
         .then((res) => {
           console.log(res.data);
           handleStateRefresh()

@@ -110,13 +110,13 @@ const useStyles = makeStyles((theme) => ({
 export default function Sessions({ componentTabValue }) {
   const date = moment()
   const classes = useStyles();
-  const [value, setValue] = useState(componentTabValue);
+  const [value, setValue] = useState(1);
   const [companyCourses, setCompanyCourses] = useState()
   const [registers, setRegisters] = useState([])
   const [open, setOpen] = useState(false)
   const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
   const [courseIdToBeDeleted, setCourseIdToBeDeleted] = useState()
-  const [newCourseDetail, setNewCourseDetail] = useState()
+  const [newCourseDetail, setNewCourseDetail] = useState('weekly')
   const [courseToBeEdited, setCourseToBeEdited] = useState()
   const [companyCoachIds, setCompanyCoachIds] = useState([])
   const [companyCoachInfo, setCompanyCoachInfo] = useState([])
@@ -128,7 +128,7 @@ export default function Sessions({ componentTabValue }) {
     let coachArray = []
     const response = await axios.get(`/users/${auth.getUserId()}`)
     const data = await response.data[0]
-    console.log(data)
+    console.log(data, 'hellooooo')
 
     // for (const course of data.courses) {
     // let register
