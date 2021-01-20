@@ -1,37 +1,24 @@
-import React, {useState, useEffect } from 'react'
-import { Typography, 
-  Box, 
-  Card, 
-  CardActions, 
-  CardContent, 
-  Button, 
-  Avatar, 
-  Divider,
-  Accordion,
-  AccordionDetails,
-  AccordionSummary } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles';
-import VerifiedUserSharpIcon from '@material-ui/icons/VerifiedUserSharp';
-import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore' 
-import EnquiryModal from '../components/EnquiryModal'
-import InstagramIcon from '@material-ui/icons/Instagram';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import CallIcon from '@material-ui/icons/Call';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
-import { TimelineLite, Power2 } from 'gsap'
-import CourseBookingDialogue from '../components/CourseBookingDialogue'
-import Slide from '@material-ui/core/Slide';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import { Avatar, Box, Button, Card, CardActions, CardContent, Divider, Paper, Typography } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import Footer from '../components/Footer'
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import Slide from '@material-ui/core/Slide';
 import Snackbar from '@material-ui/core/Snackbar';
-import auth from '../lib/auth'
-import axios from 'axios'
+import { makeStyles } from '@material-ui/core/styles';
+import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
+import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
+import VerifiedUserSharpIcon from '@material-ui/icons/VerifiedUserSharp';
 import MuiAlert from '@material-ui/lab/Alert';
+import axios from 'axios';
+import { TimelineLite } from 'gsap';
+import React, { useEffect, useState } from 'react';
+import CourseBookingDialogue from '../components/CourseBookingDialogue';
+import EnquiryModal from '../components/EnquiryModal';
+import Footer from '../components/Footer';
+import auth from '../lib/auth';
+import Stripe from '../pages/Stripe'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -157,6 +144,11 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0),
     minWidth: '100%',
   },
+  subtitle: {
+    display: 'block',
+    textDecoration: 'underline',
+    marginTop: '10px'
+  }
 }))
 
 
@@ -164,15 +156,18 @@ const IndividualCompany = ({ location }) => {
   const classes = useStyles()
   const [modalOpen, setModal] = useState(false)
   const [selectedService, setSelectedService] = useState()
-  const { companyName, images, bio, reasons_to_join, coaches, camps, services, courses, companyId } = location.state
+  const { companyName, images, bio, reasons_to_join, coaches, camps, services, courses, companyId, accountId } = location.state
   const name = companyName.charAt(0).toUpperCase() + companyName.slice(1)
   const [userCategory, setUserCategory] = useState('')
   const [open, setOpen] = React.useState(false);
   const [snackBarOpen, setSnackBarOpen] = useState(false)
   const [selectedBooking, setSelectedBooking] = useState({
+    ageFilter: null,
     courseType: null,
     course: null
   })
+const [ageSelection, setAgeSelection] = useState()
+
   const reviews = [...Array(6).keys()]
 
   let count = 1
@@ -180,13 +175,28 @@ const IndividualCompany = ({ location }) => {
 
 
   useEffect(() => {
+    const ageArr = []
+      
+    courses.forEach(el => {
+      const { age } = el.courseDetails
+      !ageArr.includes(age) && ageArr.push(age)
+    })
+    setAgeSelection(ageArr)
+    
     if (!auth.getUserId()) return
     axios.get(`/users/${auth.getUserId()}`)
       .then(res => {
         const category = res.data[0].category
         setUserCategory(category)
       })
+    
+    
   },[])
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
 
   function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -197,9 +207,7 @@ const IndividualCompany = ({ location }) => {
     setSnackBarOpen(false);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+ 
 
   const toggleModal = service => {
     if (modalOpen === false) setSelectedService(service)
@@ -240,7 +248,6 @@ const IndividualCompany = ({ location }) => {
   const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
-
 
 
   return (
@@ -370,101 +377,106 @@ const IndividualCompany = ({ location }) => {
 
               <div className={classes.description}>
               
-
-            <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
+              <Typography style={{ margin: '40px 0 30px 0' }} component='div' >
               <Box
-                fontSize={19} fontWeight="fontWeightBold" m={0}>
-                Book onto a course
+                fontSize={25} fontWeight="fontWeightBold" m={0}>
+                Book with us
               </Box>
             </Typography>
 
-          { (auth.isLoggedIn() && ['company', 'coach'].some(item => item !== userCategory)) ?  (
             <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel id="demo-simple-select-outlined-label">Select Course</InputLabel>
-            <Select
-                  labelId="demo-simple-select-filled-label"
-                  id="demo-simple-select-filled"
-                  label='Select Course'
-                  value={selectedBooking.courseType === 'course' && selectedBooking.course}
-                  onChange={(e) => setSelectedBooking({ ...selectedBooking, 
-                  courseType: 'course', course: e.target.value })}>
-                    
-                  {courses.map((el, i) => {
-                    const { age, location } = el.courseDetails
-                      return (
-                        <MenuItem value={i}>{`Weekly course for ${age} at ${location}`}</MenuItem>
-                      )
-                    })}
+              <InputLabel id="demo-simple-select-outlined-label"> Select Age Group </InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                label='Select Age Group'
+                value={selectedBooking.ageFilter}
+                onChange={e => setSelectedBooking({ ...selectedBooking, ageFilter: e.target.value })}>
 
-            </Select>
+                {ageSelection && ageSelection.map((el, i) => <MenuItem value={el}>{el}</MenuItem> )}
+
+              </Select>
             </FormControl>
+                
 
-          ) : <p style={{color: 'blue'}}> Please login to book onto a course </p>}  
+            {(['company', 'coach'].some(item => item !== userCategory) && selectedBooking.ageFilter) && (
 
-      {selectedBooking.courseType === 'course' &&  (
-      
-      <FormControl variant="outlined" style={{margin: '15px 0'}} className={classes.formControl}>
-        <InputLabel id="demo-simple-select-outlined-label">Select Session</InputLabel>
-        <Select
-              labelId="demo-simple-select-filled-label"
-              id="demo-simple-select-filled"
-              label='Select Session'
-              onChange={(e) => {
-                setOpen(true)
-                setSelectedBooking({ ...selectedBooking, session: e.target.value })
-              }}
-              >
-               {courses[selectedBooking.course].courseDetails.sessions.map((el, i) => {
-                 const { day, endTime, startTime, spaces } = el
-                  return (
-                    <MenuItem value={i}>{`${day} sessions from ${startTime} to ${endTime}`}  
-                      {` - ${spaces} spaces available`} 
-                    </MenuItem>
-                  )
-                })}
+              <>
+            <Typography style={{ margin: '40px 0 30px 0' }} component='div' >
+            <Box
+              fontSize={19} fontWeight="fontWeightBold" m={0}>
+            Courses
+            </Box>
+              </Typography>
 
-        </Select>
-      </FormControl>
 
-      
-      )}
+              <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel id="demo-simple-select-outlined-label">Select Course</InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                label='Select Course'
+                value={selectedBooking.courseType === 'course' && selectedBooking.course}
+                onChange={(e) => {
+                  setOpen(true)
+                  setSelectedBooking({ ...selectedBooking, 
+                courseType: 'course', course: e.target.value }
+                )}}>
 
-<Typography style={{ margin: '70px 0 30px 0' }} component='div' >
-              <Box
-                fontSize={19} fontWeight="fontWeightBold" m={0}>
-                Book onto a camp
-              </Box>
+                {courses.map((el, i) => {
+                  const { age, sessions, optionalName } = el.courseDetails
+                  const sessionDays = sessions.map(el => el.day)
+                  // console.log(sessionDays)
+                  if (selectedBooking.ageFilter.includes(age)) {
+                    return (
+                    <MenuItem value={el}>{`${optionalName} weekly course for ${age} on ${sessionDays.toString().replace(/,/g, ' & ')}`}  </MenuItem>
+                    )
+                  }
+                  })}
+
+              </Select>
+            </FormControl>
+                
+                
+                
+            <Typography style={{ margin: '50px 0 30px 0' }} component='div' >
+            <Box
+              fontSize={19} fontWeight="fontWeightBold" m={0}>
+              Camps
+            </Box>
             </Typography>
-
-          { (auth.isLoggedIn() && ['company', 'coach'].some(item => item !== userCategory)) ? (
+                
+              
             <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel id="demo-simple-select-outlined-label">Select Camp</InputLabel>
-            <Select
-                  labelId="demo-simple-select-filled-label"
-                  id="demo-simple-select-filled"
-                  label='Select Course'
-                  value={selectedBooking.courseType === 'camp' && selectedBooking.course}
-                  onChange={(e) => {
-                    setOpen(true)
-                    setSelectedBooking({ ...selectedBooking, 
-                    courseType: 'camp', course: e.target.value })}}>
-                    
-                  {camps.map((el, i) => {
-                    const { age, location } = el.courseDetails
-                    console.log(el)
+              <InputLabel id="demo-simple-select-outlined-label">Select Camp</InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                label='Select Course'
+                value={selectedBooking.courseType === 'camp' && selectedBooking.course}
+                onChange={(e) => {
+                  setOpen(true)
+                  setSelectedBooking({ ...selectedBooking, 
+                  courseType: 'camp', course: e.target.value })}}>
+                  
+                {camps.map((el, i) => {
+                  const { age, location, firstDay, lastDay } = el.courseDetails
+                    if (selectedBooking.ageFilter.includes(age)) {
                       return (
-                        <MenuItem value={i}>{`${location} football camp for ${age}`}</MenuItem>
+                        <MenuItem value={el}> {`Football camp for ${age} @ ${location} from ${firstDay} - ${lastDay} `} </MenuItem>
                       )
-                    })}
+                    }
+                  })}
 
-            </Select>
-            </FormControl>
-
-          ) : <p style={{color: 'blue'}}> Please login to book onto a camp</p>}  
-
+                </Select>
+                </FormControl>
+                </>
+            )}
+            
+           
           
 
-                {open && 
+                {/* {open && 
                 <CourseBookingDialogue
                     openSnackBar={() => setSnackBarOpen(true)}
                     companyId={companyId}
@@ -476,18 +488,41 @@ const IndividualCompany = ({ location }) => {
                     open={open}
                     handleClose={(e) => handleClose(e)}
                   />
-                }
+                } */}
                   
               </div>
 
               <div className={classes.coachContainer}>
-              <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
+
+            {(open) && (!location.state.hasOwnProperty('accountId') ? (
+            <Stripe 
+              selectedBooking={selectedBooking}
+              courses={courses}
+              classes={classes}
+              accountId={accountId}
+             /> ) : 
+            (
+              <CourseBookingDialogue
+                openSnackBar={() => setSnackBarOpen(true)}
+                companyId={companyId}
+                companyName={companyName}
+                camps={camps}
+                selectedBooking={selectedBooking}
+                courses={courses}
+                Transition={Transition}
+                open={open}
+                handleClose={(e) => handleClose(e)}
+            />
+            ))}
+           
+            
+              {/* <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
               <Box
                 fontSize={25} fontWeight="fontWeightBold" m={0}>
                 Services 
               </Box>
-            </Typography>
-
+            </Typography> */}
+{/* 
             {services.map((el, i) => {
               return (
                 <Accordion key={i}>
@@ -512,9 +547,9 @@ const IndividualCompany = ({ location }) => {
                   
                 </Accordion>
               )
-            })}
+            })} */}
             
-              <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
+              {/* <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
               <Box
                 fontSize={25} fontWeight="fontWeightBold" m={0}>
                 Get in touch
@@ -540,7 +575,7 @@ const IndividualCompany = ({ location }) => {
             <div className={classes.social}> 
               <FacebookIcon style={{fontSize: '32px', marginRight: '15px'}}/> 
               <p> @footballcompany </p>  
-            </div>
+            </div> */}
 
               </div>
 

@@ -102,7 +102,7 @@ const Setup = ({ handleComponentChange }) => {
             </Grid>
           )
         })}
-        <Grid item xs={12} sm={3}>
+        {/* <Grid item xs={12} sm={3}>
               <Paper elevation={4}
                 className={classes.paper}>
                 <Typography gutterBottom variant="h5">
@@ -121,7 +121,7 @@ const Setup = ({ handleComponentChange }) => {
                   <EditIcon />
                 </Fab></Link>
               </Paper>
-            </Grid>
+            </Grid> */}
         </>
       </Grid>
     </div>
