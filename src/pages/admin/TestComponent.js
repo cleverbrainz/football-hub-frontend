@@ -6,9 +6,22 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-const TableComponent = ({ classes, updateCourseDays, el, index }) => {
+
+
+const TableComponent = ({ 
+  classes, 
+  updateCourseDays, 
+  el, 
+  index, 
+  location, 
+  locations,
+  updateOtherCourseInfo }) => {
+
+
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   const times = [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
+  console.log(locations)
   return (
     <table>
       <tbody>
@@ -66,17 +79,23 @@ const TableComponent = ({ classes, updateCourseDays, el, index }) => {
               </Select>
             </FormControl>
           </td>
+
           <td>
-            <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel>Spaces</InputLabel>
-              <OutlinedInput
-                name="spaces"
-                id="spaces"
-                value={el && el.spaces}
-                label="Spaces"
-                onChange={updateCourseDays}
-              />
-            </FormControl>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel>Location</InputLabel>
+            <Select
+              value={el && el.location}
+              label="Location"
+              name="location"
+              onChange={updateCourseDays}
+            >
+              {locations && locations.map((el, i) => (
+                <MenuItem key={i} value={`${el.venue} (${el.postCode && el.postCode})`}>
+                  {`${el.venue} (${el.postCode && el.postCode})`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           </td>
         </tr>
       </tbody>

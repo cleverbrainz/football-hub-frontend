@@ -40,9 +40,9 @@ const useStyles = makeStyles((theme) => ({
 
 const ReactMapPopup = ({ selected }) => {
 
-  const {company, location} = selected
+  const {company, courseIndex, sessionIndex} = selected
   const { companyName, images, courses, companyId } = company.listingInfo;
-  const { latitude, longitude } = courses[location].courseDetails;
+  const { latitude, longitude } = courses[courseIndex].courseDetails.sessions[sessionIndex];
 
   const classes = useStyles();
 

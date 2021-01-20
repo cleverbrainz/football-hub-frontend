@@ -1,5 +1,5 @@
 // import "date-fns";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FormControl,
@@ -17,6 +17,9 @@ import TableComponent from "./TestComponent";
 import axios from "axios";
 import auth from "../../lib/auth";
 import ResetCampDetailsDialogue from '../../components/ResetCampDetailsDialogue'
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -50,9 +53,10 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
   // console.log(course)
   const classes = useStyles();
   const [rows, setRows] = React.useState([1]);
-  const [locations, setLocations] = React.useState([]);
-  const [ageGroups, setAgeGroups] = React.useState([]);
-  const [open, setOpen] = React.useState(false);
+  const [locations, setLocations] = useState([]);
+  const [services, setServices] = useState([]);
+  const [ageGroups, setAgeGroups] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const [formDetails, setFormDetails] = React.useState({
     optionalName: course ? course.courseDetails.optionalName : '',
@@ -61,14 +65,14 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
     sessions: course ? course.courseDetails.sessions : [],
     cost: course ? course.courseDetails.cost : "",
     courseType: "Weekly",
-    paymentInterval: course ? course.courseDetails.paymentInterval : "",
+    allowWeeklyPayment: course ? course.courseDetails.allowWeeklyPayment : false,
     age: course ? course.courseDetails.age : "",
-    location: course ? course.courseDetails.location : "",
-    latitude: "",
-    longitude: ""
+    spaces: course ? course.courseDetails.spaces : "",
+    courseCategory: course ? course.courseDetails.courseCategory : "",
+    service: course ? course.courseDetails.service : ""
   });
 
-  const { startDate, endDate, sessions, cost, optionalName,
+  const { startDate, courseCategory, service, endDate, sessions, cost, optionalName,
     courseType, paymentInterval, age, location } = formDetails;
 
   const handleClose = () => {
@@ -81,9 +85,12 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
       .then(res => {
         const locationArr = []
         const ageArr = []
+        const serviceArr = []
         res.data[0].locations.map(el => locationArr.push(el))
+        res.data[0].services.map(el => serviceArr.push(el))
         res.data[0].ageDetails.map(el => ageArr.push(el));
         setLocations(locationArr)
+        setServices(serviceArr)
         setAgeGroups(ageArr)
       })
   }, [])
@@ -91,13 +98,6 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
   const handleSubmit = (e) => {
     e.preventDefault();
     const courseDetails = { ...formDetails }
-
-    locations.map(el => {
-      if (el.venue === formDetails.location.replace(/ *\([^)]*\) */g, "")) {
-        courseDetails.longitude = el.longitude
-        courseDetails.latitude = el.latitude
-      }
-    })
 
     if (course) {
 
@@ -128,7 +128,20 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
 
     const { name, value } = event.target;
     const courseDays = [...formDetails.sessions];
-    courseDays[index] = { ...courseDays[index], [name]: value };
+
+    if (name === 'location') {
+      let longitude, latitude
+
+      locations.map(el => {
+        if (el.venue === value.replace(/ *\([^)]*\) */g, "")) {
+          longitude = el.longitude
+          latitude = el.latitude
+        }
+      })
+      courseDays[index] = { ...courseDays[index], [name]: value, longitude, latitude };
+    } else {
+      courseDays[index] = { ...courseDays[index], [name]: value };
+    }
 
     setFormDetails({ ...formDetails, sessions: courseDays });
   }
@@ -144,11 +157,9 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
   return (
     <Container className={classes.container}>
       <form onSubmit={handleSubmit}>
-
-
-
         <tr>
-          <FormControl variant="outlined" className={classes.formControl}>
+
+        <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel>Optional Name</InputLabel>
             <OutlinedInput
               label='Optional Name'
@@ -159,21 +170,6 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
             />
           </FormControl>
 
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel>Location</InputLabel>
-            <Select
-              value={location}
-              label="Location"
-              name="location"
-              onChange={(e) => updateOtherCourseInfo(e)}
-            >
-              {locations && locations.map((el, i) => (
-                <MenuItem key={i} value={`${el.venue} (${el.postCode && el.postCode})`}>
-                  {`${el.venue} (${el.postCode && el.postCode})`}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel>Age Group</InputLabel>
             <Select
@@ -192,10 +188,40 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
               })}
             </Select>
           </FormControl>
+
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel>Course Category</InputLabel>
+            <Select
+              value={courseCategory}
+              label="Course Category"
+              name="courseCategory"
+              onChange={(e) => updateOtherCourseInfo(e)}
+            >
+
+              <MenuItem value='summer'> Summer </MenuItem>
+              <MenuItem value='winter'> Winter </MenuItem>
+              <MenuItem value='autumn'> Autumn </MenuItem>
+              <MenuItem value='spring'> Spring </MenuItem>
+
+            </Select>
+          </FormControl>
+
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel>Service</InputLabel>
+            <Select
+              value={service}
+              label="Service"
+              name="service"
+              onChange={(e) => updateOtherCourseInfo(e)}>
+
+              {services && services.map((el, i) => {
+                return (
+                  <MenuItem key={i} value={el.name}> {el.name} </MenuItem>
+                )
+              })}
+            </Select>
+          </FormControl>
         </tr>
-
-
-
 
         <TextField
           name="startDate"
@@ -215,7 +241,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
           label="End"
           type="date"
           variant="outlined"
-          defaultValue="2017-05-24"
+          defaultValue={startDate}
           InputLabelProps={{
             shrink: true,
           }}
@@ -224,12 +250,26 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
           onChange={(e) => updateOtherCourseInfo(e)}
         />
 
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel>Spaces</InputLabel>
+          <OutlinedInput
+            name="spaces"
+            id="spaces"
+            value={formDetails.spaces}
+            label="Spaces"
+            onChange={(e) => updateOtherCourseInfo(e)}
+          />
+        </FormControl>
+
         {!course ? rows.map((el, i) => {
           return (
             <TableComponent
               classes={classes}
               updateCourseDays={(e) => updateCourseDays(i, e)}
               key={i}
+              location={location}
+              updateOtherCourseInfo={(e) => updateOtherCourseInfo(e)}
+              locations={locations}
             />
           );
         }) : (
@@ -238,6 +278,9 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
                 <TableComponent
                   el={el}
                   index={i}
+                  location={location}
+                  locations={locations}
+                  updateOtherCourseInfo={(e) => updateOtherCourseInfo(e)}
                   classes={classes}
                   updateCourseDays={(e) => updateCourseDays(i, e)}
                   key={i}
@@ -249,37 +292,37 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
         {!course && <Button
           variant="contained"
           color="primary"
-          onClick={() => setRows([...rows, 1])}
-        >
+          onClick={() => setRows([...rows, 1])}>
           Add another session
         </Button>}
 
-        <Typography variant="h5">Cost</Typography>
-        <div>
+
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel>£</InputLabel>
+            <InputLabel>Total Cost (£)</InputLabel>
             <OutlinedInput
               name="cost"
               type="number"
               id="cost"
-              label="£"
+              label="Total Cost (£)"
               value={cost}
               onChange={(e) => updateOtherCourseInfo(e)}
             />
           </FormControl>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel>Select</InputLabel>
-            <Select
-              label="Select"
-              name="paymentInterval"
-              value={paymentInterval}
-              onChange={(e) => updateOtherCourseInfo(e)}
-            >
-              <MenuItem value="Session">Session</MenuItem>
-              <MenuItem value="Course">Course</MenuItem>
-              <MenuItem value="Term">Monthly</MenuItem>
-            </Select>
-          </FormControl>
+
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formDetails.allowWeeklyPayment}
+                onChange={(e) => setFormDetails({ ...formDetails, allowWeeklyPayment: e.target.checked })}
+                name="checkedB"
+                color="primary"
+              />
+            }
+            label="Allow the option to pay on a weekly basis?"
+          />
         </div>
         <Button
           className={classes.button}

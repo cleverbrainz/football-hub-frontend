@@ -80,9 +80,12 @@ import CompanyDetailsEdit from "./pages/CompanyDetailsEdit";
 import PlayerSearch from './pages/admin/PlayerSearch'
 
 import AdminHomeBeta from './pages/indulgeadmin/AdminHomeBeta'
-
+import SuccessfulCheckout from './pages/SuccessfulCheckout'
 
 import StripePayment from './pages/Stripe'
+import { Elements} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+const stripePromise = loadStripe("pk_test_JX84GPfLfXGxVFWvGHaz1AWE");
 
 // axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
 
@@ -102,7 +105,8 @@ const App = () => {
   }, []);
 
   return (
-    <Router>
+    <Elements stripe={stripePromise} >
+<Router>
       <Navbar />
       <Switch>
 
@@ -182,11 +186,15 @@ const App = () => {
         <Route exact path="/testercoach/edit" component={CoachEdit} />
 
 
+
         <Route exact path="/stripe-payment" component={StripePayment} />
+        <Route exact path="/checkout" component={SuccessfulCheckout} />
 
 
       </Switch>
     </Router>
+    </Elements>
+    
   );
 };
 
