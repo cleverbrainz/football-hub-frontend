@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { Redirect } from 'react-router-dom'
 import { Paper, Grid, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
@@ -15,6 +16,8 @@ import {
 } from "@material-ui/core";
 import Box from '@material-ui/core/Box';
 import ArrowForwardSharpIcon from '@material-ui/icons/ArrowForwardSharp';
+import { AuthContext } from "../../lib/context"
+import IntroductionPage from './IntroductionPage';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +41,10 @@ const useStyles = makeStyles((theme) => ({
 
 const Summary = ({ handleComponentChange }) => {
 
+  const { user, userData, setUserData } = useContext(AuthContext)
+  console.log(user)
   const classes = useStyles();
+
 
   const cards = [
     { text: 'Players', component: 'Players', userObject: 'players' },
@@ -46,15 +52,16 @@ const Summary = ({ handleComponentChange }) => {
     { text: 'Coaches', component: 'Coaches', userObject: 'coaches' }
   ]
 
-  const [user, setUser] = useState()
+  // const [user, setUser] = useState()
   const date = moment()
   const [registers, setRegisters] = useState([])
   const [thisWeek, setThisWeek] = useState([])
   const [companyMessages, setCompanyMessages] = useState()
 
   async function getData() {
+    if (!user) return
     let registerArray = []
-    const response = await axios.get(`/users/${auth.getUserId()}`)
+    const response = await axios.get(`/users/${user.userId}`)
     const data = await response.data[0]
 
       for (const course of data.courses.active) {
@@ -64,7 +71,7 @@ const Summary = ({ handleComponentChange }) => {
         if (register.register) registerArray.push([course.courseDetails, course.courseId, register.register.sessions])
       }
     
-    setUser(data)
+    setUserData(data)
     setRegisters(registerArray)
     setThisWeek(sortRegisters(registerArray))
   }
@@ -112,25 +119,25 @@ const Summary = ({ handleComponentChange }) => {
   useEffect(() => {
     getMessages()
     getData()
-  }, [])
+  }, [!user])
 
-  // console.log(user)
+  console.log(userData)
 
   function renderRecentlyAdded(detail) {
 
     const textArr = []
 
-    const length = user && (detail === 'courses' && user.courses.active ? user[detail].active.length : 
-    detail === 'players' ? Object.keys(user.players).length : null)
+    const length = userData && (detail === 'courses' && userData.courses.active ? userData[detail].active.length : 
+    detail === 'players' ? Object.keys(userData.players).length : null)
 
     for (let i = length - 1; i >= 0; i--) {
       switch (detail) {
         case 'services':
-          textArr.push(`Added ${user[detail][i].name} service - ${user[detail][i].description}`)
+          textArr.push(`Added ${userData[detail][i].name} service - ${userData[detail][i].description}`)
           break;
         case 'courses':
-          textArr.push(`Added ${user[detail].active[i].courseDetails.courseType} for ${user[detail].active[i].courseDetails.age} at 
-          ${user[detail].active[i].courseDetails.location}`)
+          textArr.push(`Added ${userData[detail].active[i].courseDetails.courseType} for ${userData[detail].active[i].courseDetails.age} at 
+          ${userData[detail].active[i].courseDetails.location}`)
           break;
 
         default:
@@ -138,9 +145,9 @@ const Summary = ({ handleComponentChange }) => {
       }
     }
 
-    if (detail === 'players' && user) {
-      Object.keys(user[detail]).map((key, index) => {
-        const { name, status, dob } = user[detail][key]
+    if (detail === 'players' && userData) {
+      Object.keys(userData[detail]).map((key, index) => {
+        const { name, status, dob } = userData[detail][key]
         textArr.push(`Added ${name} as ${status} player (${dob})`)
       })
     }
@@ -150,7 +157,9 @@ const Summary = ({ handleComponentChange }) => {
   }
 
 
-
+  if (!userData.courses) return null
+  if(userData && !userData.subscriptions) return <Redirect to={{ pathname: "/subscription" }} />
+  if (userData && !userData.verification.setup) return <IntroductionPage handleComponentChange={handleComponentChange}/>
   return (
     <div className={classes.root}>
       <Grid container
@@ -245,10 +254,10 @@ const Summary = ({ handleComponentChange }) => {
                 </Typography>
 
                 <Typography gutterBottom variant="p">
-                  {user && (user[el.userObject].active ? user[el.userObject].active.length !== 0 : user[el.userObject].length !== 0) ? (
+                  {userData && (userData[el.userObject].active ? userData[el.userObject].active.length !== 0 : userData[el.userObject].length !== 0) ? (
                     <p> You currently have
-                      <span style={{ fontWeight: 'bold' }}> {el.userObject === 'courses' ? user[el.userObject].active.length : 
-                     el.userObject === 'players' ? Object.keys(user.players).length : user[el.userObject].length} {el.text.slice(0, -1) + '(s)'}
+                      <span style={{ fontWeight: 'bold' }}> {el.userObject === 'courses' ? userData[el.userObject].active.length : 
+                     el.userObject === 'players' ? Object.keys(userData.players).length : userData[el.userObject].length} {el.text.slice(0, -1) + '(s)'}
                       </span> added to your profile </p>
                   ) : <p> There are currently <span style={{ fontWeight: 'bold' }}> 0 {el.text} </span> on your profile, please select the + icon to add {el.text} </p>}
                 </Typography>

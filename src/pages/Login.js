@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect, useContext } from 'react'
+import { Link, Redirect } from 'react-router-dom'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography'
@@ -13,10 +13,14 @@ import VisibilitySharpIcon from '@material-ui/icons/VisibilitySharp';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import auth from '../lib/auth'
+import { AuthContext } from "../lib/context";
+import { firebaseApp } from '../lib/firebase';
 
 
 
 export default function Login({ history, location }) {
+  const { user, setUserData, userData } = useContext(AuthContext);
+
 
   const useStyles = makeStyles((theme) => ({
     container: {
@@ -63,6 +67,28 @@ export default function Login({ history, location }) {
     event.preventDefault();
   };
 
+  const frontendLogin = (e) => {
+    e.preventDefault()
+    const { email, password } = loginFields
+    firebaseApp.auth().signInWithEmailAndPassword(email, password)
+      .then(data => {
+        auth.setToken(data.user.getIdToken())
+        axios.get(`/users/${data.user.uid}`)
+          .then(res => {
+            console.log(res.data)
+            const { category } = res.data[0]
+            localStorage.setItem('category', category)
+            if (category === 'player' || category === 'parent') {
+              history.push(`/${auth.getUserId()}/profile`)
+            } else if (category === 'company') {
+              history.push('/tester')
+            } else {
+              history.push('/testercoach')
+            }
+          })
+      })
+  }
+
 
   function handleFormSubmit(e) {
     e.preventDefault()
@@ -89,7 +115,7 @@ export default function Login({ history, location }) {
         .then(async res => {
           auth.setToken(res.data.token)
           setIsLoading(false)
-
+          
           if (res.data.accountCategory === 'player' || res.data.accountCategory === 'parent') {
             history.push(`/${auth.getUserId()}/profile`)
           } else if (res.data.accountCategory === 'company') {
@@ -105,64 +131,135 @@ export default function Login({ history, location }) {
     }
   }
 
+  // return (
+
+  //   <div className={classes.container}>
+  //     <Typography variant='h4'> LOGIN </Typography>
+  //     <form
+  //       autoComplete='off'
+  //       onChange={(e) => handleFormChange(e)}
+  //       onSubmit={(e) => frontendLogin(e)}
+  //       className={classes.form}>
+
+
+  //       <FormControl variant="outlined">
+  //         <InputLabel htmlFor="component-outlined"> Email </InputLabel>
+  //         <OutlinedInput
+  //           error={loginError ? true : false}
+  //           type='text'
+  //           name='email' id="component-outlined" label='Email'
+  //         />
+  //       </FormControl>
+
+  //       <FormControl variant="outlined">
+  //         <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+  //         <OutlinedInput
+  //           id="outlined-adornment-password"
+  //           type={showPassword ? 'text' : 'password'}
+  //           name='password'
+  //           endAdornment={
+  //             <InputAdornment position="end">
+  //               <IconButton
+  //                 aria-label="toggle password visibility"
+  //                 onClick={() => setShowPassword(!showPassword)}
+  //                 onMouseDown={handleMouseDownPassword}
+  //                 edge="end"
+  //               >
+  //                 {showPassword ? <VisibilitySharpIcon /> : <VisibilityOffSharpIcon />}
+  //               </IconButton>
+  //             </InputAdornment>
+  //           }
+  //           labelWidth={70}
+  //         />
+  //       </FormControl>
+
+
+  //       {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
+
+  //       <Button disabled={isLoading}
+  //         className={classes.button} type='submit'
+  //         variant="contained" color="primary">
+  //         Login
+  //         {isLoading && <CircularProgress size={30} className={classes.progress} />}
+  //       </Button>
+
+  //       {location.pathname !== '/admin/login' &&
+  //         <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
+
+  //     </form>
+
+  //     {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>}
+  //   </div>
+  // )
+
+
+
   return (
-
+    <>
+   {!!user.user ? !!userData.category ? (
+    <Redirect to={{ pathname: "/accountSetUp" }} />
+  ) : (
+    localStorage.getItem('category') === 'company' ? <Redirect to={{ pathname: "/tester" }} /> : localStorage.getItem('category') ? <Redirect to={{ pathname: "/testercoach" }} /> : <Redirect to={{ pathname: "/home" }} />
+  ) : (
     <div className={classes.container}>
-      <Typography variant='h4'> LOGIN </Typography>
-      <form
-        autoComplete='off'
-        onChange={(e) => handleFormChange(e)}
-        onSubmit={(e) => handleFormSubmit(e)}
-        className={classes.form}>
+    <Typography variant='h4'> LOGIN </Typography>
+    <form
+      autoComplete='off'
+      onChange={(e) => handleFormChange(e)}
+      onSubmit={(e) => frontendLogin(e)}
+      className={classes.form}>
 
 
-        <FormControl variant="outlined">
-          <InputLabel htmlFor="component-outlined"> Email </InputLabel>
-          <OutlinedInput
-            error={loginError ? true : false}
-            type='text'
-            name='email' id="component-outlined" label='Email'
-          />
-        </FormControl>
+      <FormControl variant="outlined">
+        <InputLabel htmlFor="component-outlined"> Email </InputLabel>
+        <OutlinedInput
+          error={loginError ? true : false}
+          type='text'
+          name='email' id="component-outlined" label='Email'
+        />
+      </FormControl>
 
-        <FormControl variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            type={showPassword ? 'text' : 'password'}
-            name='password'
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={() => setShowPassword(!showPassword)}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilitySharpIcon /> : <VisibilityOffSharpIcon />}
-                </IconButton>
-              </InputAdornment>
-            }
-            labelWidth={70}
-          />
-        </FormControl>
+      <FormControl variant="outlined">
+        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-password"
+          type={showPassword ? 'text' : 'password'}
+          name='password'
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilitySharpIcon /> : <VisibilityOffSharpIcon />}
+              </IconButton>
+            </InputAdornment>
+          }
+          labelWidth={70}
+        />
+      </FormControl>
 
 
-        {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
+      {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
 
-        <Button disabled={isLoading}
-          className={classes.button} type='submit'
-          variant="contained" color="primary">
-          Login
-          {isLoading && <CircularProgress size={30} className={classes.progress} />}
-        </Button>
+      <Button disabled={isLoading}
+        className={classes.button} type='submit'
+        variant="contained" color="primary">
+        Login
+        {isLoading && <CircularProgress size={30} className={classes.progress} />}
+      </Button>
 
-        {location.pathname !== '/admin/login' &&
-          <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
+      {location.pathname !== '/admin/login' &&
+        <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
 
-      </form>
+    </form>
 
-      {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>}
-    </div>
+    {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>}
+  </div>
   )
+        }
+        </>
+      )
 }
