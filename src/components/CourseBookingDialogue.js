@@ -5,7 +5,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { FormControl, FormLabel, FormControlLabel, Checkbox, Box, Select, InputLabel, MenuItem } from '@material-ui/core';
+import { FormControl, Typography, FormLabel, FormControlLabel, Checkbox, Box, Select, InputLabel, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import 'date-fns';
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -16,6 +16,9 @@ import {
 } from '@material-ui/pickers';
 import auth from '../lib/auth'
 import axios from 'axios'
+import { useEffect } from 'react';
+import moment from 'moment'
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -48,20 +51,18 @@ const CourseBookingDialogue = ({
   openSnackBar,
   companyName }) => {
 
+  const [sessionLocations, setSessionLocations] = useState()
 
   let subject
 
   const { course, courseType } = selectedBooking
+  const { age, cost, space, services, courseCategory,
+    sessions, optionalName, startDate, endDate, location, campCost, firstDay, lastDay } = course.courseDetails
 
   if (courseType === 'course') {
-    const { session } = selectedBooking
-    const { day, startTime, endTime } = courses[course].courseDetails.sessions[session]
-    const { age } = courses[course].courseDetails
-
-    subject = `Weekly Course - ${age} ${day} ${startTime} to ${endTime}`
+    subject = `${optionalName} weekly course for ${age} (${firstDay} to ${lastDay})`
   } else {
-    const { age, firstDay, lastDay } = camps[course].courseDetails
-    subject = `Camp - ${age} ${firstDay} to ${lastDay}`
+    subject = `${optionalName} camp for ${age} (${firstDay} to ${lastDay})`
   }
 
   const [bookingForm, setBookingForm] = useState({
@@ -87,6 +88,17 @@ const CourseBookingDialogue = ({
   })
   const [isLoading, setIsLoading] = useState(false)
 
+
+  useEffect(() => {
+    if (courseType === 'course') {
+      const locationArr = []
+      sessions.forEach((el, i) => {
+        const { location } = sessions[i]
+        !locationArr.includes(location) && locationArr.push(location)
+      })
+      setSessionLocations(locationArr)
+    }
+  }, [])
 
   const handleBookingFormChange = (e) => {
     const { name, value } = e.target
@@ -116,41 +128,34 @@ const CourseBookingDialogue = ({
 
   const classes = useStyles()
 
-  const courseDetails = () => {
-    const { session } = selectedBooking
-    const { day, startTime, endTime } = courses[course].courseDetails.sessions[session]
-    const { age, cost, paymentInterval, location } = courses[course].courseDetails
+  // const courseDetails = () => {
 
-    return (
-      <DialogTitle style={{ margin: '30px 0' }} id="alert-dialog-slide-title">
-        <Box
-          fontSize={25} fontWeight="fontWeightBold" m={0}>
-          {companyName}
-        </Box>
-        Age Group: {age} <br />
-        Session Details: {day} {startTime} - {endTime} <br />
-        Price: £{cost} per {paymentInterval} <br />
-        Location: {location}<br />
-      </DialogTitle>
-    )
-  }
+  //   return (
+  //     <DialogTitle style={{ margin: '30px 0' }} id="alert-dialog-slide-title">
+  //       Age Group: {age} <br />
+  //       Course Details: {startTime} - {endTime} <br />
+  //       Price: £{cost} per {paymentInterval} <br />
+  //       Location: {location}<br />
+  //     </DialogTitle>
+  //   )
+  // }
 
-  const campDetails = () => {
-    const { age, firstDay, lastDay, campCost, location } = camps[course].courseDetails
+  // const campDetails = () => {
+  //   const { age, firstDay, lastDay, campCost, location } = camps[course].courseDetails
 
-    return (
-      <DialogTitle style={{ margin: '30px 0' }} id="alert-dialog-slide-title">
-        <Box
-          fontSize={25} fontWeight="fontWeightBold" m={0}>
-          {companyName}
-        </Box>
-        Age Group: {age} <br />
-        Camp Dates: {firstDay} - {lastDay} <br />
-        Price: £{campCost} entire camp <br />
-        Location: {location} <br />
-      </DialogTitle>
-    )
-  }
+  //   return (
+  //     <DialogTitle style={{ margin: '30px 0' }} id="alert-dialog-slide-title">
+  //       <Box
+  //         fontSize={25} fontWeight="fontWeightBold" m={0}>
+  //         {companyName}
+  //       </Box>
+  //       Age Group: {age} <br />
+  //       Camp Dates: {firstDay} - {lastDay} <br />
+  //       Price: £{campCost} entire camp <br />
+  //       Location: {location} <br />
+  //     </DialogTitle>
+  //   )
+  // }
 
 
   return (
@@ -163,7 +168,36 @@ const CourseBookingDialogue = ({
       aria-describedby="alert-dialog-slide-description"
     >
 
-      {selectedBooking.courseType === 'course' ? courseDetails() : campDetails()}
+      <DialogContent>
+        <Typography style={{ marginBottom: '15px' }} variant="h5" component="h2">
+          £{courseType === 'course' ? cost : campCost} / {courseType}
+        </Typography>
+
+        <Typography color="textSecondary">
+          {optionalName}
+          <span style={{ display: 'block' }}> {courseType === 'course' ? startDate : firstDay} - {courseType === 'course' ? endDate : lastDay} </span>
+          <span style={{ display: 'block' }}> {age} age group </span>
+
+
+          <span className={classes.subtitle}> Session(s) </span>
+          {sessions.map((el, i) => {
+            function toDateTime(secs) {
+              var t = new Date(1970, 0, 1); // Epoch
+              t.setSeconds(secs);
+              return t;
+            }
+            const { day, startTime, sessionDate } = el
+            return <span style={{ display: 'block' }}> {i + 1}. {courseType === 'course' ? day : moment(toDateTime(sessionDate._seconds)).format('MMMM Do YYYY')} @ {startTime}</span>
+          })}
+          <span className={classes.subtitle}> Location(s) </span>
+
+          {(courseType === 'course' && sessionLocations) ? sessionLocations.map((el, i) => <span style={{ display: 'block ' }}> {i + 1}. {el} </span>) :
+            <span style={{ display: 'block ' }}> {location} </span>
+          }
+
+        </Typography>
+      </DialogContent>
+
 
 
       <DialogContent>
@@ -226,28 +260,28 @@ const CourseBookingDialogue = ({
 
           {genders.custom && (
             <div>
-                <FormControl className={classes.input} variant="outlined">
-                  <InputLabel id="demo-simple-select-outlined-label">Select Your Pronoun</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-filled-label"
-                    id="demo-simple-select-filled"
-                    label='Select Your Pronoun'
-                    value={['he', 'she', 'they'].includes(bookingForm.customGender) ? bookingForm.customGender : null}
-                    onChange={e => setBookingForm({ ...bookingForm, customGender: e.target.value })}>
+              <FormControl className={classes.input} variant="outlined">
+                <InputLabel id="demo-simple-select-outlined-label">Select Your Pronoun</InputLabel>
+                <Select
+                  labelId="demo-simple-select-filled-label"
+                  id="demo-simple-select-filled"
+                  label='Select Your Pronoun'
+                  value={['he', 'she', 'they'].includes(bookingForm.customGender) ? bookingForm.customGender : null}
+                  onChange={e => setBookingForm({ ...bookingForm, customGender: e.target.value })}>
 
-                    <MenuItem value='he'> He </MenuItem>
-                    <MenuItem value='she'> She </MenuItem>
-                    <MenuItem value='they'> They </MenuItem>
+                  <MenuItem value='he'> He </MenuItem>
+                  <MenuItem value='she'> She </MenuItem>
+                  <MenuItem value='they'> They </MenuItem>
 
-                  </Select>
-                </FormControl>
+                </Select>
+              </FormControl>
 
-                <FormControl variant="outlined" className={classes.input}>
-                  <TextField className={classes.input}
-                  value={['he', 'she', 'they'].includes(bookingForm.customGender) ? '' : bookingForm.customGender }
-                    onChange={e => setBookingForm({ ...bookingForm, customGender: e.target.value })}
-                    id="outlined-basic" label="Custom Gender" name='customerGender' variant="outlined" />
-                </FormControl>
+              <FormControl variant="outlined" className={classes.input}>
+                <TextField className={classes.input}
+                  value={['he', 'she', 'they'].includes(bookingForm.customGender) ? '' : bookingForm.customGender}
+                  onChange={e => setBookingForm({ ...bookingForm, customGender: e.target.value })}
+                  id="outlined-basic" label="Custom Gender" name='customerGender' variant="outlined" />
+              </FormControl>
             </div>
 
           )}

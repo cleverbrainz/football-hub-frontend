@@ -145,11 +145,11 @@ export default function Listings() {
     axios
       .get(`/users/${auth.getUserId()}`)
       .then(async res => {
-        const { services, courses, name, images, listings } = res.data[0]
+        const { services, courses, name, images, listings, stripe_account } = res.data[0]
         let { coaches } = res.data[0]
         coaches = await getData(coaches)
         setCompanyListings(listings);
-        setListingTransferListInfo({ ...listingTransferListInfo, coaches, services, courses, companyName: name, images })
+        setListingTransferListInfo({ ...listingTransferListInfo, stripe_account, coaches, services, courses, companyName: name, images })
       })
       .catch(e => console.log(e))
   }, [!stateRefreshInProgress]);

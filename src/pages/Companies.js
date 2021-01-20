@@ -115,7 +115,8 @@ export default function Companies({ history }) {
   const [modalOpen, setModal] = useState(false);
   const [selected, setSelected] = useState({
     company: null,
-    location: null
+    courseIndex: null,
+    sessionIndex: null
   });
   const [coordinates, setCoordinates] = useState({
     lat: null,
@@ -459,12 +460,17 @@ export default function Companies({ history }) {
             }}
           >
             {companies && companies.map(el => {
-                const { courses } = el.listingInfo
 
-                // console.log('THIS IS' + courses)
-                return courses.map((course, i) => {
-                  const { latitude, longitude } = course.courseDetails
-                  // console.log(course)
+              if (el.listingInfo.companyId !== 'id7ZeO3z8eOVpQXWdIXavYo9UNB3') return
+
+              const { courses } = el.listingInfo
+
+
+              return courses.map((course, index) => {
+                const { sessions } = course.courseDetails
+
+                return sessions.map((session, i) => {
+                  const { longitude, latitude } = session
                   return <Marker
                     key={i}
                     anchor={"top-left"}
@@ -476,12 +482,17 @@ export default function Companies({ history }) {
                     <RoomSharpIcon
                       onClick={() => {
                         if (selected.company) {
-                          const {longitude} = selected.company.listingInfo.courses[selected.location].courseDetails;
-                          const {courseDetails} = el.listingInfo.courses[i]
-                          if (longitude === courseDetails.longitude) {
-                            setSelected({ company: null, location: null });
-                          } else setSelected({ company: el, location: i });
-                        } else setSelected({ company: el, location: i });
+                          const { courseIndex, sessionIndex } = selected
+                          const { longitude } = selected.company.listingInfo.courses[courseIndex].courseDetails.sessions[sessionIndex];
+                          const { sessions } = courses[index].courseDetails
+                          if (longitude === sessions[i].longitude) {
+                            setSelected({ company: null, courseIndex: null, sessionIndex: null });
+                          } else {
+                            setSelected({ company: el, courseIndex: index, sessionIndex: i })
+                          }
+                        } else {
+                          setSelected({ company: el, courseIndex: index, sessionIndex: i })
+                        };
                       }}
                       style={{
                         fontSize: "40px",
@@ -489,10 +500,10 @@ export default function Companies({ history }) {
                       }}
                     />
                   </Marker>
+
                 })
-
-
-              })}
+              })
+            })}
 
             {userCoordinates && (
               <Marker

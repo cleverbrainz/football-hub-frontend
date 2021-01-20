@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
@@ -29,6 +29,7 @@ import ExploreSharpIcon from '@material-ui/icons/ExploreSharp';
 import AddLocationSharpIcon from '@material-ui/icons/AddLocationSharp';
 import HistoryIcon from '@material-ui/icons/History';
 import Box from '@material-ui/core/Box';
+import CourseRegister from '../../pages/CourseRegister'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -112,57 +113,63 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function Sessions() {
+export default function Registers() {
 
-const date = moment()
-const [value, setValue] = useState(0);
-const classes = useStyles()
-const [companyCourses, setCompanyCourses] = useState({ active: [], past: [] })
-const [registers, setRegisters] = useState([])
-const [open, setOpen] = useState(false)
-const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
-const [courseIdToBeDeleted, setCourseIdToBeDeleted] = useState()
-const [newCourseDetail, setNewCourseDetail] = useState()
-const [courseToBeEdited, setCourseToBeEdited] = useState()
-const [companyCoachIds, setCompanyCoachIds] = useState([])
-const [companyCoachInfo, setCompanyCoachInfo] = useState([])
-const [thisWeek, setThisWeek] = useState([])
+  const date = moment()
+  const [value, setValue] = useState(0);
+  const classes = useStyles()
+  const [companyCourses, setCompanyCourses] = useState({ active: [], past: [] })
+  const [registers, setRegisters] = useState([])
+  const [open, setOpen] = useState(false)
+  const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
+  const [courseIdToBeDeleted, setCourseIdToBeDeleted] = useState()
+  const [newCourseDetail, setNewCourseDetail] = useState()
+  const [courseToBeEdited, setCourseToBeEdited] = useState()
+  const [companyCoachIds, setCompanyCoachIds] = useState([])
+  const [companyCoachInfo, setCompanyCoachInfo] = useState([])
+  const [thisWeek, setThisWeek] = useState([])
 
-async function getData() {
-  let activeRegisterArray = []
-  let pastRegisterArray = []
-  let coachArray = []
-  const response = await axios.get(`/users/${auth.getUserId()}`)
-  const data = await response.data[0]
-  console.log(data)
+  const [viewRegister, setViewRegister] = useState({
+    selected: false,
+    courseId: '',
+    session: ''
+  })
 
-  for (const course of data.courses.active) {
-  let register
-  const response = await axios.get(`/courses/${course.courseId}`)
-  register = await response.data
-  console.log(register.register)
-  // console.log('data', data)
-  if (register.register) activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
-  }
-  for (const course of data.courses.past) {
-    let register
-    const response = await axios.get(`/courses/${course.courseId}`)
-    register = await response.data
-    console.log(register.register)
-    // console.log('data', data)
-    if (register.register) pastRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+  async function getData() {
+    let activeRegisterArray = []
+    let pastRegisterArray = []
+    let coachArray = []
+    const response = await axios.get(`/users/${auth.getUserId()}`)
+    const data = await response.data[0]
+    console.log(data)
+
+    for (const course of data.courses.active) {
+      let register
+      const response = await axios.get(`/courses/${course.courseId}`)
+      register = await response.data
+      console.log(register.register)
+      // console.log('data', data)
+      if (register.register) activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
     }
-  for (const coach of data.coaches) {
-    let coachdetails
-    const response = await axios.get(`users/${coach}`)
-    coachdetails = await response.data[0]
-    coachArray.push(coachdetails)
-  }
-  setCompanyCoachIds(data.coaches)
-  setCompanyCoachInfo(coachArray)
-  setCompanyCourses(data.courses)
-  setRegisters({active: activeRegisterArray, past: pastRegisterArray})
-  setThisWeek(sortRegisters(pastRegisterArray.concat(activeRegisterArray)))
+    for (const course of data.courses.past) {
+      let register
+      const response = await axios.get(`/courses/${course.courseId}`)
+      register = await response.data
+      console.log(register.register)
+      // console.log('data', data)
+      if (register.register) pastRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+    }
+    for (const coach of data.coaches) {
+      let coachdetails
+      const response = await axios.get(`users/${coach}`)
+      coachdetails = await response.data[0]
+      coachArray.push(coachdetails)
+    }
+    setCompanyCoachIds(data.coaches)
+    setCompanyCoachInfo(coachArray)
+    setCompanyCourses(data.courses)
+    setRegisters({ active: activeRegisterArray, past: pastRegisterArray })
+    setThisWeek(sortRegisters(pastRegisterArray.concat(activeRegisterArray)))
   }
 
 
@@ -177,38 +184,36 @@ async function getData() {
       for (const session of sessionDates) {
         if (Object.keys(weekdays).indexOf(session) !== -1) {
           const correctSession = courseDetails.courseType === 'Camp' ?
-            courseDetails.sessions.filter(infoSession => moment.unix(infoSession.sessionDate._seconds).format('dddd') === moment(session).format('dddd'))[0] 
-            : 
-            courseDetails.sessions.filter(infoSession => infoSession.day === moment(session).format('dddd'))[0] 
+            courseDetails.sessions.filter(infoSession => moment.unix(infoSession.sessionDate._seconds).format('dddd') === moment(session).format('dddd'))[0]
+            :
+            courseDetails.sessions.filter(infoSession => infoSession.day === moment(session).format('dddd'))[0]
           weekdays[session].push([courseDetails, id, correctSession])
         }
       }
     })
 
     console.log(weekdays)
-    
+
     return weekdays
-  } 
+  }
 
-useEffect(() => {
-  // axios
-  //   .get(`/users/${auth.getUserId()}`)
-  //   .then(res => {
-  //     setCompanyCourses(res.data[0].courses);
-  //   })
-  //   .catch(e => console.log(e))
-  getData()
-}, [!stateRefreshInProgress]);
+  useEffect(() => {
+    getData()
+  }, [!stateRefreshInProgress]);
 
-const handleChange = (event, newValue) => {
-  setValue(newValue);
-};
+  const handleChange = (event, newValue) => {
+    if (newValue !== 2) {
+      setViewRegister({ ...viewRegister, selected: false })
+    }
+    setValue(newValue);
+
+  };
 
 
-return (
-  <>
-<AppBar position="static" color="default">
-  
+  return (
+    <>
+      <AppBar position="static" color="default">
+
         <Tabs
           className={classes.AppBar}
           value={value}
@@ -220,83 +225,109 @@ return (
           aria-label="scrollable force tabs example"
         >
           <Tab label="Current Courses" icon={<ExploreSharpIcon />} {...a11yProps(0)} />
-          <Tab label="Past Courses" icon={<HistoryIcon />} {...a11yProps(2)} />
+          <Tab label="Past Courses" icon={<HistoryIcon />} {...a11yProps(1)} />
+          {viewRegister.selected && <Tab label="View" icon={<HistoryIcon />} {...a11yProps(2)} />}
         </Tabs>
       </AppBar>
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-      <Accordion defaultExpanded={true}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography className={classes.heading}>This Weeks Sessions</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-  <Container>
+        <Accordion defaultExpanded={true}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography className={classes.heading}>This Weeks Sessions</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Container>
 
-  { Object.keys(thisWeek).map(day => {
-    if (thisWeek[day].length !== 0) {
-      return (
-      <>
-      <Typography gutterBottom={true} variant="h5">{moment(day).format('dddd Do')}</Typography>
-      {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
-        return (
-          <Typography gutterBottom={true} variant="h6">
-          {`${courseDetails.optionalName}: ${sessionInfo.startTime} - ${sessionInfo.endTime}, ${courseDetails.location} : `}
-          <Link to={`/courses/${id}/register/${day}`}>
-            View Register
-          </Link>
-          </Typography>
-        )
-      })}
-      
-      </>
+              {Object.keys(thisWeek).map(day => {
+                if (thisWeek[day].length !== 0) {
+                  return (
+                    <>
+                      <Typography gutterBottom={true} variant="h5">{moment(day).format('dddd Do')}</Typography>
+                      {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
+                        return (
+                          <Typography gutterBottom={true} variant="h6">
+                            {`${courseDetails.optionalName}: ${sessionInfo.startTime} - ${sessionInfo.endTime}, ${courseDetails.location} : `}
 
-      )
-    }
-  })}
-</Container>
-</AccordionDetails>
-</Accordion>
-<br />
-<Typography>All Active Courses</Typography>
-      <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell align="right">Course Location</TableCell>
-            <TableCell align="right">Start Date</TableCell>
-            <TableCell align="right">End Date</TableCell>
-            <TableCell align="right">Age Group</TableCell>
-            <TableCell align="right"></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {companyCourses.active.map((el, i) => (
-            <TableRow key={i}>
-              <TableCell component="th" scope="row">
-                {el.courseDetails.optionalName}
-              </TableCell>
-          <TableCell align='right'>
-            {el.courseDetails.location}
-          </TableCell>
-          <TableCell align="right">{el.courseDetails.startDate ? moment(el.courseDetails.startDate).format('DD/MM/YYYY'): moment(el.courseDetails.firstDay).format('DD/MM/YYYY')}</TableCell>
-          <TableCell align="right">{el.courseDetails.endDate?  moment(el.courseDetails.endDate).format('DD/MM/YYYY') : moment(el.courseDetails.lastDay).format('DD/MM/YYYY')}</TableCell>
-          <TableCell align="right">{el.courseDetails.age}</TableCell>
-              <TableCell align="right">
-                <Link to={`/courses/${el.courseId}/register/full`}>View Full Register</Link>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-    </TabPanel>
-</>
-)
+                            <Button onClick={() => {
+                              setValue(2)
+                              setViewRegister({
+                                selected: true,
+                                courseId: id,
+                                session: day
+                              })
+                            }}> View Register </Button>
+
+                          </Typography>
+                        )
+                      })}
+
+                    </>
+
+                  )
+                }
+              })}
+            </Container>
+          </AccordionDetails>
+        </Accordion>
+        <br />
+        <Typography>All Active Courses</Typography>
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell align="right">Course Location</TableCell>
+                <TableCell align="right">Start Date</TableCell>
+                <TableCell align="right">End Date</TableCell>
+                <TableCell align="right">Age Group</TableCell>
+                <TableCell align="right"></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {companyCourses.active.map((el, i) => (
+                <TableRow key={i}>
+                  <TableCell component="th" scope="row">
+                    {el.courseDetails.optionalName}
+                  </TableCell>
+                  <TableCell align='right'>
+                    {el.courseDetails.location}
+                  </TableCell>
+                  <TableCell align="right">{el.courseDetails.startDate ? moment(el.courseDetails.startDate).format('DD/MM/YYYY') : moment(el.courseDetails.firstDay).format('DD/MM/YYYY')}</TableCell>
+                  <TableCell align="right">{el.courseDetails.endDate ? moment(el.courseDetails.endDate).format('DD/MM/YYYY') : moment(el.courseDetails.lastDay).format('DD/MM/YYYY')}</TableCell>
+                  <TableCell align="right">{el.courseDetails.age}</TableCell>
+                  <TableCell align="right">
+
+                    <Button onClick={() => {
+                      setValue(2)
+                      setViewRegister({
+                        selected: true,
+                        courseId: el.courseId,
+                        session: ''
+                      })
+                    }}> View Full Register </Button>
+
+                    {/* <Link to={`/courses/${el.courseId}/register/full`}>View Full Register</Link> */}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </TabPanel>
+
+      {/* tab 2 content */}
+      <TabPanel className={classes.formContainer} value={value} index={2}>
+        {viewRegister && <CourseRegister
+          courseId={viewRegister.courseId}
+          session={viewRegister.session} />}
+      </TabPanel>
+
+    </>
+  )
 
 }

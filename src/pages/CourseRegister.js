@@ -34,13 +34,13 @@ const useStyles = makeStyles({
 });
 
 
-const CourseRegister = ({ match }) => {
-  console.log(match)
-  const { courseId } = match.params
-  const history = useHistory()
-  console.log(history)
+const CourseRegister = ({ match, courseId, session }) => {
+  // console.log(match)
+  // const { courseId } = match.params
+  // const history = useHistory()
 
-  const sessionDate = match.params.sessionDate ? match.params.sessionDate : 'full'
+  const [sessionDate, setSessionDate] = useState(session ? session : 'full')
+  // const sessionDate = match.params.sessionDate ? match.params.sessionDate : 'full
   const [register, setRegister] = useState([])
   const [course, setCourse] = useState([])
   const classes = useStyles();
@@ -55,12 +55,12 @@ const CourseRegister = ({ match }) => {
         res.data.register ? setRegister(res.data.register) : setRegister(register)
 
       })
-  },[])
+  }, [sessionDate])
 
   const handleChange = (event) => {
     console.log(event.target)
     const [playerId, date, field] = event.target.name.split('.')
-    const newRegister = {...register}
+    const newRegister = { ...register }
     newRegister[playerId][date][field] = event.target.value
     setRegister(newRegister)
   };
@@ -81,116 +81,126 @@ const CourseRegister = ({ match }) => {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableCell>
-    <Typography variant='h5'>No player data currently available</Typography>
-    </TableCell>
+            <Typography variant='h5'>No player data currently available</Typography>
+          </TableCell>
         </TableHead>
-        </Table>
-        </TableContainer>
+      </Table>
+    </TableContainer>
   )
   return (
     <>
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
+      <TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
 
-      <TableRow>
-            <TableCell>Player Name</TableCell>
-            {
-              register.sessions.map(session => {
-                if (sessionDate === 'full' || sessionDate === session) {
-                  return <TableCell align="right">{moment(session).format('DD/MM/YYYY')}</TableCell>
-                }
-                // return week === 'full' ? <TableCell align="right">{session}</TableCell> : week === session ? <TableCell align="right">{session}</TableCell> : <></>
-              })
-            }
-          </TableRow>
+            <TableRow>
+              <TableCell>Player Name</TableCell>
+              {
+                register.sessions.map(session => {
+                  if (sessionDate === 'full' || sessionDate === session) {
+                    return <TableCell align="right">{moment(session).format('DD/MM/YYYY')}</TableCell>
+                  }
+                  // return week === 'full' ? <TableCell align="right">{session}</TableCell> : week === session ? <TableCell align="right">{session}</TableCell> : <></>
+                })
+              }
+            </TableRow>
           </TableHead>
           <TableBody>
-          {course.playerList.map((player, i) => {
-            return (
-            <TableRow key={i}>
-              <TableCell component="th" scope="row">
-                {register[player].name}
-              </TableCell>
-              {register.sessions.map(week => {
-                const { attendance, notes } = register[player][week]
-                if (sessionDate === 'full' || week === sessionDate) {
-                return (
-                  <TableCell align="right">
-                    <FormControl className={classes.formControl}>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={attendance}
-          inputProps={{
-            name: `${player}.${week}.attendance`
-          }}
-          onChange={handleChange}
-        >
-          <MenuItem value={null}> - </MenuItem>
-          <MenuItem value={true}>Attended</MenuItem>
-          <MenuItem value={false}>Didn't Attend</MenuItem>
-        </Select>
-      </FormControl>
-      { attendance === false && 
-      <FormControl className={classes.formControl}>
-      <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        value={notes}
-        inputProps={{
-          name: `${player}.${week}.notes`
-        }}
-        onChange={handleChange}
-      >
-        <MenuItem value={''}> - </MenuItem>
-        <MenuItem value={'Not well'}>Not well</MenuItem>
-        <MenuItem value={'Injured'}>Injured</MenuItem>
-        <MenuItem value={'Couldn\'t get there'}>Couldn't get there</MenuItem>
-        <MenuItem value={'Other'}>Other</MenuItem>
-        <MenuItem value={'Don\'t know yet'}>Don't know yet</MenuItem>
-      </Select>
-    </FormControl>
-      }
+            {course.playerList.map((player, i) => {
+              return (
+                <TableRow key={i}>
+                  <TableCell component="th" scope="row">
+                    {register[player].name}
                   </TableCell>
-                )
-              }})
+                  {register.sessions.map(week => {
+                    const { attendance, notes } = register[player][week]
+                    if (sessionDate === 'full' || week === sessionDate) {
+                      return (
+                        <TableCell align="right">
+                          <FormControl className={classes.formControl}>
+                            <Select
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              value={attendance}
+                              inputProps={{
+                                name: `${player}.${week}.attendance`
+                              }}
+                              onChange={handleChange}
+                            >
+                              <MenuItem value={null}> - </MenuItem>
+                              <MenuItem value={true}>Attended</MenuItem>
+                              <MenuItem value={false}>Didn't Attend</MenuItem>
+                            </Select>
+                          </FormControl>
+                          {attendance === false &&
+                            <FormControl className={classes.formControl}>
+                              <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={notes}
+                                inputProps={{
+                                  name: `${player}.${week}.notes`
+                                }}
+                                onChange={handleChange}
+                              >
+                                <MenuItem value={''}> - </MenuItem>
+                                <MenuItem value={'Not well'}>Not well</MenuItem>
+                                <MenuItem value={'Injured'}>Injured</MenuItem>
+                                <MenuItem value={'Couldn\'t get there'}>Couldn't get there</MenuItem>
+                                <MenuItem value={'Other'}>Other</MenuItem>
+                                <MenuItem value={'Don\'t know yet'}>Don't know yet</MenuItem>
+                              </Select>
+                            </FormControl>
+                          }
+                        </TableCell>
+                      )
+                    }
+                  })
+                  }
+                </TableRow>
+              )
+            })
             }
-            </TableRow>
-            )
-          })
-        }
           </TableBody>
-      </Table>
-    </TableContainer>
-    <div className="buttons">
-    
-      <Button
-        variant="contained"
-        color="default"
-        className={classes.button}
-        startIcon={<DeleteIcon />}
-      >
-        Discard Changes
+        </Table>
+      </TableContainer>
+      <div className="buttons">
+
+        <Button
+          variant="contained"
+          color="default"
+          className={classes.button}
+          startIcon={<DeleteIcon />}
+        >
+          Discard Changes
       </Button>
-      {/* This Button uses a Font Icon, see the installation instructions in the Icon component docs. */}
-      <Button
-        variant="contained"
-        color="primary"
-        className={classes.button}
-        startIcon={<SaveIcon />}
-        onClick={saveChanges}
-      >
-        Save Changes
+        {/* This Button uses a Font Icon, see the installation instructions in the Icon component docs. */}
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          startIcon={<SaveIcon />}
+          onClick={saveChanges}
+        >
+          Save Changes
       </Button>
-      { sessionDate !== 'full' && <Link to={`/courses/${courseId}/register`}><Button
+        {/* { sessionDate !== 'full' && <Link to={`/courses/${courseId}/register`}><Button
         variant="contained"
         color="secondary"
         className={classes.button}
       >
         View Full Register
-      </Button></Link>}
-    </div>
+      </Button></Link>} */}
+
+        {sessionDate !== 'full' && <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => setSessionDate('full')}
+          className={classes.button}
+        >
+          View Full Register
+      </Button>}
+      </div>
     </>
   )
 }

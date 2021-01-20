@@ -14,7 +14,8 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Grid
+  Grid,
+  Button
 } from '@material-ui/core';
 
 import {
@@ -46,11 +47,10 @@ import Sessions from '../components/Dashboard/Sessions'
 import Images from '../components/Dashboard/Images'
 import Misc from '../components/Dashboard/Misc'
 import Setup from '../components/Dashboard/Setup'
-import RegisterTab from '../components/Dashboard/RegisterTab'
+import Registers from '../components/Dashboard/RegisterTab'
 import ContactInfo from '../components/Dashboard/ContactInfo'
 import CompanyDetailsEdit from './CompanyDetailsEdit';
 import CompanyDetailsEditBeta from './CompanyDetailsEditBeta';
-
 
 const drawerWidth = 240;
 
@@ -135,11 +135,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function Profile() {
+export default function Profile({ history }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState('Summary');
+  const [selectedComponent, setSelectedComponent] = useState('Contact');
   const [componentTabValue, setComponentTabValue] = useState(0)
 
   const [drawerItems, setDrawerItems] = useState({
@@ -159,14 +159,14 @@ export default function Profile() {
     Setup,
     Locations,
     Images,
-    Registers: RegisterTab,
+    Registers,
     Sessions,
     Players,
     Misc,
     Summary,
     Calendar,
     Contact: ContactInfo,
-    Edit: CompanyDetailsEditBeta
+    Edit: CompanyDetailsEditBeta,
   }
 
   const DisplayedComponent = dashboardComponents[selectedComponent]
@@ -211,9 +211,10 @@ export default function Profile() {
 
           </div>
 
-          <Typography className={classes.greeting} align="right" variant="subtitle1" noWrap>
-            Welcome back
-          </Typography>
+          <Button variant='contained' color='secondary' onClick={() => {
+            auth.logOut()
+            history.push('/')
+          }}> Log out </Button>
         </Toolbar>
       </AppBar>
 

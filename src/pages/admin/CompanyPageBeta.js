@@ -175,14 +175,6 @@ export default function CompanyPageBeta() {
     //   });
   };
 
-  const InternalCoachForm = (
-    <FormPropsTextFields classes={classes} />
-  )
-
-  const ExternalCoachForm = (
-    <h1> bye</h1>
-  )
-
 
 
   const handleChange = (event, newValue) => {

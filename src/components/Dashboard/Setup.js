@@ -102,26 +102,7 @@ const Setup = ({ handleComponentChange }) => {
             </Grid>
           )
         })}
-        <Grid item xs={12} sm={3}>
-              <Paper elevation={4}
-                className={classes.paper}>
-                <Typography gutterBottom variant="h5">
-                  Company Details
-                </Typography>
-
-
-                <Typography gutterBottom variant="p">
-                  Edit company details and upload documentation
-                </Typography>
-
-                <Link to="/tester/edit"><Fab className={classes.fab}
-                  size="small"
-                  color="secondary"
-                  aria-label="edit">
-                  <EditIcon />
-                </Fab></Link>
-              </Paper>
-            </Grid>
+           
             <Grid item xs={12} sm={3}>
               <Paper elevation={4}
                 className={classes.paper}>
