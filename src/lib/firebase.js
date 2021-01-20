@@ -31,7 +31,7 @@ export const serviceCollection = db.collection("ServiceDetails");
 export const campMultiDayCollection = db.collection("CampMultiDay");
 export const campSingleDayCollection = db.collection("CampSingleDay");
 
-export { db, storage };
+export { db, storage, firebaseApp };
 
 //Football hub:
 /* 

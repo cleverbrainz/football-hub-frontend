@@ -201,7 +201,7 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
                               key={name.userId} 
                               value={name.userId}
                               >
-                              {/* <Checkbox checked={courseCoaches.indexOf(name.userId) > -1} /> */}
+                              <Checkbox checked={courseCoaches.indexOf(name.userId) > -1} />
                               <ListItemText primary={name.coachInfo.name} />
                             </MenuItem>
                           )})

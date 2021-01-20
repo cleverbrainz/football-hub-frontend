@@ -141,7 +141,7 @@ const Profile = ({ match }) => {
     const handleSendRequest = (e) => {
       e.preventDefault()
       if (!isCompany) return
-      axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId })
+      axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId, coachName: user.name, coachEmail: user.email, type: window.location.hostname })
       .then(res => {
         console.log(res.data)
         setRequestSent(true)

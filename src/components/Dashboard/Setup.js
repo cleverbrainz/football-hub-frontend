@@ -55,10 +55,10 @@ const Setup = ({ handleComponentChange }) => {
       text: 'Images', component: 'Images',
       description: 'Add your professional images, these will be show cased on your listing'
     },
-    {
-      text: 'Contact Info', component: 'Contact',
-      description: 'Add your social media handles and contact info for people to get in touch with you'
-    }
+    // {
+    //   text: 'Payment Details', component: 'Subscription',
+    //   description: 'Update your subscription and account settings to enable online payments'
+    // }
   ]
 
   return (
@@ -115,6 +115,26 @@ const Setup = ({ handleComponentChange }) => {
                 </Typography>
 
                 <Link to="/tester/edit"><Fab className={classes.fab}
+                  size="small"
+                  color="secondary"
+                  aria-label="edit">
+                  <EditIcon />
+                </Fab></Link>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <Paper elevation={4}
+                className={classes.paper}>
+                <Typography gutterBottom variant="h5">
+                  Payment Details
+                </Typography>
+
+
+                <Typography gutterBottom variant="p">
+                Update your subscription and account settings to enable online payments
+                </Typography>
+
+                <Link to="/subscription"><Fab className={classes.fab}
                   size="small"
                   color="secondary"
                   aria-label="edit">

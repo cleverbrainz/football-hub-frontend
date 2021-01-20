@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { firebaseApp } from './firebase'
 const jwt = require('jsonwebtoken')
 
 
@@ -23,7 +24,8 @@ function getToken() {
 }
 
 function logOut() {
-  localStorage.removeItem('token')
+  firebaseApp.auth().signOut()
+  return localStorage.clear()
 }
 
 function getUserId() {

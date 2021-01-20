@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import { Typography, Box, Button, TextField, Select, MenuItem } from "@material-ui/core";
+import CheckIcon from '@material-ui/icons/Check';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -157,12 +158,14 @@ const VerificationPage = () => {
             <a href={user.coachInfo.dbsCertificate}
               rel="noopener noreferrer"
               target='_blank'> Click to open </a>
+             { user.verification.dbsCertificate && <CheckIcon /> }
           </TableCell>
 
           <TableCell align="right">
             <a href={user.coachInfo.coachingCertificate}
               rel="noopener noreferrer"
               target='_blank'> Click to open </a>
+            { user.verification.coachingCertificate && <CheckIcon /> }
           </TableCell>
 
           <TableCell align="right">
@@ -211,6 +214,7 @@ const VerificationPage = () => {
 
           <TableCell align="right">
             <h2>{user.vat_number}</h2>
+            { user.verification.companyDetailsCheck && <CheckIcon /> }
           </TableCell>
 
           <TableCell align="right">
@@ -218,6 +222,7 @@ const VerificationPage = () => {
             <a href={user.documents.professional_indemnity_insurance}
               rel="noopener noreferrer"
               target='_blank'> Click to open </a>
+              { user.verification.indemnityDocumentCheck && <CheckIcon /> }
           </TableCell>
 
           <TableCell align="right">
@@ -225,6 +230,7 @@ const VerificationPage = () => {
             <a href={user.documents.public_liability_insurance}
               rel="noopener noreferrer"
               target='_blank'> Click to open </a>
+              { user.verification.liabilityDocumentCheck && <CheckIcon /> }
           </TableCell>
 
           <TableCell align="right">

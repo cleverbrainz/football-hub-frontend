@@ -17,6 +17,7 @@ import auth from '../../lib/auth'
 import MobileMenu from '../MobileMenu'
 import { useEffect, useState } from 'react';
 import { withRouter, useHistory, Link } from 'react-router-dom';
+import { FirebaseAuth } from 'react-firebaseui';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -42,7 +43,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function NavbarTwo({ history }) {
+function NavbarTwo({ history, loggedIn }) {
+  
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -151,7 +153,7 @@ function NavbarTwo({ history }) {
 
 
 
-          {auth.isLoggedIn() ? (
+          {loggedIn ? (
             <div className={classes.sectionDesktop}>
               <Link to={{
                 pathname: '/companies',
