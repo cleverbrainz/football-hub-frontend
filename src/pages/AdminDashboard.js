@@ -139,7 +139,7 @@ export default function Profile({ history }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState('Contact');
+  const [selectedComponent, setSelectedComponent] = useState('Summary');
   const [componentTabValue, setComponentTabValue] = useState(0)
 
   const [drawerItems, setDrawerItems] = useState({
