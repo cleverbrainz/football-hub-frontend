@@ -87,8 +87,8 @@ import { loadStripe } from '@stripe/stripe-js'
 import { AuthProvider } from './lib/context'
 import SignIn from './pages/AuthLogin'
 import IntroductionPage from './components/Dashboard/IntroductionPage'
-const stripePromise = loadStripe('pk_test_JX84GPfLfXGxVFWvGHaz1AWE')
 import SuccessfulCheckout from './pages/SuccessfulCheckout'
+const stripePromise = loadStripe('pk_test_JX84GPfLfXGxVFWvGHaz1AWE')
 
 
 // axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"

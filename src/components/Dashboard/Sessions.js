@@ -324,7 +324,7 @@ export default function Sessions({ componentTabValue }) {
       {/* tab 2 content */}
       <TabPanel className={classes.formContainer} value={value} index={1}>
         <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel id="demo-simple-select-outlined-label">Who type of course are you adding?</InputLabel>
+          <InputLabel id="demo-simple-select-outlined-label">What type of course are you adding?</InputLabel>
           <Select
             className={classes.select}
             labelId="demo-simple-select-filled-label"
