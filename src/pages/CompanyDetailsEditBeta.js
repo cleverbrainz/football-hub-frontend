@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import {
   Checkbox,
   Button,
@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: -12,
   },
 }));
-export default function CompanyDetailsEdit({ history }) {
+function CompanyDetailsEdit({ history }) {
   const classes = useStyles();
   const userId = auth.getUserId()
   const [image, setImage] = React.useState(null);
@@ -321,3 +321,5 @@ export default function CompanyDetailsEdit({ history }) {
     </Container>
   );
 }
+
+export default withRouter(CompanyDetailsEdit)

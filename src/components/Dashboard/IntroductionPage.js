@@ -59,37 +59,42 @@ const useStyles = makeStyles((theme) => ({
 const IntroductionPage = ({ handleComponentChange }) => {
   const classes = useStyles()
   const boxes = [
-    {name: 'Company Details', state: 'companyInfo', component: 'Edit', page: 0 }, {name: 'Locations', state:'locations', component: 'Locations', page: 1 }, {name:'Coaches', state: 'coaches', component: 'Coaches', page: 1 },
-    {name: 'Services', state: 'services', component: 'Misc', page: 1 }, {name: 'Age Groups', state:'ageGroups', component: 'Misc', page: 1 }, {name:'Courses/Camps', state: 'courses', component: 'Sessions', page: 1 }
+    {name: 'Company Details', state: 'companyInfo', component: 'Contact', page: 0 }, {name: 'Locations', state:'locations', component: 'Locations', page: 1 }, {name:'Coaches', state: 'coaches', component: 'Coaches', page: 1 },
+    {name: 'Services', state: 'services', component: 'Misc', page: 1 }, {name: 'Age Groups', state:'ageDetails', component: 'Misc', page: 1 }, {name:'Courses/Camps', state: 'courses', component: 'Sessions', page: 1 }
   ]
-  const [checkState, setCheckState] = useState({
-    companyInfo: false,
-    locations: false,
-    coaches: false,
-    services: false,
-    ageGroups: false,
-    courses: false
-  })
+  const [checkState, setCheckState] = useState(null)
 
   const { user, userData, setUserData } = useContext(AuthContext)
   console.log(user)
 
   const introductionCheck = (toCheck) => {
-    for (const type of Object.keys(checkState)) {
+
+    const newState = {
+      companyInfo: false,
+      locations: false,
+      coaches: false,
+      services: false,
+      ageDetails: false,
+      courses: false
+    }
+    for (const type of Object.keys(newState)) {
       const check = toCheck[type]
       console.log(check)
       check ? Array.isArray(check) ? (
-        check.length > 0 ? setCheckState({ ...checkState, [type]: true}) :
+        check.length > 0 ? newState[type] = true :
         console.log('empty array')
       ) 
       : (
         type === 'courses' ? (
-          check.active.length > 0 || check.past.length > 0 ?  setCheckState({ ...checkState, [type]: true}) :
+          check.active.length > 0 || check.past.length > 0 ?  newState[type] = true :
           console.log('empty object')
-        ) : (Object.keys(check).length > 0 ? setCheckState({ ...checkState, [type]: true}) :
+        ) : (Object.keys(check).length > 0 ? newState[type] = true :
         console.log('empty object'))
       ) : console.log('undefined') 
+
+      console.log(newState)
     }
+    setCheckState({ ...newState })
   }
 
 
@@ -107,7 +112,7 @@ const IntroductionPage = ({ handleComponentChange }) => {
   },[])
 
 
-
+  if (!checkState) return null
   return (
     <div className={classes.root}>
       <div className={classes.headerBox}>
