@@ -18,6 +18,7 @@ import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import auth from '../../lib/auth'
 import CompanyDetailsEdit from '../../pages/CompanyDetailsEdit'
+import CompanyDetailsEditBeta from '../../pages/CompanyDetailsEditBeta'
 
 
 function TabPanel(props) {
@@ -218,7 +219,7 @@ export default function ContactInfo({ componentTabValue }) {
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-        <CompanyDetailsEdit />
+        <CompanyDetailsEditBeta />
       </TabPanel>
 
       {/* tab 2 content */}
