@@ -494,7 +494,7 @@ const [ageSelection, setAgeSelection] = useState()
 
               <div className={classes.coachContainer}>
 
-            {(open) && (!location.state.hasOwnProperty('accountId') ? (
+            {(open) && (location.state.hasOwnProperty('accountId') ? (
             <Stripe 
               selectedBooking={selectedBooking}
               courses={courses}

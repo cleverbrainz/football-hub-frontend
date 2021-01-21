@@ -259,6 +259,7 @@ export default function Sessions({ componentTabValue }) {
 
 
   const handleChange = (event, newValue) => {
+    setCourseToBeEdited(null)
     setValue(newValue);
   };
 
@@ -278,7 +279,7 @@ export default function Sessions({ componentTabValue }) {
         >
           <Tab label="Current" icon={<ExploreSharpIcon />} {...a11yProps(0)} />
           <Tab label="Add New" icon={<AddLocationSharpIcon />} {...a11yProps(2)} />
-          <Tab label="Edit Existing" icon={<AddLocationSharpIcon />} {...a11yProps(3)} />
+         {courseToBeEdited && <Tab label="Edit Existing" icon={<AddLocationSharpIcon />} {...a11yProps(3)} /> } 
         </Tabs>
       </AppBar>
 
