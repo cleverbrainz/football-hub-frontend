@@ -171,6 +171,7 @@ const CourseRegister = ({ match, courseId, session }) => {
           color="default"
           className={classes.button}
           startIcon={<DeleteIcon />}
+          onClick={() => window.location.reload()}
         >
           Discard Changes
       </Button>
