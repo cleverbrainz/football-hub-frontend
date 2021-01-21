@@ -87,7 +87,10 @@ import { loadStripe } from '@stripe/stripe-js'
 import { AuthProvider } from './lib/context'
 import SignIn from './pages/AuthLogin'
 import IntroductionPage from './components/Dashboard/IntroductionPage'
+
 import SuccessfulCheckout from './pages/SuccessfulCheckout'
+const stripePromise = loadStripe('pk_test_JX84GPfLfXGxVFWvGHaz1AWE')
+
 const stripePromise = loadStripe('pk_test_JX84GPfLfXGxVFWvGHaz1AWE')
 
 
