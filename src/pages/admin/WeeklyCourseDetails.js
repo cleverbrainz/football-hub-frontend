@@ -21,6 +21,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
+
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
@@ -80,7 +81,13 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
   };
 
 
+
   useEffect(() => {
+
+    // document.querySelectorAll('span').forEach(el => {
+    //   console.log(el.className)
+    // })
+
     axios.get(`/users/${auth.getUserId()}`)
       .then(res => {
         const locationArr = []
@@ -124,6 +131,21 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
 
   };
 
+
+  function timeConversion (time) {
+    // Check correct time format and split into components
+    time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+  
+    if (time.length > 1) { // If time format correct
+      time = time.slice (1);  // Remove full string match value
+      time[5] = +time[0] < 12 ? 'am' : 'pm'; // Set AM/PM
+      time[0] = +time[0] % 12 || 12; // Adjust hours
+    }
+    // return time.join('');
+    time.splice(3,1,'')
+    return time.join(''); // return adjusted time or original string
+  }
+
   function updateCourseDays(index, event) {
 
     const { name, value } = event.target;
@@ -139,8 +161,10 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
         }
       })
       courseDays[index] = { ...courseDays[index], [name]: value, longitude, latitude };
+    } else if (name === 'startTime' || name === 'endTime') {
+      courseDays[index] = { ...courseDays[index], [name]: timeConversion(value + ':00') }
     } else {
-      courseDays[index] = { ...courseDays[index], [name]: value };
+        courseDays[index] = { ...courseDays[index], [name]: value };
     }
 
     setFormDetails({ ...formDetails, sessions: courseDays });
@@ -159,7 +183,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
       <form onSubmit={handleSubmit}>
         <tr>
 
-        <FormControl variant="outlined" className={classes.formControl}>
+          <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel>Optional Name</InputLabel>
             <OutlinedInput
               label='Optional Name'
@@ -260,6 +284,9 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
             onChange={(e) => updateOtherCourseInfo(e)}
           />
         </FormControl>
+
+
+
 
         {!course ? rows.map((el, i) => {
           return (

@@ -133,6 +133,7 @@ function CoachPageBeta({ componentTabValue }) {
     email: ''
   })
   const [message, setMessage] = useState('')
+  const [emailError, setEmailError] = useState('')
 
 
   async function getData() {
@@ -145,9 +146,9 @@ function CoachPageBeta({ componentTabValue }) {
     for (const request of data.coaches) {
       let coach
       if (typeof request === 'string') {
-      const response = await axios.get(`/users/${request}`)
-      coach = await response.data[0]
-      console.log('data', data)
+        const response = await axios.get(`/users/${request}`)
+        coach = await response.data[0]
+        console.log('data', data)
       } else {
         coach = request
       }
@@ -181,6 +182,11 @@ function CoachPageBeta({ componentTabValue }) {
     setOpen(false);
   };
 
+  const isValidEmail = string => {
+    const emailRegEx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return emailRegEx.test(string)
+  }
+
   const handleDelete = () => {
     setDeleteInProgress(true);
     console.log(coachIdToBeDeleted);
@@ -201,8 +207,23 @@ function CoachPageBeta({ componentTabValue }) {
   };
 
   const sendEmailRequest = (event) => {
+    const { email, fullName } = newExternalCoachDetails
+    const { name, userId } = user
     event.preventDefault()
-    axios.post(`/emailRequestCoach`, { email: newExternalCoachDetails.email, name: newExternalCoachDetails.fullName, companyName: user.name, companyId: user.userId, type: window.location.hostname })
+
+    if (!isValidEmail(email)) {
+      setEmailError('Email address provided is not valid. Please try again.')
+      return
+    }
+
+    axios.post(`/emailRequestCoach`,
+      {
+        email,
+        name: fullName,
+        companyName: name,
+        companyId: userId,
+        type: window.location.hostname
+      })
       .then(res => {
         console.log(res)
         setMessage('Email Sent!')
@@ -223,20 +244,20 @@ function CoachPageBeta({ componentTabValue }) {
 
   const Already = (
     <>
-    <h2>Already Registered. Click below to edit details</h2>
-    <Link to={{
-      pathname: '/testercoach/edit',
-      state: user
-    }}>
-    
-    <Button
-      // className={classes.button}
-      variant="contained" color="primary">
-      Edit Details
+      <h2>Already Registered. Click below to edit details</h2>
+      <Link to={{
+        pathname: '/testercoach/edit',
+        state: user
+      }}>
+
+        <Button
+          // className={classes.button}
+          variant="contained" color="primary">
+          Edit Details
   </Button>
-  </Link>
-  </>
-  // <CoachEdit location={{ state: user }}/>
+      </Link>
+    </>
+    // <CoachEdit location={{ state: user }}/>
   )
 
   const ExternalCoachForm = (
@@ -336,8 +357,8 @@ function CoachPageBeta({ componentTabValue }) {
                     <InputLabel htmlFor="component-outlined"> Full Name </InputLabel>
                     <OutlinedInput
                       label="Full Name"
-                    value={newExternalCoachDetails.fullName}
-                    onChange={e => setNewExternalCoachDetails({ ...newExternalCoachDetails, fullName: e.target.value })}
+                      value={newExternalCoachDetails.fullName}
+                      onChange={e => setNewExternalCoachDetails({ ...newExternalCoachDetails, fullName: e.target.value })}
                     />
                   </FormControl>
 
@@ -345,21 +366,24 @@ function CoachPageBeta({ componentTabValue }) {
                   >
                     <InputLabel htmlFor="component-outlined"> Email Address </InputLabel>
                     <OutlinedInput
-                    label="Email Address"
-                    value={newExternalCoachDetails.email}
-                    onChange={e => setNewExternalCoachDetails({ ...newExternalCoachDetails, email: e.target.value })}
+                      error={emailError}
+                      label="Email Address"
+                      value={newExternalCoachDetails.email}
+                      onChange={e => setNewExternalCoachDetails({ ...newExternalCoachDetails, email: e.target.value })}
                     />
                   </FormControl>
+
+                  {emailError && <p style={{ color: 'red', textAlign: 'center' }}> {emailError} </p>}
 
                   <Button
                     variant="contained"
                     color={message ? "primary" : 'secondary'}
                     className={classes.inputs}
                     onClick={(event) => sendEmailRequest(event)}
-                    // onClick={() => input.current.click()}
+                  // onClick={() => input.current.click()}
                   >
                     {message ? message : 'Send Registration Prompt'}
-                </Button>
+                  </Button>
                 </>
               ) : null
 

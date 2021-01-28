@@ -77,9 +77,10 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     height: 300,
-    width: "100%",
+    // width: "100%",
     [theme.breakpoints.up("sm")]: {
-      width: 340,
+      minWidth: 320,
+      // width: '50%',
       height: 200,
     },
     borderRadius: "8px",
@@ -432,7 +433,7 @@ export default function Companies({ history }) {
                         <Typography gutterBottom variant="h5" component="h2">
                           {companyName}
                         </Typography>
-                        <Typography
+                        <Typography className='listing-description'
                           variant="body2" color="textSecondary" component="p">
                           {bio}
                         </Typography>

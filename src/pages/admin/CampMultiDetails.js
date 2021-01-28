@@ -90,13 +90,16 @@ export default function MaterialUIPickers({ history, course,
   const { sessions, firstDay, optionalName, lastDay, location, campCost,
     dayCost, age, excludeDays, individualDayBookings, spaces, startTime, endTime } = courseDetails;
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-  const times = [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  // const times = [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   const handleClose = () => {
     setOpen(false);
   };
 
   useEffect(() => {
+
+    console.log(course)
+
     axios.get(`/users/${auth.getUserId()}`)
       .then(res => {
         const locationArr = []
@@ -163,15 +166,63 @@ export default function MaterialUIPickers({ history, course,
     const { name, value } = event.target
     const sessionsArr = ['spaces', 'startTime', 'endTime']
 
-
-    // console.log(event)
     if (course && (name === 'firstDay' || name === 'lastDay')) setOpen(true)
     else if (course && (sessionsArr.includes(name))) {
       const newSessionsArr = [...sessions]
-      newSessionsArr[index] = { ...newSessionsArr[index], [name]: value }
+      const propertyVal = name === 'startTime' || name === 'endTime' ? tConvert(value) : value
+      newSessionsArr[index] = { ...newSessionsArr[index], [name]: propertyVal }
       setCourseDetails({ ...courseDetails, sessions: newSessionsArr })
     }
-    else setCourseDetails({ ...courseDetails, [name]: value })
+    else {
+      const propertyVal = name === 'startTime' || name === 'endTime' ? tConvert(value) : value
+      setCourseDetails({ ...courseDetails, [name]: propertyVal })
+    }
+  }
+
+  function timeConversion(s) {
+    const ampm = s.slice(-2);
+    const hours = Number(s.slice(0, 2));
+    let time = s.slice(0, -2);
+    if (ampm.toLowerCase() === 'am') {
+      if (hours === 12) { // 12am edge-case
+        return time.replace(s.slice(0, 2) + '00');
+      }
+      return time;
+    } else if (ampm.toLowerCase() === 'pm') {
+      if (hours !== 12) {
+        return time.replace(s.slice(0, 2), String(hours + 12));
+      }
+      return time; // 12pm edge-case
+    }
+    return 'Error: am/pm format is not valid';
+  }
+
+  function isNumeric(str) {
+    if (typeof str != "string") return false // we only process strings!  
+    return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+      !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+  }
+
+  function formatDateString(str) {
+    if (!isNumeric(str.substring(0, 2))) {
+      return `0${str.substring(0, 4)}:00${str.slice(-2)}`
+    } else {
+      return `${str.substring(0, 5)}:00${str.slice(-2)}`
+    }
+  }
+
+  function tConvert(time) {
+    // Check correct time format and split into components
+    time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+    if (time.length > 1) { // If time format correct
+      time = time.slice(1);  // Remove full string match value
+      time[5] = +time[0] < 12 ? 'am' : 'pm'; // Set AM/PM
+      time[0] = +time[0] % 12 || 12; // Adjust hours
+    }
+    // return time.join('');
+    time.splice(3, 1, '')
+    return time.join(''); // return adjusted time or original string
   }
 
 
@@ -262,54 +313,32 @@ export default function MaterialUIPickers({ history, course,
 
         {!course && (
           <tr>
-
-{/* 
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-
-                <KeyboardTimePicker
-                  margin="normal"
-                  id="startTime"
-                  label="Time picker"
-                  value={startTime}
-                  onChange={(value) => {
-                    console.log(moment(value).format('h:mm a'))
-                    setCourseDetails({ ...courseDetails, startTime: value})
-                  }}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change time',
-                  }}
-                />
-
-
-            </MuiPickersUtilsProvider> */}
-
-
             <td>
               <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel>Start</InputLabel>
-                <Select label="Start" name="startTime"
-                  value={startTime}
+                <TextField
+                  // value={course && timeConversion(formatDateString(startTime))}
+                  name='startTime'
+                  label="Start Time"
+                  type="time"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   onChange={(e) => updateOtherCourseInfo(e)}
-                >
-                  {times.map((el, i) => {
-                    const time = i < 6 ? el + "am" : el + "pm";
-                    return <MenuItem value={time}> {time} </MenuItem>;
-                  })}
-                </Select>
+                />
               </FormControl>
             </td>
             <td>
               <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel>Finish</InputLabel>
-                <Select label="Finish" name="endTime"
-                  value={endTime}
+                <TextField
+                  // value={course && timeConversion(formatDateString(endTime))}
+                  name='endTime'
+                  label="End Time"
+                  type="time"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   onChange={(e) => updateOtherCourseInfo(e)}
-                >
-                  {times.map((el, i) => {
-                    const time = i < 6 ? el + "am" : el + "pm";
-                    return <MenuItem value={time}> {time} </MenuItem>;
-                  })}
-                </Select>
+                />
               </FormControl>
             </td>
             <td>
@@ -356,6 +385,8 @@ export default function MaterialUIPickers({ history, course,
                 t.setSeconds(secs);
                 return t;
               }
+
+              console.log(el.endTime, timeConversion(formatDateString(el.endTime)))
               return (
                 <tr>
                   <td>
@@ -371,30 +402,31 @@ export default function MaterialUIPickers({ history, course,
                   </td>
                   <td>
                     <FormControl variant="outlined" className={classes.formControl}>
-                      <InputLabel>Start Time</InputLabel>
-                      <Select label="Start Time" name="startTime"
-                        value={sessions[i].startTime}
+
+                      <TextField
+                        value={timeConversion(formatDateString(el.startTime))}
+                        name='startTime'
+                        label="Start Time"
+                        type="time"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
                         onChange={(e) => updateOtherCourseInfo(e, i)}
-                      >
-                        {times.map((el, i) => {
-                          const time = i < 6 ? el + "am" : el + "pm";
-                          return <MenuItem value={time}> {time} </MenuItem>;
-                        })}
-                      </Select>
+                      />
                     </FormControl>
                   </td>
                   <td>
                     <FormControl variant="outlined" className={classes.formControl}>
-                      <InputLabel>Finish Time</InputLabel>
-                      <Select label="Finish Time" name="endTime"
-                        value={sessions[i].endTime}
+                      <TextField
+                        value={timeConversion(formatDateString(el.endTime))}
+                        name='endTime'
+                        label="End Time"
+                        type="time"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
                         onChange={(e) => updateOtherCourseInfo(e, i)}
-                      >
-                        {times.map((el, i) => {
-                          const time = i < 6 ? el + "am" : el + "pm";
-                          return <MenuItem value={time}> {time} </MenuItem>;
-                        })}
-                      </Select>
+                      />
                     </FormControl>
                   </td>
                   <td>

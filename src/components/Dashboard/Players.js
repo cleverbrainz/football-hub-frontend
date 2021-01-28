@@ -126,8 +126,18 @@ export default function CompanyPlayersList() {
     console.log(emailRequest)
   }
 
+  const isValidEmail = string => {
+    const emailRegEx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return emailRegEx.test(string)
+  }
+
   const sendEmailRequest = (event) => {
     event.preventDefault()
+
+    if (!isValidEmail(emailRequest)) {
+      setMessage('Email address is not valid. Please try again.')
+      return
+    }
     axios.post(`/emailRequest`, { email: emailRequest, companyName: companyData.name, companyId: companyData.userId, type: window.location.hostname })
       .then(res => {
         console.log(res)
@@ -368,11 +378,27 @@ export default function CompanyPlayersList() {
           </Table>
         </TableContainer>
         <Box>
+
         <Typography>Add new player</Typography>
+
         <FormControl>
-          <TextField placeholder="Enter email address" value={emailRequest} onChange={(e) => handleEmailChange(e)}/>
-          <Typography>{message}</Typography>
-          <Button variant="contained" color={message ? 'secondary' : 'primary'} onClick={(e) => sendEmailRequest(e)}>{message ? message : 'Send Request'}</Button>
+          <TextField 
+          placeholder="Enter email address" 
+          value={emailRequest} 
+          onChange={(e) => handleEmailChange(e)}/>
+
+          <Typography>
+            {message}
+          </Typography>
+
+          {message && <p style={{ color: 'red', textAlign: 'center' }}> {message} </p>}
+
+          <Button 
+          variant="contained" 
+          color='primary'
+          onClick={(e) => sendEmailRequest(e)}>
+            Send Request
+          </Button>
         </FormControl>
         </Box>
       </>

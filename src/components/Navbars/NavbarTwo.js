@@ -145,7 +145,7 @@ function NavbarTwo({ history, loggedIn }) {
             <Typography component='div'>
               <Box fontSize={23} fontWeight="fontWeightRegular" m={1}>
                 <SportsSoccerSharpIcon style={{ transform: 'translateY(4.5px)', marginRight: '5px' }} />
-                BALLERS HUB
+                FT BALLER
               </Box>
             </Typography>
 

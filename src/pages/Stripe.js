@@ -16,22 +16,35 @@ export default function Stripe({
   accountId,
   preview
 }) {
+  const stripe = useStripe();
   const [message, setMessage] = useState("");
   const [loginBeforeBooking, setLoginBeforeBooking] = useState(false);
-
-
-  const { course, courseType } = selectedBooking
-  const { courseId } = course
-  const { age, cost, space, services, courseCategory,
-    sessions, optionalName, startDate, endDate, location, campCost, firstDay, lastDay } = course.courseDetails
-
   const [sessionLocations, setSessionLocations] = useState()
   const [bookingWidget, setBookingWidget] = useState({
     spaces: 1,
     total: null
   })
 
-  const stripe = useStripe();
+  const { 
+    course, 
+    courseType } = selectedBooking
+  const { courseId } = course
+  const { 
+    age, 
+    cost, 
+    space, 
+    services, 
+    courseCategory,
+    sessions, 
+    optionalName, 
+    startDate, 
+    endDate, 
+    location, 
+    campCost, 
+    firstDay, 
+    lastDay } = course.courseDetails
+
+ 
 
 
   const handleBookingWidget = (e) => {
@@ -152,6 +165,7 @@ export default function Stripe({
 
 
       {loginBeforeBooking && <PreCheckoutLogin
+        followUpAction={'booking'}
         handleClick={(e) => handleClick(e)}
         handleClose={() => setLoginBeforeBooking(false)}
         open={loginBeforeBooking} />}

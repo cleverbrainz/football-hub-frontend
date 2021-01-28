@@ -35,6 +35,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const useStyles = makeStyles((theme) => ({
   jumbotron: {
     position: "relative",
+    // height: "100vh",
   },
   image: {
     filter: "blur(0.7px) brightness(75%)",
