@@ -139,7 +139,7 @@ export default function Profile({ history }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState('Summary');
+  const [selectedComponent, setSelectedComponent] = useState('Sessions');
   const [componentTabValue, setComponentTabValue] = useState(0)
 
   const [drawerItems, setDrawerItems] = useState({
@@ -186,7 +186,7 @@ export default function Profile({ history }) {
         color="inherit"
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
+          [classes.appBarShift]: open,s
         })}
       >
 
@@ -206,7 +206,7 @@ export default function Profile({ history }) {
               <Menu />
             </IconButton>
             <Typography variant="h6" noWrap>
-              BALLERS HUB
+              FT BALLER
           </Typography>
 
           </div>
