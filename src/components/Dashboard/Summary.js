@@ -159,7 +159,7 @@ const Summary = ({ handleComponentChange }) => {
 
   if (!userData.courses) return null
   if(userData && !userData.subscriptions) return <Redirect to={{ pathname: "/subscription" }} />
-  if (userData && !userData.verification.setup) return <IntroductionPage handleComponentChange={handleComponentChange}/>
+  if (userData && userData.listings.length === 0) return <IntroductionPage handleComponentChange={handleComponentChange}/>
   return (
     <div className={classes.root}>
       <Grid container

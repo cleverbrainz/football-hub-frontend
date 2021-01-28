@@ -100,7 +100,7 @@ const Profile = ({ match }) => {
   const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === profileId)
   const [isCompany, setIsCompany] = useState(true)
   const [isAlreadyCoach, setIsAlreadyCoach] = useState(false)
-  const [requestSent, setRequestSent] = useState()
+  const [requestSent, setRequestSent] = useState(false)
   const verifyObj = { coachDocumentationCheck: 'Training Certification', dbsDocumentationCheck: 'DBS', paymentCheck: 'Payment Details' }
 
 
@@ -306,7 +306,7 @@ const Profile = ({ match }) => {
     const handleSendRequest = (e) => {
       e.preventDefault()
       if (!isCompany) return
-      axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId })
+      axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId, coachName: user.name, coachEmail: user.email, type: window.location.hostname })
       .then(res => {
         console.log(res.data)
         setRequestSent(true)
