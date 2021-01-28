@@ -5,6 +5,7 @@ import SportsSoccerSharpIcon from '@material-ui/icons/SportsSoccerSharp';
 
 const styles = {
   navBar: {
+    zIndex: 100,
     height: 80,
     position: 'fixed',
     width: '100%',
@@ -67,7 +68,7 @@ function HomeNav() {
           <Typography component='div'>
             <Box  fontSize={23} fontWeight="fontWeightRegular" m={1}>
               <SportsSoccerSharpIcon style={{ transform: 'translateY(4.5px)', marginRight: '5px' }} />
-              BALLERS HUB
+              FT BALLER
               </Box>
           </Typography>
 
