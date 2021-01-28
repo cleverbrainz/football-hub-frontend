@@ -10,12 +10,24 @@ body,
   height: 100vh;
   position: relative;
 
+  ::-webkit-scrollbar {
+    display: none;
+  }
   #home-scroll-section,
   #list-container {
     &::-webkit-scrollbar {
       display: none;
     }
   }
+
+  .listing-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    // width: 50%
+  }
+
   .mapboxgl-ctrl,
   .mapboxgl-ctrl-logo {
     display: none;

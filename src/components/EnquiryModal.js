@@ -47,7 +47,7 @@ const EnquiryModal = ({ toggleModal, selectedService, companyId, companyName, op
     email: '',
     message: '',
     company: companyName,
-    subject: selectedService,
+    subject: 'helloooo new message',
     userId: auth.getUserId(),
     companyId,
     enquiryType: 'general'

@@ -9,57 +9,56 @@ import Chip from '@material-ui/core/Chip';
 import DoneIcon from '@material-ui/icons/Done';
 import { FormControlLabel, Checkbox, Typography, Box, Fab } from '@material-ui/core'
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
     height: "60px",
-    padding: "3px",
+    zIndex: 50,
     backgroundColor: "#e0e0e0",
     minWidth: "650px",
     width: "60%",
-    borderRadius: "40px",
     position: 'absolute',
-    top: '24%',
+    top: '50%',
     left: '50%',
-    transform: 'translate(-50%, -30%)',
+    borderRadius: '50px',
+    transform: 'translate(-50%, -50%)',
     display: 'none',
     [theme.breakpoints.up("sm")]: {
-      display: 'block'
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexDirection: 'row'
     },
 
   },
-  textField: {
-    minHeight: "60px",
-    borderRadius: '40px',
-    // border: '1px solid black',
-    position: 'absolute',
-    top: '50%',
-    left: '0',
-    width: '30%',
-    padding: '5px 20px 0 20px',
-    transform: 'translateY(-50%)',
+  locationField: {
+    borderTopLeftRadius: '50px',
+    borderBottomLeftRadius: '50px',
+    flex: 1.5,
+    minHeight: "45px",
     display: 'flex',
+    paddingLeft: '20px',
     justifyContent: 'center',
+    borderRight: '1px solid grey',
+
     "&:hover": {
       backgroundColor: 'lightgrey',
     },
   },
   ageContainer: {
+    // whiteSpace: 'nowrap',
+    overflow: 'scroll',
+    flex: 1,
+    color: 'grey',
+    paddingLeft: '10px',
+    display: 'flex',
+    alignItems: 'center',
     "&:hover": {
-      cursor: 'pointer'
+      cursor: 'pointer',
+      backgroundColor: 'lightgrey',
     },
-    borderRight: '1px solid black',
-    borderLeft: '1px solid black',
-    backgroundColor: "#e0e0e0",
-    boxShadow: '0',
-    minHeight: "60px",
-    borderRadius: '40px',
-    position: 'absolute',
-    top: '50%',
-    left: '30%',
-    width: '30%',
-    padding: '5px 20px 0 20px',
-    transform: 'translateY(-50%)',
+    minHeight: "45px",
   },
   chip: {
     margin: theme.spacing(0.5),
@@ -68,8 +67,8 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     minHeight: '250px',
     padding: '25px',
-    top: '90%',
-    right: 0,
+    top: '80%',
+    left: 0,
     width: '60%',
     marginTop: '20px',
     borderRadius: '20px',
@@ -81,7 +80,11 @@ const SearchBar = ({ history }) => {
   const classes = useStyles();
   const [address, setAddress] = React.useState();
   const [nonLocationFilter, setNonLocationFilter] = useState()
-
+  const [selectedValues, setSelectedValues] = useState({
+    age: null,
+    day: null,
+    time: null
+  })
 
   const [filterDetails, setFilterDetails] = React.useState({
     location: {
@@ -120,6 +123,32 @@ const SearchBar = ({ history }) => {
       adults: false
     }
   })
+
+  useEffect(() => {
+    const { age, timing } = filterDetails
+    let ageResult = false;
+    let daysResult = false;
+    let timeResult = false;
+
+    for (const i in age) {
+      if (age[i] === true) {
+        ageResult = true;
+        break;
+      }
+    }
+
+    for (const i in timing) {
+      for (const j in timing[i]) {
+        if (timing[i][j] === true) {
+          if (timing[i] === 'days') daysResult = true;
+          else timeResult = true
+          break;
+        }
+      }
+    }
+
+    setSelectedValues({ day: daysResult, age: ageResult, time: timeResult })
+  }, [filterDetails])
 
   const handleTimingChange = (e) => {
     const { name, checked, id } = e.target
@@ -224,7 +253,7 @@ const SearchBar = ({ history }) => {
   )
 
   const handleSelect = async (value) => {
-    
+
     const results = await geocodeByAddress(value)
     const latLng = await getLatLng(results[0])
 
@@ -242,24 +271,25 @@ const SearchBar = ({ history }) => {
 
   return (
     <AppBar position="static" className={classes.appBar}>
+
+      {/* location filter */}
       <PlacesAutocomplete value={address} onSelect={value => handleSelect(value)}
         onChange={setAddress}>
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <>
             <TextField
-              className={classes.textField}
-              placeholder="Explore location"
+              className={classes.locationField}
+              placeholder="Explore locations"
               {...getInputProps()}
               InputProps={{
                 disableUnderline: true,
               }}
-
             />
 
-
             <Card style={{
-              marginTop: '70px',
-              borderRadius: '20px'
+              position: 'absolute',
+              marginTop: '25rem',
+              borderRadius: '25px'
             }}>
               <div>
                 {loading && <div> ... </div>}
@@ -287,17 +317,19 @@ const SearchBar = ({ history }) => {
         )}
       </PlacesAutocomplete>
 
-      <div
-        onClick={() => {
-          // openFilterCard()
-          setNonLocationFilter('age')
-        }}
+
+
+
+      <div onClick={() => {
+        if (nonLocationFilter === 'age') setNonLocationFilter(null)
+        else setNonLocationFilter('age')
+      }}
+        style={{ borderRight: '1px grey solid' }}
         className={classes.ageContainer}>
-        {Object.keys(filterDetails.age).map((data, i) => {
+        {selectedValues.age ? Object.keys(filterDetails.age).map((data, i) => {
           const text = data === 'adults' ? 'Adults' : `${data} years`
           if (filterDetails.age[data]) {
             return (
-
               <Chip
                 style={{ backgroundColor: 'lightblue' }}
                 icon={<DoneIcon style={{ fontSize: '16px' }} />}
@@ -306,22 +338,25 @@ const SearchBar = ({ history }) => {
               />
             );
           }
-        })}
+        }) : (
+            <p> Explore ages </p>
+          )}
 
       </div>
 
+
+
       <div style={{ width: '40%', left: '60%' }}
         onClick={() => {
-          // openFilterCard()
-          setNonLocationFilter('timing')
+          if (nonLocationFilter === 'timing') setNonLocationFilter(null)
+          else setNonLocationFilter('timing')
         }}
         className={classes.ageContainer}>
-        {Object.keys(filterDetails.timing.days).map((data, i) => {
+        {(selectedValues.day || selectedValues.time) ? Object.keys(filterDetails.timing.days).map((data, i) => {
           const { days } = filterDetails.timing
           const text = data.charAt(0).toUpperCase() + data.slice(1)
           if (days[data]) {
             return (
-
               <Chip
                 style={{ backgroundColor: 'lightgreen' }}
                 icon={<DoneIcon style={{ fontSize: '16px' }} />}
@@ -330,7 +365,7 @@ const SearchBar = ({ history }) => {
               />
             );
           }
-        })}
+        }) : <p> Explore days & times </p>}
         {Object.keys(filterDetails.timing.times).map((data, i) => {
           const { times } = filterDetails.timing
           const text = data.charAt(0).toUpperCase() + data.slice(1)
@@ -349,16 +384,18 @@ const SearchBar = ({ history }) => {
 
       </div>
 
+
+
       <Fab onClick={handleFilterSubmit}
         color="secondary" aria-label="edit">
         <SearchIcon />
       </Fab>
 
-      <Card id='filter-card' className={classes.filterCard}>
+      {nonLocationFilter && <Card id='filter-card' className={classes.filterCard}>
         <div>
           {nonLocationFilter === 'age' ? ageFilters : timingFilters}
         </div>
-      </Card>
+      </Card> }
 
     </AppBar>
   );

@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, CardActions, CardContent, Divider, Paper, Typography } from '@material-ui/core';
+import { Avatar, Box, Button, Card, CardActions, CardContent, Divider, Paper, Typography, Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -6,7 +6,7 @@ import Select from '@material-ui/core/Select';
 import Slide from '@material-ui/core/Slide';
 import Snackbar from '@material-ui/core/Snackbar';
 import { makeStyles } from '@material-ui/core/styles';
-import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
+import { KeyboardArrowLeft, KeyboardArrowRight, ExpandMore } from "@material-ui/icons";
 import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
 import VerifiedUserSharpIcon from '@material-ui/icons/VerifiedUserSharp';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -472,23 +472,7 @@ const [ageSelection, setAgeSelection] = useState()
                 </FormControl>
                 </>
             )}
-            
-           
           
-
-                {/* {open && 
-                <CourseBookingDialogue
-                    openSnackBar={() => setSnackBarOpen(true)}
-                    companyId={companyId}
-                    companyName={companyName}
-                    camps={camps}
-                    selectedBooking={selectedBooking}
-                    courses={courses}
-                    Transition={Transition}
-                    open={open}
-                    handleClose={(e) => handleClose(e)}
-                  />
-                } */}
                   
               </div>
 
@@ -510,7 +494,6 @@ const [ageSelection, setAgeSelection] = useState()
                 selectedBooking={selectedBooking}
                 courses={courses}
                 Transition={Transition}
-                open={open}
                 handleClose={(e) => handleClose(e)}
             />
             ))}
@@ -522,13 +505,13 @@ const [ageSelection, setAgeSelection] = useState()
                 Services 
               </Box>
             </Typography> */}
-{/* 
-            {services.map((el, i) => {
+
+            {/* {services.map((el, i) => {
               return (
                 <Accordion key={i}>
                   <AccordionSummary
                     style={{minHeight: '70px'}}
-                    expandIcon={<ExpandMoreIcon />}
+                    expandIcon={<ExpandMore />}
                   >
                     <Typography className={classes.accordion}> {el.name} </Typography>
                   </AccordionSummary>
