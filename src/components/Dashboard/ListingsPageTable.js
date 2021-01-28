@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,9 +8,13 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button'
 import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 import ClearSharpIcon from '@material-ui/icons/ClearSharp';
 import CreateSharpIcon from '@material-ui/icons/CreateSharp';
+import Checkbox from '@material-ui/core/Checkbox'
+import axios from 'axios'
+import auth from '../../lib/auth';
 
 const useStyles = makeStyles({
   table: {
@@ -29,6 +34,29 @@ export default function ListingsPageTable({
   handleSetCoachId,
   handleSetListingToBeEdited }) {
   const classes = useStyles();
+  const liveState = {}
+  listings.forEach(listing => liveState[listing.listingId] = listing.status)
+  const [liveListing, setLiveListing] = useState(liveState)
+  console.log(liveListing)
+
+  const handleChange = (id, value) => {
+    // console.log(id)
+    const updated = { ...liveListing }
+    for (const listing of Object.keys(updated)) {
+      if (listing === id) {
+        updated[listing] = value === false ? 'live': 'saved'
+      } else {
+        updated[listing] = 'saved'
+      }
+      // console.log(updated)
+    }
+    const updates = Object.entries(updated)
+    axios.patch(`/listings/live`, { updates: updates })
+    .then(res => {
+      setLiveListing(updated)
+      // console.log(res)
+    })
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -36,12 +64,11 @@ export default function ListingsPageTable({
         <TableHead>
           <TableRow>
             <TableCell>Listing ID</TableCell>
-            <TableCell align="right">Images</TableCell>
             <TableCell align="right">Services</TableCell>
             <TableCell align="right">Camps</TableCell>
             <TableCell align="right">Courses</TableCell>
             <TableCell align="right">Coaches</TableCell>
-            <TableCell align="right">Status</TableCell>
+            <TableCell align="right">Select Your Live Listing</TableCell>
             <TableCell align="right"></TableCell>
             <TableCell align="right"></TableCell>
           </TableRow>
@@ -52,12 +79,21 @@ export default function ListingsPageTable({
               <TableCell component="th" scope="row">
                 {el.listingId}
               </TableCell>
-              <TableCell align="right">{el.images.length}</TableCell>
               <TableCell align="right">{el.services.length}</TableCell>
               <TableCell align="right">{el.camps.length}</TableCell>
               <TableCell align="right">{el.courses.length}</TableCell>
               <TableCell align="right">{el.coaches.length}</TableCell>
-              <TableCell align="right">{el.status}</TableCell>
+              {/* <TableCell align="right"></TableCell> */}
+              <TableCell align="right">
+              <Link to={{
+                  pathname: `/companies/${auth.getUserId()}/preview/${el.listingId}`,
+                }} target="_blank" ><Button variant="contained" >Preview</Button></Link>
+                <Checkbox
+                  checked={liveListing[el.listingId] === 'live'}
+                  onChange={() => handleChange(el.listingId, (liveListing[el.listingId] === 'live'))}
+
+                ></Checkbox>
+              </TableCell>
               <TableCell align="right">
                 <CreateSharpIcon
                   onClick={() => handleSetListingToBeEdited(el)}

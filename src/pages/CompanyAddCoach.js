@@ -18,6 +18,7 @@ import axios from "axios";
 import auth from '../lib/auth'
 import Avatar from '@material-ui/core/Avatar';
 import BackupIcon from "@material-ui/icons/Backup";
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles((theme) => ({
   spacing: {
@@ -68,23 +69,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CompanyAddCoach({ info }) {
+export default function CompanyAddCoach({ info, changePage, refreshState }) {
   const classes = useStyles();
 
   console.log(info)
 
   const { userId, imageURL } = info;
+
+  const [user, setUser] = useState(info)
+
+
+
+
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
-  const [dataChange, setDataChange] = useState(false);
+  // const [dataChange, setDataChange] = useState(false);
   const [avatarImage, setAvatarImage] = useState()
   const [name, setName] = React.useState(info.name);
   const [email, setEmail] = React.useState(info.email);
   const [phone, setPhone] = React.useState(info.main_contact_number);
   const [level, setLevel] = React.useState();
-  const [documents, setDocuments] = React.useState();
+  const [coachInfo, setCoachInfo] = React.useState(info.coachInfo);
   const [verified, setVerified] = React.useState(info.verified);
+  const [existing, setExisting] = React.useState(info.companies[0] === userId ? true : false)
   const [imageUpload, setImageUpload] = useState(false)
+  const [dataChange, setDataChange] = useState({
+    coachingCertificate: false,
+    dbsCertificate: false,
+  })
 
 
   const dbsInput = useRef();
@@ -97,27 +109,34 @@ export default function CompanyAddCoach({ info }) {
   });
 
   const handleSubmit = (e) => {
+    console.log(e)
+    refreshState(true);
+    // setDataChange({ ...dataChange, [e.target.name]: true })
     e.preventDefault();
     console.log(imageURL)
+    const path = existing ? `/users/${userId}` : `/companies/addSelfCoach`
     axios
       .patch(
-        `/companies/addSelfCoach`,
+        path,
         {
           userId,
-          updates: {
-            'coachInfo.imageURL': avatarImage,
-            'coachInfo.name': name,
-            'coachInfo.email': email,
-            main_contact_number: phone,
-            'coachInfo.coaching_level': level,
-            'coachInfo.documents': documents
-          }
+          // updates: {
+          //   'coachInfo.imageURL': avatarImage,
+          //   'coachInfo.name': name,
+          //   'coachInfo.email': email,
+          //   main_contact_number: phone,
+          //   'coachInfo.coaching_level': level,
+          //   'coachInfo.documents': documents
+          // }
+          updates: { ...user, coachInfo: { ...coachInfo } }
         },
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
       )
       .then((res) => {
         console.log(res.data);
-        // history.push("/testercoach");
+        // setDataChange({ ...dataChange, [e.target.name]: false })
+        
+        changePage(e, 0)
       })
       .catch((error) => {
         alert(error.message);
@@ -125,7 +144,9 @@ export default function CompanyAddCoach({ info }) {
   };
 
   const handleDocumentUpload = (e) => {
-    console.log("hellooo", e.target.name);
+    const type = e.target.name
+    setDataChange({ ...dataChange, [type]: true })
+    console.log("type", type);
     const image = e.target.files; 
     const document = new FormData();
 
@@ -135,16 +156,20 @@ export default function CompanyAddCoach({ info }) {
     console.log(document);
 
     axios
-      .patch(`/coaches/${userId}/document/${e.target.name}`, document, {
+      .patch(`/coaches/${userId}/document/${type}`, document, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
-        console.log(res.data.documents);
-        setDocuments(res.data.documents)
+        console.log(res.data)
+        const resInfo = res.data.coachInfo ? res.data.coachInfo : res.data.data.coachInfo 
+        console.log(resInfo);
+        setCoachInfo(resInfo)
+        setDataChange({ ...dataChange, [type]: false })
         // setDataChange(false);
       })
       .catch((err) => {
         console.error(err);
+        setDataChange({ ...dataChange, [type]: false })
         // setDataChange(false);
       });
   };
@@ -170,7 +195,7 @@ export default function CompanyAddCoach({ info }) {
   }
 
 
-
+  if (!coachInfo) return null
   return (
     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
 
@@ -192,7 +217,7 @@ export default function CompanyAddCoach({ info }) {
 
       <div className={classes.subContainer}>
 
-        <FormControl variant="outlined" className={classes.spacing}>
+        {/* <FormControl variant="outlined" className={classes.spacing}>
           <InputLabel htmlFor="component-outlined"> Coach name </InputLabel>
           <OutlinedInput
             label="Coach name"
@@ -220,33 +245,73 @@ export default function CompanyAddCoach({ info }) {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
+        </FormControl> */}
+
+
+<FormControl variant="outlined" className={classes.spacing}>
+          <InputLabel htmlFor="component-outlined"> Coach name </InputLabel>
+          <OutlinedInput
+            label="Coach name"
+            value={user.name}
+            onChange={(e) => setUser({ ...user, name: e.target.value })}
+          ></OutlinedInput>
         </FormControl>
 
+        <FormControl variant="outlined" className={classes.spacing}>
+          <InputLabel htmlFor="component-outlined"> Coach email </InputLabel>
+          <OutlinedInput
+            label="Coach email"
+            value={user.email}
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
+          />
+        </FormControl>
+
+        <FormControl variant="outlined" className={classes.spacing}>
+          <InputLabel htmlFor="component-outlined">
+            {' '}
+            Coach phone number{' '}
+          </InputLabel>
+          <OutlinedInput
+            label="Coach phone number"
+            value={user.main_contact_number}
+            onChange={(e) =>
+              setUser({ ...user, main_contact_number: e.target.value })
+            }
+          />
+        </FormControl>
 
 
       </div>
 
 
       <div className={classes.subContainer}>
-        <FormControl variant="outlined" className={classes.spacing}>
+      <FormControl variant="outlined">
           <InputLabel htmlFor="component-outlined" id="level">
             Coach Badges
           </InputLabel>
           <Select
             label="Coach Badges"
             id="select-level"
-            value={level}
-            onChange={(e) => setLevel(e.target.value)}
+            value={user.coachInfo.coaching_level}
+            onChange={(e) =>
+              setUser({
+                ...user,
+                coachInfo: { ...user.coachInfo, coaching_level: e.target.value },
+              })
+            }
           >
-            <MenuItem value={"FA Level 1"}>FA Level 1</MenuItem>
-            <MenuItem value={"FA Level 2"}>FA Level 2</MenuItem>
-            <MenuItem value={"FA Level 3 (UEFA B)"}>
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={'FA Level 1'}>FA Level 1</MenuItem>
+            <MenuItem value={'FA Level 2'}>FA Level 2</MenuItem>
+            <MenuItem value={'FA Level 3 (UEFA B)'}>
               FA Level 3 (UEFA B)
             </MenuItem>
-            <MenuItem value={"FA Level 4 (UEFA A)"}>
+            <MenuItem value={'FA Level 4 (UEFA A)'}>
               FA Level 4 (UEFA A)
             </MenuItem>
-            <MenuItem value={"FA Level 5 (UEFA PRO)"}>
+            <MenuItem value={'FA Level 5 (UEFA PRO)'}>
               FA Level 5 (UEFA PRO)
             </MenuItem>
           </Select>
@@ -267,6 +332,28 @@ export default function CompanyAddCoach({ info }) {
           <BackupIcon />
           UPLOAD COACHING CERTIFICATE
         </Button>
+        {coachInfo && coachInfo.coachingCertificate ? (
+          <div className={classes.wrapper}>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={coachInfo.coachingCertificate}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={dataChange.coachingCertificate}
+              >
+                Uploaded Document
+              </Button>
+            </a>
+            {dataChange.coachingCertificate && (
+              <CircularProgress size={24} className={classes.buttonProgress} />
+            )}
+          </div>
+        ) : (
+          <p>no document uploaded</p>
+        )}
 
         <Typography variant="p"> DBS Check </Typography>
 
@@ -295,7 +382,28 @@ export default function CompanyAddCoach({ info }) {
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <BackupIcon style={{ color: 'blue' }} onClick={() => dbsInput.current.click()} />
-          <p> {documents && documents.dbsCertificate ? documents.dbsCertificate : 'Upload DBS Cerificate'}  </p>
+          {coachInfo && coachInfo.dbsCertificate ? (
+          <div className={classes.wrapper}>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={coachInfo.dbsCertificate}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={dataChange.dbsCertificate}
+              >
+                Uploaded Document
+              </Button>
+            </a>
+            {dataChange.dbsCertificate && (
+              <CircularProgress size={24} className={classes.buttonProgress} />
+            )}
+          </div>
+        ) : (
+          <p>no document uploaded</p>
+        )}
         </div>
 
         <Button

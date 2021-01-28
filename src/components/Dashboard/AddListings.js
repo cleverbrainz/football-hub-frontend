@@ -1,6 +1,7 @@
 
 
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import {
   FormControl,
@@ -168,6 +169,13 @@ export default function AddListings({
 
   }, [])
 
+  function openPreview(e) {
+    e.preventDefault()
+    window.open(`/companies/${auth.getUserId()}/preview`)
+    
+
+  }
+
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -193,7 +201,7 @@ export default function AddListings({
         });
     } else {
       return axios
-        .post("/companies/listings", { ...requestObj, accountId: stripe_account.id })
+        .post("/addNewListing", { ...requestObj, accountId: stripe_account.id })
         .then((res) => {
           console.log(res.data);
           handleStateRefresh()
@@ -279,8 +287,8 @@ export default function AddListings({
         break;
 
       case 'coaches':
-        setCoachesIncluded(coachesIncluded.concat(coachesNotIncluded));
-        setCoachesNotIncluded([]);
+        setCoachesIncluded(coachesIncluded.concat(coachesNotIncluded.filter(coach => coach.account_validation_check)));
+        setCoachesNotIncluded(coachesNotIncluded.filter(coach => !coach.account_validation_check));
         break;
 
       default:
@@ -506,7 +514,6 @@ export default function AddListings({
         />
 
       </div>
-
       <Button
         variant="contained"
         // className={classes.button}

@@ -67,6 +67,13 @@ const IntroductionPage = ({ handleComponentChange }) => {
   const { user, userData, setUserData } = useContext(AuthContext)
   console.log(user)
 
+  const checkReducer = (toCheck) => {
+    const test = Object.values(toCheck).reduce((acc, curr) => {
+      return acc && curr 
+      }, true)
+    return test
+  }
+
   const introductionCheck = (toCheck) => {
 
     const newState = {
@@ -94,7 +101,18 @@ const IntroductionPage = ({ handleComponentChange }) => {
 
       console.log(newState)
     }
-    setCheckState({ ...newState })
+    // setUserData({ ...userData, verification: { ...userData.verification, setup: test } })
+    if (checkReducer(newState)) {
+      console.log('all good!')
+      axios.patch(`/users/${userData.userId}`, { userId: userData.userId, updates: { verification: { ...userData.verification, setup: true }}}, { headers: { authorization: `Bearer ${auth.getToken()}` }})
+        .then(res => {
+          console.log(res)
+          setCheckState({ ...newState })
+        })
+        .catch(err => console.log(err))
+    } else {
+      setCheckState({ ...newState })
+    }
   }
 
 
@@ -158,6 +176,19 @@ const IntroductionPage = ({ handleComponentChange }) => {
             </Paper>
           </Grid>)
         }) }
+                <Grid item xs={12}>
+          <Paper className={classes.paper}><div className={classes.titleBox}>
+              <Typography variant="h4">Create your first listing</Typography>{ userData.verification.setup ? <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box> : <Box className={`${classes.roundBox} ${classes.outstanding}`} border={1} borderRadius="50%">8</Box> }
+              </div>
+              <Typography variant="p" >Once you've finished setting up your account click here to create your first listing!</Typography>
+              <div className={classes.titleBox}>
+              {/* <Typography variant="p">Powered by Stripe</Typography> */}
+              <div></div>
+              <Button variant="contained" color="primary" onClick={(event) => handleComponentChange('Listings', 1)} disabled={!checkReducer(checkState)}>Create your first listing</Button>
+              {/* <Button variant="contained" color="secondary">Go to Stripe Dashboard</Button> */}
+              </div>
+            </Paper>
+        </Grid>
       </Grid>
     </div>
   )

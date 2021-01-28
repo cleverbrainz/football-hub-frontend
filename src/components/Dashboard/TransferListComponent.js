@@ -75,16 +75,29 @@ const TransferListComponent = ({ classes,
           return (
             // <h1> hello </h1>
             <ListItem key={value} role="listitem" button
-              onClick={handleToggle(el, listItems)}
+              onClick={listItems !== 'coaches' ? handleToggle(el, listItems) : el.account_validation_check ? handleToggle(el, listItems): null}
             >
               <ListItemIcon>
+                { listItems === 'coaches' && !el.account_validation_check ?
                 <Checkbox
+                  // disabled={listItems === 'coaches' ? !el.account_validation_check ? true : false : false}
+                  disabled
+                  checked={false}
+                  // checked={checked.indexOf(value)}
+                  tabIndex={-1}
+                  disableRipple
+                  inputProps={{ 'aria-labelledby': labelId }}
+                /> :
+                <Checkbox
+                  // disabled={listItems === 'coaches' ? !el.account_validation_check ? true : false : false}
                   checked={checked.includes(el)}
                   // checked={checked.indexOf(value)}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
+
+        }
               </ListItemIcon>
              <ListItemText id={labelId} primary={value} />
             </ListItem>
@@ -98,7 +111,7 @@ const TransferListComponent = ({ classes,
   return (
     <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
       <Grid item>
-        <h1> {listItems} Not Included on Listing </h1>
+        <h1> {listItems} not Included on Listing </h1>
 
         {customList(left)}
 
@@ -148,7 +161,7 @@ const TransferListComponent = ({ classes,
         </Grid>
       </Grid>
       <Grid item>
-        <h1> {listItems} Included on Listing </h1>
+        <h1> {listItems} included on Listing </h1>
         {customList(right)}
       </Grid>
     </Grid>

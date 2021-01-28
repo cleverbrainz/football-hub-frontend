@@ -10,7 +10,8 @@ import AssignmentSharpIcon from '@material-ui/icons/AssignmentSharp';
 import {
   Typography,
   Fab,
-  Button
+  Button,
+  Container
 } from "@material-ui/core";
 import Box from '@material-ui/core/Box';
 import axios from 'axios'
@@ -114,6 +115,7 @@ export default function Listings() {
   const [value, setValue] = useState(0);
   const [companyListings, setCompanyListings] = useState()
   const [open, setOpen] = useState(false)
+  const [completedSetup, setCompletedSetup] = useState(false)
   const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
   const [listingIdToBeDeleted, setListingIdToBeDeleted] = useState()
   const [listingToBeEdited, setListingToBeEdited] = useState()
@@ -129,15 +131,17 @@ export default function Listings() {
     images: []
   })
 
-  async function getData(data) {
+  async function getData(type, data) {
     let coachArray = []
 
     for (const request of data) {
       let coach
-      const response = await axios.get(`/users/${request}`)
-      coach = await response.data[0]
+      const response = await axios.get(`/${type}/${request}`)
+      coach = await response.data[0] ? response.data[0] : response.data
+      console.log(coach)
       coachArray.push(coach)
     }
+    console.log(coachArray)
     return coachArray
   }
 
@@ -145,11 +149,14 @@ export default function Listings() {
     axios
       .get(`/users/${auth.getUserId()}`)
       .then(async res => {
-        const { services, courses, name, images, listings, stripe_account } = res.data[0]
-        let { coaches } = res.data[0]
-        coaches = await getData(coaches)
+        const { services, courses, name, images, stripe_account, verification } = res.data[0]
+        let { coaches, listings } = res.data[0]
+        coaches = await getData('users', coaches)
+        listings = await getData('listings', listings)
+        console.log(listings)
         setCompanyListings(listings);
         setListingTransferListInfo({ ...listingTransferListInfo, stripe_account, coaches, services, courses, companyName: name, images })
+        setCompletedSetup(verification.setup)
       })
       .catch(e => console.log(e))
   }, [!stateRefreshInProgress]);
@@ -202,12 +209,11 @@ export default function Listings() {
     setValue(2)
     setListingToBeEdited(listing)
   }
-
   return (
     <div className={classes.root}>
 
       <AppBar position="static" color="default">
-        <Tabs
+        {completedSetup ? <Tabs
           className={classes.AppBar}
           value={value}
           onChange={handleChange}
@@ -220,16 +226,36 @@ export default function Listings() {
           <Tab label="Current Listings" icon={<FormatListNumberedSharpIcon />} {...a11yProps(0)} />
           <Tab label="Add New Listing" icon={<PlaylistAddSharpIcon />} {...a11yProps(1)} />
           <Tab label="Edit Listing" icon={<EditSharpIcon />} {...a11yProps(2)} />
+          
+          </Tabs>
+          : 
+          <Tabs
+          className={classes.AppBar}
+          value={value}
+          onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="on"
+          indicatorColor="primary"
+          textColor="primary"
+          aria-label="scrollable force tabs example"
+        >
+          <Tab label="Current Listings" icon={<FormatListNumberedSharpIcon />} {...a11yProps(0)} /> 
         </Tabs>
+          }
       </AppBar>
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-        {companyListings &&
+        {completedSetup && companyListings &&
           <ListingsPageTable
             listings={companyListings}
             handleSetListingId={listingId => handleSetListingId(listingId)}
             handleSetListingToBeEdited={listing => handleSetListingToBeEdited(listing)} />}
+        {!completedSetup && 
+        <Container>
+          <Typography>Please finish setting up your account before adding a listing</Typography>
+        </Container>
+        }
       </TabPanel>
 
       {/* tab 2 content */}
@@ -239,7 +265,7 @@ export default function Listings() {
           handleStateRefresh={() => handleStateRefresh()} classes={classes} />
       </TabPanel>
 
-      {/* tab 2 content */}
+      {/* tab 3 content */}
       <TabPanel className={classes.formContainer} value={value} index={2}>
         {listingToBeEdited &&
           <AddListings

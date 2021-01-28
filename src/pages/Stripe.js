@@ -13,7 +13,8 @@ export default function Stripe({
   selectedBooking,
   courses,
   classes,
-  accountId
+  accountId,
+  preview
 }) {
   const [message, setMessage] = useState("");
   const [loginBeforeBooking, setLoginBeforeBooking] = useState(false);
@@ -135,12 +136,13 @@ export default function Stripe({
 
         <CardActions>
           <Button
+            disabled={preview}
             onClick={handleClick}
             variant="contained"
             color="primary"
             size="small"> Reserve Now </Button>
-          <Typography variant="body2" component="p">
-            <p> You won't be charged yet </p>
+          <Typography variant="body2" component="p">{ preview ? <p>No booking during preview</p>: <p> You won't be charged yet </p>}
+            
           </Typography>
         </CardActions>
 
