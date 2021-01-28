@@ -91,9 +91,6 @@ import IntroductionPage from './components/Dashboard/IntroductionPage'
 import SuccessfulCheckout from './pages/SuccessfulCheckout'
 const stripePromise = loadStripe('pk_test_JX84GPfLfXGxVFWvGHaz1AWE')
 
-// const stripePromise = loadStripe('pk_test_JX84GPfLfXGxVFWvGHaz1AWE')
-
-
 // axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
 
 const App = () => {
@@ -144,7 +141,7 @@ const App = () => {
             <Route exact path="/test" component={Listings} />
 
             <Route exact path="/companies" component={Companies} />
-            <Route exact path="/companies/:id" component={IndividualCompany} />
+            <Route exact path="/companies/:id/:preview?/:listingId?" component={IndividualCompany} />
 
             <Route exact path="/:id/profile" component={Profile} />
             <Route exact path="/:id/profile/requests" component={Requests} />

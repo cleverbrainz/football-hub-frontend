@@ -145,8 +145,9 @@ export default function CoachEdit({ history }) {
   }
 
   const handleDocumentUpload = (e) => {
-    setDataChange({ ...dataChange, [e.target.name]: true })
-    console.log('hellooo', e.target.name)
+    const type = e.target.name
+    setDataChange({ ...dataChange, [type]: true })
+    console.log('hellooo', type)
     const image = e.target.files
     const document = new FormData()
 
@@ -156,18 +157,20 @@ export default function CoachEdit({ history }) {
     console.log(document)
 
     axios
-      .patch(`/coaches/${userId}/document/${e.target.name}`, document, {
+      .patch(`/coaches/${userId}/document/${type}`, document, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
         console.log(res.data)
-        setUser({ ...user, coachInfo: res.data.data.coachInfo })
+        const coach = res.data.coachInfo ? res.data.coachInfo : res.data.data.coachInfo
+        setUser({ ...user, coachInfo: coach })
         // setCoachInfo(res.data.coachInfo)
-        setDataChange({ ...dataChange, [e.target.name]: false })
+        setDataChange({ ...dataChange, [type]: false })
       })
       .catch((err) => {
         console.error(err)
-        setDataChange(false)
+        setDataChange({ ...dataChange, [type]: false })
+        // setDataChange(false)
       })
   }
 

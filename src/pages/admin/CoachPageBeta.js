@@ -231,10 +231,15 @@ function CoachPageBeta({ componentTabValue }) {
       })
   }
 
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    setDeleteInProgress(false)
+  };
+
   const InternalCoachForm = (
     // <FormPropsTextFields classes={classes} />
 
-    <CompanyAddCoach info={user} />
+    <CompanyAddCoach changePage={handleChange} refreshState={setDeleteInProgress} info={user} />
   )
 
   const Already = (
@@ -260,10 +265,6 @@ function CoachPageBeta({ componentTabValue }) {
   )
 
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
   return (
     <div className={classes.root}>
 
@@ -280,6 +281,7 @@ function CoachPageBeta({ componentTabValue }) {
         >
           <Tab label="Current Coaches" icon={<PeopleAltSharpIcon />} {...a11yProps(0)} />
           <Tab label="Add New Coach" icon={<PersonAddSharpIcon />} {...a11yProps(1)} />
+          <Tab label="Edit Details" icon={<PersonAddSharpIcon />} {...a11yProps(2)} />
         </Tabs>
       </AppBar>
 
@@ -389,6 +391,10 @@ function CoachPageBeta({ componentTabValue }) {
 
 
         </form>
+      </TabPanel>
+
+      <TabPanel value={value} index={2}>
+        <CompanyAddCoach changePage={handleChange} refreshState={setDeleteInProgress} info={user} />
       </TabPanel>
 
       <DeleteComponent

@@ -17,6 +17,7 @@ import CourseBookingDialogue from '../components/CourseBookingDialogue';
 import EnquiryModal from '../components/EnquiryModal';
 import Footer from '../components/Footer';
 import auth from '../lib/auth';
+import { campMultiDayCollection } from '../lib/firebase';
 import Stripe from '../pages/Stripe'
 
 
@@ -27,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent:'space-between',
     width: '100vw'
+  },
+  preview: {
+    border: '10px solid red'
   },
   section: {
     height: '100%',
@@ -152,12 +156,15 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const IndividualCompany = ({ location }) => {
+const IndividualCompany = ({ location, history, match }) => {
+  const { preview, listingId } = match.params
   const classes = useStyles()
   const [modalOpen, setModal] = useState(false)
   const [selectedService, setSelectedService] = useState()
-  const { companyName, images, bio, reasons_to_join, coaches, camps, services, courses, companyId, accountId } = location.state
-  const name = companyName.charAt(0).toUpperCase() + companyName.slice(1)
+  const [previewPage, setPreviewPage] = useState(preview ? true : false)
+  const [previewData, setPreviewData] = useState()
+  const { companyName, images, bio, reasons_to_join, coaches, camps, services, courses, companyId, accountId } = previewPage ? previewData ? previewData : {} : location.state
+  const name = companyName ? companyName.charAt(0).toUpperCase() + companyName.slice(1) : ''
   const [userCategory, setUserCategory] = useState('')
   const [open, setOpen] = React.useState(false);
   const [snackBarOpen, setSnackBarOpen] = useState(false)
@@ -167,6 +174,7 @@ const IndividualCompany = ({ location }) => {
     course: null
   })
 const [ageSelection, setAgeSelection] = useState()
+console.log(preview)
 
   const reviews = [...Array(6).keys()]
 
@@ -176,6 +184,19 @@ const [ageSelection, setAgeSelection] = useState()
 
   useEffect(() => {
     const ageArr = []
+
+    if (previewPage && !previewData) {
+      axios.get(`/listings/${listingId}`)
+      .then(res => {
+        console.log(res.data)
+        res.data.courses.forEach(el => {
+          const { age } = el.courseDetails
+          !ageArr.includes(age) && ageArr.push(age)
+        })
+        setAgeSelection(ageArr)
+        setPreviewData(res.data)
+      })
+    } else {
       
     courses.forEach(el => {
       const { age } = el.courseDetails
@@ -189,7 +210,7 @@ const [ageSelection, setAgeSelection] = useState()
         const category = res.data[0].category
         setUserCategory(category)
       })
-    
+    }
     
   },[])
 
@@ -249,10 +270,10 @@ const [ageSelection, setAgeSelection] = useState()
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-
+  if (previewPage && !previewData) return null
   return (
     <>
-      <div className={classes.root}>
+      <div className={!previewPage ? classes.root : `${classes.root} ${classes.preview}`}>
 
         <section className={classes.section}>
           <div>
@@ -478,12 +499,13 @@ const [ageSelection, setAgeSelection] = useState()
 
               <div className={classes.coachContainer}>
 
-            {(open) && (location.state.hasOwnProperty('accountId') ? (
+            {(open) && (accountId ? (
             <Stripe 
               selectedBooking={selectedBooking}
               courses={courses}
               classes={classes}
               accountId={accountId}
+              preview={previewPage}
              /> ) : 
             (
               <CourseBookingDialogue
