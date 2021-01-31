@@ -184,7 +184,7 @@ export default function Stripe({
 
     axios.get(`/users/${auth.getUserId()}`)
       .then(async res => {
-        const { name, userId, dob, stripeId } = res.data[0]
+        const { name, userId, dob, stripeId, email } = res.data[0]
 
         const response = await axios.post('/create-payment', {
           unitPrice: bookingWidget.total / bookingWidget.spaces,
@@ -197,7 +197,8 @@ export default function Stripe({
             playerId: userId,
             dob,
             name
-          }
+          },
+          email
         })
 
         const session = await response.data
