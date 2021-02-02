@@ -123,30 +123,31 @@ const App = () => {
             <AuthRouter exact path="/coachbeta" component={CoachPageBeta} />
 
             <Route exact path="/" component={Home} />
-            <AuthRouter exact path="/about" component={About} />
-            <AuthRouter exact path="/privacy-policy" component={PrivacyPolicy} />
-            <AuthRouter exact path="/join" component={Join} />
+            <Route exact path="/about" component={About} />
+            <Route exact path="/privacy-policy" component={PrivacyPolicy} />
+            <Route exact path="/join" component={Join} />
             <Route exact path="/login" component={Login} />
             {/* <AuthRouter exact path="/login" component={SignIn} /> */}
-            <AuthRouter
+            <Route
               exact
               path="/register/player/:companyLink?"
               component={RegisterPlayer}
             />
-            <AuthRouter
+            <Route
               exact
               path="/register/trainer/:companyLink?"
               component={RegisterTrainer}
             />
-            <AuthRouter
+            <Route
               exact
               path="/forgot_password"
               component={ForgottenPassword}
             />
             <AuthRouter exact path="/test" component={Listings} />
 
-            <AuthRouter exact path="/companies" component={Companies} />
-            <AuthRouter exact path="/companies/:id/:preview?/:listingId?" component={IndividualCompany} />
+            <Route exact path="/companies" component={Companies} />
+            <Route exact path="/companies/:id/:preview?/:listingId?" component={IndividualCompany} />
+            {/* <Route exact path="/companies/:id/:preview?/:listingId?" component={IndividualCompany} /> */}
 
             <AuthRouter exact path="/:id/profile" component={Profile} />
             <AuthRouter exact path="/:id/profile/requests" component={Requests} />
