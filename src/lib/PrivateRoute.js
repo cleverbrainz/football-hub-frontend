@@ -1,0 +1,31 @@
+import React, {useContext} from 'react';  
+import { Route, Redirect, withRouter } from "react-router-dom";
+import { CircularProgress } from '@material-ui/core'
+import { AuthContext } from './context';
+// import Loader from "../../Loader";
+
+const AuthRouter = ({ component: Component, ...rest }) => {
+
+    const {user} = useContext(AuthContext);
+    console.log(user)
+    console.log(user.user)
+    console.log(!!user.checked)
+    
+    return ( 
+        <Route
+        {...rest}
+            render={ (props) => (
+                user.checked ? (
+                    !!user.user ? (
+                            <Component {...props}/>
+                    ):(
+                      <Redirect to={'/login'} />
+                    )
+                ):(
+                        <CircularProgress size={80} style={{ position: 'fixed', top: '50%', left: '50%' }} />
+                )
+            )}
+        />
+    );
+}
+export default withRouter(AuthRouter);
