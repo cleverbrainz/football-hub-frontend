@@ -85,13 +85,16 @@ import Subscription from './Subscription'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import { AuthProvider } from './lib/context'
+import AuthRouter from './lib/PrivateRoute'
 import SignIn from './pages/AuthLogin'
 import IntroductionPage from './components/Dashboard/IntroductionPage'
+
 
 import CheckoutForm from './pages/StripePaymentMethod'
 
 import SuccessfulCheckout from './pages/SuccessfulCheckout'
 const stripePromise = loadStripe('pk_test_JX84GPfLfXGxVFWvGHaz1AWE')
+
 
 // axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
 
@@ -117,216 +120,216 @@ const App = () => {
           <Navbar />
           <Switch>
             {/* testing */}
-            <Route exact path="/coachbeta" component={CoachPageBeta} />
+            <AuthRouter exact path="/coachbeta" component={CoachPageBeta} />
 
             <Route exact path="/" component={Home} />
-            <Route exact path="/about" component={About} />
-            <Route exact path="/privacy-policy" component={PrivacyPolicy} />
-            <Route exact path="/join" component={Join} />
+            <AuthRouter exact path="/about" component={About} />
+            <AuthRouter exact path="/privacy-policy" component={PrivacyPolicy} />
+            <AuthRouter exact path="/join" component={Join} />
             <Route exact path="/login" component={Login} />
-            {/* <Route exact path="/login" component={SignIn} /> */}
-            <Route
+            {/* <AuthRouter exact path="/login" component={SignIn} /> */}
+            <AuthRouter
               exact
               path="/register/player/:companyLink?"
               component={RegisterPlayer}
             />
-            <Route
+            <AuthRouter
               exact
               path="/register/trainer/:companyLink?"
               component={RegisterTrainer}
             />
-            <Route
+            <AuthRouter
               exact
               path="/forgot_password"
               component={ForgottenPassword}
             />
-            <Route exact path="/test" component={Listings} />
+            <AuthRouter exact path="/test" component={Listings} />
 
-            <Route exact path="/companies" component={Companies} />
-            <Route exact path="/companies/:id/:preview?/:listingId?" component={IndividualCompany} />
+            <AuthRouter exact path="/companies" component={Companies} />
+            <AuthRouter exact path="/companies/:id/:preview?/:listingId?" component={IndividualCompany} />
 
-            <Route exact path="/:id/profile" component={Profile} />
-            <Route exact path="/:id/profile/requests" component={Requests} />
-            <Route
+            <AuthRouter exact path="/:id/profile" component={Profile} />
+            <AuthRouter exact path="/:id/profile/requests" component={Requests} />
+            <AuthRouter
               exact
               path="/companyDashboard/messages"
               component={CompanyMessages}
             />
 
-            <Route
+            <AuthRouter
               path="/courses/:courseId/register/:sessionDate?"
               component={CourseRegister}
             />
 
-            <Route exact path="/:id/messages" component={ClientMessages} />
-            <Route
+            <AuthRouter exact path="/:id/messages" component={ClientMessages} />
+            <AuthRouter
               exact
               path="/companyDashboard"
               component={CompanyDashboard}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/location"
               component={Location}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/addLocation"
               component={AddLocation}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/editLocation"
               component={EditLocation}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/companyDetails"
               component={CompanyDetails}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/editCompany"
               component={EditCompany}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/companyDetailsApproved"
               component={CompanyDetailsApproved}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/playersList"
               component={PlayersList}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/addCoaches"
               component={AddCoaches}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/editCoaches"
               component={EditCoaches}
             />
-            <Route exact path="/companyDashboard/coaches" component={Coaches} />
-            <Route
+            <AuthRouter exact path="/companyDashboard/coaches" component={Coaches} />
+            <AuthRouter
               exact
               path="/companyDashboard/coachDetails"
               component={CoachDetails}
             />
-            <Route exact path="/companyDashboard/courses" component={Courses} />
-            <Route
+            <AuthRouter exact path="/companyDashboard/courses" component={Courses} />
+            <AuthRouter
               exact
               path="/companyDashboard/addCourses"
               component={AddCourses}
             />
-            <Route exact path="/companyDashboard/camps" component={Camps} />
-            <Route
+            <AuthRouter exact path="/companyDashboard/camps" component={Camps} />
+            <AuthRouter
               exact
               path="/companyDashboard/weeklyCourses"
               component={WeeklyCourses}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/editWeeklyCourse"
               component={EditWeeklyCourse}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/editSingleCampCourse"
               component={EditSingleCampCourse}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/weeklyCourseDetails"
               component={WeeklyCourseDetails}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/weeklyDetails"
               component={WeeklyDetails}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/singleCampDetails"
               component={SingleCampDetails}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/services"
               component={Services}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/editServices"
               component={EditServices}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/editCourses"
               component={EditCourses}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/serviceDetails"
               component={ServiceDetails}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/courseDetails"
               component={CourseDetails}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/campOptions"
               component={CampOptions}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/campMultiDetails"
               component={CampMultiDetails}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/campSingleDetails"
               component={CampSingleDetails}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/addServices"
               component={AddServices}
             />
-            <Route
+            <AuthRouter
               exact
               path="/companyDashboard/addAgeGroup"
               component={AddAgeGroup}
             />
-            <Route exact path="/testlisting" component={ListingTester} />
-            {/* {auth.isLoggedIn() && additionalRoutes()} */}
+            <AuthRouter exact path="/testlisting" component={ListingTester} />
+            {/* {auth.isLoggedIn() && additionalRouts()} */}
 
             {/* indulge admin */}
-            <Route exact path="/admin/login" component={Login} />
-            <Route exact path="/admin/home" component={PopulateHome} />
-            <Route exact path="/admin" component={AdminHome} />
-            <Route exact path="/adminbeta" component={AdminHomeBeta} />
+            <AuthRouter exact path="/admin/login" component={Login} />
+            <AuthRouter exact path="/admin/home" component={PopulateHome} />
+            <AuthRouter exact path="/admin" component={AdminHome} />
+            <AuthRouter exact path="/adminbeta" component={AdminHomeBeta} />
 
-            <Route exact path="/tester" component={AdminDashboard} />
-            <Route exact path="/tester/edit" component={CompanyDetailsEdit} />
-            <Route exact path="/tester/search" component={PlayerSearch} />
-            <Route exact path="/testercoach" component={CoachDashboard} />
-            <Route exact path="/testercoach/edit" component={CoachEdit} />
+            <AuthRouter exact path="/tester" component={AdminDashboard} />
+            <AuthRouter exact path="/tester/edit" component={CompanyDetailsEdit} />
+            <AuthRouter exact path="/tester/search" component={PlayerSearch} />
+            <AuthRouter exact path="/testercoach" component={CoachDashboard} />
+            <AuthRouter exact path="/testercoach/edit" component={CoachEdit} />
 
-            <Route exact path="/stripe-payment" component={StripePayment} />
+            <AuthRouter exact path="/stripe-payment" component={StripePayment} />
 
-            <Route exact path="/termsandconditions" component={Terms} />
+            <AuthRouter exact path="/termsandconditions" component={Terms} />
 
-            <Route exact path="/subscription" component={Subscription} />
-            <Route exact path="/introduction" component={IntroductionPage} />
-            <Route exact path="/checkout" component={SuccessfulCheckout} />
+            <AuthRouter exact path="/subscription" component={Subscription} />
+            <AuthRouter exact path="/introduction" component={IntroductionPage} />
+            <AuthRouter exact path="/checkout" component={SuccessfulCheckout} />
 
 
-            <Route exact path="/checkout-form" component={CheckoutForm} />
+            <AuthRouter exact path="/checkout-form" component={CheckoutForm} />
           </Switch>
         </Router>
       </AuthProvider>

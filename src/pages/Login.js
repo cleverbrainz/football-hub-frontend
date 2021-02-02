@@ -193,7 +193,7 @@ export default function Login({ history, location }) {
   // )
 
 
-
+  if (!user) return null
   return (
     <>
    {!!user.user ? !!userData.category ? (

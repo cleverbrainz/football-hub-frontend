@@ -6,7 +6,10 @@ import { firebaseApp } from './firebase'
 export const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState({
+    'user': null,
+    'checked': false
+  })
   const [userData, setUserData] = useState({})
   
   useEffect(() => {
@@ -25,6 +28,7 @@ export const AuthProvider = ({ children }) => {
           });
         });
       }else{
+
         setUser({
           'user': null,
           'checked': true
@@ -33,14 +37,7 @@ export const AuthProvider = ({ children }) => {
     });
   }, [])
 
-
-  const value = useMemo(() => ({
-    user,
-    userData,
-    setUserData,
-  }), [user, userData])
-
   return (
-    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{user, userData, setUserData}}>{children}</AuthContext.Provider>
   )
 }
