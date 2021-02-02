@@ -51,6 +51,10 @@ const useStyles = makeStyles((theme) => ({
   complete: {
     color: 'white',
     backgroundColor: 'green'
+  },
+  pending: {
+    color: 'white',
+    backgroundColor: 'orange'
   }
 }));
 
@@ -69,6 +73,7 @@ const IntroductionPage = ({ handleComponentChange }) => {
 
   const checkReducer = (toCheck) => {
     const test = Object.values(toCheck).reduce((acc, curr) => {
+      if (curr === 'pending') return false
       return acc && curr 
       }, true)
     return test
@@ -97,7 +102,7 @@ const IntroductionPage = ({ handleComponentChange }) => {
           console.log('empty object')
         ) : (Object.keys(check).length > 0 ? newState[type] = true :
         console.log('empty object'))
-      ) : console.log('undefined') 
+      ) : type === 'companyInfo' ? ( toCheck.verification.companyDetailsCheck ? newState[type] = true : toCheck.verificationId?.companyInfo ? newState[type] = 'pending' : newState[type]= false ) : console.log('undefined') 
 
       console.log(newState)
     }
@@ -155,7 +160,7 @@ const IntroductionPage = ({ handleComponentChange }) => {
               <a href="https://stripe.com/gb">
                 <img alt="Powered by Stripe" style={{maxWidth: "80%"}} src='https://i.imgur.com/VzVZXkr.png'/>
               </a>
-              <Button variant="contained" color="primary">Go to Stripe Dashboard</Button>
+              <Button variant="contained" color="primary" onClick={() => handleComponentChange('Subscription', 0)}>Go to Stripe Dashboard</Button>
               {/* <Button variant="contained" color="secondary">Go to Stripe Dashboard</Button> */}
               </div>
             </Paper>
@@ -167,7 +172,7 @@ const IntroductionPage = ({ handleComponentChange }) => {
               <div className={classes.titleBox}>
               <Typography variant="h4">{item.name}</Typography>
               {!checkState[item.state]? <Box className={`${classes.roundBox} ${classes.outstanding}`} border={1} borderRadius="50%">{index + 2}</Box> :
-               <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box>
+               checkState[item.state] === 'pending' ? <Box className={`${classes.roundBox} ${classes.pending}`} border={1} borderRadius="50%">⌛</Box> : <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box>
               }
               </div>
               <Typography variant="p">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque tristique lacus eu bibendum. Pellentesque et lacinia elit.</Typography>

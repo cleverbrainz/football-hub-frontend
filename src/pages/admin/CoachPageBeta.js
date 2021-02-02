@@ -122,7 +122,7 @@ function CoachPageBeta({ componentTabValue }) {
   const [companyCoaches, setCompanyCoaches] = useState()
   const [allAppCoaches, setAllAppCoaches] = useState()
 
-  const [newCoachDetail, setNewCoachDetail] = useState()
+  const [newCoachDetail, setNewCoachDetail] = useState('')
   const [externalCoachDetail, setExternalCoachDetail] = useState()
   const [open, setOpen] = useState(false)
   const [deleteInProgress, setDeleteInProgress] = useState(false)

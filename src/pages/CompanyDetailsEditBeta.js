@@ -122,7 +122,8 @@ function CompanyDetailsEdit({ history }) {
         `/users/${userId}`,
         {
           userId,
-          updates: companyInfo
+          updates: companyInfo,
+          type: 'companyInfo'
         },
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
       )

@@ -353,7 +353,7 @@ export default function RegisterPlayer({ match }) {
           <TextField id="outlined-basic"
             type='text'
             variant="outlined"
-
+            value=''
             name={el.toLowerCase().replace(/ /g, '_')} label={el} />
         </FormControl>
       )

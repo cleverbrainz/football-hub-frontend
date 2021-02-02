@@ -51,6 +51,7 @@ import Registers from '../components/Dashboard/RegisterTab'
 import ContactInfo from '../components/Dashboard/ContactInfo'
 import CompanyDetailsEdit from './CompanyDetailsEdit';
 import CompanyDetailsEditBeta from './CompanyDetailsEditBeta';
+import Subscription from '../Subscription';
 
 const drawerWidth = 240;
 
@@ -139,7 +140,7 @@ export default function Profile({ history }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState('Sessions');
+  const [selectedComponent, setSelectedComponent] = useState('Summary');
   const [componentTabValue, setComponentTabValue] = useState(0)
 
   const [drawerItems, setDrawerItems] = useState({
@@ -167,6 +168,7 @@ export default function Profile({ history }) {
     Calendar,
     Contact: ContactInfo,
     Edit: CompanyDetailsEditBeta,
+    Subscription
   }
 
   const DisplayedComponent = dashboardComponents[selectedComponent]
@@ -186,7 +188,7 @@ export default function Profile({ history }) {
         color="inherit"
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
+          [classes.appBarShift]: open
         })}
       >
 
