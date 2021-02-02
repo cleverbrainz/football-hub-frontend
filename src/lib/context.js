@@ -1,3 +1,4 @@
+import { zhCN } from 'date-fns/esm/locale'
 import React, { useEffect, useState, createContext, useMemo } from 'react'
 import auth from './auth'
 import { firebaseApp } from './firebase'
@@ -11,6 +12,8 @@ export const AuthProvider = ({ children }) => {
     'checked': false
   })
   const [userData, setUserData] = useState({})
+
+  console.log(user)
   
   useEffect(() => {
     firebaseApp.auth().onAuthStateChanged(function(user){
@@ -28,7 +31,6 @@ export const AuthProvider = ({ children }) => {
           });
         });
       }else{
-
         setUser({
           'user': null,
           'checked': true
