@@ -40,5 +40,30 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-performance.js"></script>
+    <script>
+      // const inicializarFirebase = () => {
+      //   firebase.initializeApp({
+      //     messagingSenderId: "123456654321",
+      //   });
+
+      //   navigator.serviceWorker
+      //     .register("/firebase-messaging-sw.js")
+      //     .then((registration) => {
+      //       firebase.messaging().useServiceWorker(registration);
+      //     });
+      // };
+
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/firebase-messaging-sw.js");
+        });
+      }
+    </script>
   </body>
 </html>

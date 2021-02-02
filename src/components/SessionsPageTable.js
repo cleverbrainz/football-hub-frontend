@@ -47,7 +47,7 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
 
   function WeeklyRow({ course }) {
     const { courseId, companyId, coaches } = course
-    const { startDate, endDate, paymentInterval, cost, age, location, optionalName } = course.courseDetails
+    const { startDate, endDate, allow_weekly_payment, cost, age, optionalName } = course.courseDetails
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
     const [courseCoaches, setCourseCoaches] = React.useState(coaches)
@@ -85,14 +85,11 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
           <TableCell component="th" scope="row">
             {optionalName}
           </TableCell>
-          <TableCell align='right'>
-            {location}
-          </TableCell>
           <TableCell align="right">{startDate}</TableCell>
           <TableCell align="right">{endDate}</TableCell>
           <TableCell align="right">{age}</TableCell>
           <TableCell align="right">{cost}</TableCell>
-          <TableCell align="right">{paymentInterval}</TableCell>
+          <TableCell align="right">{allow_weekly_payment ? 'Yes' : 'No'}</TableCell>
           <TableCell align="right">
             <CreateSharpIcon
               style={{ color: '#709995' }}
@@ -319,12 +316,11 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
             <TableRow>
               <TableCell />
               <TableCell>Name</TableCell>
-              <TableCell align="right">Venue </TableCell>
               <TableCell align="right">Start Date</TableCell>
               <TableCell align="right">End Date</TableCell>
               <TableCell align="right">Age Group</TableCell>
               <TableCell align="right">Cost</TableCell>
-              <TableCell align="right">Payment Interval</TableCell>
+              <TableCell align="right"> Weekly Payments </TableCell>
               <TableCell align="right"></TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>

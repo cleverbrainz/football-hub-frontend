@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useStripe } from "@stripe/react-stripe-js";
 import axios from 'axios'
-// Make sure to call `loadStripe` outside of a component’s render to avoid
-// recreating the `Stripe` object on every render.
 import moment from 'moment'
 import PreCheckoutLogin from '../components/PreCheckoutLogin'
-// import CourseBookingDialogue from '../components/CheckoutLogin'
+import CheckoutForm from '../pages/StripePaymentMethod'
 import auth from '../lib/auth'
 import { Button, CardActions, CardContent, Paper, Typography, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+
 
 export default function Stripe({
   selectedBooking,
@@ -24,27 +23,28 @@ export default function Stripe({
     spaces: 1,
     total: null
   })
+  const [checkout, setCheckout] = useState(false)
 
-  const { 
-    course, 
+  const {
+    course,
     courseType } = selectedBooking
-  const { courseId } = course
-  const { 
-    age, 
-    cost, 
-    space, 
-    services, 
+  const { courseId, stripe_product_id, companyId } = course
+  const {
+    age,
+    cost,
+    space,
+    services,
     courseCategory,
-    sessions, 
-    optionalName, 
-    startDate, 
-    endDate, 
-    location, 
-    campCost, 
-    firstDay, 
+    sessions,
+    optionalName,
+    startDate,
+    endDate,
+    location,
+    campCost,
+    firstDay,
     lastDay } = course.courseDetails
 
- 
+
 
 
   const handleBookingWidget = (e) => {
@@ -55,7 +55,7 @@ export default function Stripe({
 
 
   useEffect(() => {
-
+    console.log(course)
     if (courseType === 'course') {
       const locationArr = []
       sessions.forEach((el, i) => {
@@ -139,9 +139,9 @@ export default function Stripe({
           </FormControl>
 
 
-          <Typography style={{ fontWeight: 'bold' }} variant="h6" component="h6">
+          {/* <Typography style={{ fontWeight: 'bold' }} variant="h6" component="h6">
             Total: £{bookingWidget.total}
-          </Typography>
+          </Typography> */}
 
 
         </CardContent>
@@ -154,8 +154,8 @@ export default function Stripe({
             variant="contained"
             color="primary"
             size="small"> Reserve Now </Button>
-          <Typography variant="body2" component="p">{ preview ? <p>No booking during preview</p>: <p> You won't be charged yet </p>}
-            
+          <Typography variant="body2" component="p">{preview ? <p>No booking during preview</p> : <p> You won't be charged yet </p>}
+
           </Typography>
         </CardActions>
 
@@ -169,6 +169,15 @@ export default function Stripe({
         handleClick={(e) => handleClick(e)}
         handleClose={() => setLoginBeforeBooking(false)}
         open={loginBeforeBooking} />}
+
+      {!loginBeforeBooking && <CheckoutForm
+        connectedAccount={accountId}
+        companyId={companyId}
+        courseId={courseId}
+        stripeId={stripe_product_id}
+        open={checkout}
+        handleClose={() => setCheckout(false)}
+      />}
     </>
 
   );
@@ -182,34 +191,8 @@ export default function Stripe({
       return
     }
 
-    axios.get(`/users/${auth.getUserId()}`)
-      .then(async res => {
-        const { name, userId, dob, stripeId, email } = res.data[0]
+    setCheckout(true)
 
-        const response = await axios.post('/create-payment', {
-          unitPrice: bookingWidget.total / bookingWidget.spaces,
-          // product: `${location} weekly course (${day} @ ${startTime} - ${endTime})`,
-          spaces: bookingWidget.spaces,
-          accountId,
-          stripeId,
-          metadata: {
-            courseId,
-            playerId: userId,
-            dob,
-            name
-          },
-          email
-        })
-
-        const session = await response.data
-
-        const result = await stripe.redirectToCheckout({
-          sessionId: session.id,
-        })
-        if (result.error) {
-
-        }
-      })
   }
   return message ? <Message message={message} /> : <ProductDisplay handleClick={handleClick} />
 }
