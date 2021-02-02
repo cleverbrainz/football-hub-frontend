@@ -114,7 +114,7 @@ const Subscription = () => {
 
   const sendToCheckout = (event, price) => {
     event.preventDefault()
-    axios.post('/subscriptions/new', { userId: userId, price: price, url: 'http://localhost:3000/tester' })
+    axios.post('/subscriptions/new', { userId: userId, price: price, url: 'https://football-hub-4018a.firebaseapp.com/tester' })
       .then(res => {
         const { error, sessionId } = res.data
         console.log(res)
