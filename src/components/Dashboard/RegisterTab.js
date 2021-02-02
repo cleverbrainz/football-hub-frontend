@@ -152,9 +152,9 @@ export default function Registers() {
       // console.log('data', data)
       if (!register.register) {
         const response = await axios.get(`/courses/${course.courseId}/emptyRegister`)
-        register = await response.data.course
-        console.log(register)
-        activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+        const newRegister = await response.data.course
+        console.log(newRegister)
+        activeRegisterArray.push([course.courseDetails, course.courseId, newRegister.register.sessions])
       } else {
         activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
       }
@@ -167,9 +167,9 @@ export default function Registers() {
       // console.log('data', data)
       if (!register.register) {
         const response = await axios.get(`/courses/${course.courseId}/emptyRegister`)
-        register = await response.data.course
-        console.log(register)
-        pastRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+        const newRegister = await response.data.course
+        console.log(newRegister)
+        pastRegisterArray.push([course.courseDetails, course.courseId, newRegister.register.sessions])
       } else {
         pastRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
       }

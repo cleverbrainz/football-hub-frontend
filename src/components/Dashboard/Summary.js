@@ -59,7 +59,7 @@ const Summary = ({ handleComponentChange }) => {
   const [companyMessages, setCompanyMessages] = useState()
 
   async function getData() {
-    if (!user) return
+    if (!user.user) return
     let registerArray = []
     const response = await axios.get(`/users/${user.userId}`)
     const data = await response.data[0]
@@ -120,7 +120,7 @@ const Summary = ({ handleComponentChange }) => {
   useEffect(() => {
     getMessages()
     getData()
-  }, [!user])
+  }, [!user.user])
 
   console.log(userData)
 
