@@ -500,7 +500,7 @@ console.log(preview)
               <div className={classes.coachContainer}>
 
             {(open) && (accountId ? (
-            <Stripe 
+            <Stripe
               selectedBooking={selectedBooking}
               courses={courses}
               classes={classes}

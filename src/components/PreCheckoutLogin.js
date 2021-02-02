@@ -114,6 +114,7 @@ export default function PreCheckoutLogin({
         if (followUpAction === 'enquiry') {
           handleClose()
         } else {
+          handleClose()
           handleClick()
         }
        

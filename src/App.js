@@ -88,6 +88,8 @@ import { AuthProvider } from './lib/context'
 import SignIn from './pages/AuthLogin'
 import IntroductionPage from './components/Dashboard/IntroductionPage'
 
+import CheckoutForm from './pages/StripePaymentMethod'
+
 import SuccessfulCheckout from './pages/SuccessfulCheckout'
 const stripePromise = loadStripe('pk_test_JX84GPfLfXGxVFWvGHaz1AWE')
 
@@ -320,8 +322,11 @@ const App = () => {
             <Route exact path="/termsandconditions" component={Terms} />
 
             <Route exact path="/subscription" component={Subscription} />
-            <Route exact path="/introduction" component={IntroductionPage}/>
-       <Route exact path="/checkout" component={SuccessfulCheckout} />
+            <Route exact path="/introduction" component={IntroductionPage} />
+            <Route exact path="/checkout" component={SuccessfulCheckout} />
+
+
+            <Route exact path="/checkout-form" component={CheckoutForm} />
           </Switch>
         </Router>
       </AuthProvider>

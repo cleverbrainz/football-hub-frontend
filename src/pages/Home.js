@@ -27,6 +27,9 @@ import axios from "axios";
 import SearchBar from "./HomeSearch";
 import ExploreIcon from "@material-ui/icons/Explore";
 import Footer from '../components/Footer'
+import { askForPermissioToReceiveNotifications } from '../notifications/push-notifications';
+
+import { useStripe } from "@stripe/react-stripe-js";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -115,6 +118,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Home = () => {
+  const stripe = useStripe();
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
@@ -220,6 +224,8 @@ const Home = () => {
           src="https://images.unsplash.com/photo-1556476870-36fde88f47d0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMjF9&auto=format&fit=crop&w=2090&q=80"
           alt=""
         />
+
+   
 
         <SearchBar classes={classes} />
 
