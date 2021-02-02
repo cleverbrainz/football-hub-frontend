@@ -215,7 +215,7 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
 
   function CampRow({ course }) {
     const { courseId } = course
-    const { lastDay, firstDay, location, sessions, dayCost, campCost, age } = course.courseDetails
+    const { endDate, startDate, location, sessions, cost, age } = course.courseDetails
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
 
@@ -232,12 +232,11 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
           <TableCell component="th" scope="row">
             {courseId}
           </TableCell>
-          <TableCell align="right">{firstDay}</TableCell>
-          <TableCell align="right">{lastDay}</TableCell>
+          <TableCell align="right">{startDate}</TableCell>
+          <TableCell align="right">{endDate}</TableCell>
           <TableCell align="right">{location}</TableCell>
           <TableCell align="right">{age}</TableCell>
-          <TableCell align="right">{campCost}</TableCell>
-          <TableCell align="right">{dayCost}</TableCell>
+          <TableCell align="right">{cost}</TableCell>
           <TableCell align="right">
             <CreateSharpIcon
               style={{ color: '#709995' }}
@@ -348,8 +347,7 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
               <TableCell align="right">End Date</TableCell>
               <TableCell align="right">Venue</TableCell>
               <TableCell align="right">Age Group</TableCell>
-              <TableCell align="right">Camp Cost</TableCell>
-              <TableCell align="right">Day Cost</TableCell>
+              <TableCell align="right">Cost</TableCell>
               <TableCell align="right"></TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
