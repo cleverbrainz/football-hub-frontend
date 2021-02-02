@@ -193,35 +193,6 @@ export default function Stripe({
 
     setCheckout(true)
 
-
-
-    // axios.get(`/users/${auth.getUserId()}`)
-    //   .then(async res => {
-    //     const { name, userId, dob, stripeId } = res.data[0]
-
-    //     const response = await axios.post('/create-payment', {
-    //       unitPrice: bookingWidget.total / bookingWidget.spaces,
-    //       // product: `${location} weekly course (${day} @ ${startTime} - ${endTime})`,
-    //       spaces: bookingWidget.spaces,
-    //       accountId,
-    //       stripeId,
-    //       metadata: {
-    //         courseId,
-    //         playerId: userId,
-    //         dob,
-    //         name
-    //       }
-    //     })
-
-    //     const session = await response.data
-
-    //     const result = await stripe.redirectToCheckout({
-    //       sessionId: session.id,
-    //     })
-    //     if (result.error) {
-
-    //     }
-    //   })
   }
   return message ? <Message message={message} /> : <ProductDisplay handleClick={handleClick} />
 }

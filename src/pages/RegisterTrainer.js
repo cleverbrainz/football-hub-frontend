@@ -141,7 +141,6 @@ export default function RegisterTrainer({ match }) {
           setFieldErrors(err.response.data)
         })
     } else if (activeStep === 2) {
-
       for (var key in registerFields) {
         if (!registerFields[key]) delete registerFields[key]
       }
@@ -336,6 +335,7 @@ export default function RegisterTrainer({ match }) {
           <TextField id="outlined-basic"
             type='text'
             variant="outlined"
+            value={el === 'Main Email' || el === 'Accounts Email' ? registerFields.email : ''}
             // error={fieldErrors ? fieldErrors[fieldName] ? true : false : null}
             // helperText={fieldErrors ? fieldErrors[fieldName] : null}
             name={el.toLowerCase().replace(/ /g, '_')} label={el} />

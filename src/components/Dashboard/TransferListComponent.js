@@ -75,10 +75,10 @@ const TransferListComponent = ({ classes,
           return (
             // <h1> hello </h1>
             <ListItem key={value} role="listitem" button
-              onClick={listItems !== 'coaches' ? handleToggle(el, listItems) : el.account_validation_check ? handleToggle(el, listItems): null}
+              onClick={listItems !== 'coaches' ? handleToggle(el, listItems) : (el.verification.coachDocumentationCheck && el.verification.dbsDocumentationCheck) ? handleToggle(el, listItems): null}
             >
               <ListItemIcon>
-                { listItems === 'coaches' && !el.account_validation_check ?
+                { listItems === 'coaches' && (!el.verification.coachDocumentationCheck || !el.verification.dbsDocumentationCheck) ?
                 <Checkbox
                   // disabled={listItems === 'coaches' ? !el.account_validation_check ? true : false : false}
                   disabled
