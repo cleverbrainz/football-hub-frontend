@@ -73,16 +73,16 @@ export default function MaterialUIPickers({ history, course,
   const [ageGroups, setAgeGroups] = React.useState([]);
   const [courseDetails, setCourseDetails] = React.useState({
     optionalName: course ? course.courseDetails.optionalName : "",
-    firstDay: course ? course.courseDetails.firstDay : "",
-    lastDay: course ? course.courseDetails.lastDay : "",
+    startDate: course ? course.courseDetails.startDate : "",
+    endDate: course ? course.courseDetails.endDate : "",
     location: course ? course.courseDetails.location : "",
     excludeDays: course ? course.courseDetails.excludeDays : [],
     sessions: course ? course.courseDetails.sessions : [],
     courseType: "Camp",
-    campCost: course ? course.courseDetails.campCost : "",
-    dayCost: course ? course.courseDetails.dayCost : "",
+    cost: course ? course.courseDetails.cost : "",
+    // dayCost: course ? course.courseDetails.dayCost : "",
     age: course ? course.courseDetails.age : "",
-    individualDayBookings: course ? course.courseDetails.individualDayBookings : false,
+    // individualDayBookings: course ? course.courseDetails.individualDayBookings : false,
     spaces: course ? course.courseDetails.spaces : "",
     startTime: course ? course.courseDetails.startTime : "",
     endTime: course ? course.courseDetails.endTime : ""
@@ -290,7 +290,7 @@ export default function MaterialUIPickers({ history, course,
             InputLabelProps={{
               shrink: true,
             }}
-            name="firstDay"
+            name="startDate"
             value={firstDay}
             onChange={(e) => updateOtherCourseInfo(e)}
           />
@@ -305,7 +305,7 @@ export default function MaterialUIPickers({ history, course,
             InputLabelProps={{
               shrink: true,
             }}
-            name="lastDay"
+            name="endDate"
             value={lastDay}
             onChange={(e) => updateOtherCourseInfo(e)}
           />
@@ -458,14 +458,14 @@ export default function MaterialUIPickers({ history, course,
         >
           <InputLabel>Total cost of camp (£)</InputLabel>
           <OutlinedInput
-            name="campCost"
+            name="cost"
             value={campCost}
             label="Total cost of camp (£)"
             onChange={(e) => updateOtherCourseInfo(e)}
           />
         </FormControl>
 
-
+{/* 
         <FormControlLabel control={<Checkbox
           checked={individualDayBookings}
           onClick={() => setCourseDetails({
@@ -487,7 +487,7 @@ export default function MaterialUIPickers({ history, course,
             />
           </FormControl>
 
-        )}
+        )} */}
 
         <Button
           className={classes.button}
