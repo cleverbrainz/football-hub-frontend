@@ -186,7 +186,7 @@ export default function Profile({ history }) {
         color="inherit"
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,s
+          [classes.appBarShift]: open,
         })}
       >
 

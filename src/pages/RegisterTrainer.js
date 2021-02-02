@@ -133,7 +133,7 @@ export default function RegisterTrainer({ match }) {
           setIsLoading(false)
         })
         .then(() => {
-          setRegisterFields({ ...registerFields, name: '', email: '', password: '', confirmPassword: '' })
+          setRegisterFields({ ...registerFields, password: '', confirmPassword: '' })
           setActiveStep((prevActiveStep) => prevActiveStep + 1)
         })
         .catch(err => {
