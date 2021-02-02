@@ -20,6 +20,7 @@ import ResetCampDetailsDialogue from '../../components/ResetCampDetailsDialogue'
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import moment from 'moment'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -66,7 +67,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
     sessions: course ? course.courseDetails.sessions : [],
     cost: course ? course.courseDetails.cost : "",
     courseType: "Weekly",
-    allowWeeklyPayment: course ? course.courseDetails.allowWeeklyPayment : false,
+    allow_weekly_payment: course ? course.courseDetails.allow_weekly_payment : false,
     age: course ? course.courseDetails.age : "",
     spaces: course ? course.courseDetails.spaces : "",
     courseCategory: course ? course.courseDetails.courseCategory : "",
@@ -101,7 +102,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
         setAgeGroups(ageArr)
       })
   }, [])
-
+ 
   const handleSubmit = (e) => {
     e.preventDefault();
     const courseDetails = { ...formDetails }
@@ -116,6 +117,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
           alert(error.message);
         });
     } else {
+
       return axios
         .post("/companies/courses", {
           courseDetails,
@@ -132,17 +134,17 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
   };
 
 
-  function timeConversion (time) {
+  function timeConversion(time) {
     // Check correct time format and split into components
-    time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
-  
+    time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
     if (time.length > 1) { // If time format correct
-      time = time.slice (1);  // Remove full string match value
+      time = time.slice(1);  // Remove full string match value
       time[5] = +time[0] < 12 ? 'am' : 'pm'; // Set AM/PM
       time[0] = +time[0] % 12 || 12; // Adjust hours
     }
     // return time.join('');
-    time.splice(3,1,'')
+    time.splice(3, 1, '')
     return time.join(''); // return adjusted time or original string
   }
 
@@ -164,7 +166,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
     } else if (name === 'startTime' || name === 'endTime') {
       courseDays[index] = { ...courseDays[index], [name]: timeConversion(value + ':00') }
     } else {
-        courseDays[index] = { ...courseDays[index], [name]: value };
+      courseDays[index] = { ...courseDays[index], [name]: value };
     }
 
     setFormDetails({ ...formDetails, sessions: courseDays });
@@ -342,8 +344,8 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
           <FormControlLabel
             control={
               <Checkbox
-                checked={formDetails.allowWeeklyPayment}
-                onChange={(e) => setFormDetails({ ...formDetails, allowWeeklyPayment: e.target.checked })}
+                checked={formDetails.allow_weekly_payment}
+                onChange={(e) => setFormDetails({ ...formDetails, allow_weekly_payment: e.target.checked })}
                 name="checkedB"
                 color="primary"
               />
