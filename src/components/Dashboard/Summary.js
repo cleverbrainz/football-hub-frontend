@@ -63,6 +63,7 @@ const Summary = ({ handleComponentChange }) => {
     let registerArray = []
     const response = await axios.get(`/users/${user.userId}`)
     const data = await response.data[0]
+    console.log(data)
 
       for (const course of data.courses.active) {
         let register
@@ -158,7 +159,7 @@ const Summary = ({ handleComponentChange }) => {
 
 
   if (!userData.courses) return null
-  if(userData && !userData.subscriptions) return <Redirect to={{ pathname: "/subscription" }} />
+  if(userData && !userData.subscriptions) handleComponentChange('Subscription', 0)
   if (userData && userData.listings.length === 0) return <IntroductionPage handleComponentChange={handleComponentChange}/>
   return (
     <div className={classes.root}>

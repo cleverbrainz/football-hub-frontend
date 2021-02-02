@@ -141,23 +141,38 @@ export default function Registers() {
     let coachArray = []
     const response = await axios.get(`/users/${auth.getUserId()}`)
     const data = await response.data[0]
-    console.log(data)
+    // console.log(data)
 
     for (const course of data.courses.active) {
       let register
       const response = await axios.get(`/courses/${course.courseId}`)
       register = await response.data
-      console.log(register.register)
+      console.log(register)
+      // console.log(register.register)
       // console.log('data', data)
-      if (register.register) activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+      if (!register.register) {
+        const response = await axios.get(`/courses/${course.courseId}/emptyRegister`)
+        register = await response.data.course
+        console.log(register)
+        activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+      } else {
+        activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+      }
     }
     for (const course of data.courses.past) {
       let register
       const response = await axios.get(`/courses/${course.courseId}`)
       register = await response.data
-      console.log(register.register)
+      // console.log(register.register)
       // console.log('data', data)
-      if (register.register) pastRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+      if (!register.register) {
+        const response = await axios.get(`/courses/${course.courseId}/emptyRegister`)
+        register = await response.data.course
+        console.log(register)
+        pastRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+      } else {
+        pastRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
+      }
     }
     for (const coach of data.coaches) {
       let coachdetails
@@ -209,6 +224,7 @@ export default function Registers() {
 
   };
 
+  console.log({companyCourses})
 
   return (
     <>
@@ -251,7 +267,7 @@ export default function Registers() {
                       {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
                         return (
                           <Typography gutterBottom={true} variant="h6">
-                            {`${courseDetails.optionalName}: ${sessionInfo.startTime} - ${sessionInfo.endTime}, ${courseDetails.location} : `}
+                            {`${courseDetails.optionalName}: ${sessionInfo.startTime} - ${sessionInfo.endTime}, ${sessionInfo.location} : `}
 
                             <Button onClick={() => {
                               setValue(2)
@@ -295,7 +311,7 @@ export default function Registers() {
                     {el.courseDetails.optionalName}
                   </TableCell>
                   <TableCell align='right'>
-                    {el.courseDetails.location}
+                    {el.courseDetails.sessions[0].location}
                   </TableCell>
                   <TableCell align="right">{el.courseDetails.startDate ? moment(el.courseDetails.startDate).format('DD/MM/YYYY') : moment(el.courseDetails.firstDay).format('DD/MM/YYYY')}</TableCell>
                   <TableCell align="right">{el.courseDetails.endDate ? moment(el.courseDetails.endDate).format('DD/MM/YYYY') : moment(el.courseDetails.lastDay).format('DD/MM/YYYY')}</TableCell>
@@ -318,6 +334,53 @@ export default function Registers() {
             </TableBody>
           </Table>
         </TableContainer>
+      </TabPanel>
+
+      <TabPanel value={value} index={1}>
+      <Typography>All Past Courses</Typography>
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell align="right">Course Location</TableCell>
+                <TableCell align="right">Start Date</TableCell>
+                <TableCell align="right">End Date</TableCell>
+                <TableCell align="right">Age Group</TableCell>
+                <TableCell align="right"></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {companyCourses.past.map((el, i) => (
+                <TableRow key={i}>
+                  <TableCell component="th" scope="row">
+                    {el.courseDetails.optionalName}
+                  </TableCell>
+                  <TableCell align='right'>
+                    {el.courseDetails.sessions[0].location}
+                  </TableCell>
+                  <TableCell align="right">{el.courseDetails.startDate ? moment(el.courseDetails.startDate).format('DD/MM/YYYY') : moment(el.courseDetails.firstDay).format('DD/MM/YYYY')}</TableCell>
+                  <TableCell align="right">{el.courseDetails.endDate ? moment(el.courseDetails.endDate).format('DD/MM/YYYY') : moment(el.courseDetails.lastDay).format('DD/MM/YYYY')}</TableCell>
+                  <TableCell align="right">{el.courseDetails.age}</TableCell>
+                  <TableCell align="right">
+
+                    <Button onClick={() => {
+                      setValue(2)
+                      setViewRegister({
+                        selected: true,
+                        courseId: el.courseId,
+                        session: ''
+                      })
+                    }}> View Full Register </Button>
+
+                    {/* <Link to={`/courses/${el.courseId}/register/full`}>View Full Register</Link> */}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
       </TabPanel>
 
       {/* tab 2 content */}

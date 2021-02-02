@@ -71,8 +71,8 @@ export default function CompanyPlayersList() {
       let playerInfo
       const response = await axios.get(`/users/${player}`)
       playerInfo = await response.data[0]
-      console.log('playerinfo', playerInfo)
-      // console.log('data', data)
+      console.log(player, 'playerinfo', playerInfo)
+      console.log('data', data)
       playerlist[player] = playerInfo
       setOpen({...open, [playerInfo.userId]: playerInfo.Id === dataChange[1] ? true : false })
     }
@@ -274,6 +274,8 @@ export default function CompanyPlayersList() {
                           </Typography>
 
                           {players[el].courses[auth.getUserId()] && (
+
+                            activeCourses.length > 0 &&
                             <TableContainer component={Paper}>
                               <Table aria-label="collapsible table">
                                 <TableHead>
@@ -289,20 +291,15 @@ export default function CompanyPlayersList() {
                                     <TableCell align="right">
                                       Age Group
                                     </TableCell>
-                                    <TableCell align="right">
-                                      Camp Cost
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      Day Cost
-                                    </TableCell>
                                     <TableCell align="right"></TableCell>
                                     <TableCell align="right"></TableCell>
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                  {activeCourses && activeCourses.map((elCourse, i) => {
+                                  { activeCourses.map((elCourse, i) => {
                                     console.log({elCourse, companyData})
                                     for (const correctCourse of companyData.courses.active) {
+                                      console.log(elCourse, correctCourse.courseId)
                                       if (elCourse === correctCourse.courseId)
                                         {
                                           return (
@@ -321,12 +318,6 @@ export default function CompanyPlayersList() {
                                               </TableCell>
                                               <TableCell align="right">
                                               {correctCourse.courseDetails.age}
-                                              </TableCell>
-                                              <TableCell align="right">
-                                                Camp Cost
-                                              </TableCell>
-                                              <TableCell align="right">
-                                                Day Cost
                                               </TableCell>
                                               <TableCell align="right"></TableCell>
                                             </TableRow>
@@ -353,14 +344,61 @@ export default function CompanyPlayersList() {
                               : '0'}
                           </Typography>
 
-                          {pastCourses && (
-                            <ul>
-                              {pastCourses.map(
-                                (elCourse, i) => {
-                                  return <li>{elCourse}</li>
-                                }
-                              )}
-                            </ul>
+                          {players[el].courses[auth.getUserId()] && (
+                            <TableContainer component={Paper}>
+                              <Table aria-label="collapsible table">
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell>Name </TableCell>
+                                    <TableCell align="right">
+                                      Start Date
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      End Date
+                                    </TableCell>
+                                    <TableCell align="right">Venue</TableCell>
+                                    <TableCell align="right">
+                                      Age Group
+                                    </TableCell>
+                                    <TableCell align="right"></TableCell>
+                                    <TableCell align="right"></TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {pastCourses && pastCourses.map((elCourse, i) => {
+                                    console.log({elCourse, companyData})
+                                    for (const correctCourse of companyData.courses.past) {
+                                      console.log(elCourse, correctCourse.courseId)
+                                      if (elCourse === correctCourse.courseId)
+                                        {
+                                          return (
+                                            <TableRow>
+                                              <TableCell align="right">
+                                              {correctCourse.courseDetails.optionalName}
+                                              </TableCell>
+                                              <TableCell align="right">
+                                              {correctCourse.courseDetails.startDate}
+                                              </TableCell>
+                                              <TableCell align="right">
+                                              {correctCourse.courseDetails.endDate}
+                                              </TableCell>
+                                              <TableCell align="right">
+                                              {correctCourse.courseDetails.venue}
+                                              </TableCell>
+                                              <TableCell align="right">
+                                              {correctCourse.courseDetails.age}
+                                              </TableCell>
+                                              <TableCell align="right"></TableCell>
+                                            </TableRow>
+                                          )
+                                        }
+                                    }
+
+                                    
+                                  })}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
                           )}
                         </Box>
 

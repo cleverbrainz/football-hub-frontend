@@ -144,6 +144,7 @@ export default function Sessions({ componentTabValue }) {
       let register
       const response = await axios.get(`/courses/${course.courseId}`)
       register = await response.data
+      console.log({register})
       if (register.register) activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
     }
 
@@ -236,7 +237,7 @@ export default function Sessions({ componentTabValue }) {
     setStateRefreshInProgress(true);
     console.log(courseIdToBeDeleted);
     axios
-      .delete(`/companies/courses/${courseIdToBeDeleted}`, {
+      .delete(`/courses/${courseIdToBeDeleted}`, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {

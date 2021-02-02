@@ -91,7 +91,7 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
   const [level, setLevel] = React.useState();
   const [coachInfo, setCoachInfo] = React.useState(info.coachInfo);
   const [verified, setVerified] = React.useState(info.verified);
-  const [existing, setExisting] = React.useState(info.companies[0] === userId ? true : false)
+  const [existing, setExisting] = React.useState(info.companies ? true : false)
   const [imageUpload, setImageUpload] = useState(false)
   const [dataChange, setDataChange] = useState({
     coachingCertificate: false,
@@ -120,15 +120,8 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
         path,
         {
           userId,
-          // updates: {
-          //   'coachInfo.imageURL': avatarImage,
-          //   'coachInfo.name': name,
-          //   'coachInfo.email': email,
-          //   main_contact_number: phone,
-          //   'coachInfo.coaching_level': level,
-          //   'coachInfo.documents': documents
-          // }
-          updates: { ...user, coachInfo: { ...coachInfo } }
+          updates: { ...user, coachInfo: { ...coachInfo } },
+          type: 'coachInfo'
         },
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
       )
@@ -163,7 +156,7 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
         console.log(res.data)
         const resInfo = res.data.coachInfo ? res.data.coachInfo : res.data.data.coachInfo 
         console.log(resInfo);
-        setCoachInfo(resInfo)
+        setCoachInfo({ ...coachInfo, ...resInfo })
         setDataChange({ ...dataChange, [type]: false })
         // setDataChange(false);
       })
@@ -195,7 +188,7 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
   }
 
 
-  if (!coachInfo) return null
+  // if (!coachInfo) return null
   return (
     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
 
@@ -252,8 +245,8 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
           <InputLabel htmlFor="component-outlined"> Coach name </InputLabel>
           <OutlinedInput
             label="Coach name"
-            value={user.name}
-            onChange={(e) => setUser({ ...user, name: e.target.value })}
+            value={coachInfo?.name ? coachInfo.name: user.name}
+            onChange={(e) => setCoachInfo({ ...coachInfo, name: e.target.value })}
           ></OutlinedInput>
         </FormControl>
 
@@ -292,12 +285,9 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
           <Select
             label="Coach Badges"
             id="select-level"
-            value={user.coachInfo.coaching_level}
+            value={coachInfo?.coaching_level ? coachInfo.coaching_level : ''}
             onChange={(e) =>
-              setUser({
-                ...user,
-                coachInfo: { ...user.coachInfo, coaching_level: e.target.value },
-              })
+              setCoachInfo({ ...coachInfo, coaching_level: e.target.value })
             }
           >
             <MenuItem value="">

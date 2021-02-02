@@ -41,8 +41,8 @@ const CourseRegister = ({ match, courseId, session }) => {
 
   const [sessionDate, setSessionDate] = useState(session ? session : 'full')
   // const sessionDate = match.params.sessionDate ? match.params.sessionDate : 'full
-  const [register, setRegister] = useState([])
-  const [course, setCourse] = useState([])
+  const [data, setData] = useState({ register: {}, course: {}})
+  // const [course, setCourse] = useState([])
   const classes = useStyles();
 
   useEffect(() => {
@@ -51,8 +51,9 @@ const CourseRegister = ({ match, courseId, session }) => {
       .then(res => {
         console.log('axios!')
         console.log(res.data.playerList)
-        setCourse(res.data)
-        res.data.register ? setRegister(res.data.register) : setRegister(register)
+        console.log(res.data)
+        // setCourse(res.data)
+        res.data.register ? setData({ register: res.data.register, course: res.data }) : setData({ register: {}, course: res.data })
 
       })
   }, [sessionDate])
@@ -60,14 +61,14 @@ const CourseRegister = ({ match, courseId, session }) => {
   const handleChange = (event) => {
     console.log(event.target)
     const [playerId, date, field] = event.target.name.split('.')
-    const newRegister = { ...register }
+    const newRegister = { ...data.register }
     newRegister[playerId][date][field] = event.target.value
-    setRegister(newRegister)
+    setData({...data, register: newRegister })
   };
 
   const saveChanges = (event) => {
     event.preventDefault()
-    axios.patch(`/courses/${courseId}`, { updatedRegister: register })
+    axios.patch(`/courses/${courseId}`, { updatedRegister: data.register })
       .then(res => {
         console.log(res)
         window.location.reload()
@@ -75,8 +76,10 @@ const CourseRegister = ({ match, courseId, session }) => {
       .catch(err => console.log(err))
   }
 
+  const { register, course } = data
+
   console.log(register)
-  if (register.length === 0) return (
+  if (!course.playerList) return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
