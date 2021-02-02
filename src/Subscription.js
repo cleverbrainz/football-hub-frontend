@@ -114,7 +114,7 @@ const Subscription = () => {
 
   const sendToCheckout = (event, price) => {
     event.preventDefault()
-    axios.post('/subscriptions/new', { userId: userId, price: price, url: window.location.href })
+    axios.post('/subscriptions/new', { userId: userId, price: price, url: 'http://localhost:3000/tester' })
       .then(res => {
         const { error, sessionId } = res.data
         console.log(res)
@@ -128,27 +128,31 @@ const Subscription = () => {
 
   if (!userData) return null
   if (hasSubs) return (
-    <Container>
+    <Grid container spacing={3}>
+    {/* <Container> */}
+      <Grid item xs={6}>
       <Typography gutterBottom variant="h5" component="h2">Subscribed</Typography>
       <Button variant="contained" color="primary" onClick={sendToPortal}>Click here to view your subscription details</Button>
+      </Grid>
       { accountStatus === '' ?
-      <>
+      <Grid item xs={6}>
       <Typography gutterBottom variant="h5" component="h2">In order for you to receive payments online you will need to register as a connected account</Typography>
       <Button variant="contained" color="primary" onClick={createConnect}>Click here to create your connected account</Button>
-      </> :
+      </Grid> :
       accountStatus === 'unverified' ?
-      <>
+      <Grid item xs={6}>
       <h1>Stripe needs more information</h1>
       <p>In order for you to receive payments you need to add a few more details to your Stripe account for verification.</p>
       <Button variant="contained" color="primary" onClick={editConnect}>Get verified</Button>
-      </>
+      </Grid>
       :
-      <>
+      <Grid item xs={6}>
       <h1>Your Stripe account is up to date!</h1>
       <Button variant="contained" color="primary" onClick={editConnect}>Edit details</Button>
-      </>
+      </Grid>
       }
-    </Container>
+    {/* </Container> */}
+    </Grid>
   )
 
   if (!hasSubs) return (
