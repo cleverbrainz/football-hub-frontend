@@ -15,6 +15,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import auth from '../lib/auth'
 import { useStripe } from "@stripe/react-stripe-js";
 import { useEffect } from 'react';
+import moment from 'moment'
 
 const useStyles = makeStyles({
   root: {
@@ -53,6 +54,8 @@ export default function CheckoutForm({
   })
   const [user, setUser] = useState()
 
+
+
   const getUserData = async () => {
     const data = await axios.get(`/users/${auth.getUserId()}`)
     const user = await data.data[0]
@@ -72,11 +75,15 @@ export default function CheckoutForm({
   async function handlePlanSelection() {
 
     const { id, type } = selectedPlan
-    const { userId, name, stripeId } = user
+    const { userId, name, stripeId, email } = user
+    let checkout
+
+    
 
     if (type !== 'recurring') {
 
-      const checkout = await axios.post('/create-payment', {
+      checkout = await axios.post('/create-payment', {
+        email,
         type,
         priceId: id,
         connectedAccountId: connectedAccount,
@@ -89,21 +96,34 @@ export default function CheckoutForm({
         }
       })
 
-      const session = await checkout.data
-
-      const result = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      })
-      if (result.error) {
-        console.log(result.error)
-      }
-    
     } else {
-      const checkout = await axios.post('/connected-account-subscriptions')
+      checkout = await axios.post('/connected-account/subscriptions', {
+        customerId: stripeId,
+        metadata: {
+          priceId: id,
+          connectedAccountId: connectedAccount,
+          companyId,
+          courseId,
+          playerName: name,
+          playerId: userId
+        }
+      })
+    }
+
+    const session = await checkout.data
+
+    const result = await stripe.redirectToCheckout({
+      sessionId: session.id,
+    })
+
+    if (result.error) {
+      console.log(result.error)
     }
 
 
   }
+
+  
 
 
   return (
@@ -121,19 +141,21 @@ export default function CheckoutForm({
           {prices && (
             prices.map((el, i) => {
               const { unit_amount, id, type, metadata } = el
+              const { subscription_end_date } = metadata
+              const subscription_length = moment(subscription_end_date).diff(moment(), 'weeks')
               const amount = unit_amount.toString()
               return (
-                <Card  onClick={ () => setSelectedPlan({ id, type }) } className={classes.root}
-                style={{ border: selectedPlan.id === id ? '2px #b19cd9 solid' : 'none' }}>
+                <Card onClick={() => setSelectedPlan({ id, type })} className={classes.root}
+                  style={{ border: selectedPlan.id === id ? '2px #b19cd9 solid' : 'none' }}>
                   <CardContent>
                     <Typography className={classes.title} color="textSecondary" gutterBottom>
                       £{`${unit_amount / 100}.${amount.slice(-2)}`}
                     </Typography>
 
                     <Typography className={classes.pos} color="textSecondary">
-                      {type === 'recurring' ? 
-                      `Weekly subscription payment for ${metadata.course_duration}`
-                      : 'One-off payment'}
+                      {type === 'recurring' ?
+                        `Weekly subscription payment for ${subscription_length} weeks`
+                        : 'One-off payment'}
                     </Typography>
                   </CardContent>
                   <CardActions>
