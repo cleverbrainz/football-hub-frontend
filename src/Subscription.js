@@ -22,7 +22,7 @@ const Subscription = () => {
 
   useEffect(() => {
     async function getData() {
-      if (!user) return
+      if (!user.user) return
       console.log(authUser)
       const plans = await axios.get('/plans')
       const planData = plans.data
@@ -73,7 +73,7 @@ const Subscription = () => {
     }
 
     getData()
-  },[!user])
+  },[!user.user])
 
   console.log('hasSubs', hasSubs)
   console.log('accountStatus', accountStatus)
@@ -147,7 +147,7 @@ const Subscription = () => {
       </Grid>
       :
       <Grid item xs={6}>
-      <h1>Your Stripe account is up to date!</h1>
+      <Typography gutterBottom variant="h5" component="h2">Your Stripe account is up to date!</Typography>
       <Button variant="contained" color="primary" onClick={editConnect}>Edit details</Button>
       </Grid>
       }
