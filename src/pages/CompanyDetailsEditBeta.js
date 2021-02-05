@@ -11,9 +11,12 @@ import {
   Typography,
   OutlinedInput,
   Container,
+  Snackbar
 } from "@material-ui/core";
+import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import { storage } from "../lib/firebase";
 import axios from "axios";
 import auth from '../lib/auth'
@@ -52,6 +55,8 @@ const useStyles = makeStyles((theme) => ({
   button: {
     position: "relative",
     margin: "10px 0",
+    minWidth: '100px',
+    minHeight: '50px'
   },
   upload: {
     margin: "20px auto",
@@ -85,16 +90,26 @@ const useStyles = makeStyles((theme) => ({
     marginTop: -12,
     marginLeft: -12,
   },
+  buttonProgressWhite: {
+    color: 'white',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
 }));
-function CompanyDetailsEdit({ history }) {
+function CompanyDetailsEdit({ handleComponentChange }) {
   const classes = useStyles();
   const userId = auth.getUserId()
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
   const [dataChange, setDataChange] = useState({ public_liability_insurance: false, public_indemnity_insurance: false });
+  const [saved, setSaved] = useState('unsaved')
   const [imageUpload, setImageUpload] = useState(false)
   const [companyInfo, setCompanyInfo] = useState(null)
   const [uploadedDocs, setUploadedDocs] = useState([])
+  const [snackBarOpen, setSnackBarOpen] = useState(false)
   useEffect(() => {
     (console.log('usefect'))
     axios.get(`/users/${auth.getUserId()}`)
@@ -116,6 +131,7 @@ function CompanyDetailsEdit({ history }) {
     details: null,
   });
   const handleSubmit = (e) => {
+    setSaved('saving')
     e.preventDefault();
     axios
       .patch(
@@ -129,7 +145,11 @@ function CompanyDetailsEdit({ history }) {
       )
       .then((res) => {
         console.log(res.data);
-        history.push("/tester")
+        setSaved('saved')
+        setSnackBarOpen(true)
+        // handleComponentChange('Summary', 0)
+        
+        // history.push("/tester")
       })
       .catch((error) => {
         alert(error.message);
@@ -159,6 +179,15 @@ function CompanyDetailsEdit({ history }) {
         console.error(err);
         setDataChange({ ...dataChange, [target]: false });
       });
+  };
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
+  const closeSnackBar = (event, reason) => {
+    if (reason === 'clickaway') return;
+    handleComponentChange('Summary', 0)
   };
 
   if (!companyInfo) return null
@@ -311,16 +340,25 @@ function CompanyDetailsEdit({ history }) {
 
 
       </form>
+      <Container style={{ alignItems: 'center', display: 'flex', justifyContent: 'center', minWidth: '60px'}}>
       <Button
         className={classes.button}
         onClick={handleSubmit}
+        // onClick={() => handleComponentChange('Summary', 0)}
         variant="contained"
         color="primary"
       >
-        Save
+        { saved === 'saving' ? <span> <CircularProgress size={24} className={classes.buttonProgressWhite} /></span> : saved === 'saved' ? <CheckCircleIcon fontSize='large' /> : 'Save' }
         </Button>
+        
+        </Container>
+        <Snackbar open={snackBarOpen} autoHideDuration={2000} onClose={closeSnackBar}>
+        <Alert onClose={closeSnackBar} severity="success">
+          Details updated
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
 
-export default withRouter(CompanyDetailsEdit)
+export default CompanyDetailsEdit

@@ -109,8 +109,9 @@ const IntroductionPage = ({ handleComponentChange }) => {
     // setUserData({ ...userData, verification: { ...userData.verification, setup: test } })
     if (checkReducer(newState)) {
       console.log('all good!')
+      console.log({userData, auth: auth.getUserId()})
       axios.patch(`/users/${userData.userId}`, { userId: userData.userId, updates: { verification: { ...userData.verification, setup: true }}}, { headers: { authorization: `Bearer ${auth.getToken()}` }})
-        .then(res => {
+      .then(res => {
           console.log(res)
           setCheckState({ ...newState })
         })
@@ -134,6 +135,14 @@ const IntroductionPage = ({ handleComponentChange }) => {
     getData()
   },[])
 
+  const handleIgnoreStripe = () => {
+    axios.patch(`/users/${auth.getUserId()}`, { updates: { stripeAccount: 'not using' }, userId: auth.getUserId()}, { headers: { authorization: `Bearer ${auth.getToken()}` }})
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => console.log(err))
+  }
+
 
   if (!checkState) return null
   return (
@@ -152,16 +161,18 @@ const IntroductionPage = ({ handleComponentChange }) => {
       <Grid container spacing={3} className={classes.gridContainer}>
         <Grid item xs={12}>
           <Paper className={classes.paper}><div className={classes.titleBox}>
-              <Typography variant="h4">Do you want to take online payments?</Typography>{ userData.stripe_account ? <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box> : <Box className={`${classes.roundBox} ${classes.outstanding}`} border={1} borderRadius="50%">1</Box> }
+              <Typography variant="h4">Do you want to take online payments?</Typography>{ userData.stripe_account || userData.stripeAccount ? <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box> : <Box className={`${classes.roundBox} ${classes.outstanding}`} border={1} borderRadius="50%">1</Box> }
               </div>
               <Typography variant="p" >Taking payments online automates a lot of the process on ftballer.com and is simpler for your customers as well.</Typography>
               <div className={classes.titleBox}>
               {/* <Typography variant="p">Powered by Stripe</Typography> */}
               <a href="https://stripe.com/gb">
-                <img alt="Powered by Stripe" style={{maxWidth: "80%"}} src='https://i.imgur.com/VzVZXkr.png'/>
+                <img alt="Powered by Stripe" style={{maxWidth: "65%"}} src='https://i.imgur.com/VzVZXkr.png'/>
               </a>
-              <Button variant="contained" color="primary" onClick={() => handleComponentChange('Subscription', 0)}>Go to Stripe Dashboard</Button>
-              {/* <Button variant="contained" color="secondary">Go to Stripe Dashboard</Button> */}
+              <div>
+              <Button variant="contained" color="default" onClick={() => handleIgnoreStripe()}>Not Now</Button>
+              <Button variant="contained" color="primary" onClick={() => handleComponentChange('Subscription', 0)}>Yes I Need This -></Button>
+              </div>
               </div>
             </Paper>
         </Grid>

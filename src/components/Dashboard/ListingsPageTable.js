@@ -34,9 +34,11 @@ export default function ListingsPageTable({
   handleSetCoachId,
   handleSetListingToBeEdited }) {
   const classes = useStyles();
+  const [updatedListings, setUpdatedListings] = useState(listings)
   const liveState = {}
-  listings.forEach(listing => liveState[listing.listingId] = listing.status)
+  updatedListings.forEach(listing => liveState[listing.listingId] = listing.status)
   const [liveListing, setLiveListing] = useState(liveState)
+  console.log(liveState)
   console.log(liveListing)
 
   const handleChange = (id, value) => {
@@ -54,7 +56,7 @@ export default function ListingsPageTable({
     axios.patch(`/listings/live`, { updates: updates })
     .then(res => {
       setLiveListing(updated)
-      // console.log(res)
+      console.log(updated)
     })
   };
 

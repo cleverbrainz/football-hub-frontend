@@ -201,7 +201,7 @@ export default function AddListings({
         });
     } else {
       return axios
-        .post("/addNewListing", { ...requestObj, accountId: stripe_account.id, status: 'saved' })
+        .post("/addNewListing", { ...requestObj, ...(stripe_account && { accountId: stripe_account.id }), status: 'saved' })
         .then((res) => {
           console.log(res.data);
           handleStateRefresh()

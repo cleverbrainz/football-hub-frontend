@@ -69,7 +69,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-  return ['Registration details', 'Basic information', 'User profile setup', 'Registration Completed'];
+  // return ['Registration details', 'Basic information', 'User profile setup', 'Registration Completed'];
+  return ['Registration details', 'Basic information', 'Registration Completed'];
 }
 
 
@@ -131,29 +132,25 @@ export default function RegisterTrainer({ match }) {
           setRegistrationSuccessMessage(res.data)
           console.log(res.data)
           setIsLoading(false)
-        })
-        .then(() => {
-          setRegisterFields({ ...registerFields, password: '', confirmPassword: '' })
-          setActiveStep((prevActiveStep) => prevActiveStep + 1)
-        })
-        .catch(err => {
-          setIsLoading(false)
-          setFieldErrors(err.response.data)
-        })
-    } else if (activeStep === 2) {
-      for (var key in registerFields) {
-        if (!registerFields[key]) delete registerFields[key]
-      }
+        // .catch(err => {
+        //   // setFieldErrors(err.response.data)
+        //   setIsLoading(false)
+        //   console.error(err.response.data)
+        // })
+        // setRegisterFields({ ...registerFields, password: '', confirmPassword: '' })
+          // setActiveStep((prevActiveStep) => prevActiveStep + 1)
+        delete registerFields.password
+        delete registerFields.confirmPassword
 
-      let requestObject = {}
+        let requestObject = {}
 
       if (registerFields.category === 'coach') {
         requestObject = { ...registerFields, requests: [], companies: [], coachInfo: {}, courses: {} }
       } else requestObject = { ...registerFields, sentRequests: [], coaches: [], listings: [], locations: [], images: [], services: [], sessions: [], courses: { active: [], past: []}, players: [], ageDetails: [] }
 
-      setIsLoading(true)
-      console.log('code hello', registrationSuccessMessage.userId)
-      axios.post(`/user/${registrationSuccessMessage.userId}/signup`, { ...requestObject, userId: registrationSuccessMessage.userId })
+      // setIsLoading(true)
+      console.log('code hello', res.data.userId)
+      axios.post(`/user/${res.data.userId}/signup`, { ...requestObject, userId: res.data.userId })
         .then(res => {
           console.log(res.data)
           setIsLoading(false)
@@ -163,6 +160,31 @@ export default function RegisterTrainer({ match }) {
           // setFieldErrors(err.response.data)
           setIsLoading(false)
           console.error(err.response.data)
+        })
+    // } 
+    // else if (activeStep === 2) {
+    //   for (var key in registerFields) {
+    //     if (!registerFields[key]) delete registerFields[key]
+    //   }
+
+    //   let requestObject = {}
+
+    //   if (registerFields.category === 'coach') {
+    //     requestObject = { ...registerFields, requests: [], companies: [], coachInfo: {}, courses: {} }
+    //   } else requestObject = { ...registerFields, sentRequests: [], coaches: [], listings: [], locations: [], images: [], services: [], sessions: [], courses: { active: [], past: []}, players: [], ageDetails: [] }
+
+    //   setIsLoading(true)
+    //   console.log('code hello', registrationSuccessMessage.userId)
+    //   axios.post(`/user/${registrationSuccessMessage.userId}/signup`, { ...requestObject, userId: registrationSuccessMessage.userId })
+    //     .then(res => {
+    //       console.log(res.data)
+    //       setIsLoading(false)
+    //     })
+    //     .then(() => setActiveStep((prevActiveStep) => prevActiveStep + 1))
+    //     .catch(err => {
+    //       // setFieldErrors(err.response.data)
+    //       setIsLoading(false)
+    //       console.error(err.response.data)
 
         })
     } else {
@@ -322,57 +344,57 @@ export default function RegisterTrainer({ match }) {
 
 
 
-  const userProfileSetup = () => {
+  // const userProfileSetup = () => {
 
-    const userSetupFields = registerFields.category === 'company' ? ['VAT Number', 'Company Registration Number', 'Main Contact Number',
-      'Main Email', 'Accounts Contact Number', 'Accounts Email'] : ['Main Contact Number',
-        'Main Email']
-    const insuranceFields = ['Public Liability Insurance', 'Professional Indemnity Insurance']
+  //   const userSetupFields = registerFields.category === 'company' ? ['VAT Number', 'Company Registration Number', 'Main Contact Number',
+  //     'Main Email', 'Accounts Contact Number', 'Accounts Email'] : ['Main Contact Number',
+  //       'Main Email']
+  //   const insuranceFields = ['Public Liability Insurance', 'Professional Indemnity Insurance']
 
-    const formFields = userSetupFields.map(el => {
-      return (
-        <FormControl variant="outlined">
-          <TextField id="outlined-basic"
-            type='text'
-            variant="outlined"
-            value={el === 'Main Email' || el === 'Accounts Email' ? registerFields.email : ''}
-            // error={fieldErrors ? fieldErrors[fieldName] ? true : false : null}
-            // helperText={fieldErrors ? fieldErrors[fieldName] : null}
-            name={el.toLowerCase().replace(/ /g, '_')} label={el} />
-        </FormControl>
-      )
-    })
+  //   const formFields = userSetupFields.map(el => {
+  //     return (
+  //       <FormControl variant="outlined">
+  //         <TextField id="outlined-basic"
+  //           type='text'
+  //           variant="outlined"
+  //           value={el === 'Main Email' || el === 'Accounts Email' ? registerFields.email : ''}
+  //           // error={fieldErrors ? fieldErrors[fieldName] ? true : false : null}
+  //           // helperText={fieldErrors ? fieldErrors[fieldName] : null}
+  //           name={el.toLowerCase().replace(/ /g, '_')} label={el} />
+  //       </FormControl>
+  //     )
+  //   })
 
-    return formFields.concat(insuranceFields.map(el => {
-      const name = el.toLowerCase().replace(/ /g, '_')
-      return (
-        <>
-          <FormControl variant="outlined" className={classes.formControl} >
-            <InputLabel id="demo-simple-select-outlined-label">{el}</InputLabel>
-            <Select
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              value={registerFields[name]}
-              onChange={(e) => setRegisterFields({ ...registerFields, [name]: e.target.value })}
-              label={el}
-            >
-              <MenuItem value='No insurance'>I don't have any insurance</MenuItem>
-              <MenuItem value='£250,000'>£250,000</MenuItem>
-              <MenuItem value='£500,000'>£500,000</MenuItem>
-              <MenuItem value='£1,000,000'>£1,000,000</MenuItem>
-              <MenuItem value='£2,000,000'>£2,000,000</MenuItem>
-              <MenuItem value='£5,000,000'>£5,000,000</MenuItem>
-              <MenuItem value='£10,000,000'>£10,000,000</MenuItem>
-              <MenuItem value='Other'>Other</MenuItem>
-            </Select>
+  //   return formFields.concat(insuranceFields.map(el => {
+  //     const name = el.toLowerCase().replace(/ /g, '_')
+  //     return (
+  //       <>
+  //         <FormControl variant="outlined" className={classes.formControl} >
+  //           <InputLabel id="demo-simple-select-outlined-label">{el}</InputLabel>
+  //           <Select
+  //             labelId="demo-simple-select-outlined-label"
+  //             id="demo-simple-select-outlined"
+  //             value={registerFields[name]}
+  //             onChange={(e) => setRegisterFields({ ...registerFields, [name]: e.target.value })}
+  //             label={el}
+  //           >
+  //             <MenuItem value='No insurance'>I don't have any insurance</MenuItem>
+  //             <MenuItem value='£250,000'>£250,000</MenuItem>
+  //             <MenuItem value='£500,000'>£500,000</MenuItem>
+  //             <MenuItem value='£1,000,000'>£1,000,000</MenuItem>
+  //             <MenuItem value='£2,000,000'>£2,000,000</MenuItem>
+  //             <MenuItem value='£5,000,000'>£5,000,000</MenuItem>
+  //             <MenuItem value='£10,000,000'>£10,000,000</MenuItem>
+  //             <MenuItem value='Other'>Other</MenuItem>
+  //           </Select>
 
-          </FormControl >
+  //         </FormControl >
 
-        </>
-      )
-    })
-    )
-  }
+  //       </>
+  //     )
+  //   })
+  //   )
+  // }
 
   const completedRegistration = (
     <>
@@ -398,9 +420,9 @@ export default function RegisterTrainer({ match }) {
         return basicInfo;
       case 1:
         return form;
+      // case 2:
+      //   return userProfileSetup();
       case 2:
-        return userProfileSetup();
-      case 3:
         return completedRegistration;
       default:
         return 'Unknown stepIndex';
@@ -446,7 +468,7 @@ export default function RegisterTrainer({ match }) {
               </form>
 
               <div>
-
+{/* 
                 {activeStep === 2 && (
                   <Button
                     onClick={handleNext}
@@ -454,12 +476,12 @@ export default function RegisterTrainer({ match }) {
                   >
                     Skip
                      </Button>
-                )}
+                )} */}
 
-                {activeStep !== 3 && (
+                {activeStep !== 2 && (
                   <>
                     <Button
-                      disabled={activeStep === 0 || activeStep === 1}
+                      disabled={activeStep === 0}
                       onClick={handleBack}
                       className={classes.backButton}
                     >

@@ -164,11 +164,34 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
       })
       courseDays[index] = { ...courseDays[index], [name]: value, longitude, latitude };
     } else if (name === 'startTime' || name === 'endTime') {
-      courseDays[index] = { ...courseDays[index], [name]: timeConversion(value + ':00') }
+      let endTime
+      let startTime
+      if (courseDays[index]) {
+        if (name === 'startTime') {
+          
+          const startMoment = moment(value, 'HH:mm')
+          const endMoment = moment(courseDays[index].endTime, 'hh:mma')
+          endTime = courseDays[index].endTime
+          console.log(endTime, courseDays[index].endTime)
+          endTime = moment(startMoment).isSameOrAfter(endMoment) ? timeConversion(value + ':00') : endTime
+          console.log(endTime)
+          courseDays[index] = { ...courseDays[index], [name]: timeConversion(value + ':00'), endTime: endTime }
+        } else if (name === 'endTime') {
+          const endMoment = moment(value, 'HH:mm')
+          const startMoment = moment(courseDays[index].startTime, 'hh:mma')
+          startTime = courseDays[index].startTime
+          console.log(startTime, courseDays[index].startTime)
+          startTime = moment(endMoment).isSameOrBefore(startMoment) ? timeConversion(value + ':00') : startTime
+          console.log(startTime)
+          courseDays[index] = { ...courseDays[index], [name]: timeConversion(value + ':00'), startTime: startTime }
+        }
+      } else {
+        courseDays[index] = { ...courseDays[index], [name]: timeConversion(value + ':00') }
+      }
     } else {
       courseDays[index] = { ...courseDays[index], [name]: value };
     }
-
+    console.log(courseDays)
     setFormDetails({ ...formDetails, sessions: courseDays });
   }
 
@@ -299,6 +322,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
               location={location}
               updateOtherCourseInfo={(e) => updateOtherCourseInfo(e)}
               locations={locations}
+              session={sessions[i]}
             />
           );
         }) : (

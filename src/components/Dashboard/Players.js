@@ -138,7 +138,7 @@ export default function CompanyPlayersList() {
       setMessage('Email address is not valid. Please try again.')
       return
     }
-    axios.post(`/emailRequest`, { email: emailRequest, companyName: companyData.name, companyId: companyData.userId, type: window.location.hostname })
+    axios.post('/emailRequest', { email: emailRequest, companyName: companyData.name, companyId: companyData.userId, type: window.location.hostname })
       .then(res => {
         console.log(res)
         setMessage('Email Sent!')
