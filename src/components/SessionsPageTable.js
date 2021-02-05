@@ -51,13 +51,13 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
     const [courseCoaches, setCourseCoaches] = React.useState(coaches)
-    console.log(courseCoaches, companyCoachInfo, registers)
+    console.log(age)
 
     const handleChange = (event) => {
       setCourseCoaches(event.target.value);
       axios.patch(`/courses/${courseId}/coaches`, { coaches: event.target.value, companyId: companyId, courseId: courseId })
       .then(res => {
-        console.log(res)
+        // console.log(res)
       })
     };
   

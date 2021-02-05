@@ -175,7 +175,7 @@ export default function Listings() {
   };
 
   async function handleStateRefresh() {
-    await setStateRefreshInProgress(!stateRefreshInProgress)
+    await setStateRefreshInProgress(false)
     setValue(0)
   }
 

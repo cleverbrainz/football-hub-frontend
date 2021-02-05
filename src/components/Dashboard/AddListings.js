@@ -111,10 +111,10 @@ export default function AddListings({
   const coachesNotIncludedChecked = intersection(coachesChecked, coachesNotIncluded);
   const coachesIncludedChecked = intersection(coachesChecked, coachesIncluded);
 
- 
+
 
   useEffect(() => {
-   
+
     console.log(listingTransferListInfo.coaches)
 
     if (listingToBeEdited) {
@@ -172,7 +172,7 @@ export default function AddListings({
   function openPreview(e) {
     e.preventDefault()
     window.open(`/companies/${auth.getUserId()}/preview`)
-    
+
 
   }
 
@@ -195,7 +195,7 @@ export default function AddListings({
       return axios
         .patch("/companies/array/listings", { ...requestObj, listingId: listingToBeEdited.listingId },
           { headers: { Authorization: `Bearer ${auth.getToken()}` } })
-        .then(res => handleStateRefresh())
+        .then(() => handleStateRefresh())
         .catch((error) => {
           alert(error.message);
         });

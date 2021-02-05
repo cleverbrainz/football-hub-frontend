@@ -122,10 +122,10 @@ export default function Locations({ componentTabValue }) {
       .catch(e => console.log(e))
   }, [!stateRefreshInProgress]);
 
-  const handleSetLocationId = (locationId, venue) => {
-    setOpen(true)
-    setLocationToBeDeleted({ id: locationId, venue })
-  }
+  // const handleSetLocationId = (locationId, venue) => {
+  //   setOpen(true)
+  //   setLocationToBeDeleted({ id: locationId, venue })
+  // }
 
   const handleClose = () => {
     setOpen(false);
@@ -136,39 +136,39 @@ export default function Locations({ componentTabValue }) {
     setValue(0)
   }
 
-  async function deleteCourses(coursesToBeDeletedArr) {
+  // async function deleteCourses(coursesToBeDeletedArr) {
 
-    await coursesToBeDeletedArr.forEach(el => {
-      axios.delete(`/companies/courses/${el.courseId}`, {
-        headers: { Authorization: `Bearer ${auth.getToken()}` },
-      })
-      // console.log(el.courseId)
-    })
-  }
+  //   await coursesToBeDeletedArr.forEach(el => {
+  //     axios.delete(`/companies/courses/${el.courseId}`, {
+  //       headers: { Authorization: `Bearer ${auth.getToken()}` },
+  //     })
+  //     // console.log(el.courseId)
+  //   })
+  // }
 
-  const handleDelete = () => {
-    setStateRefreshInProgress(true);
-    console.log(locationToBeDeleted);
-    axios
-      .delete(`/companies/locations/${locationToBeDeleted.id}`, {
-        headers: { Authorization: `Bearer ${auth.getToken()}` },
-      })
-      .then(() => {
-        const coursesToBeDeleted = companyCourses.filter(el => {
-          return el.courseDetails.location === locationToBeDeleted.venue
-        })
-        deleteCourses(coursesToBeDeleted)
-      })
-      .then(() => {
-        setStateRefreshInProgress(false);
-        handleClose();
-      })
-      .catch((err) => {
-        console.error(err);
-        setStateRefreshInProgress(false);
-        handleClose();
-      });
-  }
+  // const handleDelete = () => {
+  //   setStateRefreshInProgress(true);
+  //   console.log(locationToBeDeleted);
+  //   axios
+  //     .delete(`/companies/locations/${locationToBeDeleted.id}`, {
+  //       headers: { Authorization: `Bearer ${auth.getToken()}` },
+  //     })
+  //     .then(() => {
+  //       const coursesToBeDeleted = companyCourses.filter(el => {
+  //         return el.courseDetails.location === locationToBeDeleted.venue
+  //       })
+  //       deleteCourses(coursesToBeDeleted)
+  //     })
+  //     .then(() => {
+  //       setStateRefreshInProgress(false);
+  //       handleClose();
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //       setStateRefreshInProgress(false);
+  //       handleClose();
+  //     });
+  // }
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -196,7 +196,7 @@ export default function Locations({ componentTabValue }) {
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
         {companyLocations && <LocationPageTable
-          handleSetLocationId={(locationId, venue) => handleSetLocationId(locationId, venue)}
+          // handleSetLocationId={(locationId, venue) => handleSetLocationId(locationId, venue)}
           locations={companyLocations} />}
       </TabPanel>
 
@@ -207,11 +207,11 @@ export default function Locations({ componentTabValue }) {
           handleStateRefresh={() => handleStateRefresh()} classes={classes} />
       </TabPanel>
 
-      {open && <DeleteComponent
+      {/* {open && <DeleteComponent
         open={open}
         handleDelete={e => handleDelete(e)}
         handleClose={e => handleClose(e)}
-        name='location' />}
+        name='location' />} */}
     </div>
   );
 }
