@@ -161,7 +161,7 @@ export default function MaterialUIPickers({ history, course,
 
   };
 
-  function updateOtherCourseInfo(event, index) {
+  function updateOtherCourseInfoOriginal(event, index) {
 
     const { name, value } = event.target
     const sessionsArr = ['spaces', 'startTime', 'endTime']
@@ -178,6 +178,68 @@ export default function MaterialUIPickers({ history, course,
       setCourseDetails({ ...courseDetails, [name]: propertyVal })
     }
   }
+
+  function updateOtherCourseNew(event) {
+
+    const { name, value } = event.target
+    const sessionsArr = ['spaces', 'startTime', 'endTime']
+    const propertyVal = name === 'startTime' || name === 'endTime' ? tConvert(value) : value
+
+    let opposite = name === 'startTime' ? 'endTime' : name === 'endTime' ? 'startTime' : 'null'
+    
+    if ((name === 'startTime' || name === 'endTime') && courseDetails[opposite]) {
+
+        const startMoment = name === 'startTime' ? moment(value, 'HH:mm') : moment(courseDetails[opposite], 'hh:mma')
+        const endMoment = name === 'startTime' ? moment(courseDetails[opposite], 'hh:mma') : moment(value, 'HH:mm')
+
+        
+        
+        const oppositeVal = moment(startMoment).isSameOrAfter(endMoment) ? tConvert(value) : courseDetails[opposite]
+        console.log({ value, propertyVal, startMoment, endMoment, oppositeVal})
+
+        setCourseDetails({ ...courseDetails, [name]: tConvert(value), [opposite]: oppositeVal })
+        // console.log(timeConversion(value + ':00'))
+
+      } else {
+        setCourseDetails({ ...courseDetails, [name]: propertyVal })
+      }
+  }
+
+  function updateOtherCourseExisting(event, index) {
+    const { name, value } = event.target
+    // const sessionsArr = ['spaces', 'startTime', 'endTime']
+    if (name === 'startDate' || name === 'endDate') {
+      setOpen(true)
+      return
+    }
+    else {
+      const newSessionsArr = [...sessions]
+      if (name === 'spaces') {
+
+        newSessionsArr[index] = { ...newSessionsArr[index], [name]: value }
+        setCourseDetails({ ...courseDetails, sessions: newSessionsArr })
+
+      } else {
+        
+        const toEdit = newSessionsArr[index]
+        let opposite = name === 'startTime' ? 'endTime' : 'startTime'
+
+    
+
+        const startMoment = name === 'startTime' ? moment(value, 'HH:mm') : moment(toEdit[opposite], 'hh:mma')
+        const endMoment = name === 'startTime' ? moment(toEdit[opposite], 'hh:mma') : moment(value, 'HH:mm')
+
+        const oppositeVal = moment(startMoment).isSameOrAfter(endMoment) ? tConvert(value + ':00') : toEdit[opposite]
+
+        newSessionsArr[index] = { ...newSessionsArr[index], [name]: tConvert(value + ':00'), [opposite]: oppositeVal }
+
+        setCourseDetails({ ...courseDetails, sessions: newSessionsArr })
+
+      }
+    }
+  }
+
+
 
   function timeConversion(s) {
     const ampm = s.slice(-2);
@@ -238,7 +300,7 @@ export default function MaterialUIPickers({ history, course,
             name="optionalName"
             type="text"
             value={optionalName}
-            onChange={(e) => updateOtherCourseInfo(e)}
+            onChange={(e) => updateOtherCourseNew(e)}
           />
         </FormControl>
 
@@ -248,7 +310,7 @@ export default function MaterialUIPickers({ history, course,
             label="Location"
             name="location"
             value={location}
-            onChange={(e) => updateOtherCourseInfo(e)}
+            onChange={(e) => updateOtherCourseNew(e)}
           >
             {locations && locations.map((el, i) => (
               <MenuItem key={i} value={el}>
@@ -264,7 +326,7 @@ export default function MaterialUIPickers({ history, course,
             label="Age Group"
             name="age"
             value={age}
-            onChange={(e) => updateOtherCourseInfo(e)}
+            onChange={(e) => updateOtherCourseNew(e)}
           >
             {ageGroups && ageGroups.map((el, i) => {
               const text = `${el.startAge}-${el.endAge}`
@@ -292,7 +354,7 @@ export default function MaterialUIPickers({ history, course,
             }}
             name="startDate"
             value={startDate}
-            onChange={(e) => updateOtherCourseInfo(e)}
+            onChange={(e) => updateOtherCourseNew(e)}
           />
 
           <TextField
@@ -307,7 +369,7 @@ export default function MaterialUIPickers({ history, course,
             }}
             name="endDate"
             value={endDate}
-            onChange={(e) => updateOtherCourseInfo(e)}
+            onChange={(e) => updateOtherCourseNew(e)}
           />
         </tr>
 
@@ -316,28 +378,28 @@ export default function MaterialUIPickers({ history, course,
             <td>
               <FormControl variant="outlined" className={classes.formControl}>
                 <TextField
-                  // value={course && timeConversion(formatDateString(startTime))}
+                  value={timeConversion(formatDateString(startTime))}
                   name='startTime'
                   label="Start Time"
                   type="time"
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  onChange={(e) => updateOtherCourseInfo(e)}
+                  onChange={(e) => updateOtherCourseNew(e)}
                 />
               </FormControl>
             </td>
             <td>
               <FormControl variant="outlined" className={classes.formControl}>
                 <TextField
-                  // value={course && timeConversion(formatDateString(endTime))}
+                  value={timeConversion(formatDateString(endTime))}
                   name='endTime'
                   label="End Time"
                   type="time"
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  onChange={(e) => updateOtherCourseInfo(e)}
+                  onChange={(e) => updateOtherCourseNew(e)}
                 />
               </FormControl>
             </td>
@@ -348,7 +410,7 @@ export default function MaterialUIPickers({ history, course,
                   name="spaces"
                   label="Spaces"
                   value={spaces}
-                  onChange={(e) => updateOtherCourseInfo(e)}
+                  onChange={(e) => updateOtherCourseNew(e)}
                 />
               </FormControl>
             </td>
@@ -404,6 +466,7 @@ export default function MaterialUIPickers({ history, course,
                     <FormControl variant="outlined" className={classes.formControl}>
 
                       <TextField
+                        // value={timeConversion(formatDateString(el.startTime))}
                         value={timeConversion(formatDateString(el.startTime))}
                         name='startTime'
                         label="Start Time"
@@ -411,7 +474,7 @@ export default function MaterialUIPickers({ history, course,
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        onChange={(e) => updateOtherCourseInfo(e, i)}
+                        onChange={(e) => updateOtherCourseExisting(e, i)}
                       />
                     </FormControl>
                   </td>
@@ -425,7 +488,7 @@ export default function MaterialUIPickers({ history, course,
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        onChange={(e) => updateOtherCourseInfo(e, i)}
+                        onChange={(e) => updateOtherCourseExisting(e, i)}
                       />
                     </FormControl>
                   </td>
@@ -436,7 +499,7 @@ export default function MaterialUIPickers({ history, course,
                         name="spaces"
                         label="Spaces"
                         value={sessions[i].spaces}
-                        onChange={(e) => updateOtherCourseInfo(e, i)}
+                        onChange={(e) => updateOtherCourseExisting(e, i)}
                       />
                     </FormControl>
                   </td>
@@ -461,7 +524,7 @@ export default function MaterialUIPickers({ history, course,
             name="cost"
             value={campCost}
             label="Total cost of camp (£)"
-            onChange={(e) => updateOtherCourseInfo(e)}
+            onChange={(e) => updateOtherCourseNew(e)}
           />
         </FormControl>
 
