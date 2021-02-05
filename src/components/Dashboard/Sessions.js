@@ -110,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Sessions({ componentTabValue }) {
   const date = moment()
   const classes = useStyles();
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState(0);
   const [companyCourses, setCompanyCourses] = useState()
   const [registers, setRegisters] = useState([])
   const [open, setOpen] = useState(false)
@@ -128,7 +128,7 @@ export default function Sessions({ componentTabValue }) {
     let coachArray = []
     const response = await axios.get(`/users/${auth.getUserId()}`)
     const data = await response.data[0]
-    console.log(data, 'hellooooo')
+    // console.log(data, 'hellooooo')
 
     // for (const course of data.courses) {
     // let register
@@ -144,7 +144,7 @@ export default function Sessions({ componentTabValue }) {
       let register
       const response = await axios.get(`/courses/${course.courseId}`)
       register = await response.data
-      console.log({register})
+      // console.log({register})
       if (register.register) activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
     }
 

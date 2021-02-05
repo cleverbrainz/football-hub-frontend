@@ -87,7 +87,7 @@ export default function MaterialUIPickers({ history, course,
     startTime: course ? course.courseDetails.startTime : "",
     endTime: course ? course.courseDetails.endTime : ""
   });
-  const { sessions, firstDay, optionalName, lastDay, location, campCost,
+  const { sessions, startDate, optionalName, endDate, location, campCost,
     dayCost, age, excludeDays, individualDayBookings, spaces, startTime, endTime } = courseDetails;
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   // const times = [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -166,7 +166,7 @@ export default function MaterialUIPickers({ history, course,
     const { name, value } = event.target
     const sessionsArr = ['spaces', 'startTime', 'endTime']
 
-    if (course && (name === 'firstDay' || name === 'lastDay')) setOpen(true)
+    if (course && (name === 'startDate' || name === 'endDate')) setOpen(true)
     else if (course && (sessionsArr.includes(name))) {
       const newSessionsArr = [...sessions]
       const propertyVal = name === 'startTime' || name === 'endTime' ? tConvert(value) : value
@@ -285,13 +285,13 @@ export default function MaterialUIPickers({ history, course,
             label="First day"
             type="date"
             variant="outlined"
-            defaultValue="2017-05-24"
+            defaultValue={startDate}
             className={classes.spacing}
             InputLabelProps={{
               shrink: true,
             }}
             name="startDate"
-            value={firstDay}
+            value={startDate}
             onChange={(e) => updateOtherCourseInfo(e)}
           />
 
@@ -300,13 +300,13 @@ export default function MaterialUIPickers({ history, course,
             label="Last day"
             type="date"
             variant="outlined"
-            defaultValue="2017-05-24"
+            defaultValue={endDate}
             className={classes.spacing}
             InputLabelProps={{
               shrink: true,
             }}
             name="endDate"
-            value={lastDay}
+            value={endDate}
             onChange={(e) => updateOtherCourseInfo(e)}
           />
         </tr>
