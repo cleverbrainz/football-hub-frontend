@@ -22,7 +22,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function CoachPageBetaTable({ locations, handleSetLocationId }) {
+export default function CoachPageBetaTable({ locations  }) {
   const classes = useStyles();
 
   return (
@@ -35,7 +35,6 @@ export default function CoachPageBetaTable({ locations, handleSetLocationId }) {
             <TableCell align="right">Full Address</TableCell>
             <TableCell align="right">Latitude</TableCell>
             <TableCell align="right">Longitude</TableCell>
-            <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -49,9 +48,6 @@ export default function CoachPageBetaTable({ locations, handleSetLocationId }) {
                 <TableCell align="right">{el.latitude}</TableCell>
                 <TableCell align="right">{el.longitude}</TableCell>
                 <TableCell align="right">
-                  <DeleteForeverSharpIcon
-                    onClick={() => handleSetLocationId(el.locationId, el.venue)}
-                    className={classes.icon} />
                 </TableCell>
               </TableRow>
 

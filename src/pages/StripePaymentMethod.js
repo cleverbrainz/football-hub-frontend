@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withRouter } from 'react-router-dom'
 // import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
@@ -36,7 +37,7 @@ const useStyles = makeStyles({
 });
 
 
-export default function CheckoutForm({
+function CheckoutForm({
   stripeId,
   open,
   name,
@@ -78,20 +79,20 @@ export default function CheckoutForm({
     const { userId, name, stripeId, email } = user
     let checkout
 
-    
+
 
     if (type !== 'recurring') {
 
       checkout = await axios.post('/create-payment', {
         email,
-        type,
         priceId: id,
         connectedAccountId: connectedAccount,
         customerId: stripeId,
         metadata: {
+          dob: '',
           companyId,
           courseId,
-          playerName: name,
+          name,
           playerId: userId
         }
       })
@@ -100,11 +101,12 @@ export default function CheckoutForm({
       checkout = await axios.post('/connected-account/subscriptions', {
         customerId: stripeId,
         metadata: {
+          dob: '',
           priceId: id,
           connectedAccountId: connectedAccount,
           companyId,
           courseId,
-          playerName: name,
+          name,
           playerId: userId
         }
       })
@@ -117,14 +119,20 @@ export default function CheckoutForm({
     })
 
     if (result.error) {
-      console.log(result.error)
+      // props.history.push('/checkout')
     }
 
 
   }
 
-  
+  function calculateProration(start, end, price) {
+    const courseDuration = moment(end, 'YYYY-MM-DD').diff(moment(start, 'YYYY-MM-DD'), 'weeks')
+    const weeklyPrice = (price.unit_amount / courseDuration).toFixed(2)
+    const remainingDuration = moment(end, 'YYYY-MM-DD').diff(moment(), 'weeks')
+    const prorationAmount = remainingDuration * weeklyPrice
 
+    return prorationAmount
+  }
 
   return (
     <>
@@ -141,15 +149,27 @@ export default function CheckoutForm({
           {prices && (
             prices.map((el, i) => {
               const { unit_amount, id, type, metadata } = el
-              const { subscription_end_date } = metadata
-              const subscription_length = moment(subscription_end_date).diff(moment(), 'weeks')
-              const amount = unit_amount.toString()
+              const { end_date, start_date } = metadata
+              const subscription_length = moment(end_date).diff(moment(), 'weeks')
+              const isTodayBeforeStart = moment().isBefore(moment(start_date, 'YYYY-MM-DD'))
+
               return (
                 <Card onClick={() => setSelectedPlan({ id, type })} className={classes.root}
                   style={{ border: selectedPlan.id === id ? '2px #b19cd9 solid' : 'none' }}>
                   <CardContent>
                     <Typography className={classes.title} color="textSecondary" gutterBottom>
-                      £{`${unit_amount / 100}.${amount.slice(-2)}`}
+                      <span style={{
+                        marginRight: '10px',
+                        textDecoration: (!isTodayBeforeStart && type !== 'recurring') ? 'line-through' : 'none'
+                      }}> 
+                      £{`${(unit_amount / 100).toFixed(2)}`} 
+                      </span>
+
+                    {(!isTodayBeforeStart && type !== 'recurring') && (
+                      <span style={{ color: 'blue'}}> 
+                      {`£${(calculateProration(start_date, end_date, prices[1]) / 100).toFixed(2)}`}
+                      </span>  
+                      )}
                     </Typography>
 
                     <Typography className={classes.pos} color="textSecondary">
@@ -157,6 +177,12 @@ export default function CheckoutForm({
                         `Weekly subscription payment for ${subscription_length} weeks`
                         : 'One-off payment'}
                     </Typography>
+
+                    {(!isTodayBeforeStart && type !== 'recurring') && (
+                      <Typography className={classes.pos} variant="body2" component="p">
+                        This course has already started and original price has been reduced.
+                      </Typography>
+                    )}
                   </CardContent>
                   <CardActions>
                     <Button size="small"> Select </Button>
@@ -176,3 +202,5 @@ export default function CheckoutForm({
     </>
   );
 }
+
+export default CheckoutForm
