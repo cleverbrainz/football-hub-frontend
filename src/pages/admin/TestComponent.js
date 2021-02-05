@@ -17,6 +17,7 @@ const TableComponent = ({
   index,
   location,
   locations,
+  session,
   updateOtherCourseInfo }) => {
 
    if (el) console.log(timeConversion(formatDateString(el.endTime)))
@@ -83,7 +84,7 @@ const TableComponent = ({
           <td>
             <FormControl variant="outlined" name='startTime' className={classes.formControl}>
               <TextField
-                value={el && timeConversion(formatDateString(el.startTime))}
+                value={el ? timeConversion(formatDateString(el.startTime)) : session?.startTime && timeConversion(formatDateString(session.startTime))}
                 name='startTime'
                 label="Start Time"
                 type="time"
@@ -98,7 +99,7 @@ const TableComponent = ({
           <td>
             <FormControl variant="outlined" className={classes.formControl}>
               <TextField
-                value={el && timeConversion(formatDateString(el.endTime))}
+                value={el ? timeConversion(formatDateString(el.endTime)) : session?.endTime && timeConversion(formatDateString(session.endTime))}
                 name='endTime'
                 label="End Time"
                 type="time"

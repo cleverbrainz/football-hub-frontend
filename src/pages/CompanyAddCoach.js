@@ -345,9 +345,9 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
           <p>no document uploaded</p>
         )}
 
-        <Typography variant="p"> DBS Check </Typography>
+        {/* <Typography variant="p"> DBS Check </Typography> */}
 
-        <FormControlLabel
+        {/* <FormControlLabel
           control={
             <Checkbox
               color="default"
@@ -356,8 +356,8 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
               name="checked"
             />
           }
-          label="Yes, this coach has a clean record"
-        />
+          label="Yes, this coach has a clean record" */}
+        {/* /> */}
 
         <input
           name="dbsCertificate"
@@ -366,12 +366,14 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
           onChange={(e) => handleDocumentUpload(e)}
           type="file"
         />
-
-
-
-
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <BackupIcon style={{ color: 'blue' }} onClick={() => dbsInput.current.click()} />
+                <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => dbsInput.current.click()}
+        >
+          <BackupIcon />
+          UPLOAD DBS CERTIFICATE
+        </Button>
           {coachInfo && coachInfo.dbsCertificate ? (
           <div className={classes.wrapper}>
             <a
@@ -394,7 +396,6 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
         ) : (
           <p>no document uploaded</p>
         )}
-        </div>
 
         <Button
           className={classes.button}

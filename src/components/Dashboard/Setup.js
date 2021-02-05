@@ -115,12 +115,13 @@ const Setup = ({ handleComponentChange }) => {
                 Update your subscription and account settings to enable online payments
                 </Typography>
 
-              <Link to="/subscription"><Fab className={classes.fab}
+             <Fab className={classes.fab}
                 size="small"
+                onClick={() => handleComponentChange('Subscription', 0)}
                 color="secondary"
                 aria-label="edit">
                 <EditIcon />
-              </Fab></Link>
+              </Fab>
             </Paper>
           </Grid>
 

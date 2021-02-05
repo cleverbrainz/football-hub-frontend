@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function ContactInfo({ componentTabValue }) {
+export default function ContactInfo({ componentTabValue, handleComponentChange }) {
   const classes = useStyles();
   const [value, setValue] = useState(componentTabValue);
   const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
@@ -219,7 +219,7 @@ export default function ContactInfo({ componentTabValue }) {
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-        <CompanyDetailsEditBeta />
+        <CompanyDetailsEditBeta handleComponentChange={handleComponentChange} />
       </TabPanel>
 
       {/* tab 2 content */}
