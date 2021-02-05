@@ -75,7 +75,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
   });
 
   const { startDate, courseCategory, service, endDate, sessions, cost, optionalName,
-    courseType, paymentInterval, age, location } = formDetails;
+    courseType, allow_weekly_payment, age, location } = formDetails;
 
   const handleClose = () => {
     setOpen(false);
@@ -102,7 +102,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
         setAgeGroups(ageArr)
       })
   }, [])
- 
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const courseDetails = { ...formDetails }
@@ -331,6 +331,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel>Total Cost (£)</InputLabel>
             <OutlinedInput
+              disabled={course}
               name="cost"
               type="number"
               id="cost"
@@ -344,14 +345,19 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
           <FormControlLabel
             control={
               <Checkbox
-                checked={formDetails.allow_weekly_payment}
+                disabled={(course && course.courseDetails.allow_weekly_payment) ? true : false}
+                checked={allow_weekly_payment}
                 onChange={(e) => setFormDetails({ ...formDetails, allow_weekly_payment: e.target.checked })}
                 name="checkedB"
                 color="primary"
               />
             }
-            label="Allow the option to pay on a weekly basis?"
+            label="Allow players to subscribe to the course and pay on a weekly basis?"
           />
+          {(!course || !course.courseDetails.allow_weekly_payment) &&
+            <p style={{ color: 'red' }}>
+              Total cost and subscription option (if selected) cannot be changed once saved
+          </p>}
         </div>
         <Button
           className={classes.button}
