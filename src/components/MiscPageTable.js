@@ -81,35 +81,6 @@ export default function MiscPageTable({
           </TableBody>
         </Table>
       </TableContainer>
-
-      <Typography style={{ marginTop: '30px' }} variant="h6" gutterBottom component="div">
-        Age Groups
-      </Typography>
-      <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
-          <TableHead>
-            <TableRow>
-            
-              <TableCell> Start Age </TableCell>
-              <TableCell align="right"> End Age </TableCell>
-              <TableCell align="right"/>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-          {ages && ages.map((el, i) => (
-              <TableRow key={i}>
-                <TableCell align="right">{el.startAge}</TableCell>
-                <TableCell align="right">{el.endAge}</TableCell>
-                <TableCell align="right">
-                  <DeleteForeverSharpIcon
-                    onClick={() => handleMiscDeletion(el, 'age')}
-                    className={classes.icon} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
     </>
   );
 }

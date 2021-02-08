@@ -64,7 +64,9 @@ const IntroductionPage = ({ handleComponentChange }) => {
   const classes = useStyles()
   const boxes = [
     {name: 'Company Details', state: 'companyInfo', component: 'Contact', page: 0 }, {name: 'Locations', state:'locations', component: 'Locations', page: 1 }, {name:'Coaches', state: 'coaches', component: 'Coaches', page: 1 },
-    {name: 'Services', state: 'services', component: 'Misc', page: 1 }, {name: 'Age Groups', state:'ageDetails', component: 'Misc', page: 1 }, {name:'Courses/Camps', state: 'courses', component: 'Sessions', page: 1 }
+    {name: 'Services', state: 'services', component: 'Misc', page: 1 }, 
+    // {name: 'Age Groups', state:'ageDetails', component: 'Misc', page: 1 },
+     {name:'Courses/Camps', state: 'courses', component: 'Sessions', page: 1 }
   ]
   const [checkState, setCheckState] = useState(null)
 
@@ -86,7 +88,7 @@ const IntroductionPage = ({ handleComponentChange }) => {
       locations: false,
       coaches: false,
       services: false,
-      ageDetails: false,
+      // ageDetails: false,
       courses: false
     }
     for (const type of Object.keys(newState)) {

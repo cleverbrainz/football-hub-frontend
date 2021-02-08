@@ -32,10 +32,6 @@ const Setup = ({ handleComponentChange }) => {
 
   const cards = [
     {
-      text: 'Age Groups', component: 'Misc',
-      description: 'Put in the age groups you work with so that you can reuse them across camps and courses you run'
-    },
-    {
       text: 'Services', component: 'Misc',
       description: 'Add one or more services you offer, this is a place to really sell what you do'
     },

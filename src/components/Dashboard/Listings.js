@@ -21,6 +21,7 @@ import AddListings from './AddListings'
 import EditSharpIcon from '@material-ui/icons/EditSharp';
 import ListingsPageTable from './ListingsPageTable'
 import ListingInstructionDialogue from './ListingInstructionDialogue'
+import { getDate } from 'date-fns';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -113,7 +114,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Listings() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [companyListings, setCompanyListings] = useState()
+  const [companyListings, setCompanyListings] = useState([])
   const [open, setOpen] = useState(false)
   const [completedSetup, setCompletedSetup] = useState(false)
   const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
@@ -131,35 +132,50 @@ export default function Listings() {
     images: []
   })
 
-  async function getData(type, data) {
-    let coachArray = []
+  async function getData() {
 
-    for (const request of data) {
+    const data = await axios.get(`/users/${auth.getUserId()}`)
+    const { coaches, listings, stripe_account, services, courses, name, images, verification } = await data.data[0]
+
+    let coachArray = []
+    let listingArray = []
+
+    for (const id of coaches) {
       let coach
-      const response = await axios.get(`/${type}/${request}`)
+      const response = await axios.get(`/users/${id}`)
       coach = await response.data[0] ? response.data[0] : response.data
-      console.log(coach)
       coachArray.push(coach)
     }
-    console.log(coachArray)
-    return coachArray
+
+    for (const id of listings) {
+      console.log('THIS IS', id)
+      let listing
+      const response = await axios.get(`/listings/${id}`)
+      listing = await response.data[0] ? response.data[0] : response.data
+      listingArray.push(listing)
+    }
+
+    console.log(coachArray, listingArray)
+
+    setCompanyListings(listingArray);
+    setListingTransferListInfo({
+      ...listingTransferListInfo,
+      stripe_account,
+      coaches: coachArray,
+      services,
+      courses,
+      companyName: name,
+      images
+    })
+    setCompletedSetup(verification.setup)
   }
 
   useEffect(() => {
-    axios
-      .get(`/users/${auth.getUserId()}`)
-      .then(async res => {
-        const { services, courses, name, images, stripe_account, verification } = res.data[0]
-        let { coaches, listings } = res.data[0]
-        coaches = await getData('users', coaches)
-        listings = await getData('listings', listings)
-        console.log(listings)
-        setCompanyListings(listings);
-        setListingTransferListInfo({ ...listingTransferListInfo, stripe_account, coaches, services, courses, companyName: name, images })
-        setCompletedSetup(verification.setup)
-      })
-      .catch(e => console.log(e))
-  }, [!stateRefreshInProgress]);
+    // console.log('helloo')
+    getData()
+  }, []);
+
+
 
   const handleSetListingId = listingId => {
     setOpen(true)
@@ -174,35 +190,37 @@ export default function Listings() {
     setInstructionsOpen(false);
   };
 
-  async function handleStateRefresh() {
-    await setStateRefreshInProgress(false)
+  function handleStateRefresh() {
     setValue(0)
+    // setStateRefreshInProgress(false);
   }
 
   const handleDelete = () => {
-    setStateRefreshInProgress(true);
 
-    console.log(listingIdToBeDeleted)
 
     axios
       .delete(`/companies/listings/${listingIdToBeDeleted}`, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
-        console.log(res.data);
-        setStateRefreshInProgress(false);
+        // console.log(res.data);
         handleClose();
+        getData()
+
       })
       .catch((err) => {
-        console.error(err);
-        setStateRefreshInProgress(false);
+        // console.error(err);
         handleClose();
+        getData()
+
+
       });
   };
 
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    if (newValue !== 2) setListingToBeEdited(null)
   };
 
   const handleSetListingToBeEdited = listing => {
@@ -225,42 +243,44 @@ export default function Listings() {
         >
           <Tab label="Current Listings" icon={<FormatListNumberedSharpIcon />} {...a11yProps(0)} />
           <Tab label="Add New Listing" icon={<PlaylistAddSharpIcon />} {...a11yProps(1)} />
-          <Tab label="Edit Listing" icon={<EditSharpIcon />} {...a11yProps(2)} />
-          
-          </Tabs>
-          : 
-          <Tabs
-          className={classes.AppBar}
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="on"
-          indicatorColor="primary"
-          textColor="primary"
-          aria-label="scrollable force tabs example"
-        >
-          <Tab label="Current Listings" icon={<FormatListNumberedSharpIcon />} {...a11yProps(0)} /> 
+          {listingToBeEdited && <Tab label="Edit Listing" icon={<EditSharpIcon />} {...a11yProps(2)} />}
+
         </Tabs>
-          }
+          :
+          <Tabs
+            className={classes.AppBar}
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="on"
+            indicatorColor="primary"
+            textColor="primary"
+            aria-label="scrollable force tabs example"
+          >
+            <Tab label="Current Listings" icon={<FormatListNumberedSharpIcon />} {...a11yProps(0)} />
+          </Tabs>
+        }
       </AppBar>
 
       {/* tab 1 content */}
       <TabPanel value={value} index={0}>
-        {completedSetup && companyListings &&
+        {(completedSetup && companyListings) &&
           <ListingsPageTable
+
             listings={companyListings}
             handleSetListingId={listingId => handleSetListingId(listingId)}
             handleSetListingToBeEdited={listing => handleSetListingToBeEdited(listing)} />}
-        {!completedSetup && 
-        <Container>
-          <Typography>Please finish setting up your account before adding a listing</Typography>
-        </Container>
+        {!completedSetup &&
+          <Container>
+            <Typography>Please finish setting up your account before adding a listing</Typography>
+          </Container>
         }
       </TabPanel>
 
       {/* tab 2 content */}
       <TabPanel className={classes.formContainer} value={value} index={1}>
         <AddListings
+          getData={() => getData()}
           listingTransferListInfo={listingTransferListInfo}
           handleStateRefresh={() => handleStateRefresh()} classes={classes} />
       </TabPanel>
@@ -269,6 +289,7 @@ export default function Listings() {
       <TabPanel className={classes.formContainer} value={value} index={2}>
         {listingToBeEdited &&
           <AddListings
+          getData={() => getData()}
             listingToBeEdited={listingToBeEdited}
             listingTransferListInfo={listingTransferListInfo}
             handleStateRefresh={() => handleStateRefresh()} classes={classes} />}

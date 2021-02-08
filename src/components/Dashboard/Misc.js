@@ -256,14 +256,14 @@ export default function Misc({ componentTabValue }) {
           >
 
             <MenuItem value='service'> Company Service </MenuItem>
-            <MenuItem value='age'> Age Group </MenuItem>
+            {/* <MenuItem value='age'> Age Group </MenuItem> */}
 
           </Select>
         </FormControl>
 
-        {newMiscDetail && (newMiscDetail === 'service' ? <ContainedButtons
+        {newMiscDetail && (newMiscDetail === 'service' && <ContainedButtons
           handleStateRefresh={() => handleStateRefresh()}
-        /> : <AddAgeGroup handleStateRefresh={() => handleStateRefresh()} />)}
+        /> )}
 
       </TabPanel>
 
