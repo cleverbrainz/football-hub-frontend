@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ContainedButtons({ history, service, handleStateRefresh }) {
+export default function ContainedButtons({ history, service, getData, handleChange }) {
   const classes = useStyles();
 
   const [form, setForm] = useState({
@@ -46,24 +46,24 @@ export default function ContainedButtons({ history, service, handleStateRefresh 
         .patch("/companies/array/services", { ...form, serviceId: service.serviceId },
           { headers: { Authorization: `Bearer ${auth.getToken()}` } })
         .then((res) => {
-          console.log(res.data);
-          handleStateRefresh()
+          getData()
+          handleChange(e,0)
         })
         .catch((error) => {
-          console.log(error);
-          handleStateRefresh()
+          getData()
+          handleChange(e,0)
         });
 
     } else {
       return axios
         .post("/companies/services", form)
         .then((res) => {
-          console.log(res.data);
-          handleStateRefresh()
+          getData()
+          handleChange(e,0)
         })
         .catch((error) => {
-          console.log(error);
-          handleStateRefresh()
+          getData()
+          handleChange(e,0)
         });
     }
 
