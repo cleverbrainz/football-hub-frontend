@@ -213,8 +213,8 @@ export default function CompanyPlayersList() {
             <TableBody>
               {filteredNames.map((el, i) => {
                 console.log(players[el])
-                const activeCourses = players[el].courses[companyData.userId] ? players[el].courses[companyData.userId].active : []
-                const pastCourses = players[el].courses[companyData.userId] ? players[el].courses[companyData.userId].past : []
+                const activeCourses = players[el].courses[companyData.userId]?.active ? players[el].courses[companyData.userId].active : []
+                const pastCourses = players[el].courses[companyData.userId]?.past ? players[el].courses[companyData.userId].past : []
                 return (
                 <>
                   <TableRow key={i}>
@@ -287,7 +287,6 @@ export default function CompanyPlayersList() {
                                     <TableCell align="right">
                                       End Date
                                     </TableCell>
-                                    <TableCell align="right">Venue</TableCell>
                                     <TableCell align="right">
                                       Age Group
                                     </TableCell>
@@ -312,9 +311,6 @@ export default function CompanyPlayersList() {
                                               </TableCell>
                                               <TableCell align="right">
                                               {correctCourse.courseDetails.endDate}
-                                              </TableCell>
-                                              <TableCell align="right">
-                                              {correctCourse.courseDetails.venue}
                                               </TableCell>
                                               <TableCell align="right">
                                               {correctCourse.courseDetails.age}
@@ -345,6 +341,7 @@ export default function CompanyPlayersList() {
                           </Typography>
 
                           {players[el].courses[auth.getUserId()] && (
+                            pastCourses.length > 0 &&
                             <TableContainer component={Paper}>
                               <Table aria-label="collapsible table">
                                 <TableHead>
@@ -383,7 +380,7 @@ export default function CompanyPlayersList() {
                                               {correctCourse.courseDetails.endDate}
                                               </TableCell>
                                               <TableCell align="right">
-                                              {correctCourse.courseDetails.venue}
+                                              {correctCourse.courseDetails.courseType === 'Camp' ? correctCourse.courseDetails.location : correctCourse.courseDetails.sessions[0].location }
                                               </TableCell>
                                               <TableCell align="right">
                                               {correctCourse.courseDetails.age}
@@ -401,12 +398,13 @@ export default function CompanyPlayersList() {
                             </TableContainer>
                           )}
                         </Box>
-
+                        <div style={{ margin: '15px 0'}}>
                         <AssignPlayerToCourse
                           setDataChange={setDataChange}
                           player={players[el]}
                           courses={companyData.courses.active} 
                           companyId={companyData.userId}/>
+                          </div>
                       </Collapse>
                     </TableCell>
                   </TableRow>
@@ -415,7 +413,7 @@ export default function CompanyPlayersList() {
             </TableBody>
           </Table>
         </TableContainer>
-        <Box>
+        <Box style={{ marginTop: '30px'}}>
 
         <Typography>Add new player</Typography>
 

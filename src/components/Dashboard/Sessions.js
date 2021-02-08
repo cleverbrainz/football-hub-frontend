@@ -308,7 +308,7 @@ export default function Sessions({ componentTabValue }) {
                   {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
                     return (
                       <Typography gutterBottom={true} variant="h6">
-                        {sessionInfo.startTime} - {sessionInfo.endTime}, {courseDetails.location}:
+                        {sessionInfo.startTime} - {sessionInfo.endTime}, {courseDetails.courseType === 'Camp' ? courseDetails.location : courseDetails.sessions[0].location}:
             <Link to={`/courses/${id}/register/${day}`}>
                           {` ${courseDetails.optionalName}`}
                         </Link>
