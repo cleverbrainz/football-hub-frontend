@@ -267,7 +267,7 @@ export default function Registers() {
                       {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
                         return (
                           <Typography gutterBottom={true} variant="h6">
-                            {`${courseDetails.optionalName}: ${sessionInfo.startTime} - ${sessionInfo.endTime}, ${sessionInfo.location} : `}
+                            {`${courseDetails.optionalName}: ${sessionInfo.startTime} - ${sessionInfo.endTime}, ${courseDetails.courseType === 'Camp' ? courseDetails.location : sessionInfo.location} : `}
 
                             <Button onClick={() => {
                               setValue(2)
@@ -305,17 +305,19 @@ export default function Registers() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {companyCourses.active.map((el, i) => (
-                <TableRow key={i}>
+              {companyCourses.active.map((el, i) => {
+                console.log({el})
+                const { optionalName, sessions, startDate, endDate, age, location, courseType, firstDay, lastDay } = el.courseDetails
+                return (<TableRow key={i}>
                   <TableCell component="th" scope="row">
-                    {el.courseDetails.optionalName}
+                    {optionalName}
                   </TableCell>
                   <TableCell align='right'>
-                    {el.courseDetails.sessions[0].location}
+                    {courseType === 'Camp' ? location : sessions[0].location}
                   </TableCell>
-                  <TableCell align="right">{el.courseDetails.startDate ? moment(el.courseDetails.startDate).format('DD/MM/YYYY') : moment(el.courseDetails.firstDay).format('DD/MM/YYYY')}</TableCell>
-                  <TableCell align="right">{el.courseDetails.endDate ? moment(el.courseDetails.endDate).format('DD/MM/YYYY') : moment(el.courseDetails.lastDay).format('DD/MM/YYYY')}</TableCell>
-                  <TableCell align="right">{el.courseDetails.age}</TableCell>
+                  <TableCell align="right">{startDate ? moment(startDate).format('DD/MM/YYYY') : moment(firstDay).format('DD/MM/YYYY')}</TableCell>
+                  <TableCell align="right">{endDate ? moment(endDate).format('DD/MM/YYYY') : moment(lastDay).format('DD/MM/YYYY')}</TableCell>
+                  <TableCell align="right">{age}</TableCell>
                   <TableCell align="right">
 
                     <Button onClick={() => {
@@ -330,7 +332,7 @@ export default function Registers() {
                     {/* <Link to={`/courses/${el.courseId}/register/full`}>View Full Register</Link> */}
                   </TableCell>
                 </TableRow>
-              ))}
+              )})}
             </TableBody>
           </Table>
         </TableContainer>
@@ -351,17 +353,18 @@ export default function Registers() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {companyCourses.past.map((el, i) => (
-                <TableRow key={i}>
+              {companyCourses.past.map((el, i) => {
+                const { optionalName, sessions, startDate, endDate, age, location, courseType, firstDay, lastDay } = el.courseDetails
+                return ( <TableRow key={i}>
                   <TableCell component="th" scope="row">
-                    {el.courseDetails.optionalName}
+                    {optionalName}
                   </TableCell>
                   <TableCell align='right'>
-                    {el.courseDetails.sessions[0].location}
+                    {courseType === 'Camp' ? location : sessions[0].location}
                   </TableCell>
-                  <TableCell align="right">{el.courseDetails.startDate ? moment(el.courseDetails.startDate).format('DD/MM/YYYY') : moment(el.courseDetails.firstDay).format('DD/MM/YYYY')}</TableCell>
-                  <TableCell align="right">{el.courseDetails.endDate ? moment(el.courseDetails.endDate).format('DD/MM/YYYY') : moment(el.courseDetails.lastDay).format('DD/MM/YYYY')}</TableCell>
-                  <TableCell align="right">{el.courseDetails.age}</TableCell>
+                  <TableCell align="right">{startDate ? moment(startDate).format('DD/MM/YYYY') : moment(firstDay).format('DD/MM/YYYY')}</TableCell>
+                  <TableCell align="right">{endDate ? moment(endDate).format('DD/MM/YYYY') : moment(lastDay).format('DD/MM/YYYY')}</TableCell>
+                  <TableCell align="right">{age}</TableCell>
                   <TableCell align="right">
 
                     <Button onClick={() => {
@@ -376,7 +379,7 @@ export default function Registers() {
                     {/* <Link to={`/courses/${el.courseId}/register/full`}>View Full Register</Link> */}
                   </TableCell>
                 </TableRow>
-              ))}
+              )})}
             </TableBody>
           </Table>
         </TableContainer>
