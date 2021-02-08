@@ -110,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Sessions({ componentTabValue }) {
   const date = moment()
   const classes = useStyles();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(componentTabValue);
   const [companyCourses, setCompanyCourses] = useState()
   const [registers, setRegisters] = useState([])
   const [open, setOpen] = useState(false)

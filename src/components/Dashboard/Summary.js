@@ -58,21 +58,34 @@ const Summary = ({ handleComponentChange }) => {
   const [thisWeek, setThisWeek] = useState([])
   const [companyMessages, setCompanyMessages] = useState()
 
+
   async function getData() {
     if (!user.user) return
     let registerArray = []
+    let coachArray = []
+
     const response = await axios.get(`/users/${user.userId}`)
     const data = await response.data[0]
-    console.log(data)
 
-      for (const course of data.courses.active) {
-        let register
-        const response = await axios.get(`/courses/${course.courseId}`)
-        register = await response.data
-        if (register.register) registerArray.push([course.courseDetails, course.courseId, register.register.sessions])
-      }
-    
-    setUserData(data)
+
+    for (const course of data.courses.active) {
+      let register
+      const response = await axios.get(`/courses/${course.courseId}`)
+      register = await response.data
+      if (register.register) registerArray.push([course.courseDetails, course.courseId, register.register.sessions])
+    }
+
+    for (const id of data.coaches) {
+      let coach
+      const response = await axios.get(`/users/${id}`)
+      coach = await response.data[0] ? response.data[0] : response.data
+      coachArray.push({ ...coach.coachInfo })
+      // console.log('THIS ISSS', coach.coachInfo)
+    }
+
+    console.log('HSHAHAHA', coachArray)
+
+    setUserData({ ...data, coaches: coachArray })
     setRegisters(registerArray)
     setThisWeek(sortRegisters(registerArray))
   }
@@ -128,39 +141,43 @@ const Summary = ({ handleComponentChange }) => {
 
     const textArr = []
 
-    const length = userData && (detail === 'courses' && userData.courses.active ? userData[detail].active.length : 
-    detail === 'players' ? Object.keys(userData.players).length : null)
+    const { players, courses, coaches } = userData
+
+    const length = userData && (detail === 'courses' && courses.active) ? courses.active.length :
+      detail === 'players' ? Object.keys(players).length : coaches.length
 
     for (let i = length - 1; i >= 0; i--) {
       switch (detail) {
-        case 'services':
-          textArr.push(`Added ${userData[detail][i].name} service - ${userData[detail][i].description}`)
-          break;
-        case 'courses':
-          textArr.push(`Added ${userData[detail].active[i].courseDetails.courseType} for ${userData[detail].active[i].courseDetails.age} at 
-          ${userData[detail].active[i].courseDetails.location}`)
+        case 'courses': {
+          const { age, courseType, sessions } = courses.active[i].courseDetails
+          textArr.push(`Added ${courseType} for ${age} at ${sessions.map((el, i) => i === sessions.length - 1 ? el.location : `${el.location},` )}`)
+        }
+         
           break;
 
+        case 'players':
+          Object.keys(players).forEach((key) => {
+            const { name, status, dob } = players[key]
+            textArr.push(`Added ${name} as ${status} player (${dob})`)
+          })
+          break
+
+        case 'coaches': 
+          const { name, coaching_level } = coaches[i]
+          textArr.push(`${name} joined company at ${coaching_level}`)
+        
+          break
         default:
           break;
       }
     }
-
-    if (detail === 'players' && userData) {
-      Object.keys(userData[detail]).map((key, index) => {
-        const { name, status, age } = userData[detail][key]
-        textArr.push(`Added ${name} as ${status} player (Age: ${auth.dobToAge(age)})`)
-      })
-    }
-
-
     return textArr
   }
 
 
   if (!userData.courses) return null
-  if(userData && !userData.subscriptions) handleComponentChange('Subscription', 0)
-  if (userData && userData.listings.length === 0) return <IntroductionPage handleComponentChange={handleComponentChange}/>
+  if (userData && !userData.subscriptions) handleComponentChange('Subscription', 0)
+  if (userData && userData.listings.length === 0) return <IntroductionPage handleComponentChange={handleComponentChange} />
   return (
     <div className={classes.root}>
       <Grid container
@@ -185,7 +202,7 @@ const Summary = ({ handleComponentChange }) => {
                         return (
                           <Typography style={{ display: 'block' }} gutterBottom={true} variant="p">
                             <span style={{ display: 'block' }}>Course: {courseDetails.optionalName} </span>
-                            <span style={{ display: 'block' }}> Details: {sessionInfo.startTime} - {sessionInfo.endTime} @ {courseDetails.location} </span>
+                            <span style={{ display: 'block' }}> Details: {sessionInfo.startTime} - {sessionInfo.endTime} @ {sessionInfo.location} </span>
                             {/* <Link to={`/courses/${id}/register/${day}`}>
                               View Register
                           </Link> */}
@@ -257,8 +274,8 @@ const Summary = ({ handleComponentChange }) => {
                 <Typography gutterBottom variant="p">
                   {userData && (userData[el.userObject].active ? userData[el.userObject].active.length !== 0 : userData[el.userObject].length !== 0) ? (
                     <p> You currently have
-                      <span style={{ fontWeight: 'bold' }}> {el.userObject === 'courses' ? userData[el.userObject].active.length : 
-                     el.userObject === 'players' ? Object.keys(userData.players).length : userData[el.userObject].length} {el.text.slice(0, -1) + '(s)'}
+                      <span style={{ fontWeight: 'bold' }}> {el.userObject === 'courses' ? userData[el.userObject].active.length :
+                        el.userObject === 'players' ? Object.keys(userData.players).length : userData[el.userObject].length} {el.text.slice(0, -1) + '(s)'}
                       </span> added to your profile </p>
                   ) : <p> There are currently <span style={{ fontWeight: 'bold' }}> 0 {el.text} </span> on your profile, please select the + icon to add {el.text} </p>}
                 </Typography>
@@ -268,7 +285,7 @@ const Summary = ({ handleComponentChange }) => {
                 </Typography>
 
                 <Typography gutterBottom variant="p">
-                  {renderRecentlyAdded(el.userObject).map((el, i) => <p> {i + 1}. {el} </p>)}
+                  {renderRecentlyAdded(el.userObject).map((el, i) => i < 4 && <p> {i + 1}. {el} </p>)}
                 </Typography>
 
 

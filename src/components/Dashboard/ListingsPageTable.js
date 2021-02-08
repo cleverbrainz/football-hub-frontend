@@ -38,15 +38,13 @@ export default function ListingsPageTable({
   const liveState = {}
   updatedListings.forEach(listing => liveState[listing.listingId] = listing.status)
   const [liveListing, setLiveListing] = useState(liveState)
-  console.log(liveState)
-  console.log(liveListing)
 
   const handleChange = (id, value) => {
     // console.log(id)
     const updated = { ...liveListing }
     for (const listing of Object.keys(updated)) {
       if (listing === id) {
-        updated[listing] = value === false ? 'live': 'saved'
+        updated[listing] = value === false ? 'live' : 'saved'
       } else {
         updated[listing] = 'saved'
       }
@@ -54,10 +52,10 @@ export default function ListingsPageTable({
     }
     const updates = Object.entries(updated)
     axios.patch(`/listings/live`, { updates: updates })
-    .then(res => {
-      setLiveListing(updated)
-      console.log(updated)
-    })
+      .then(res => {
+        setLiveListing(updated)
+        // console.log(updated)
+      })
   };
 
   return (
@@ -76,40 +74,43 @@ export default function ListingsPageTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {listings.map((el, i) => (
-            <TableRow key={i}>
-              <TableCell component="th" scope="row">
-                {el.listingId}
-              </TableCell>
-              <TableCell align="right">{el.services.length}</TableCell>
-              <TableCell align="right">{el.camps.length}</TableCell>
-              <TableCell align="right">{el.courses.length}</TableCell>
-              <TableCell align="right">{el.coaches.length}</TableCell>
-              {/* <TableCell align="right"></TableCell> */}
-              <TableCell align="right">
-              <Link to={{
-                  pathname: `/companies/${auth.getUserId()}/preview/${el.listingId}`,
-                }} target="_blank" ><Button variant="contained" >Preview</Button></Link>
-                <Checkbox
-                  checked={liveListing[el.listingId] === 'live'}
-                  onChange={() => handleChange(el.listingId, (liveListing[el.listingId] === 'live'))}
+          {listings.map((el, i) => {
+            // if (!el) return
+            return (
+              <TableRow key={i}>
+                <TableCell component="th" scope="row">
+                  {el.listingId}
+                </TableCell>
+                <TableCell align="right">{el.services.length}</TableCell>
+                <TableCell align="right">{el.camps.length}</TableCell>
+                <TableCell align="right">{el.courses.length}</TableCell>
+                <TableCell align="right">{el.coaches.length}</TableCell>
+                {/* <TableCell align="right"></TableCell> */}
+                <TableCell align="right">
+                  <Link to={{
+                    pathname: `/companies/${auth.getUserId()}/preview/${el.listingId}`,
+                  }} target="_blank" ><Button variant="contained" >Preview</Button></Link>
+                  <Checkbox
+                    checked={liveListing[el.listingId] === 'live'}
+                    onChange={() => handleChange(el.listingId, (liveListing[el.listingId] === 'live'))}
 
-                ></Checkbox>
-              </TableCell>
-              <TableCell align="right">
-                <CreateSharpIcon
-                  onClick={() => handleSetListingToBeEdited(el)}
-                  className={classes.icon}
-                  style={{ color: "green" }}
-                />
-              </TableCell>
-              <TableCell align="right">
-                <DeleteForeverSharpIcon
-                  onClick={() => handleSetListingId(el.listingId)}
-                  className={classes.icon} style={{ color: "#EF5B5B" }} />
-              </TableCell>
-            </TableRow>
-          ))}
+                  ></Checkbox>
+                </TableCell>
+                <TableCell align="right">
+                  <CreateSharpIcon
+                    onClick={() => handleSetListingToBeEdited(el)}
+                    className={classes.icon}
+                    style={{ color: "green" }}
+                  />
+                </TableCell>
+                <TableCell align="right">
+                  <DeleteForeverSharpIcon
+                    onClick={() => handleSetListingId(el.listingId)}
+                    className={classes.icon} style={{ color: "#EF5B5B" }} />
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
     </TableContainer>
