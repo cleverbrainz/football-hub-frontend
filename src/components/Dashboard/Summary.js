@@ -148,8 +148,8 @@ const Summary = ({ handleComponentChange }) => {
 
     if (detail === 'players' && userData) {
       Object.keys(userData[detail]).map((key, index) => {
-        const { name, status, dob } = userData[detail][key]
-        textArr.push(`Added ${name} as ${status} player (${dob})`)
+        const { name, status, age } = userData[detail][key]
+        textArr.push(`Added ${name} as ${status} player (Age: ${auth.dobToAge(age)})`)
       })
     }
 
