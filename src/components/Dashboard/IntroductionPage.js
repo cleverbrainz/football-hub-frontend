@@ -170,8 +170,14 @@ const IntroductionPage = ({ handleComponentChange }) => {
                 <img alt="Powered by Stripe" style={{maxWidth: "65%"}} src='https://i.imgur.com/VzVZXkr.png'/>
               </a>
               <div>
+              { !userData.stripe_account || !userData.stripeAccount ?
+              <>
               <Button variant="contained" color="default" onClick={() => handleIgnoreStripe()}>Not Now</Button>
-              <Button variant="contained" color="primary" onClick={() => handleComponentChange('Subscription', 0)}>Yes I Need This -></Button>
+              <Button variant="contained" color="primary" onClick={() => handleComponentChange('Subscription', 0)}>Yes I Need This -{'>'}</Button>
+              </>
+              :
+              <Button variant="contained" color="primary" onClick={() => handleComponentChange('Subscription', 0)}>Go To Stripe Dashboard</Button>
+              }
               </div>
               </div>
             </Paper>
@@ -183,7 +189,7 @@ const IntroductionPage = ({ handleComponentChange }) => {
               <div className={classes.titleBox}>
               <Typography variant="h4">{item.name}</Typography>
               {!checkState[item.state]? <Box className={`${classes.roundBox} ${classes.outstanding}`} border={1} borderRadius="50%">{index + 2}</Box> :
-               checkState[item.state] === 'pending' ? <Box className={`${classes.roundBox} ${classes.pending}`} border={1} borderRadius="50%">⌛</Box> : <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box>
+               checkState[item.state] === 'pending' ? <Box className={`${classes.roundBox} ${classes.pending}`} border={1} borderRadius="50%"><span role="img" aria-label="hourglass emoji">⌛</span></Box> : <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box>
               }
               </div>
               <Typography variant="p">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque tristique lacus eu bibendum. Pellentesque et lacinia elit.</Typography>

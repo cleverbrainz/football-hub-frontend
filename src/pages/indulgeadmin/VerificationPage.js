@@ -218,19 +218,19 @@ const VerificationPage = () => {
           </TableCell>
 
           <TableCell align="right">
-      <p>{user.professional_indemnity_insurance}</p>
-            <a href={user.documents.professional_indemnity_insurance}
-              rel="noopener noreferrer"
-              target='_blank'> Click to open </a>
-              { user.verification.indemnityDocumentCheck && <CheckIcon /> }
-          </TableCell>
-
-          <TableCell align="right">
           <p>{user.public_liability_insurance}</p>
             <a href={user.documents.public_liability_insurance}
               rel="noopener noreferrer"
               target='_blank'> Click to open </a>
               { user.verification.liabilityDocumentCheck && <CheckIcon /> }
+          </TableCell>
+
+          <TableCell align="right">
+      <p>{user.professional_indemnity_insurance}</p>
+            <a href={user.documents.professional_indemnity_insurance}
+              rel="noopener noreferrer"
+              target='_blank'> Click to open </a>
+              { user.verification.indemnityDocumentCheck && <CheckIcon /> }
           </TableCell>
 
           <TableCell align="right">

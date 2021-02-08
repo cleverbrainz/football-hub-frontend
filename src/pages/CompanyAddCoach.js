@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CompanyAddCoach({ info, changePage, refreshState }) {
+export default function CompanyAddCoach({ info, handleComponentChange, refreshState }) {
   const classes = useStyles();
 
   console.log(info)
@@ -84,7 +84,7 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
   // const [dataChange, setDataChange] = useState(false);
-  const [avatarImage, setAvatarImage] = useState()
+  const [avatarImage, setAvatarImage] = useState(info.category === 'coach' ? info.coachInfo.imageURL : info.imageURL)
   const [name, setName] = React.useState(info.name);
   const [email, setEmail] = React.useState(info.email);
   const [phone, setPhone] = React.useState(info.main_contact_number);
@@ -98,6 +98,8 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
     dbsCertificate: false,
   })
 
+  console.log(existing)
+
 
   const dbsInput = useRef();
   const coachingInput = useRef();
@@ -109,11 +111,12 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
   });
 
   const handleSubmit = (e) => {
-    console.log(e)
-    refreshState(true);
+    // console.log(e)
+    // refreshState(true);
     // setDataChange({ ...dataChange, [e.target.name]: true })
     e.preventDefault();
     console.log(imageURL)
+    console.log({existing})
     const path = existing ? `/users/${userId}` : `/companies/addSelfCoach`
     axios
       .patch(
@@ -129,7 +132,7 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
         console.log(res.data);
         // setDataChange({ ...dataChange, [e.target.name]: false })
         
-        changePage(e, 0)
+        window.location.reload()
       })
       .catch((error) => {
         alert(error.message);
@@ -183,6 +186,7 @@ export default function CompanyAddCoach({ info, changePage, refreshState }) {
         console.log(res.data)
         setImageUpload(false)
         setAvatarImage(res.data.message)
+        setCoachInfo({ ...coachInfo, imageURL: res.data.message })
       })
       .catch(err => console.error(err))
   }
