@@ -94,7 +94,8 @@ const Profile = ({ match, handleComponentChange, info }) => {
 
 
   const profileId = match ? match.params.id : auth.getUserId()
-  const [user, setUser] = useState(info?.category === 'coach' ? info : {})
+  // const [user, setUser] = useState(info?.category === 'coach' ? info : {})
+  const [user, setUser] = useState()
   const input = useRef()
   const [imageUpload, setImageUpload] = useState(false)
   const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === profileId)
@@ -103,18 +104,22 @@ const Profile = ({ match, handleComponentChange, info }) => {
   const [requestSent, setRequestSent] = useState(false)
   const verifyObj = { coachDocumentationCheck: 'Training Certification', dbsDocumentationCheck: 'DBS', paymentCheck: 'Payment Details' }
 
-  
+
 
 
   useEffect(() => {
-    if (info) return
-
-    axios.get(`/users/${auth.getUserId()}`)
-      .then(res => setUser(res.data[0]))
-
+    if (info) {
+      setUser(info)
+    } else {
+      axios.get(`/users/${auth.getUserId()}`)
+        .then(res => {
+          console.log(res.data[0])
+          setUser(res.data[0])
+        })
+    }
   }, [])
 
-  console.log(user)
+
 
   const UserProfile = () => {
 

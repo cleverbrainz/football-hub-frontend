@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function NavbarTwo({ history, loggedIn }) {
-  
+function NavbarTwo({ history, loggedIn, location }) {
+
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -52,37 +52,37 @@ function NavbarTwo({ history, loggedIn }) {
   const [filterDetails, setFilterDetails] = useState({
     location: {
       longitude: false,
-      latitude: false 
+      latitude: false
     },
     timing: {
       days: {
-        monday: false ,
-        tuesday: false ,
-        wednesday: false ,
-        thursday: false ,
-        friday: false ,
-        saturday: false ,
-        sunday: false 
+        monday: false,
+        tuesday: false,
+        wednesday: false,
+        thursday: false,
+        friday: false,
+        saturday: false,
+        sunday: false
       },
       times: {
-        morning: false ,
-        afternoon: false ,
-        evening: false 
+        morning: false,
+        afternoon: false,
+        evening: false
       }
     },
     age: {
-      7: false ,
-      8: false ,
-      9: false ,
-      10: false ,
-      11: false ,
-      12: false ,
-      13: false ,
-      14: false ,
-      15: false ,
-      16: false ,
-      17: false ,
-      18: false ,
+      7: false,
+      8: false,
+      9: false,
+      10: false,
+      11: false,
+      12: false,
+      13: false,
+      14: false,
+      15: false,
+      16: false,
+      17: false,
+      18: false,
       adults: false
     }
   })
@@ -121,13 +121,13 @@ function NavbarTwo({ history, loggedIn }) {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <Link style={{color: '#000000de'}} to={`/${auth.getUserId()}/profile`}>
+      <Link style={{ color: '#000000de' }} to={`/${auth.getUserId()}/profile`}>
         <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       </Link>
 
       <MenuItem onClick={handleMenuClose}>Account Settings</MenuItem>
 
-      <MenuItem style={{color: 'red'}} onClick={async () => {
+      <MenuItem style={{ color: 'red' }} onClick={async () => {
         await auth.logOut()
         history.push('/')
       }}>Log out</MenuItem>
@@ -142,12 +142,12 @@ function NavbarTwo({ history, loggedIn }) {
       <AppBar id='navbar-noscroll' color="inherit" position="fixed">
         <Toolbar>
 
-            <Typography component='div'>
-              <Box fontSize={23} fontWeight="fontWeightRegular" m={1}>
-                <SportsSoccerSharpIcon style={{ transform: 'translateY(4.5px)', marginRight: '5px' }} />
-                FT BALLER
+          <Typography component='div'>
+            <Box fontSize={23} fontWeight="fontWeightRegular" m={1}>
+              <SportsSoccerSharpIcon style={{ transform: 'translateY(4.5px)', marginRight: '5px' }} />
+              FT BALLER
               </Box>
-            </Typography>
+          </Typography>
 
           <div className={classes.grow} />
 
@@ -158,7 +158,7 @@ function NavbarTwo({ history, loggedIn }) {
               <Link to={{
                 pathname: '/companies',
                 state: filterDetails
-                }}>
+              }}>
                 <IconButton className={classes.icon}>
                   <ExploreSharpIcon style={{ color: '#3d3d3d' }} />
                 </IconButton>
@@ -168,7 +168,7 @@ function NavbarTwo({ history, loggedIn }) {
                 <IconButton className={classes.icon}
                   aria-label="show 4 new mails" >
                   {/* <Badge badgeContent={4} color="secondary"> */}
-                    <MailIcon style={{ color: '#3d3d3d' }} />
+                  <MailIcon style={{ color: '#3d3d3d' }} />
                   {/* </Badge> */}
                 </IconButton>
               </Link>
@@ -190,12 +190,21 @@ function NavbarTwo({ history, loggedIn }) {
                     <div className="navbar-start">
                     </div>
                     <div className="buttons">
-                      <button style={{ backgroundColor: '#3d3d3d' }} className="button is-link">
-                        <Link style={{ color: 'white', }} to='/register'> Sign up </Link>
-                      </button>
-                      <button component={Link} to='/login' className="button is-light">
+                      {location.pathname !== '/register/player' && (
+                        <button style={{ backgroundColor: '#3d0F3d' }} className="button is-link">
+                          <Link style={{ color: 'white', }} to='/register/player'>Register Player</Link>
+                        </button>
+                      )}
+
+                      {location.pathname !== '/register/trainer' && (
+                        <button style={{ backgroundColor: '#3d3d3d' }} className="button is-link">
+                          <Link style={{ color: 'white', }} to='/register/trainer'>Register Company/Coach</Link>
+                        </button>
+                      )}
+
+                      {location.pathname !== '/login' && <button component={Link} to='/login' className="button is-light">
                         <Link style={{ color: 'black' }} to='/login'> Login </Link>
-                      </button>
+                      </button>}
                     </div>
                   </div>
                 </div>

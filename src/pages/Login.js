@@ -256,7 +256,7 @@ export default function Login({ history, location }) {
 
     </form>
 
-    {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>}
+    {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
   </div>
   )
         }

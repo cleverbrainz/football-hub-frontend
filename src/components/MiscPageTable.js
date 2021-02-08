@@ -36,9 +36,9 @@ const useRowStyles = makeStyles({
 
 
 export default function MiscPageTable({ 
-  ages,
+  getData,
   classes,
-  handleEditCourse, 
+  handleEditService, 
   handleMiscDeletion,
   services }) {
 
@@ -67,7 +67,7 @@ export default function MiscPageTable({
                 <TableCell align="right">
                   <CreateSharpIcon
                     style={{ color: '#709995' }}
-                    onClick={() => handleEditCourse(el)}
+                    onClick={() => handleEditService(el)}
                     className={classes.icon}
                   />
                 </TableCell>
