@@ -171,7 +171,6 @@ const Summary = ({ handleComponentChange }) => {
           break;
       }
     }
-
     return textArr
   }
 

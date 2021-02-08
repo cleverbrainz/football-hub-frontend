@@ -90,11 +90,11 @@ name: {
 
 
 
-const Profile = ({ match }) => {
+const Profile = ({ match, handleComponentChange, info }) => {
 
   
   const profileId = match ? match.params.id : auth.getUserId()
-  const [user, setUser] = useState([])
+  const [user, setUser] = useState(info)
   const input = useRef()
   const [imageUpload, setImageUpload] = useState(false)
   const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === profileId)
@@ -104,19 +104,7 @@ const Profile = ({ match }) => {
   const verifyObj = { coachDocumentationCheck: 'Training Certification', dbsDocumentationCheck: 'DBS', paymentCheck: 'Payment Details' }
 
 
-  
 
-
-  useEffect(() => {
-    axios.get(`/users/${profileId}`)
-      .then(res => {
-        const { requests, companies } = res.data[0]
-        console.log(res.data)
-        setUser(res.data[0])
-        if (requests) setRequestSent(requests.some(id => id === auth.getUserId()))
-        if (companies) setIsAlreadyCoach(companies.some(id => id === auth.getUserId()))
-      })
-  }, [!imageUpload])
 
 
   console.log(user)
@@ -295,7 +283,7 @@ const Profile = ({ match }) => {
       picture.append('owner', auth.getUserId())
       picture.append('picture', image[0], image[0].name)
   
-      axios.post(`/user/${auth.getUserId()}/image`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+      axios.post(`/coaches/image/${auth.getUserId()}`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
         .then(res => {
           console.log(res.data)
           setImageUpload(false)
@@ -335,7 +323,7 @@ const Profile = ({ match }) => {
   
             <Avatar
               onClick={isOwnProfile ? (e) => input.current.click(): ''}
-              className={classes.avatar} src={user && user.imageURL}
+              className={classes.avatar} src={user && user.coachInfo.imageURL}
   
             />
   
@@ -450,22 +438,23 @@ const Profile = ({ match }) => {
               </Box>
             </Typography>
   
-            { isOwnProfile && <Link to={{
+            {/* { isOwnProfile && <Link to={{
               pathname: '/testercoach/edit',
               state: user
-            }}>
+            }}> */}
             
             <Button
               // className={classes.button}
-              variant="contained" color="primary">
+              variant="contained"
+              color="primary"
+              onClick={() => handleComponentChange('Edit', 0)}
+              >
               Edit Details
           </Button>
-          </Link>
-          }
+          {/* </Link> */}
             
           </div>
         </div>
-  
         {imageUpload && <CircularProgress size={100} className={classes.progress} />}
       </div>
     )
