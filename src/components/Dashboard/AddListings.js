@@ -54,6 +54,7 @@ function intersection(a, b) {
 
 export default function AddListings({
   listingTransferListInfo,
+  getData,
   handleStateRefresh,
   listingToBeEdited }) {
 
@@ -115,7 +116,7 @@ export default function AddListings({
 
   useEffect(() => {
 
-    console.log(listingTransferListInfo.coaches)
+    // console.log(listingTransferListInfo.coaches)
 
     if (listingToBeEdited) {
 
@@ -195,19 +196,22 @@ export default function AddListings({
       return axios
         .patch("/companies/array/listings", { ...requestObj, listingId: listingToBeEdited.listingId },
           { headers: { Authorization: `Bearer ${auth.getToken()}` } })
-        .then(() => handleStateRefresh())
+        .then(() => {
+          handleStateRefresh()
+          getData()
+        })
         .catch((error) => {
-          alert(error.message);
+          console.log(error.message);
         });
     } else {
       return axios
         .post("/addNewListing", { ...requestObj, ...(stripe_account && { accountId: stripe_account.id }), status: 'saved' })
         .then((res) => {
-          console.log(res.data);
           handleStateRefresh()
+          getData()
         })
         .catch((error) => {
-          alert(error.message);
+          console.log(error.message);
         });
     }
 
