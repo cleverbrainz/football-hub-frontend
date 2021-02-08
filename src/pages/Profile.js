@@ -82,9 +82,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'space-evenly'
   },
-name: {
-  margin: '20px 0',
-}
+  name: {
+    margin: '20px 0',
+  }
 }));
 
 
@@ -92,9 +92,9 @@ name: {
 
 const Profile = ({ match, handleComponentChange, info }) => {
 
-  
+
   const profileId = match ? match.params.id : auth.getUserId()
-  const [user, setUser] = useState(info)
+  const [user, setUser] = useState(info?.category === 'coach' ? info : null)
   const input = useRef()
   const [imageUpload, setImageUpload] = useState(false)
   const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === profileId)
@@ -105,7 +105,13 @@ const Profile = ({ match, handleComponentChange, info }) => {
 
 
 
+  useEffect(() => {
+    if (info) return
 
+    axios.get(`/users/${auth.getUserId()}`)
+      .then(res => setUser(res.data[0]))
+
+  }, [])
 
   console.log(user)
 
@@ -117,7 +123,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
       const picture = new FormData()
       picture.append('owner', auth.getUserId())
       picture.append('picture', image[0], image[0].name)
-  
+
       axios.post(`/user/${auth.getUserId()}/image`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
         .then(res => {
           console.log(res.data)
@@ -125,27 +131,27 @@ const Profile = ({ match, handleComponentChange, info }) => {
         })
         .catch(err => console.error(err))
     }
-  
+
     const handleSendRequest = (e) => {
       e.preventDefault()
       if (!isCompany) return
       axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId, coachName: user.name, coachEmail: user.email, type: window.location.hostname })
-      .then(res => {
-        console.log(res.data)
-        setRequestSent(true)
-      })
-      .catch(err => console.error(err))
+        .then(res => {
+          console.log(res.data)
+          setRequestSent(true)
+        })
+        .catch(err => console.error(err))
     }
-  
+
     const handleDeleteRequest = (e) => {
       e.preventDefault()
       if (!isCompany) return
       axios.put(`/user/${profileId}/deleterequest`, { companyId: auth.getUserId(), coachId: profileId })
-      .then(res => {
-        console.log(res.data)
-        setRequestSent(false)
-      })
-      .catch(err => console.error(err))
+        .then(res => {
+          console.log(res.data)
+          setRequestSent(false)
+        })
+        .catch(err => console.error(err))
     }
 
     function toDateTime(secs) {
@@ -153,126 +159,126 @@ const Profile = ({ match, handleComponentChange, info }) => {
       t.setSeconds(secs);
       return t;
     }
-  
+
     return (
-    <div className={classes.root}>
-    <div className={classes.subContainer}>
-      <div className={classes.leftContainer}>
-  
-        <input ref={input}
-          style={{ display: 'none' }} onChange={(e) => handleMediaChange(e)} type="file" />
-  
-        <Avatar
-          onClick={isOwnProfile ? (e) => input.current.click(): ''}
-          className={classes.avatar} src={user && user.imageURL}
-  
-        />
-  
-        <Typography style={{ margin: '10px 0' }} component='div' >
-          <Box
-            fontSize={16} fontWeight="fontWeightRegular" m={0}>
-            <span style={{ fontWeight: 'bold', display: 'block' }}> Email </span> {user && user.email}
+      <div className={classes.root}>
+        <div className={classes.subContainer}>
+          <div className={classes.leftContainer}>
+
+            <input ref={input}
+              style={{ display: 'none' }} onChange={(e) => handleMediaChange(e)} type="file" />
+
+            <Avatar
+              onClick={isOwnProfile ? (e) => input.current.click() : ''}
+              className={classes.avatar} src={user && user.imageURL}
+
+            />
+
+            <Typography style={{ margin: '10px 0' }} component='div' >
+              <Box
+                fontSize={16} fontWeight="fontWeightRegular" m={0}>
+                <span style={{ fontWeight: 'bold', display: 'block' }}> Email </span> {user && user.email}
+              </Box>
+            </Typography>
+
+            <Typography style={{ margin: '10px 0' }} component='div' >
+              <Box
+                fontSize={16} fontWeight="fontWeightRegular" m={0}>
+                <span style={{ fontWeight: 'bold', display: 'block' }}> DOB </span>
+                {user && moment(user.dob).format('MMMM Do YYYY')}
+              </Box>
+            </Typography>
+
+            <Typography style={{ margin: '10px 0' }} component='div' >
+              <Box
+                fontSize={16} fontWeight="fontWeightRegular" m={0}>
+                <span style={{ fontWeight: 'bold', display: 'block' }}> Player Position </span>
+                {user && user.preferred_position}
+              </Box>
+            </Typography>
+
+            <Typography style={{ margin: '10px 0' }} component='div' >
+              <Box
+                fontSize={16} fontWeight="fontWeightRegular" m={0}>
+                <span style={{ fontWeight: 'bold', display: 'block' }}> Favourite Football Team </span>
+                {user && user.favourite_football_team}
+              </Box>
+            </Typography>
+
+
+            <Typography style={{ margin: '10px 0' }} component='div' >
+              <Box
+                fontSize={16} fontWeight="fontWeightRegular" m={0}>
+                <span style={{ fontWeight: 'bold', display: 'block' }}> Favourite Football Player </span>
+                {user && user.favourite_football_player}
+              </Box>
+            </Typography>
+
+            {(isCompany && !isOwnProfile && !isAlreadyCoach) && <Button
+              variant="contained"
+              color="primary"
+              onClick={!requestSent ? (event) => handleSendRequest(event) : (event) => handleDeleteRequest(event)}
+            >
+              {!requestSent ? 'Add to Player List' : 'Request sent!'}
+            </Button>
+            }
+
+          </div>
+
+
+          <div className={classes.rightContainer}>
+            <Typography style={{ textAlign: 'center' }} component='div' >
+              <Box className={classes.name}
+                fontSize={35} fontWeight="fontWeightBold" m={0}>
+                {user && user.name}
+              </Box>
+              {isAlreadyCoach && <Box className={classes.name}
+                fontSize={20} fontWeight="fontWeightBold" m={0}>
+                Part of your team!
           </Box>
-        </Typography>
-  
-        <Typography style={{ margin: '10px 0' }} component='div' >
-          <Box
-            fontSize={16} fontWeight="fontWeightRegular" m={0}>
-            <span style={{ fontWeight: 'bold', display: 'block' }}> DOB </span>
-            {user && moment(user.dob).format('MMMM Do YYYY')}
-          </Box>
-        </Typography>
-  
-        <Typography style={{ margin: '10px 0' }} component='div' >
-          <Box
-            fontSize={16} fontWeight="fontWeightRegular" m={0}>
-            <span style={{ fontWeight: 'bold', display: 'block' }}> Player Position </span>
-          {user && user.preferred_position}
-          </Box>
-        </Typography>
-  
-        <Typography style={{ margin: '10px 0' }} component='div' >
-          <Box
-            fontSize={16} fontWeight="fontWeightRegular" m={0}>
-            <span style={{ fontWeight: 'bold', display: 'block' }}> Favourite Football Team </span>
-          {user && user.favourite_football_team}
-          </Box>
-        </Typography>
-  
-  
-        <Typography style={{ margin: '10px 0' }} component='div' >
-          <Box
-            fontSize={16} fontWeight="fontWeightRegular" m={0}>
-            <span style={{ fontWeight: 'bold', display: 'block' }}> Favourite Football Player </span>
-          {user && user.favourite_football_player}
-          </Box>
-        </Typography>
-  
-      {(isCompany && !isOwnProfile && !isAlreadyCoach) &&  <Button
-      variant="contained"
-      color="primary"
-      onClick={!requestSent ? (event) => handleSendRequest(event) : (event) => handleDeleteRequest(event)}        
-    >
-      {!requestSent ? 'Add to Player List' : 'Request sent!'}
-    </Button>
-  }
-  
+              }
+              <small style={{ fontStyle: 'italic' }}>
+                Joined: {user && moment(new Date(user.joined._seconds * 1000 + user.joined._nanoseconds / 1000000)).format('DD-MM-YYYY')}
+              </small>
+            </Typography>
+
+
+            <Typography style={{ margin: '10px 0' }} component='div' >
+              <Box
+                fontSize={16} fontWeight="fontWeightRegular" m={0}>
+                <span style={{ fontWeight: 'bold', display: 'block' }}> Player ID </span> {user && user.userId}
+              </Box>
+            </Typography>
+
+            <Typography style={{ margin: '10px 0' }} component='div' >
+              <Box
+                fontSize={16} fontWeight="fontWeightRegular" m={0}>
+                <span style={{ fontWeight: 'bold', display: 'block' }}> About Me </span>
+                {user && user.bio}
+              </Box>
+            </Typography>
+
+
+
+            <Typography style={{ margin: '10px 0' }} component='div' >
+              <Box
+                fontSize={16} fontWeight="fontWeightRegular" m={0}>
+                <span style={{ fontWeight: 'bold', display: 'block' }}> Career Highlight </span>
+                {user && user.best_career_highlight}
+              </Box>
+            </Typography>
+
+
+          </div>
+        </div>
+
+        {imageUpload && <CircularProgress size={100} className={classes.progress} />}
       </div>
-  
-  
-      <div className={classes.rightContainer}>
-      <Typography style={{textAlign: 'center'}}  component='div' >
-          <Box className={classes.name}
-            fontSize={35} fontWeight="fontWeightBold" m={0}>
-            {user && user.name}
-          </Box>
-          {isAlreadyCoach && <Box className={classes.name}
-            fontSize={20} fontWeight="fontWeightBold" m={0}>
-            Part of your team!
-          </Box>
-          }
-          <small style={{ fontStyle: 'italic' }}>
-            Joined: {user && moment(new Date(user.joined._seconds * 1000 + user.joined._nanoseconds / 1000000)).format('DD-MM-YYYY')}
-          </small>
-        </Typography>
-  
-  
-        <Typography style={{ margin: '10px 0' }} component='div' >
-          <Box
-            fontSize={16} fontWeight="fontWeightRegular" m={0}>
-            <span style={{ fontWeight: 'bold', display: 'block' }}> Player ID </span> {user && user.userId}
-          </Box>
-        </Typography>
-  
-      <Typography style={{ margin: '10px 0' }} component='div' >
-          <Box
-            fontSize={16} fontWeight="fontWeightRegular" m={0}>
-            <span style={{ fontWeight: 'bold', display: 'block' }}> About Me </span>
-          {user && user.bio}
-          </Box>
-        </Typography>
-  
-       
-  
-        <Typography style={{ margin: '10px 0' }} component='div' >
-          <Box
-            fontSize={16} fontWeight="fontWeightRegular" m={0}>
-            <span style={{ fontWeight: 'bold', display: 'block' }}> Career Highlight </span>
-          {user && user.best_career_highlight}
-          </Box>
-        </Typography>
-  
-      
-      </div>
-    </div>
-  
-    {imageUpload && <CircularProgress size={100} className={classes.progress} />}
-  </div>
     )
   }
-  
+
   const CoachProfile = () => {
-  
+
 
     console.log(profileId)
 
@@ -282,7 +288,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
       const picture = new FormData()
       picture.append('owner', auth.getUserId())
       picture.append('picture', image[0], image[0].name)
-  
+
       axios.post(`/coaches/image/${auth.getUserId()}`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
         .then(res => {
           console.log(res.data)
@@ -290,50 +296,50 @@ const Profile = ({ match, handleComponentChange, info }) => {
         })
         .catch(err => console.error(err))
     }
-  
+
     const handleSendRequest = (e) => {
       e.preventDefault()
       if (!isCompany) return
       axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId, coachName: user.name, coachEmail: user.email, type: window.location.hostname })
-      .then(res => {
-        console.log(res.data)
-        setRequestSent(true)
-      })
-      .catch(err => console.error(err))
+        .then(res => {
+          console.log(res.data)
+          setRequestSent(true)
+        })
+        .catch(err => console.error(err))
     }
-  
+
     const handleDeleteRequest = (e) => {
       e.preventDefault()
       if (!isCompany) return
       axios.put(`/user/${profileId}/deleterequest`, { companyId: auth.getUserId(), coachId: profileId })
-      .then(res => {
-        console.log(res.data)
-        setRequestSent(false)
-      })
-      .catch(err => console.error(err))
+        .then(res => {
+          console.log(res.data)
+          setRequestSent(false)
+        })
+        .catch(err => console.error(err))
     }
-      
+
     return (
-    <div className={classes.root}>
+      <div className={classes.root}>
         <div className={classes.subContainer}>
           <div className={classes.leftContainer}>
-  
+
             <input ref={input}
               style={{ display: 'none' }} onChange={(e) => handleMediaChange(e)} type="file" />
-  
+
             <Avatar
-              onClick={isOwnProfile ? (e) => input.current.click(): ''}
+              onClick={isOwnProfile ? (e) => input.current.click() : ''}
               className={classes.avatar} src={user && user.coachInfo.imageURL}
-  
+
             />
-  
+
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Email </span> {user && user.email}
               </Box>
             </Typography>
-  
+
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
@@ -341,24 +347,24 @@ const Profile = ({ match, handleComponentChange, info }) => {
                 {/* {user && moment(new Date(user.dob._seconds * 1000 + user.dob._nanoseconds / 1000000)).format('DD-MM-YYYY')} */}
               </Box>
             </Typography>
-  
+
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Professional Indemnity Insurance </span>
-              {user && user.professional_indemnity_insurance}
+                {user && user.professional_indemnity_insurance}
               </Box>
             </Typography>
-  
+
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Public Liability Insurance </span>
-              {user && user.public_liability_insurance}
+                {user && user.public_liability_insurance}
               </Box>
             </Typography>
-  
-  
+
+
             {/* <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
@@ -368,21 +374,21 @@ const Profile = ({ match, handleComponentChange, info }) => {
               })}
               </Box>
             </Typography> */}
-  
-          {(isCompany && !isOwnProfile && !isAlreadyCoach) &&  <Button
-          variant="contained"
-          color="primary"
-          onClick={!requestSent ? (event) => handleSendRequest(event) : (event) => handleDeleteRequest(event)}        
-        >
-          {!requestSent ? 'Add to Coaching team' : 'Request sent!'}
-        </Button>
-  }
-  
+
+            {(isCompany && !isOwnProfile && !isAlreadyCoach) && <Button
+              variant="contained"
+              color="primary"
+              onClick={!requestSent ? (event) => handleSendRequest(event) : (event) => handleDeleteRequest(event)}
+            >
+              {!requestSent ? 'Add to Coaching team' : 'Request sent!'}
+            </Button>
+            }
+
           </div>
-  
-  
+
+
           <div className={classes.midContainer}>
-          <Typography style={{textAlign: 'center'}}  component='div' >
+            <Typography style={{ textAlign: 'center' }} component='div' >
               <Box className={classes.name}
                 fontSize={35} fontWeight="fontWeightBold" m={0}>
                 {user && user.coachInfo.name}
@@ -396,63 +402,63 @@ const Profile = ({ match, handleComponentChange, info }) => {
                 Joined: {user && moment(new Date(user.joined._seconds * 1000 + user.joined._nanoseconds / 1000000)).format('DD-MM-YYYY')}
               </small>
             </Typography>
-  
-  
+
+
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Player ID </span> {user && user.userId}
               </Box>
             </Typography>
-  
-          <Typography style={{ margin: '10px 0' }} component='div' >
+
+            <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> About Me </span>
-              {user && user.bio}
+                {user && user.bio}
               </Box>
             </Typography>
-  
-           
-  
+
+
+
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Career Highlight </span>
-              {user && user.best_career_highlight}
+                {user && user.best_career_highlight}
               </Box>
             </Typography>
-  
-          
+
+
           </div>
-  
+
           <div className={classes.rightContainer}>
-  
-          <Typography style={{ margin: '10px 0' }} component='div' >
+
+            <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Companies </span>
-              {user && user.companies.map(company => {
-                return <p>{company}</p>
-              })}
+                {user && user.companies.map(company => {
+                  return <p>{company}</p>
+                })}
               </Box>
             </Typography>
-  
+
             {/* { isOwnProfile && <Link to={{
               pathname: '/testercoach/edit',
               state: user
             }}> */}
-            
+
             <Button
               // className={classes.button}
               variant="contained"
               color="primary"
               onClick={() => handleComponentChange('Edit', 0)}
-              >
+            >
               Edit Details
           </Button>
-          {/* </Link> */}
-            
+            {/* </Link> */}
+
           </div>
         </div>
         {imageUpload && <CircularProgress size={100} className={classes.progress} />}
@@ -464,13 +470,13 @@ const Profile = ({ match, handleComponentChange, info }) => {
 
 
   const classes = useStyles();
-  if (user.length === 0) return null
+  if (!user) return null
 
   return (
-   user.category === 'player' || user.category === 'parent' ?
-    <UserProfile  />
-    :
-    <CoachProfile />
+    user.category === 'player' || user.category === 'parent' ?
+      <UserProfile />
+      :
+      <CoachProfile />
     // user.category === 'coach' ?
     // :
     // <h1>COMPANY PROFILE PENDING</h1>
