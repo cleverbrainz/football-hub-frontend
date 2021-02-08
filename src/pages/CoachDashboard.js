@@ -1,6 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import axios from 'axios'
 
 import {
   Drawer,
@@ -50,6 +51,7 @@ import Requests from '../pages/Requests'
 import Profile from './Profile'
 import CompanyPageBeta from './admin/CompanyPageBeta';
 import CoachSessions from '../components/Dashboard/CoachSessions';
+import CompanyAddCoach from './CompanyAddCoach';
 
 const drawerWidth = 240;
 
@@ -135,11 +137,13 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function CoachProfile() {
+  const profileId = auth.getUserId()
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState(null)
   const [selectedComponent, setSelectedComponent] = useState('Summary');
-  // const { getUserDetails } = useContext(AuthContext)
+  const [componentTabValue, setComponentTabValue] = useState(0)
 
   const [drawerItems, setDrawerItems] = useState({
     Summary: BubbleChartSharp,
@@ -152,12 +156,32 @@ export default function CoachProfile() {
     Summary: Profile,
     Companies: CompanyPageBeta,
     Sessions: CoachSessions,
-    Messages
+    Messages,
+    Edit: CompanyAddCoach
   }
+
+  const handleComponentChange = async (selectedComponent, tabValue) => {
+
+    setComponentTabValue(tabValue)
+
+    setSelectedComponent(selectedComponent)
+  }
+
+
+  useEffect(() => {
+    axios.get(`/users/${profileId}`)
+      .then(res => {
+        const { requests, companies } = res.data[0]
+        console.log(res.data)
+        setUser(res.data[0])
+        // if (requests) setRequestSent(requests.some(id => id === auth.getUserId()))
+        // if (companies) setIsAlreadyCoach(companies.some(id => id === auth.getUserId()))
+      })
+  }, [])
 
   const DisplayedComponent = dashboardComponents[selectedComponent]
 
-
+  if (!user) return null
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -234,7 +258,11 @@ export default function CoachProfile() {
       <main className={classes.content}>
         {/* <div className={classes.toolbar} /> */}
 
-        <DisplayedComponent />
+        <DisplayedComponent 
+        handleComponentChange={(component, tab) => handleComponentChange(component, tab)}
+        componentTabValue={componentTabValue}
+        info={user}
+        />
 
       </main>
     </div>
