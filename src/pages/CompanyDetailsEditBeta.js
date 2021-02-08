@@ -111,7 +111,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
   const [uploadedDocs, setUploadedDocs] = useState([])
   const [snackBarOpen, setSnackBarOpen] = useState(false)
   useEffect(() => {
-    (console.log('usefect'))
+    // (console.log('usefect'))
     axios.get(`/users/${auth.getUserId()}`)
       .then(res => {
         console.log(res.data[0])
@@ -133,26 +133,23 @@ function CompanyDetailsEdit({ handleComponentChange }) {
   const handleSubmit = (e) => {
     setSaved('saving')
     e.preventDefault();
-    axios
-      .patch(
-        `/users/${userId}`,
-        {
-          userId,
-          updates: companyInfo,
-          type: 'companyInfo'
-        },
-        { headers: { Authorization: `Bearer ${auth.getToken()}` } }
-      )
+
+    axios.patch(`/users/${userId}`,
+      {
+        userId,
+        updates: companyInfo,
+        type: 'companyInfo'
+      },
+      {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+      })
       .then((res) => {
         console.log(res.data);
         setSaved('saved')
         setSnackBarOpen(true)
-        // handleComponentChange('Summary', 0)
-        
-        // history.push("/tester")
       })
       .catch((error) => {
-        alert(error.message);
+        console.log(error.message)
       });
   };
   const handleDocumentUpload = (e) => {
@@ -256,23 +253,23 @@ function CompanyDetailsEdit({ handleComponentChange }) {
           </FormControl>
         </div>
         <div className={classes.subforms}>
-        <FormControl className={classes.spacing} variant="outlined">
-                  <InputLabel htmlFor="component-outlined" id="level">
-                    Type Of Company
+          <FormControl className={classes.spacing} variant="outlined">
+            <InputLabel htmlFor="component-outlined" id="level">
+              Type Of Company
                   </InputLabel>
-                  <Select
-                    label='Type Of Company'
-                    id="select-level"
-                    value={companyInfo.companyType}
-                    onChange={(e) => setCompanyInfo({ ...companyInfo, companyType: e.target.value })}
-                  >
-                    <MenuItem value='Sole Trader'>Sole Trader</MenuItem>
-                    <MenuItem value='Limited Company'>Limited Company</MenuItem>
-                    <MenuItem value='LLP'>Limited Liability Partnership</MenuItem>
-                    <MenuItem value='Partnership'>Partnership</MenuItem>
-                  </Select>
-                </FormControl>
-                { companyInfo.companyType !== 'Sole Trader' && <FormControl variant="outlined" className={classes.spacing}>
+            <Select
+              label='Type Of Company'
+              id="select-level"
+              value={companyInfo.companyType}
+              onChange={(e) => setCompanyInfo({ ...companyInfo, companyType: e.target.value })}
+            >
+              <MenuItem value='Sole Trader'>Sole Trader</MenuItem>
+              <MenuItem value='Limited Company'>Limited Company</MenuItem>
+              <MenuItem value='LLP'>Limited Liability Partnership</MenuItem>
+              <MenuItem value='Partnership'>Partnership</MenuItem>
+            </Select>
+          </FormControl>
+          {companyInfo.companyType !== 'Sole Trader' && <FormControl variant="outlined" className={classes.spacing}>
             <InputLabel htmlFor="component-outlined"> Company Registration Number </InputLabel>
             <OutlinedInput
               label="Company Registration Number"
@@ -340,19 +337,19 @@ function CompanyDetailsEdit({ handleComponentChange }) {
 
 
       </form>
-      <Container style={{ alignItems: 'center', display: 'flex', justifyContent: 'center', minWidth: '60px'}}>
-      <Button
-        className={classes.button}
-        onClick={handleSubmit}
-        // onClick={() => handleComponentChange('Summary', 0)}
-        variant="contained"
-        color="primary"
-      >
-        { saved === 'saving' ? <span> <CircularProgress size={24} className={classes.buttonProgressWhite} /></span> : saved === 'saved' ? <CheckCircleIcon fontSize='large' /> : 'Save' }
+      <Container style={{ alignItems: 'center', display: 'flex', justifyContent: 'center', minWidth: '60px' }}>
+        <Button
+          className={classes.button}
+          onClick={handleSubmit}
+          // onClick={() => handleComponentChange('Summary', 0)}
+          variant="contained"
+          color="primary"
+        >
+          {saved === 'saving' ? <span> <CircularProgress size={24} className={classes.buttonProgressWhite} /></span> : saved === 'saved' ? <CheckCircleIcon fontSize='large' /> : 'Save'}
         </Button>
-        
-        </Container>
-        <Snackbar open={snackBarOpen} autoHideDuration={2000} onClose={closeSnackBar}>
+
+      </Container>
+      <Snackbar open={snackBarOpen} autoHideDuration={1000} onClose={closeSnackBar}>
         <Alert onClose={closeSnackBar} severity="success">
           Details updated
         </Alert>

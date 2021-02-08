@@ -97,7 +97,8 @@ export default function RegisterPlayer({ match }) {
     companyLink: match.params.companyLink ? match.params.companyLink : undefined,
     birthdayMonth: '',
     birthdayDay: '',
-    BirthdayYear: ''
+    BirthdayYear: '',
+
   })
   const [fieldErrors, setFieldErrors] = useState()
   const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState()
@@ -156,6 +157,8 @@ export default function RegisterPlayer({ match }) {
       if (registerFields.category === 'player') {
         requestObject = { ...registerFields }
       } else requestObject = { ...registerFields }
+
+      console.log(requestObject)
 
       setIsLoading(true)
 
@@ -353,7 +356,7 @@ export default function RegisterPlayer({ match }) {
           <TextField id="outlined-basic"
             type='text'
             variant="outlined"
-            value=''
+            value={registerFields[el.toLowerCase().replace(/ /g, '_')] && registerFields[el.toLowerCase().replace(/ /g, '_')]}
             name={el.toLowerCase().replace(/ /g, '_')} label={el} />
         </FormControl>
       )

@@ -12,8 +12,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import {
   Typography,
   Button,
-  OutlinedInput
+  OutlinedInput,
+  Snackbar,
 } from "@material-ui/core";
+import MuiAlert from '@material-ui/lab/Alert';
 import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import auth from '../../lib/auth'
@@ -91,6 +93,8 @@ export default function ContactInfo({ componentTabValue, handleComponentChange }
     companyId: auth.getUserId()
   })
 
+  const [snackBarOpen, setSnackBarOpen] = useState(false)
+
   const { website, instagram, twitter, facebook, adminEmail } = basicContactInfo
 
   useEffect(() => {
@@ -108,28 +112,33 @@ export default function ContactInfo({ componentTabValue, handleComponentChange }
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    console.log(basicContactInfo)
-
     if (newInfo) {
       axios.post("/companies/contact", basicContactInfo)
-      .then((res) => {
-        console.log(res.data)
-        handleStateRefresh()
-      })
+      .then(() => handleStateRefresh())
+      .catch((err) => console.log(err))
     } else {
       axios.patch("/companies/array/contact", basicContactInfo,  { headers: { Authorization: `Bearer ${auth.getToken()}` } })
-      .then((res) => {
-        console.log(res.data)
-        handleStateRefresh()
-      })
+      .then(() => handleStateRefresh())
+      .catch((err) => console.log(err))
     }
   }
+
+  const closeSnackBar = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setSnackBarOpen(false);
+  };
 
 
   const handleStateRefresh = async () => {
     await setStateRefreshInProgress(!stateRefreshInProgress)
+    setSnackBarOpen(true)
     setValue(1)
   }
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
 
 
   const handleChange = (event, newValue) => {
@@ -226,6 +235,12 @@ export default function ContactInfo({ componentTabValue, handleComponentChange }
       <TabPanel className={classes.formContainer} value={value} index={1}>
         {basicContactForm}
       </TabPanel>
+
+      <Snackbar open={snackBarOpen} autoHideDuration={1000} onClose={closeSnackBar}>
+        <Alert onClose={closeSnackBar} severity="success">
+          Details updated
+        </Alert>
+      </Snackbar>
 
 
     </div>

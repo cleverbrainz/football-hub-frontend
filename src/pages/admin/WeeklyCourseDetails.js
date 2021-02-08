@@ -68,14 +68,16 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
     cost: course ? course.courseDetails.cost : "",
     courseType: "Weekly",
     allow_weekly_payment: course ? course.courseDetails.allow_weekly_payment : false,
-    age: course ? course.courseDetails.age : "",
+    // age: course ? course.courseDetails.age : "",
+    ageFrom: course ? course.courseDetails.age.split(' ')[0] : "",
+    ageTo: course ? course.courseDetails.age.split(' ')[2] : "",
     spaces: course ? course.courseDetails.spaces : "",
     courseCategory: course ? course.courseDetails.courseCategory : "",
     service: course ? course.courseDetails.service : ""
   });
 
   const { startDate, courseCategory, service, endDate, sessions, cost, optionalName,
-    courseType, allow_weekly_payment, age, location } = formDetails;
+    courseType, allow_weekly_payment, ageFrom, ageTo, location } = formDetails;
 
   const handleClose = () => {
     setOpen(false);
@@ -106,6 +108,9 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
   const handleSubmit = (e) => {
     e.preventDefault();
     const courseDetails = { ...formDetails }
+    courseDetails.age = `${ageFrom} - ${ageTo}`
+    const properties = ['ageFrom', 'ageTo']
+    properties.forEach(prop => delete courseDetails[prop])
 
     if (course) {
 
@@ -168,7 +173,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
       let startTime
       if (courseDays[index]) {
         if (name === 'startTime') {
-          
+
           const startMoment = moment(value, 'HH:mm')
           const endMoment = moment(courseDays[index].endTime, 'hh:mma')
           endTime = courseDays[index].endTime
@@ -196,7 +201,6 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
   }
 
   function updateOtherCourseInfo(event) {
-
     const { name, value } = event.target;
 
     if (course && (name === 'startDate' || name === 'endDate')) setOpen(true)
@@ -219,24 +223,36 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
             />
           </FormControl>
 
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel>Age Group</InputLabel>
-            <Select
-              value={age}
-              label="Age Group"
-              name="age"
-              onChange={(e) => updateOtherCourseInfo(e)}
-            >
-              {ageGroups && ageGroups.map((el, i) => {
-                const text = el.startAge === 'Adults' ? 'Adults' : `${el.startAge}-${el.endAge}`
-                return (
-                  <MenuItem key={i} value={text}>
-                    {text}
-                  </MenuItem>
-                )
-              })}
-            </Select>
-          </FormControl>
+          {
+            [...Array(2).keys()].map((el, i) => {
+              const items = ['7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', 'Adults']
+              const label = i === 0 ? 'Age From' : 'Age To'
+              const name = i === 0 ? 'ageFrom' : 'ageTo'
+              return (
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel>{label}</InputLabel>
+                  <Select
+                    value={i === 0 ? ageFrom : ageTo}
+                    label={label}
+                    name={name}
+                    onChange={(e) => updateOtherCourseInfo(e)}
+                  >
+                    {items.map((el, i) => {
+                      return (
+                        <MenuItem key={i} value={el}>
+                          {el}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
+              )
+            })
+          }
+
+
+
+
 
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel>Course Category</InputLabel>

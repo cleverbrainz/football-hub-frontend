@@ -81,14 +81,16 @@ export default function MaterialUIPickers({ history, course,
     courseType: "Camp",
     cost: course ? course.courseDetails.cost : "",
     // dayCost: course ? course.courseDetails.dayCost : "",
-    age: course ? course.courseDetails.age : "",
+    // age: course ? course.courseDetails.age : "",
     // individualDayBookings: course ? course.courseDetails.individualDayBookings : false,
+    ageFrom: course ? course.courseDetails.age.split(' ')[0] : "",
+    ageTo: course ? course.courseDetails.age.split(' ')[2] : "",
     spaces: course ? course.courseDetails.spaces : "",
     startTime: course ? course.courseDetails.startTime : "",
     endTime: course ? course.courseDetails.endTime : ""
   });
   const { sessions, startDate, optionalName, endDate, location, campCost,
-    dayCost, age, excludeDays, individualDayBookings, spaces, startTime, endTime } = courseDetails;
+    dayCost, ageFrom, ageTo, excludeDays, individualDayBookings, spaces, startTime, endTime } = courseDetails;
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   // const times = [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
@@ -138,6 +140,10 @@ export default function MaterialUIPickers({ history, course,
 
     console.log(requestObj)
 
+    requestObj.age = `${ageFrom} - ${ageTo}`
+    const properties = ['ageFrom', 'ageTo']
+    properties.forEach(prop => delete requestObj[prop])
+
     if (course) {
       console.log(course)
       return axios
@@ -161,23 +167,23 @@ export default function MaterialUIPickers({ history, course,
 
   };
 
-  function updateOtherCourseInfoOriginal(event, index) {
+  // function updateOtherCourseInfoOriginal(event, index) {
 
-    const { name, value } = event.target
-    const sessionsArr = ['spaces', 'startTime', 'endTime']
+  //   const { name, value } = event.target
+  //   const sessionsArr = ['spaces', 'startTime', 'endTime']
 
-    if (course && (name === 'startDate' || name === 'endDate')) setOpen(true)
-    else if (course && (sessionsArr.includes(name))) {
-      const newSessionsArr = [...sessions]
-      const propertyVal = name === 'startTime' || name === 'endTime' ? tConvert(value) : value
-      newSessionsArr[index] = { ...newSessionsArr[index], [name]: propertyVal }
-      setCourseDetails({ ...courseDetails, sessions: newSessionsArr })
-    }
-    else {
-      const propertyVal = name === 'startTime' || name === 'endTime' ? tConvert(value) : value
-      setCourseDetails({ ...courseDetails, [name]: propertyVal })
-    }
-  }
+  //   if (course && (name === 'startDate' || name === 'endDate')) setOpen(true)
+  //   else if (course && (sessionsArr.includes(name))) {
+  //     const newSessionsArr = [...sessions]
+  //     const propertyVal = name === 'startTime' || name === 'endTime' ? tConvert(value) : value
+  //     newSessionsArr[index] = { ...newSessionsArr[index], [name]: propertyVal }
+  //     setCourseDetails({ ...courseDetails, sessions: newSessionsArr })
+  //   }
+  //   else {
+  //     const propertyVal = name === 'startTime' || name === 'endTime' ? tConvert(value) : value
+  //     setCourseDetails({ ...courseDetails, [name]: propertyVal })
+  //   }
+  // }
 
   function updateOtherCourseNew(event) {
 
@@ -320,24 +326,33 @@ export default function MaterialUIPickers({ history, course,
           </Select>
         </FormControl>
 
-        <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel>Age Group</InputLabel>
-          <Select
-            label="Age Group"
-            name="age"
-            value={age}
-            onChange={(e) => updateOtherCourseNew(e)}
-          >
-            {ageGroups && ageGroups.map((el, i) => {
-              const text = `${el.startAge}-${el.endAge}`
+        {
+            [...Array(2).keys()].map((el, i) => {
+              const items = ['7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', 'Adults']
+              const label = i === 0 ? 'Age From' : 'Age To'
+              const name = i === 0 ? 'ageFrom' : 'ageTo'
               return (
-                <MenuItem key={i} value={text}>
-                  {text}
-                </MenuItem>
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel>{label}</InputLabel>
+                  <Select
+                    value={i === 0 ? ageFrom : ageTo}
+                    label={label}
+                    name={name}
+                    onChange={(e) => updateOtherCourseNew(e)}
+                  >
+                    {items.map((el, i) => {
+                      return (
+                        <MenuItem key={i} value={el}>
+                          {el}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
               )
-            })}
-          </Select>
-        </FormControl>
+            })
+          }
+
 
         <tr>
 
