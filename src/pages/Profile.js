@@ -94,7 +94,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
 
   
   const profileId = match ? match.params.id : auth.getUserId()
-  const [user, setUser] = useState(info)
+  const [user, setUser] = useState(info?.category === 'coach' ? info : {})
   const input = useRef()
   const [imageUpload, setImageUpload] = useState(false)
   const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === profileId)
@@ -103,6 +103,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
   const [requestSent, setRequestSent] = useState(false)
   const verifyObj = { coachDocumentationCheck: 'Training Certification', dbsDocumentationCheck: 'DBS', paymentCheck: 'Payment Details' }
 
+  
 
 
 

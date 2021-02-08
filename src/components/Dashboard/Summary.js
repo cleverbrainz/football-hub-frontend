@@ -149,7 +149,10 @@ const Summary = ({ handleComponentChange }) => {
     for (let i = length - 1; i >= 0; i--) {
       switch (detail) {
         case 'courses': {
-          const { age, courseType, sessions } = courses.active[i].courseDetails
+          const { age, courseType, sessions, location } = courses.active[i].courseDetails
+          courseType === 'Camp' ?
+          textArr.push(`Added ${courseType} for ${age} at ${location}`)
+          :
           textArr.push(`Added ${courseType} for ${age} at ${sessions.map((el, i) => i === sessions.length - 1 ? el.location : `${el.location},` )}`)
         }
          
@@ -157,14 +160,14 @@ const Summary = ({ handleComponentChange }) => {
 
         case 'players':
           Object.keys(players).forEach((key) => {
-            const { name, status, dob } = players[key]
-            textArr.push(`Added ${name} as ${status} player (${dob})`)
+            const { name, status, age } = players[key]
+            textArr.push(`Added ${name} as ${status} player. Age: (${auth.dobToAge(age)})`)
           })
           break
 
         case 'coaches': 
           const { name, coaching_level } = coaches[i]
-          textArr.push(`${name} joined company at ${coaching_level}`)
+          textArr.push(`${name} joined company${coaching_level ? ` at ${coaching_level}` : ''}`)
         
           break
         default:
@@ -199,10 +202,11 @@ const Summary = ({ handleComponentChange }) => {
 
                       </Typography>
                       {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
+                        const { courseType } = courseDetails
                         return (
                           <Typography style={{ display: 'block' }} gutterBottom={true} variant="p">
                             <span style={{ display: 'block' }}>Course: {courseDetails.optionalName} </span>
-                            <span style={{ display: 'block' }}> Details: {sessionInfo.startTime} - {sessionInfo.endTime} @ {sessionInfo.location} </span>
+                            <span style={{ display: 'block' }}> Details: {sessionInfo.startTime} - {sessionInfo.endTime} @ {courseType === 'Camp' ? courseDetails.location : sessionInfo.location} </span>
                             {/* <Link to={`/courses/${id}/register/${day}`}>
                               View Register
                           </Link> */}
