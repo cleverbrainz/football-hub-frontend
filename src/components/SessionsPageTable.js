@@ -215,7 +215,7 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
 
   function CampRow({ course }) {
     const { courseId } = course
-    const { endDate, startDate, location, sessions, cost, age } = course.courseDetails
+    const { endDate, startDate, location, sessions, cost, age, optionalName } = course.courseDetails
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
 
@@ -230,7 +230,7 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
 
 
           <TableCell component="th" scope="row">
-            {courseId}
+            {optionalName}
           </TableCell>
           <TableCell align="right">{startDate}</TableCell>
           <TableCell align="right">{endDate}</TableCell>
@@ -342,7 +342,7 @@ export default function SessionsPageTable({ companyCoachIds, companyCoachInfo, c
           <TableHead>
             <TableRow>
               <TableCell />
-              <TableCell>ID </TableCell>
+              <TableCell>Name</TableCell>
               <TableCell align="right">Start Date</TableCell>
               <TableCell align="right">End Date</TableCell>
               <TableCell align="right">Venue</TableCell>
