@@ -151,24 +151,24 @@ const Summary = ({ handleComponentChange }) => {
         case 'courses': {
           const { age, courseType, sessions, location } = courses.active[i].courseDetails
           courseType === 'Camp' ?
-          textArr.push(`Added ${courseType} for ${age} at ${location}`)
-          :
-          textArr.push(`Added ${courseType} for ${age} at ${sessions.map((el, i) => i === sessions.length - 1 ? el.location : `${el.location},` )}`)
+            textArr.push(`Added ${courseType} for ${age} at ${location}`)
+            :
+            textArr.push(`Added ${courseType} for ${age} at ${sessions.map((el, i) => i === sessions.length - 1 ? el.location : `${el.location},`)}`)
         }
-         
+
           break;
 
         case 'players':
           Object.keys(players).forEach((key) => {
             const { name, status, age, dob } = players[key]
-            textArr.push(`Added ${name} as ${status} player. Age: (${age ? auth.dobToAge(age) :  auth.dobToAge(dob)})`)
+            textArr.push(`Added ${name} as ${status} player. Age: (${age ? auth.dobToAge(age) : auth.dobToAge(dob)})`)
           })
           break
 
-        case 'coaches': 
+        case 'coaches':
           const { name, coaching_level } = coaches[i]
           textArr.push(`${name} joined company${coaching_level ? ` at ${coaching_level}` : ''}`)
-        
+
           break
         default:
           break;
@@ -314,7 +314,7 @@ const Summary = ({ handleComponentChange }) => {
         })}
       </Grid>
     </div>
-  );
-};
+  )
+}
 
 export default Summary;

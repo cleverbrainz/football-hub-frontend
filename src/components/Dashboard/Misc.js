@@ -21,6 +21,7 @@ import DeleteComponent from '../../pages/admin/DeleteComponent'
 import MiscPageTable from '../../components/MiscPageTable'
 import ContainedButtons from '../../pages/admin/AddServices'
 import AddAgeGroup from '../../pages/admin/AddAgeGroup'
+import { getDate } from 'date-fns';
 
 
 
@@ -108,13 +109,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Misc({ componentTabValue }) {
   const classes = useStyles();
   const [value, setValue] = useState(componentTabValue);
-
-  const [companyAgeGroups, setCompanyAgeGroups] = useState()
   const [companyServices, setCompanyServices] = useState()
-  const [companyCourses, setCompanyCourses] = useState()
-
   const [open, setOpen] = useState(false)
-  const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
   const [miscToBeDeleted, setMiscToBeDeleted] = useState({
     id: '',
     miscType: ''
@@ -122,19 +118,18 @@ export default function Misc({ componentTabValue }) {
   const [newMiscDetail, setNewMiscDetail] = useState()
   const [serviceToBeEdited, setServiceToBeEdited] = useState()
 
+  async function getData() {
+    const data = await axios.get(`/users/${auth.getUserId()}`)
+    const { services } = await data.data[0]
+
+    setCompanyServices(services)
+  }
 
   useEffect(() => {
-    axios
-      .get(`/users/${auth.getUserId()}`)
-      .then(res => {
-        setCompanyAgeGroups(res.data[0].ageDetails);
-        setCompanyServices(res.data[0].services);
-        setCompanyCourses(res.data[0].courses);
-      })
-      .catch(e => console.log(e))
-  }, [!stateRefreshInProgress]);
+    getData()
+  }, []);
 
-  const handleMiscDeletion = (miscId, miscType)  => {
+  const handleMiscDeletion = (miscId, miscType) => {
     setOpen(true)
     setMiscToBeDeleted({ id: miscId, miscType })
   }
@@ -143,73 +138,33 @@ export default function Misc({ componentTabValue }) {
     setOpen(false);
   };
 
-  const handleStateRefresh = async () => {
-    await setStateRefreshInProgress(!stateRefreshInProgress)
-    setValue(0)
-  }
-
-  async function deleteCourses(coursesToBeDeletedArr) {
-
-    await coursesToBeDeletedArr.forEach(el => {
-      axios.delete(`/companies/courses/${el.courseId}`, {
-        headers: { Authorization: `Bearer ${auth.getToken()}` },
-      })
-      // console.log(el.courseId)
-    })
-  }
-
   const handleDelete = () => {
-    setStateRefreshInProgress(true);
-    console.log(miscToBeDeleted);
 
     const { miscType, id } = miscToBeDeleted
 
-    if (miscType === 'service') {
-      axios.delete(`/companies/services/${id}`, {
-          headers: { Authorization: `Bearer ${auth.getToken()}` }})
-        .then((res) => {
-          setStateRefreshInProgress(false);
-          handleClose();
-        })
-        .catch((err) => {
-          setStateRefreshInProgress(false);
-          handleClose();
-        });
-    } else {
-      axios.patch("/companies/age", id, {
-        headers: { Authorization: `Bearer ${auth.getToken()}` }})
-        .then(() => {
-          const coursesToBeDeleted = companyCourses.filter(el => {
-            const startAge = el.courseDetails.age.split('-')[0]
-            const endAge = el.courseDetails.age.split('-')[1]
-            return startAge === id.startAge && endAge === id.endAge
-          })
-          deleteCourses(coursesToBeDeleted)
-        })
+    axios.delete(`/companies/services/${id}`, {
+      headers: { Authorization: `Bearer ${auth.getToken()}` }
+    })
       .then((res) => {
-        setStateRefreshInProgress(false);
+        getData()
         handleClose();
       })
       .catch((err) => {
-        setStateRefreshInProgress(false);
+        getData()
         handleClose();
       });
-    }
-
   };
 
-  const handleEditCourse = (course) => {
-    console.log(course)
+  const handleEditService = (service) => {
     setValue(2)
-    setServiceToBeEdited(course)
+    setServiceToBeEdited(service)
   }
 
 
   const handleChange = (event, newValue) => {
+    if (newValue !== 2) setServiceToBeEdited(null)
     setValue(newValue);
   };
-
-
 
 
   return (
@@ -227,8 +182,8 @@ export default function Misc({ componentTabValue }) {
           aria-label="scrollable force tabs example"
         >
           <Tab label="Current Misc" icon={<ExploreSharpIcon />} {...a11yProps(0)} />
-          <Tab label="Add New" icon={<AddLocationSharpIcon />} {...a11yProps(2)} />
-          <Tab label="Edit Existing" icon={<AddLocationSharpIcon />} {...a11yProps(3)} />
+          <Tab label="Add New" icon={<AddLocationSharpIcon />} {...a11yProps(1)} />
+          {serviceToBeEdited && <Tab label="Edit Existing" icon={<AddLocationSharpIcon />} {...a11yProps(2)} />}
         </Tabs>
       </AppBar>
 
@@ -236,9 +191,8 @@ export default function Misc({ componentTabValue }) {
       <TabPanel value={value} index={0}>
         <MiscPageTable
           classes={classes}
-          handleEditCourse={e => handleEditCourse(e)}
+          handleEditService={e => handleEditService(e)}
           handleMiscDeletion={(miscId, miscType) => handleMiscDeletion(miscId, miscType)}
-          ages={companyAgeGroups}
           services={companyServices} />
       </TabPanel>
 
@@ -262,8 +216,10 @@ export default function Misc({ componentTabValue }) {
         </FormControl>
 
         {newMiscDetail && (newMiscDetail === 'service' && <ContainedButtons
-          handleStateRefresh={() => handleStateRefresh()}
-        /> )}
+          getData={() => getData()}
+          handleChange={(e, val) => handleChange(e, val)}
+
+        />)}
 
       </TabPanel>
 
@@ -272,12 +228,14 @@ export default function Misc({ componentTabValue }) {
 
         {serviceToBeEdited && <ContainedButtons
           service={serviceToBeEdited}
-          handleStateRefresh={() => handleStateRefresh()}
+          getData={() => getData()}
+          handleChange={(e, val) => handleChange(e, val)}
+          // handleStateRefresh={() => handleStateRefresh()}
         />}
       </TabPanel>
 
       <TabPanel className={classes.formContainer} value={value} index={3}>
-          
+
       </TabPanel>
 
       <DeleteComponent

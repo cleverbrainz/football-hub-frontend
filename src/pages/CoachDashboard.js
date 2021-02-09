@@ -15,7 +15,8 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Grid
+  Grid,
+  Button
 } from '@material-ui/core';
 
 import {
@@ -136,7 +137,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function CoachProfile() {
+export default function CoachProfile({ history }) {
   const profileId = auth.getUserId()
   const classes = useStyles();
   const theme = useTheme();
@@ -214,9 +215,10 @@ export default function CoachProfile() {
 
           </div>
 
-          <Typography className={classes.greeting} align="right" variant="subtitle1" noWrap>
-            Welcome back
-          </Typography>
+          <Button variant='contained' color='secondary' onClick={() => {
+            auth.logOut()
+            history.push('/')
+          }}> Log out </Button>
         </Toolbar>
       </AppBar>
 
