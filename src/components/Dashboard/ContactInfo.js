@@ -114,10 +114,14 @@ export default function ContactInfo({ componentTabValue, handleComponentChange }
 
     if (newInfo) {
       axios.post("/companies/contact", basicContactInfo)
-      .then(() => handleStateRefresh())
+      .then(() => {
+        handleStateRefresh()
+        // setSnackBarOpen(true)
+      })
       .catch((err) => console.log(err))
     } else {
       axios.patch("/companies/array/contact", basicContactInfo,  { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+      // .then(() => setSnackBarOpen(true))
       .then(() => handleStateRefresh())
       .catch((err) => console.log(err))
     }
@@ -130,9 +134,12 @@ export default function ContactInfo({ componentTabValue, handleComponentChange }
 
 
   const handleStateRefresh = async () => {
+    await setSnackBarOpen(true)
     await setStateRefreshInProgress(!stateRefreshInProgress)
-    setSnackBarOpen(true)
-    setValue(1)
+    setTimeout(() => {
+      handleComponentChange('Summary', 0)
+    }, 1000)
+   
   }
 
   function Alert(props) {
