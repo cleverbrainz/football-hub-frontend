@@ -88,32 +88,70 @@ import { AuthProvider } from './lib/context'
 import AuthRouter from './lib/PrivateRoute'
 import SignIn from './pages/AuthLogin'
 import IntroductionPage from './components/Dashboard/IntroductionPage'
-
-
 import CheckoutForm from './pages/StripePaymentMethod'
-
 import SuccessfulCheckout from './pages/SuccessfulCheckout'
+
+// korean
+
+import Marketing from './korean/Marketing'
+
+import { Dialog, useMediaQuery, DialogContent, DialogTitle, Button, DialogActions } from '@material-ui/core';
+import { useTheme, makeStyles } from '@material-ui/core/styles';
 const stripePromise = loadStripe('pk_test_JX84GPfLfXGxVFWvGHaz1AWE')
+
 
 
 // axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
 
+
+
+
+const useStyles = makeStyles((theme) => ({
+  title: {
+    textAlign: 'center'
+  },
+  root: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: "column",
+    alignItems: 'center',
+    justifyContent: 'space-around',
+
+    [theme.breakpoints.up('sm')]: {
+      flexDirection: "row",
+      width: 550,
+
+    },
+  },
+  card: {
+    width: '150px',
+    // padding: '0 15px',
+    height: '190px',
+    textAlign: 'center',
+    "&:hover": {
+      cursor: "pointer",
+      backgroundColor: '#f1f1f1'
+    },
+  },
+  media: {
+    width: '80%',
+    height: '140px',
+    backgroundSize: 'cover'
+  },
+}))
+
+
 const App = () => {
+  const classes = useStyles();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [userType, setUserType] = useState()
+  const [open, setOpen] = useState(true)
+  const [navigationRoute, setNavigationRoute] = useState()
+  const [selectedCountry, setSelectedCountry] = useState()
+  const countries = ['United Kingdom', 'South Korea']
 
-  useEffect(() => {
-    // console.log('hello')
-    const token = localStorage.token
-    if (token) {
-      const decodedToken = jwt.decode(token)
-      if (decodedToken.exp * 1000 < Date.now()) {
-        auth.logOut()
-        window.location.href = '/'
-      }
-    }
-  }, [])
-
-  return (
+  const enRoutes = (
     <Elements stripe={stripePromise}>
       <AuthProvider>
         <Router>
@@ -335,6 +373,83 @@ const App = () => {
         </Router>
       </AuthProvider>
     </Elements>
+  )
+
+  const krRoutes = (
+    <Router>
+      <Switch>
+        <Route exact path="/" component={Marketing} />
+      </Switch>
+    </Router>
+
+  )
+
+  const CountrySelection = () => (
+
+    <Dialog
+      open={open}
+      handleClose={() => setOpen(false)}
+      fullScreen={fullScreen}>
+
+      <DialogTitle className={classes.title}>
+        Select Your Country
+      </DialogTitle>
+
+      <DialogContent className={classes.root}>
+
+        {countries.map((el, i) => {
+          const src = i === 0 ? 'https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg' : "https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg"
+          return (
+            <div
+              key={i}
+              className={classes.card}
+              style={{ backgroundColor: selectedCountry === el && '#f1f1f1' }}
+              onClick={() => setSelectedCountry(el)}
+            >
+              <img className={classes.media} src={src} alt="" />
+              <p> {el} </p>
+            </div>
+          )
+        })}
+
+      </DialogContent>
+
+      {selectedCountry && <DialogActions>
+        <Button onClick={() => {
+          setNavigationRoute(selectedCountry === 'United Kingdom' ? enRoutes : krRoutes)
+          setOpen(false)
+          localStorage.setItem('version', selectedCountry)
+        }} color="primary">
+          {`Continue to ${selectedCountry === 'United Kingdom' ? 'English' : 'Korean'} version`}
+        </Button>
+      </DialogActions>}
+
+    </ Dialog>
+  )
+
+
+
+  useEffect(() => {
+
+    const version = localStorage.version
+    if (version) setNavigationRoute(version === 'United Kingdom' ? enRoutes : krRoutes)
+
+    const token = localStorage.token
+    if (token) {
+      const decodedToken = jwt.decode(token)
+      if (decodedToken.exp * 1000 < Date.now()) {
+        auth.logOut()
+        window.location.href = '/'
+      }
+    }
+  }, [])
+
+
+
+
+  return (
+    !navigationRoute ? <CountrySelection /> : navigationRoute
+
   )
 }
 

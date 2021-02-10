@@ -72,6 +72,7 @@ export default function Login({ history, location }) {
     const { email, password } = loginFields
     firebaseApp.auth().signInWithEmailAndPassword(email, password)
       .then(data => {
+        console.log(data.user.getIdToken())
         auth.setToken(data.user.getIdToken())
         axios.get(`/users/${data.user.uid}`)
           .then(res => {
@@ -90,176 +91,114 @@ export default function Login({ history, location }) {
   }
 
 
-  function handleFormSubmit(e) {
-    e.preventDefault()
-    setIsLoading(true)
+  // function handleFormSubmit(e) {
+  //   e.preventDefault()
+  //   setIsLoading(true)
 
-    if (location.pathname === '/admin/login') {
-      if (email !== 'admin@indulgefootball.com') {
-        setLoginError({ message: 'Invalid credentials' })
-        setIsLoading(false)
-      } else {
-        axios.post('/login', loginFields)
-          .then(async res => {
-            await auth.setToken(res.data.token)
-            setIsLoading(false)
-            history.push('/admin')
-          })
-          .catch(err => {
-            setIsLoading(false)
-            if (err) err.response && setLoginError(err.response.data)
-          })
-      }
-    } else {
-      axios.post('/login', loginFields)
-        .then(async res => {
-          auth.setToken(res.data.token)
-          setIsLoading(false)
-          
-          if (res.data.accountCategory === 'player' || res.data.accountCategory === 'parent') {
-            history.push(`/${auth.getUserId()}/profile`)
-          } else if (res.data.accountCategory === 'company') {
-            history.push('/tester')
-          } else {
-            history.push('/testercoach')
-          }
-        })
-        .catch(err => {
-          setIsLoading(false)
-          setLoginError(err.response.data)
-        })
-    }
-  }
+  //   if (location.pathname === '/admin/login') {
+  //     if (email !== 'admin@indulgefootball.com') {
+  //       setLoginError({ message: 'Invalid credentials' })
+  //       setIsLoading(false)
+  //     } else {
+  //       axios.post('/login', loginFields)
+  //         .then(res => {
+  //           auth.setToken(res.data.token)
+  //           setIsLoading(false)
+  //           history.push('/admin')
+  //         })
+  //         .catch(err => {
+  //           setIsLoading(false)
+  //           if (err) err.response && setLoginError(err.response.data)
+  //         })
+  //     }
+  //   } else {
+  //     axios.post('/login', loginFields)
+  //       .then(async res => {
+  //         auth.setToken(res.data.token)
+  //         setIsLoading(false)
 
-  // return (
-
-  //   <div className={classes.container}>
-  //     <Typography variant='h4'> LOGIN </Typography>
-  //     <form
-  //       autoComplete='off'
-  //       onChange={(e) => handleFormChange(e)}
-  //       onSubmit={(e) => frontendLogin(e)}
-  //       className={classes.form}>
-
-
-  //       <FormControl variant="outlined">
-  //         <InputLabel htmlFor="component-outlined"> Email </InputLabel>
-  //         <OutlinedInput
-  //           error={loginError ? true : false}
-  //           type='text'
-  //           name='email' id="component-outlined" label='Email'
-  //         />
-  //       </FormControl>
-
-  //       <FormControl variant="outlined">
-  //         <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-  //         <OutlinedInput
-  //           id="outlined-adornment-password"
-  //           type={showPassword ? 'text' : 'password'}
-  //           name='password'
-  //           endAdornment={
-  //             <InputAdornment position="end">
-  //               <IconButton
-  //                 aria-label="toggle password visibility"
-  //                 onClick={() => setShowPassword(!showPassword)}
-  //                 onMouseDown={handleMouseDownPassword}
-  //                 edge="end"
-  //               >
-  //                 {showPassword ? <VisibilitySharpIcon /> : <VisibilityOffSharpIcon />}
-  //               </IconButton>
-  //             </InputAdornment>
-  //           }
-  //           labelWidth={70}
-  //         />
-  //       </FormControl>
-
-
-  //       {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
-
-  //       <Button disabled={isLoading}
-  //         className={classes.button} type='submit'
-  //         variant="contained" color="primary">
-  //         Login
-  //         {isLoading && <CircularProgress size={30} className={classes.progress} />}
-  //       </Button>
-
-  //       {location.pathname !== '/admin/login' &&
-  //         <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
-
-  //     </form>
-
-  //     {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>}
-  //   </div>
-  // )
-
+  //         if (res.data.accountCategory === 'player' || res.data.accountCategory === 'parent') {
+  //           history.push(`/${auth.getUserId()}/profile`)
+  //         } else if (res.data.accountCategory === 'company') {
+  //           history.push('/tester')
+  //         } else {
+  //           history.push('/testercoach')
+  //         }
+  //       })
+  //       .catch(err => {
+  //         setIsLoading(false)
+  //         setLoginError(err.response.data)
+  //       })
+  //   }
+  // }
 
   if (!user) return null
   return (
     <>
-   {!!user.user ? !!userData.category ? (
-    <Redirect to={{ pathname: "/accountSetUp" }} />
-  ) : (
-    localStorage.getItem('category') === 'company' ? <Redirect to={{ pathname: "/tester" }} /> : localStorage.getItem('category') ? <Redirect to={{ pathname: "/testercoach" }} /> : <Redirect to={{ pathname: "/home" }} />
-  ) : (
-    <div className={classes.container}>
-    <Typography variant='h4'> LOGIN </Typography>
-    <form
-      autoComplete='off'
-      onChange={(e) => handleFormChange(e)}
-      onSubmit={(e) => frontendLogin(e)}
-      className={classes.form}>
+      {!!user.user ? !!userData.category ? (
+        <Redirect to={{ pathname: "/accountSetUp" }} />
+      ) : (
+          localStorage.getItem('category') === 'company' ? <Redirect to={{ pathname: "/tester" }} /> : localStorage.getItem('category') ? <Redirect to={{ pathname: "/testercoach" }} /> : <Redirect to={{ pathname: "/home" }} />
+        ) : (
+          <div className={classes.container}>
+            <Typography variant='h4'> LOGIN </Typography>
+            <form
+              autoComplete='off'
+              onChange={(e) => handleFormChange(e)}
+              onSubmit={(e) => frontendLogin(e)}
+              className={classes.form}>
 
 
-      <FormControl variant="outlined">
-        <InputLabel htmlFor="component-outlined"> Email </InputLabel>
-        <OutlinedInput
-          error={loginError ? true : false}
-          type='text'
-          name='email' id="component-outlined" label='Email'
-        />
-      </FormControl>
+              <FormControl variant="outlined">
+                <InputLabel htmlFor="component-outlined"> Email </InputLabel>
+                <OutlinedInput
+                  error={loginError ? true : false}
+                  type='text'
+                  name='email' id="component-outlined" label='Email'
+                />
+              </FormControl>
 
-      <FormControl variant="outlined">
-        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-        <OutlinedInput
-          id="outlined-adornment-password"
-          type={showPassword ? 'text' : 'password'}
-          name='password'
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={() => setShowPassword(!showPassword)}
-                onMouseDown={handleMouseDownPassword}
-                edge="end"
-              >
-                {showPassword ? <VisibilitySharpIcon /> : <VisibilityOffSharpIcon />}
-              </IconButton>
-            </InputAdornment>
-          }
-          labelWidth={70}
-        />
-      </FormControl>
+              <FormControl variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  type={showPassword ? 'text' : 'password'}
+                  name='password'
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilitySharpIcon /> : <VisibilityOffSharpIcon />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={70}
+                />
+              </FormControl>
 
 
-      {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
+              {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
 
-      <Button disabled={isLoading}
-        className={classes.button} type='submit'
-        variant="contained" color="primary">
-        Login
+              <Button disabled={isLoading}
+                className={classes.button} type='submit'
+                variant="contained" color="primary">
+                Login
         {isLoading && <CircularProgress size={30} className={classes.progress} />}
-      </Button>
+              </Button>
 
-      {location.pathname !== '/admin/login' &&
-        <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
+              {location.pathname !== '/admin/login' &&
+                <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
 
-    </form>
+            </form>
 
-    {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
-  </div>
+            {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
+          </div>
+        )
+      }
+    </>
   )
-        }
-        </>
-      )
 }
