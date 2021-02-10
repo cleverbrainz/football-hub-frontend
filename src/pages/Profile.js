@@ -114,31 +114,36 @@ const Profile = ({ match, handleComponentChange, info }) => {
     } else {
       let user
       let profile
-      let company
-      let alreadyCoach
-      let requestSent
-      let alreadyPlayer
+      let company = false
+      let alreadyCoach = false
+      let requestSent = false
+      let alreadyPlayer = false
       axios.get(`/users/${auth.getUserId()}`)
         .then(res => {
           user = res.data[0]
-          alreadyCoach = user.coaches.some(coach => coach === profileId) ? true : false
-          alreadyPlayer = Object.keys(user.players).some(player => player === profileId) ? true : false
-          requestSent = user.sentRequests.some(request => request === profileId) ? true : false
           company = user.category === 'company' ? true : false
+
+          if (company) {
+            alreadyCoach = user.coaches.some(coach => coach === profileId) ? true : false
+            alreadyPlayer = Object.keys(user.players).some(player => player === profileId) ? true : false
+            requestSent = user.sentRequests.some(request => request === profileId) ? true : false
+          }
+
+
         }).then(() => {
 
           axios.get(`/users/${profileId}`)
-          .then(res => {
-            profile = res.data[0]
-          }).then(() => {
+            .then(res => {
+              profile = res.data[0]
+            }).then(() => {
 
-            setUser(user)
-            setProfileInfo(profile)
-            setIsCompany(company)
-            setIsAlreadyCoach(alreadyCoach)
-            setIsAlreadyPlayer(alreadyPlayer)
-            setRequestSent(requestSent)
-          })
+              setUser(user)
+              setProfileInfo(profile)
+              setIsCompany(company)
+              setIsAlreadyCoach(alreadyCoach)
+              setIsAlreadyPlayer(alreadyPlayer)
+              setRequestSent(requestSent)
+            })
         })
     }
   }
@@ -479,14 +484,14 @@ const Profile = ({ match, handleComponentChange, info }) => {
               </Box>
             </Typography>
 
-            { isOwnProfile &&
-            <Button
-              // className={classes.button}
-              variant="contained"
-              color="primary"
-              onClick={() => handleComponentChange('Edit', 0)}
-            >
-              Edit Details
+            {isOwnProfile &&
+              <Button
+                // className={classes.button}
+                variant="contained"
+                color="primary"
+                onClick={() => handleComponentChange('Edit', 0)}
+              >
+                Edit Details
           </Button>
             }
 
