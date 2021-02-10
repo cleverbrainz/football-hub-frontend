@@ -135,10 +135,15 @@ export default function Login({ history, location }) {
   if (!user) return null
   return (
     <>
-      {!!user.user ? !!userData.category ? (
+      {!!user.user ? !!userData?.category ? (
         <Redirect to={{ pathname: "/accountSetUp" }} />
       ) : (
-          localStorage.getItem('category') === 'company' ? <Redirect to={{ pathname: "/tester" }} /> : localStorage.getItem('category') ? <Redirect to={{ pathname: "/testercoach" }} /> : <Redirect to={{ pathname: "/home" }} />
+          auth.isLoggedIn() &&
+          localStorage.getItem('category') === 'company' ? 
+          <Redirect to={{ pathname: "/tester" }} /> : 
+          localStorage.getItem('category') === 'coach' ? 
+          <Redirect to={{ pathname: "/testercoach" }} /> : 
+          <Redirect to={{ pathname: `/${auth.getUserId()}/profile` }} />
         ) : (
           <div className={classes.container}>
             <Typography variant='h4'> LOGIN </Typography>
