@@ -158,14 +158,14 @@ const VerificationPage = () => {
             <a href={user.coachInfo.dbsCertificate}
               rel="noopener noreferrer"
               target='_blank'> Click to open </a>
-             { user.verification.dbsCertificate && <CheckIcon /> }
+             { user.verification.dbsDocumentationCheck && <CheckIcon /> }
           </TableCell>
 
           <TableCell align="right">
             <a href={user.coachInfo.coachingCertificate}
               rel="noopener noreferrer"
               target='_blank'> Click to open </a>
-            { user.verification.coachingCertificate && <CheckIcon /> }
+            { user.verification.coachDocumentationCheck && <CheckIcon /> }
           </TableCell>
 
           <TableCell align="right">
