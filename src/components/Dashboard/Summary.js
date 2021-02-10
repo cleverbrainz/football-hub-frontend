@@ -314,7 +314,7 @@ const Summary = ({ handleComponentChange }) => {
         })}
       </Grid>
     </div>
-  );
-};
+  )
+}
 
 export default Summary;
