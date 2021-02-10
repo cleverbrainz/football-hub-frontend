@@ -123,16 +123,16 @@ const IntroductionPage = ({ handleComponentChange }) => {
     }
   }
 
-
+  const getData = async () => {
+    const userCall = await axios.get(`/users/${auth.getUserId()}`)
+    const userRes = await userCall.data[0]
+    await introductionCheck(userRes)
+    setUserData(userRes)
+    console.log(userRes)
+  }
   
   useEffect(() => {
-    const getData = async () => {
-      const userCall = await axios.get(`/users/${auth.getUserId()}`)
-      const userRes = await userCall.data[0]
-      await introductionCheck(userRes)
-      setUserData(userRes)
-      console.log(userRes)
-    }
+    
 
     getData()
   },[])
@@ -141,6 +141,7 @@ const IntroductionPage = ({ handleComponentChange }) => {
     axios.patch(`/users/${auth.getUserId()}`, { updates: { stripeAccount: 'not using' }, userId: auth.getUserId()}, { headers: { authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         console.log(res)
+        getData()
       })
       .catch(err => console.log(err))
   }
@@ -172,7 +173,7 @@ const IntroductionPage = ({ handleComponentChange }) => {
                 <img alt="Powered by Stripe" style={{maxWidth: "65%"}} src='https://i.imgur.com/VzVZXkr.png'/>
               </a>
               <div>
-              { !userData.stripe_account || !userData.stripeAccount ?
+              { !userData.stripe_account && !userData.stripeAccount ?
               <>
               <Button variant="contained" color="default" onClick={() => handleIgnoreStripe()}>Not Now</Button>
               <Button variant="contained" color="primary" onClick={() => handleComponentChange('Subscription', 0)}>Yes I Need This -{'>'}</Button>
