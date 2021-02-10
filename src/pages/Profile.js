@@ -114,19 +114,20 @@ const Profile = ({ match, handleComponentChange, info }) => {
     } else {
       let user
       let profile
-      let company
-      let alreadyCoach
-      let requestSent
+      let company = false
+      let alreadyCoach = false
+      let requestSent = false
       let alreadyPlayer
       axios.get(`/users/${auth.getUserId()}`)
         .then(res => {
           user = res.data[0]
-          alreadyCoach = user.coaches.some(coach => coach === profileId) ? true : false
+          company = user.category === 'company' ? true : false
+          if (company) {
           alreadyPlayer = Object.keys(user.players).some(player => player === profileId) ? true : false
           requestSent = user.sentRequests.some(request => request === profileId) ? true : false
-          company = user.category === 'company' ? true : false
+          alreadyCoach = user.coaches.some(coach => coach === profileId) ? true : false
+          }
         }).then(() => {
-
           axios.get(`/users/${profileId}`)
           .then(res => {
             profile = res.data[0]

@@ -24,8 +24,8 @@ function getToken() {
 }
 
 function logOut() {
-  firebaseApp.auth().signOut()
-  return localStorage.clear()
+  localStorage.clear()
+  return firebaseApp.auth().signOut()
 }
 
 function getUserId() {

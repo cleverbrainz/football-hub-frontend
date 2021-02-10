@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }) => {
           'user': null,
           'checked': true
         });
+        setUserData({})
       }
     });
   }, [])
