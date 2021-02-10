@@ -96,11 +96,13 @@ const Profile = ({ match, handleComponentChange, info }) => {
   const profileId = match ? match.params.id : auth.getUserId()
   // const [user, setUser] = useState(info?.category === 'coach' ? info : {})
   const [user, setUser] = useState()
+  const [profileInfo, setProfileInfo] = useState()
   const input = useRef()
   const [imageUpload, setImageUpload] = useState(false)
   const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === profileId)
   const [isCompany, setIsCompany] = useState(true)
   const [isAlreadyCoach, setIsAlreadyCoach] = useState(false)
+  const [isAlreadyPlayer, setIsAlreadyPlayer] = useState(true)
   const [requestSent, setRequestSent] = useState(false)
   const verifyObj = { coachDocumentationCheck: 'Training Certification', dbsDocumentationCheck: 'DBS', paymentCheck: 'Payment Details' }
 
@@ -108,11 +110,35 @@ const Profile = ({ match, handleComponentChange, info }) => {
   async function getData() {
     if (info) {
       setUser(info)
+      setProfileInfo(info)
     } else {
+      let user
+      let profile
+      let company
+      let alreadyCoach
+      let requestSent
+      let alreadyPlayer
       axios.get(`/users/${auth.getUserId()}`)
         .then(res => {
-          console.log(res.data[0])
-          setUser(res.data[0])
+          user = res.data[0]
+          alreadyCoach = user.coaches.some(coach => coach === profileId) ? true : false
+          alreadyPlayer = Object.keys(user.players).some(player => player === profileId) ? true : false
+          requestSent = user.sentRequests.some(request => request === profileId) ? true : false
+          company = user.category === 'company' ? true : false
+        }).then(() => {
+
+          axios.get(`/users/${profileId}`)
+          .then(res => {
+            profile = res.data[0]
+          }).then(() => {
+
+            setUser(user)
+            setProfileInfo(profile)
+            setIsCompany(company)
+            setIsAlreadyCoach(alreadyCoach)
+            setIsAlreadyPlayer(alreadyPlayer)
+            setRequestSent(requestSent)
+          })
         })
     }
   }
@@ -179,14 +205,14 @@ const Profile = ({ match, handleComponentChange, info }) => {
 
             <Avatar
               onClick={isOwnProfile ? (e) => input.current.click() : ''}
-              className={classes.avatar} src={user && user.imageURL}
+              className={classes.avatar} src={profileInfo && profileInfo.imageURL}
 
             />
 
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
-                <span style={{ fontWeight: 'bold', display: 'block' }}> Email </span> {user && user.email}
+                <span style={{ fontWeight: 'bold', display: 'block' }}> Email </span> {profileInfo && profileInfo.email}
               </Box>
             </Typography>
 
@@ -194,7 +220,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> DOB </span>
-                {user && moment(user.dob).format('MMMM Do YYYY')}
+                {profileInfo && moment(profileInfo.dob).format('MMMM Do YYYY')}
               </Box>
             </Typography>
 
@@ -202,7 +228,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Player Position </span>
-                {user && user.preferred_position}
+                {profileInfo && profileInfo.preferred_position}
               </Box>
             </Typography>
 
@@ -210,7 +236,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Favourite Football Team </span>
-                {user && user.favourite_football_team}
+                {profileInfo && profileInfo.favourite_football_team}
               </Box>
             </Typography>
 
@@ -219,11 +245,11 @@ const Profile = ({ match, handleComponentChange, info }) => {
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Favourite Football Player </span>
-                {user && user.favourite_football_player}
+                {profileInfo && profileInfo.favourite_football_player}
               </Box>
             </Typography>
 
-            {(isCompany && !isOwnProfile && !isAlreadyCoach) && <Button
+            {(isCompany && !isOwnProfile && !isAlreadyPlayer) && <Button
               variant="contained"
               color="primary"
               onClick={!requestSent ? (event) => handleSendRequest(event) : (event) => handleDeleteRequest(event)}
@@ -239,15 +265,15 @@ const Profile = ({ match, handleComponentChange, info }) => {
             <Typography style={{ textAlign: 'center' }} component='div' >
               <Box className={classes.name}
                 fontSize={35} fontWeight="fontWeightBold" m={0}>
-                {user && user.name}
+                {profileInfo && profileInfo.name}
               </Box>
-              {isAlreadyCoach && <Box className={classes.name}
+              {/* {isAlreadyCoach && <Box className={classes.name}
                 fontSize={20} fontWeight="fontWeightBold" m={0}>
                 Part of your team!
           </Box>
-              }
+              } */}
               <small style={{ fontStyle: 'italic' }}>
-                Joined: {user && moment(new Date(user.joined._seconds * 1000 + user.joined._nanoseconds / 1000000)).format('DD-MM-YYYY')}
+                Joined: {profileInfo && moment(new Date(profileInfo.joined._seconds * 1000 + profileInfo.joined._nanoseconds / 1000000)).format('DD-MM-YYYY')}
               </small>
             </Typography>
 
@@ -255,7 +281,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
-                <span style={{ fontWeight: 'bold', display: 'block' }}> Player ID </span> {user && user.userId}
+                <span style={{ fontWeight: 'bold', display: 'block' }}> Player ID </span> {profileInfo && profileInfo.userId}
               </Box>
             </Typography>
 
@@ -263,7 +289,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> About Me </span>
-                {user && user.bio}
+                {profileInfo && profileInfo.bio}
               </Box>
             </Typography>
 
@@ -273,7 +299,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Career Highlight </span>
-                {user && user.best_career_highlight}
+                {profileInfo && profileInfo.best_career_highlight}
               </Box>
             </Typography>
 
@@ -333,19 +359,19 @@ const Profile = ({ match, handleComponentChange, info }) => {
         <div className={classes.subContainer}>
           <div className={classes.leftContainer}>
 
-            <input ref={input}
+            <input disabled={!isOwnProfile} ref={input}
               style={{ display: 'none' }} onChange={(e) => handleMediaChange(e)} type="file" />
 
             <Avatar
               onClick={isOwnProfile ? (e) => input.current.click() : ''}
-              className={classes.avatar} src={user && user.coachInfo.imageURL}
+              className={classes.avatar} src={profileInfo && profileInfo.coachInfo.imageURL}
 
             />
 
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
-                <span style={{ fontWeight: 'bold', display: 'block' }}> Email </span> {user && user.email}
+                <span style={{ fontWeight: 'bold', display: 'block' }}> Email </span> {profileInfo && profileInfo.email}
               </Box>
             </Typography>
 
@@ -353,7 +379,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> DOB </span>
-                {/* {user && moment(new Date(user.dob._seconds * 1000 + user.dob._nanoseconds / 1000000)).format('DD-MM-YYYY')} */}
+                {/* {profileInfo && moment(new Date(profileInfo.dob._seconds * 1000 + profileInfo.dob._nanoseconds / 1000000)).format('DD-MM-YYYY')} */}
               </Box>
             </Typography>
 
@@ -361,7 +387,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Professional Indemnity Insurance </span>
-                {user && user.professional_indemnity_insurance}
+                {profileInfo && profileInfo.professional_indemnity_insurance}
               </Box>
             </Typography>
 
@@ -369,7 +395,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Public Liability Insurance </span>
-                {user && user.public_liability_insurance}
+                {profileInfo && profileInfo.public_liability_insurance}
               </Box>
             </Typography>
 
@@ -400,7 +426,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
             <Typography style={{ textAlign: 'center' }} component='div' >
               <Box className={classes.name}
                 fontSize={35} fontWeight="fontWeightBold" m={0}>
-                {user && user.coachInfo.name}
+                {profileInfo && profileInfo.coachInfo.name}
               </Box>
               {isAlreadyCoach && <Box className={classes.name}
                 fontSize={20} fontWeight="fontWeightBold" m={0}>
@@ -408,7 +434,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
               </Box>
               }
               <small style={{ fontStyle: 'italic' }}>
-                Joined: {user && moment(new Date(user.joined._seconds * 1000 + user.joined._nanoseconds / 1000000)).format('DD-MM-YYYY')}
+                Joined: {profileInfo && moment(new Date(profileInfo.joined._seconds * 1000 + profileInfo.joined._nanoseconds / 1000000)).format('DD-MM-YYYY')}
               </small>
             </Typography>
 
@@ -416,7 +442,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
-                <span style={{ fontWeight: 'bold', display: 'block' }}> Player ID </span> {user && user.userId}
+                <span style={{ fontWeight: 'bold', display: 'block' }}> Player ID </span> {profileInfo && profileInfo.userId}
               </Box>
             </Typography>
 
@@ -424,7 +450,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> About Me </span>
-                {user && user.bio}
+                {profileInfo && profileInfo.bio}
               </Box>
             </Typography>
 
@@ -434,7 +460,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Career Highlight </span>
-                {user && user.best_career_highlight}
+                {profileInfo && profileInfo.best_career_highlight}
               </Box>
             </Typography>
 
@@ -447,17 +473,13 @@ const Profile = ({ match, handleComponentChange, info }) => {
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
                 <span style={{ fontWeight: 'bold', display: 'block' }}> Companies </span>
-                {user && user.companies.map(company => {
+                {profileInfo && profileInfo.companies.map(company => {
                   return <p>{company}</p>
                 })}
               </Box>
             </Typography>
 
-            {/* { isOwnProfile && <Link to={{
-              pathname: '/testercoach/edit',
-              state: user
-            }}> */}
-
+            { isOwnProfile &&
             <Button
               // className={classes.button}
               variant="contained"
@@ -466,7 +488,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
             >
               Edit Details
           </Button>
-            {/* </Link> */}
+            }
 
           </div>
         </div>
@@ -479,10 +501,10 @@ const Profile = ({ match, handleComponentChange, info }) => {
 
 
   const classes = useStyles();
-  if (!user) return null
+  if (!profileInfo) return null
 
   return (
-    user.category === 'player' || user.category === 'parent' ?
+    profileInfo.category === 'player' || profileInfo.category === 'parent' ?
       <UserProfile />
       :
       <CoachProfile />
