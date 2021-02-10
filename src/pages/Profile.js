@@ -117,7 +117,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
       let company = false
       let alreadyCoach = false
       let requestSent = false
-      let alreadyPlayer
+      let alreadyPlayer = false
       axios.get(`/users/${auth.getUserId()}`)
         .then(res => {
           user = res.data[0]
@@ -129,17 +129,17 @@ const Profile = ({ match, handleComponentChange, info }) => {
           }
         }).then(() => {
           axios.get(`/users/${profileId}`)
-          .then(res => {
-            profile = res.data[0]
-          }).then(() => {
+            .then(res => {
+              profile = res.data[0]
+            }).then(() => {
 
-            setUser(user)
-            setProfileInfo(profile)
-            setIsCompany(company)
-            setIsAlreadyCoach(alreadyCoach)
-            setIsAlreadyPlayer(alreadyPlayer)
-            setRequestSent(requestSent)
-          })
+              setUser(user)
+              setProfileInfo(profile)
+              setIsCompany(company)
+              setIsAlreadyCoach(alreadyCoach)
+              setIsAlreadyPlayer(alreadyPlayer)
+              setRequestSent(requestSent)
+            })
         })
     }
   }
@@ -480,14 +480,14 @@ const Profile = ({ match, handleComponentChange, info }) => {
               </Box>
             </Typography>
 
-            { isOwnProfile &&
-            <Button
-              // className={classes.button}
-              variant="contained"
-              color="primary"
-              onClick={() => handleComponentChange('Edit', 0)}
-            >
-              Edit Details
+            {isOwnProfile &&
+              <Button
+                // className={classes.button}
+                variant="contained"
+                color="primary"
+                onClick={() => handleComponentChange('Edit', 0)}
+              >
+                Edit Details
           </Button>
             }
 
