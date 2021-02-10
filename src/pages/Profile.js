@@ -107,10 +107,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
   const verifyObj = { coachDocumentationCheck: 'Training Certification', dbsDocumentationCheck: 'DBS', paymentCheck: 'Payment Details' }
 
 
-  console.log(profileId)
-
-
-  useEffect(() => {
+  async function getData() {
     if (info) {
       setUser(info)
       setProfileInfo(info)
@@ -144,6 +141,10 @@ const Profile = ({ match, handleComponentChange, info }) => {
           })
         })
     }
+  }
+
+  useEffect(() => {
+    getData()
   }, [])
 
 
@@ -160,6 +161,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
       axios.post(`/user/${auth.getUserId()}/image`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
         .then(res => {
           console.log(res.data)
+          getData()
           setImageUpload(false)
         })
         .catch(err => console.error(err))

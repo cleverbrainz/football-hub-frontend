@@ -294,7 +294,12 @@ console.log(preview)
                 </div>
                 <div className={classes.slideshowRoot}>
                   <div id='slideshow' className={classes.slideshowContainer} >
-                    {images && images.map((el, i) => <img style={{objectFit: 'cover'}} src={el} key={i} alt='' /> ).reverse()}
+                    {images && images.map((el, i) => {
+console.log(el)
+return (
+  <img style={{minWidth: '100%', objectFit: 'cover'}} src={el} key={i} alt='' /> 
+)
+                    } ).reverse()}
                   </div>
                 </div>
               </section>
