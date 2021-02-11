@@ -94,7 +94,7 @@ export default function AddListings({
     courses: [],
     camps: [],
     coaches: [],
-    images: listingTransferListInfo.images,
+    images: [listingTransferListInfo.images[0]],
     companyName: listingTransferListInfo.companyName,
     companyId: auth.getUserId()
   })

@@ -184,7 +184,7 @@ export default function Companies({ history }) {
   useEffect(() => {
     axios.post('/filteredCompanies', filterDetails)
       .then(res => {
-        console.log(res.data)
+        console.log('COMPANIESSS BITCHES', res.data)
         setCompanies(res.data)
       })
   }, [clearFilter])
@@ -414,6 +414,7 @@ export default function Companies({ history }) {
           {companies ? companies.map((el, i) => {
             // console.log(el)
             const { companyName, images, bio, companyId } = el.listingInfo
+            console.log(images)
 
             return (
               <>

@@ -66,7 +66,7 @@ function HomeNav() {
       <nav style={styles.navBar} className="navbar" role="navigation" aria-label="main navigation">
         <div style={styles.subContainer} className="navbar-brand">
           <Typography component='div'>
-            <Box  fontSize={23} fontWeight="fontWeightRegular" m={1}>
+            <Box fontSize={23} fontWeight="fontWeightRegular" m={1}>
               <SportsSoccerSharpIcon style={{ transform: 'translateY(4.5px)', marginRight: '5px' }} />
               FT BALLER
               </Box>
@@ -86,16 +86,9 @@ function HomeNav() {
           <div className="navbar-end">
             <div className="navbar-item">
               <div className="navbar-start">
-                {/* <div className="navbar-item has-dropdown is-hoverable">
-                  <a className="navbar-link"> Hub </a>
-
-                  <div className="navbar-dropdown">
-                    <a className="navbar-item"> Our mission </a>
-                    <a className="navbar-item"> About us </a>
-                  </div>
-                </div> */}
               </div>
-              <div className="buttons">
+
+              {localStorage.version === 'United Kingdom' && <div className="buttons">
                 <button style={{ backgroundColor: '#3d0F3d' }} className="button is-link">
                   <Link style={{ color: 'white', }} to='/register/player'>Register Player</Link>
                 </button>
@@ -105,7 +98,8 @@ function HomeNav() {
                 <button component={Link} to='/login' className="button is-light">
                   <Link style={{ color: 'black' }} to='/login'> Login </Link>
                 </button>
-              </div>
+              </div>}
+
             </div>
           </div>
         </div>

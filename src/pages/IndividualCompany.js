@@ -19,6 +19,7 @@ import Footer from '../components/Footer';
 import auth from '../lib/auth';
 import { campMultiDayCollection } from '../lib/firebase';
 import Stripe from '../pages/Stripe'
+import { set } from 'date-fns';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -163,7 +164,7 @@ const IndividualCompany = ({ location, history, match }) => {
   const [selectedService, setSelectedService] = useState()
   const [previewPage, setPreviewPage] = useState(preview ? true : false)
   const [previewData, setPreviewData] = useState()
-  const { companyName, images, bio, reasons_to_join, coaches, camps, services, courses, companyId, accountId } = previewPage ? previewData ? previewData : {} : location.state
+  const { companyName, bio, reasons_to_join, coaches, camps, services, courses, companyId, accountId } = previewPage ? previewData ? previewData : {} : location.state
   const name = companyName ? companyName.charAt(0).toUpperCase() + companyName.slice(1) : ''
   const [userCategory, setUserCategory] = useState('')
   const [open, setOpen] = React.useState(false);
@@ -174,6 +175,7 @@ const IndividualCompany = ({ location, history, match }) => {
     course: null
   })
 const [ageSelection, setAgeSelection] = useState()
+const [listingImages, setListingImages] = useState()
 console.log(preview)
 
   const reviews = [...Array(6).keys()]
@@ -181,14 +183,23 @@ console.log(preview)
   let count = 1
   let currentPosition = 0
 
+  async function getListingImages(companyId) {
+    const data = await axios.get(`/users/${companyId}`)
+    const images = await data.data[0].images
+    console.log('THISSS IS IMAGESSS', images)
+    setListingImages(images)
+  }
+
 
   useEffect(() => {
+    // console.log(images)
     const ageArr = []
 
     if (previewPage && !previewData) {
+      console.log(companyId)
       axios.get(`/listings/${listingId}`)
       .then(res => {
-        console.log(res.data)
+        getListingImages(res.data.companyId)
         res.data.courses.forEach(el => {
           const { age } = el.courseDetails
           !ageArr.includes(age) && ageArr.push(age)
@@ -197,7 +208,7 @@ console.log(preview)
         setPreviewData(res.data)
       })
     } else {
-      
+    getListingImages(companyId)
     courses.forEach(el => {
       const { age } = el.courseDetails
       !ageArr.includes(age) && ageArr.push(age)
@@ -243,7 +254,7 @@ console.log(preview)
     if (e.target.tagName === 'path') e.target = e.target.parentNode
 
     if (e.target.id === 'right') {
-      if (count === images.length) {
+      if (count === listingImages.length) {
         return
       }
 
@@ -252,7 +263,7 @@ console.log(preview)
         .to('#slideshow', 0.15, { filter: 'blur(0)' }, '+=0.1')
       count++
       currentPosition += size
-      console.log(count, images.length)
+      console.log(count, listingImages.length)
     } else if (e.target.id === 'left'){
       if (count === 1) {
         return
@@ -294,10 +305,10 @@ console.log(preview)
                 </div>
                 <div className={classes.slideshowRoot}>
                   <div id='slideshow' className={classes.slideshowContainer} >
-                    {images && images.map((el, i) => {
-console.log(el)
+                    {listingImages && listingImages.map((el, i) => {
+// console.log(el)
 return (
-  <img style={{minWidth: '100%', objectFit: 'cover'}} src={el} key={i} alt='' /> 
+  <img style={{minWidth: '100%', objectFit: 'fill'}} src={el} key={i} alt='' /> 
 )
                     } ).reverse()}
                   </div>
@@ -305,8 +316,12 @@ return (
               </section>
 
               <div className={classes.secondaryImages} >
-                <img style={{ height: '49%', width: '100%', objectFit: 'cover' }} src={images[0] ? images[0] :"https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80"} alt="" />
-                <img style={{ height: '49%', width: '100%', objectFit: 'cover' }} src={images[1] ? images[1] :"https://images.unsplash.com/photo-1524748969064-cf3dabd7b84d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1568&q=80"} alt="" />
+                <img style={{ height: '49%', width: '100%', objectFit: 'fill' }} src={listingImages && listingImages[0]}
+                  // ? listingImages[0] :"https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80"} 
+                  alt="" />
+                <img style={{ height: '49%', width: '100%', objectFit: 'fill' }} src={listingImages && listingImages[1]}
+                //  ? listingImages[1] :"https://images.unsplash.com/photo-1524748969064-cf3dabd7b84d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1568&q=80"} 
+                alt="" />
               </div>
 
             </div>

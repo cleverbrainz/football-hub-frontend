@@ -11,11 +11,20 @@ import bulma from 'bulma'
 import auth from './lib/auth'
 import jwt from 'jsonwebtoken'
 import axios from 'axios'
+// import React from 'react';
+import {
+  Typography,
+  Grid,
+  Fab,
+  Switch as FabSwitch,
+} from "@material-ui/core";
+import { withStyles } from '@material-ui/core/styles';
 
 import About from './pages/About'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 
 import Navbar from './components/Navbar'
+import HomeNav from './components/Navbars/HomeNav'
 import Home from './pages/Home'
 import Login from './pages/Login'
 // import Register from "./pages/Register";
@@ -92,8 +101,8 @@ import CheckoutForm from './pages/StripePaymentMethod'
 import SuccessfulCheckout from './pages/SuccessfulCheckout'
 
 // korean
+import RouteContainer from './korean/RouteContainer'
 
-import Marketing from './korean/Marketing'
 
 import { Dialog, useMediaQuery, DialogContent, DialogTitle, Button, DialogActions } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
@@ -145,11 +154,13 @@ const App = () => {
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [userType, setUserType] = useState()
+  // const [userType, setUserType] = useState()
   const [open, setOpen] = useState(true)
   const [navigationRoute, setNavigationRoute] = useState()
   const [selectedCountry, setSelectedCountry] = useState()
   const countries = ['United Kingdom', 'South Korea']
+
+
 
   const enRoutes = (
     <Elements stripe={stripePromise}>
@@ -376,12 +387,7 @@ const App = () => {
   )
 
   const krRoutes = (
-    <Router>
-      <Switch>
-        <Route exact path="/" component={Marketing} />
-      </Switch>
-    </Router>
-
+    <RouteContainer />
   )
 
   const CountrySelection = () => (
