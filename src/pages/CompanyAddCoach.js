@@ -84,14 +84,14 @@ export default function CompanyAddCoach({ info, handleComponentChange, refreshSt
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
   // const [dataChange, setDataChange] = useState(false);
-  const [avatarImage, setAvatarImage] = useState(info.category === 'coach' ? info.coachInfo.imageURL : info.imageURL)
+  const [avatarImage, setAvatarImage] = useState(info.coachInfo.imageURL)
   const [name, setName] = React.useState(info.name);
   const [email, setEmail] = React.useState(info.email);
   const [phone, setPhone] = React.useState(info.main_contact_number);
   const [level, setLevel] = React.useState();
   const [coachInfo, setCoachInfo] = React.useState(info.coachInfo);
   const [verified, setVerified] = React.useState(info.verified);
-  const [existing, setExisting] = React.useState(info.companies ? true : false)
+  const [existing, setExisting] = React.useState(info.companies && info.companies.length > 0 ? true : false)
   const [imageUpload, setImageUpload] = useState(false)
   const [dataChange, setDataChange] = useState({
     coachingCertificate: false,
@@ -123,7 +123,7 @@ export default function CompanyAddCoach({ info, handleComponentChange, refreshSt
         path,
         {
           userId,
-          updates: { ...user, coachInfo: { ...coachInfo } },
+          updates: { ...user, coachInfo: { ...coachInfo, name: coachInfo.name ? coachInfo.name : name } },
           type: 'coachInfo'
         },
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
@@ -249,7 +249,7 @@ export default function CompanyAddCoach({ info, handleComponentChange, refreshSt
           <InputLabel htmlFor="component-outlined"> Coach name </InputLabel>
           <OutlinedInput
             label="Coach name"
-            value={coachInfo?.name ? coachInfo.name: user.name}
+            value={coachInfo?.name ? coachInfo.name : user.name}
             onChange={(e) => setCoachInfo({ ...coachInfo, name: e.target.value })}
           ></OutlinedInput>
         </FormControl>

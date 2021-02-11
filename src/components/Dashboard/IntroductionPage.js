@@ -123,13 +123,13 @@ const IntroductionPage = ({ handleComponentChange }) => {
     }
   }
 
-  const getData = async () => {
-    const userCall = await axios.get(`/users/${auth.getUserId()}`)
-    const userRes = await userCall.data[0]
-    await introductionCheck(userRes)
-    setUserData(userRes)
-    console.log(userRes)
-  }
+const getData = async () => {
+      const userCall = await axios.get(`/users/${auth.getUserId()}`)
+      const userRes = await userCall.data[0]
+      await introductionCheck(userRes)
+      setUserData(userRes)
+      console.log(userRes)
+    }
   
   useEffect(() => {
     
