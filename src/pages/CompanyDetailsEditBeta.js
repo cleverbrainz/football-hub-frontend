@@ -17,6 +17,9 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from '@material-ui/core/CircularProgress'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import CheckIcon from '@material-ui/icons/Check';
+import CrossIcon from '@material-ui/icons/Clear'
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import { storage } from "../lib/firebase";
 import axios from "axios";
 import auth from '../lib/auth'
@@ -64,6 +67,12 @@ const useStyles = makeStyles((theme) => ({
   center: {
     margin: "0 auto",
   },
+  verify: {
+    display: 'inline-flex',
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    textAlign: 'center'
+  },
   avatar: {
     // [theme.breakpoints.up('sm')]: {
     //   width: theme.spacing(38),
@@ -108,7 +117,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
   const [saved, setSaved] = useState('unsaved')
   const [imageUpload, setImageUpload] = useState(false)
   const [companyInfo, setCompanyInfo] = useState(null)
-  const [uploadedDocs, setUploadedDocs] = useState([])
+  const [pending, setPending] = useState(false)
   const [snackBarOpen, setSnackBarOpen] = useState(false)
   useEffect(() => {
     // (console.log('usefect'))
@@ -170,6 +179,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
         console.log(res.data.data.documents)
         // setDocuments(res.data.documents)
         setCompanyInfo({ ...companyInfo, documents: res.data.data.documents, verificationId: res.data.data.verificationId })
+        setPending(true)
         setDataChange({ ...dataChange, [target]: false });
       })
       .catch((err) => {
@@ -204,7 +214,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
             <InputLabel htmlFor="component-outlined"> Main Email </InputLabel>
             <OutlinedInput
               label="Company Email"
-              value={companyInfo.main_email}
+              value={!companyInfo.main_email ? companyInfo.email : companyInfo.main_email }
               onChange={(e) => setCompanyInfo({ ...companyInfo, main_email: e.target.value })}
             />
           </FormControl>
@@ -222,7 +232,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
           <FormControl variant="outlined" className={classes.spacing}>
             <InputLabel htmlFor="component-outlined"> Accounts Email </InputLabel>
             <OutlinedInput
-              label="Accounts email"
+              label="Accounts email (Optional)"
               value={companyInfo.accounts_email}
               onChange={(e) => setCompanyInfo({ ...companyInfo, accounts_email: e.target.value })}
             />
@@ -230,7 +240,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
           <FormControl variant="outlined" className={classes.spacing}>
             <InputLabel htmlFor="component-outlined"> Accounts Contact Number </InputLabel>
             <OutlinedInput
-              label="Accounts Contact Number"
+              label="Accounts Contact Number (Optional)"
               value={companyInfo.accounts_contact_number}
               onChange={(e) => setCompanyInfo({ ...companyInfo, accounts_contact_number: e.target.value })}
             />
@@ -314,6 +324,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
                     <div className={classes.wrapper}>
                       <a target="_blank" rel="noopener noreferrer" href={companyInfo.documents[item]}><Button variant='outlined'
                         color="primary" disabled={dataChange[item]}> View current uploaded certificate</Button></a>
+                        { companyInfo.verification[`${item.split('_')[1]}DocumentCheck`] ? <div className={classes.verify}><CheckIcon /><p>Verified</p></div> : companyInfo.verificationId.companyInfo || pending ? <div className={classes.verify}><HourglassEmptyIcon /><p>Pending</p></div> : <div className={classes.verify}><CrossIcon /><p>Rejected</p></div> }
                       {dataChange[item] && <CircularProgress size={24} className={classes.buttonProgress} />}
                     </div> :
                     <p>no document uploaded</p>

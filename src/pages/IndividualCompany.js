@@ -375,13 +375,13 @@ return (
 
             {coaches.map((el, i) => {
 
-              const { name, coaching_level } = el.coachInfo
+              const { name, coaching_level, imageURL } = el.coachInfo
               return (
 
                 <>
 
                 <div key={i} className={classes.staffRoot}>
-                  <Avatar className={classes.avatar} alt="Remy Sharp" src={el.imageURL} />
+                  <Avatar className={classes.avatar} alt="Remy Sharp" src={imageURL} />
 
                   <div>
                     <Typography variant='h6' gutterBottom>

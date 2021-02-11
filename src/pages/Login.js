@@ -46,7 +46,7 @@ export default function Login({ history, location }) {
     }
   }));
 
-  const [loginError, setLoginError] = useState()
+  const [loginError, setLoginError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [loginFields, setLoginFields] = useState({
     email: '',
@@ -54,12 +54,15 @@ export default function Login({ history, location }) {
   })
   const [showPassword, setShowPassword] = useState(false)
   const classes = useStyles();
+  const emailErrors = ['auth/user-not-found', 'auth/invalid-email']
+  const passwordErrors = ['auth/wrong-password',]
 
   const { email } = loginFields
 
   function handleFormChange(e) {
     const { name, value } = e.target
     const fields = { ...loginFields, [name]: value }
+    setLoginError('')
     setLoginFields(fields)
   }
 
@@ -87,6 +90,10 @@ export default function Login({ history, location }) {
               history.push('/testercoach')
             }
           })
+      })
+      .catch(err => {
+        console.log(err)
+        setLoginError(err)
       })
   }
 
@@ -131,15 +138,14 @@ export default function Login({ history, location }) {
   //       })
   //   }
   // }
+  const localCatCheck = (localStorage.getItem('category') !== null)
+  console.log(localCatCheck)
 
   if (!user) return null
   return (
     <>
-      {!!user.user ? !!userData?.category ? (
-        <Redirect to={{ pathname: "/accountSetUp" }} />
-      ) : (
-          auth.isLoggedIn() &&
-          localStorage.getItem('category') === 'company' ? 
+          { (auth.isLoggedIn() && localCatCheck) ?
+          (localStorage.getItem('category') === 'company' ? 
           <Redirect to={{ pathname: "/tester" }} /> : 
           localStorage.getItem('category') === 'coach' ? 
           <Redirect to={{ pathname: "/testercoach" }} /> : 
@@ -157,7 +163,7 @@ export default function Login({ history, location }) {
               <FormControl variant="outlined">
                 <InputLabel htmlFor="component-outlined"> Email </InputLabel>
                 <OutlinedInput
-                  error={loginError ? true : false}
+                  error={emailErrors.some(code => code === loginError.code) ? true : false}
                   type='text'
                   name='email' id="component-outlined" label='Email'
                 />
@@ -168,6 +174,7 @@ export default function Login({ history, location }) {
                 <OutlinedInput
                   id="outlined-adornment-password"
                   type={showPassword ? 'text' : 'password'}
+                  error={passwordErrors.some(code => code === loginError.code) ? true : false}
                   name='password'
                   endAdornment={
                     <InputAdornment position="end">
@@ -194,7 +201,7 @@ export default function Login({ history, location }) {
                 Login
         {isLoading && <CircularProgress size={30} className={classes.progress} />}
               </Button>
-
+                  {/* {loginError && <Typography>{loginError}</Typography>} */}
               {location.pathname !== '/admin/login' &&
                 <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
 
