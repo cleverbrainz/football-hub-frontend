@@ -204,7 +204,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
             <InputLabel htmlFor="component-outlined"> Main Email </InputLabel>
             <OutlinedInput
               label="Company Email"
-              value={companyInfo.main_email}
+              value={!companyInfo.main_email ? companyInfo.email : companyInfo.main_email }
               onChange={(e) => setCompanyInfo({ ...companyInfo, main_email: e.target.value })}
             />
           </FormControl>
@@ -222,7 +222,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
           <FormControl variant="outlined" className={classes.spacing}>
             <InputLabel htmlFor="component-outlined"> Accounts Email </InputLabel>
             <OutlinedInput
-              label="Accounts email"
+              label="Accounts email (Optional)"
               value={companyInfo.accounts_email}
               onChange={(e) => setCompanyInfo({ ...companyInfo, accounts_email: e.target.value })}
             />
@@ -230,7 +230,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
           <FormControl variant="outlined" className={classes.spacing}>
             <InputLabel htmlFor="component-outlined"> Accounts Contact Number </InputLabel>
             <OutlinedInput
-              label="Accounts Contact Number"
+              label="Accounts Contact Number (Optional)"
               value={companyInfo.accounts_contact_number}
               onChange={(e) => setCompanyInfo({ ...companyInfo, accounts_contact_number: e.target.value })}
             />
