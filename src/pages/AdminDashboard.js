@@ -52,6 +52,7 @@ import ContactInfo from '../components/Dashboard/ContactInfo'
 import CompanyDetailsEdit from './CompanyDetailsEdit';
 import CompanyDetailsEditBeta from './CompanyDetailsEditBeta';
 import Subscription from '../Subscription';
+import Profile from './Profile'
 
 const drawerWidth = 240;
 
@@ -136,7 +137,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function Profile({ history }) {
+export default function AdminDashboard({ history }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -168,7 +169,8 @@ export default function Profile({ history }) {
     Calendar,
     Contact: ContactInfo,
     Edit: CompanyDetailsEditBeta,
-    Subscription
+    Subscription,
+    Profile
   }
 
   const DisplayedComponent = dashboardComponents[selectedComponent]

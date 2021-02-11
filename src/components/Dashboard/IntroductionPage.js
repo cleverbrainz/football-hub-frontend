@@ -104,7 +104,7 @@ const IntroductionPage = ({ handleComponentChange }) => {
           console.log('empty object')
         ) : (Object.keys(check).length > 0 ? newState[type] = true :
         console.log('empty object'))
-      ) : type === 'companyInfo' ? ( toCheck.verification.companyDetailsCheck ? newState[type] = true : toCheck.verificationId?.companyInfo ? newState[type] = 'pending' : newState[type]= false ) : console.log('undefined') 
+      ) : type === 'companyInfo' ? ( [toCheck.verification.companyDetailsCheck, toCheck.verification.indemnityDocumentCheck, toCheck.verification.liabilityDocumentCheck].reduce((pre, cu) => pre && cu, true) ? newState[type] = true : toCheck.verificationId?.companyInfo ? newState[type] = 'pending' : newState[type]= false ) : console.log('undefined') 
 
       console.log(newState)
     }

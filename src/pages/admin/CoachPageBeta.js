@@ -29,6 +29,7 @@ import CoachPageBetaTable from '../../components/CoachPageBetaTable'
 import { withRouter } from 'react-router-dom';
 import CompanyAddCoach from '../CompanyAddCoach';
 import CoachSearch from './CoachSearch';
+import Profile from '../Profile';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -112,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-function CoachPageBeta({ componentTabValue }) {
+function CoachPageBeta({ componentTabValue, handleComponentChange }) {
   const classes = useStyles();
   const [value, setValue] = useState(componentTabValue);
   const [coaches, setCoaches] = useState([])
@@ -282,6 +283,7 @@ function CoachPageBeta({ componentTabValue }) {
           <Tab label="Current Coaches" icon={<PeopleAltSharpIcon />} {...a11yProps(0)} />
           <Tab label="Add New Coach" icon={<PersonAddSharpIcon />} {...a11yProps(1)} />
           <Tab label="Edit Details" icon={<PersonAddSharpIcon />} {...a11yProps(2)} />
+          <Tab label="Coach Profile" icon={<PersonAddSharpIcon />} {...a11yProps(3)} />
         </Tabs>
       </AppBar>
 
@@ -289,6 +291,7 @@ function CoachPageBeta({ componentTabValue }) {
       <TabPanel value={value} index={0}>
         {coaches && <CoachPageBetaTable
           handleSetCoachId={(coachId) => handleSetCoachId(coachId)}
+          handleChange={handleChange}
           coaches={coaches} />}
       </TabPanel>
 
@@ -394,7 +397,11 @@ function CoachPageBeta({ componentTabValue }) {
       </TabPanel>
 
       <TabPanel value={value} index={2}>
-        <CompanyAddCoach changePage={handleChange} refreshState={setDeleteInProgress} info={user} />
+        <CompanyAddCoach changePage={handleChange} handleComponentChange={handleComponentChange} refreshState={setDeleteInProgress} info={user} />
+      </TabPanel>
+
+      <TabPanel value={value} index={3}>
+        <Profile info={user} handleChange={handleChange}/>
       </TabPanel>
 
       <DeleteComponent
