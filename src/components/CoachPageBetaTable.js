@@ -26,7 +26,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function CoachPageBetaTable({ coaches, handleSetCoachId }) {
+export default function CoachPageBetaTable({ coaches, handleSetCoachId, handleChange }) {
   const classes = useStyles();
 
   console.log('table', coaches)
@@ -50,7 +50,7 @@ export default function CoachPageBetaTable({ coaches, handleSetCoachId }) {
           {coaches.map((el, i) => (
             <TableRow key={i}>
               <TableCell component="th" scope="row">
-              {el.userId === auth.getUserId() ? <Link to={`/${el.userId}/profile`}>{el.coachInfo.name}</Link> :
+              {el.userId === auth.getUserId() ? <Link onClick={(event) => handleChange(event, 3)}>{el.coachInfo.name}</Link> :
               <Link to={`/${el.userId}/profile`}>{el.coachInfo.name}</Link>
               }
               </TableCell>

@@ -167,7 +167,10 @@ function CheckoutForm({
 
                     {(!isTodayBeforeStart && type !== 'recurring') && (
                       <span style={{ color: 'blue'}}> 
-                      {`£${(calculateProration(start_date, end_date, prices[1]) / 100).toFixed(2)}`}
+                      { prices[1] ?
+                      `£${(calculateProration(start_date, end_date, prices[1]) / 100).toFixed(2)}` :
+                      `£${(calculateProration(start_date, end_date, prices[0]) / 100).toFixed(2)}`
+                      }
                       </span>  
                       )}
                     </Typography>
