@@ -12,6 +12,9 @@ import {
   OutlinedInput,
   Container,
 } from "@material-ui/core";
+import CheckIcon from '@material-ui/icons/Check';
+import CrossIcon from '@material-ui/icons/Clear'
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import { makeStyles } from "@material-ui/core/styles";
 import { storage } from "../lib/firebase";
 import axios from "axios";
@@ -38,14 +41,16 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column'
   },
   form: {
-    width: "100%",
+    width: "90%",
     display: "flex",
-    height: "55%",
+    height: "65%",
     justifyContent: "space-between",
     flexDirection: 'column',
     [theme.breakpoints.up('sm')]: {
       flexDirection: 'row'
     },
+    marginTop: '30px',
+    marginBottom: '10px'
   },
   button: {
     position: "relative",
@@ -56,6 +61,12 @@ const useStyles = makeStyles((theme) => ({
   },
   center: {
     margin: "0 auto",
+  },
+  verify: {
+    display: 'inline-flex',
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    textAlign: 'center'
   },
   avatar: {
 
@@ -69,11 +80,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CompanyAddCoach({ info, handleComponentChange, refreshState }) {
+export default function CompanyAddCoach({ info, handleComponentChange, changePage, refreshState, refreshData }) {
   const classes = useStyles();
 
   console.log(info)
-
+  
   const { userId, imageURL } = info;
 
   const [user, setUser] = useState(info)
@@ -93,6 +104,7 @@ export default function CompanyAddCoach({ info, handleComponentChange, refreshSt
   const [verified, setVerified] = React.useState(info.verified);
   const [existing, setExisting] = React.useState(info.companies && info.companies.length > 0 ? true : false)
   const [imageUpload, setImageUpload] = useState(false)
+  const [pending, setPending] = useState(false)
   const [dataChange, setDataChange] = useState({
     coachingCertificate: false,
     dbsCertificate: false,
@@ -131,8 +143,14 @@ export default function CompanyAddCoach({ info, handleComponentChange, refreshSt
       .then((res) => {
         console.log(res.data);
         // setDataChange({ ...dataChange, [e.target.name]: false })
-        
-        window.location.reload()
+      console.log(info.category)
+      
+      refreshState(true)
+      if (info.category === 'company') {
+        changePage(null, 0)
+       } else {
+         refreshData().then(() => handleComponentChange('Summary', 0))
+       } 
       })
       .catch((error) => {
         alert(error.message);
@@ -160,6 +178,7 @@ export default function CompanyAddCoach({ info, handleComponentChange, refreshSt
         const resInfo = res.data.coachInfo ? res.data.coachInfo : res.data.data.coachInfo 
         console.log(resInfo);
         setCoachInfo({ ...coachInfo, ...resInfo })
+        setPending(true)
         setDataChange({ ...dataChange, [type]: false })
         // setDataChange(false);
       })
@@ -194,6 +213,7 @@ export default function CompanyAddCoach({ info, handleComponentChange, refreshSt
 
   // if (!coachInfo) return null
   return (
+    <>
     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
 
       <input
@@ -344,6 +364,7 @@ export default function CompanyAddCoach({ info, handleComponentChange, refreshSt
             {dataChange.coachingCertificate && (
               <CircularProgress size={24} className={classes.buttonProgress} />
             )}
+            { user.verification.coachDocumentationCheck ? <div className={classes.verify}><CheckIcon /><p>Verified</p></div> : user.verificationId.coachInfo || pending ? <div className={classes.verify}><HourglassEmptyIcon /><p>Pending</p></div> : <div className={classes.verify}><CrossIcon /><p>Rejected</p></div> }
           </div>
         ) : (
           <p>no document uploaded</p>
@@ -396,6 +417,7 @@ export default function CompanyAddCoach({ info, handleComponentChange, refreshSt
             {dataChange.dbsCertificate && (
               <CircularProgress size={24} className={classes.buttonProgress} />
             )}
+             { user.verification.dbsDocumentationCheck ? <div className={classes.verify}><CheckIcon /><p>Verified</p></div> : user.verificationId.coachInfo || pending ? <div className={classes.verify}><HourglassEmptyIcon /><p>Pending</p></div> : <div className={classes.verify}><CrossIcon /><p>Rejected</p></div> }
           </div>
         ) : (
           <p>no document uploaded</p>
@@ -412,5 +434,8 @@ export default function CompanyAddCoach({ info, handleComponentChange, refreshSt
       </div>
 
     </form>
+    <Typography style={{ textAlign: 'center' }}>Please add the information and documents for your coaching certificate and DBS status.
+    {<br/>} Once you have uploaded these ftballer.com will review and advise if they are accepted or not.</Typography>
+    </>
   );
 }

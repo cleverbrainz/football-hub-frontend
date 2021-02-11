@@ -145,6 +145,7 @@ export default function CoachProfile({ history }) {
   const [user, setUser] = useState(null)
   const [selectedComponent, setSelectedComponent] = useState('Summary');
   const [componentTabValue, setComponentTabValue] = useState(0)
+  const [stateUpdate, setStateUpdate] = useState(false)
 
   const [drawerItems, setDrawerItems] = useState({
     Summary: BubbleChartSharp,
@@ -168,17 +169,20 @@ export default function CoachProfile({ history }) {
     setSelectedComponent(selectedComponent)
   }
 
+  const getData = async function() {
+    const res = await axios.get(`/users/${profileId}`)
+      const { requests, companies } = await res.data[0]
+      console.log('getting data')
+      console.log(res.data)
+      setUser(res.data[0])
+  }
 
   useEffect(() => {
-    axios.get(`/users/${profileId}`)
-      .then(res => {
-        const { requests, companies } = res.data[0]
-        console.log(res.data)
-        setUser(res.data[0])
+    
         // if (requests) setRequestSent(requests.some(id => id === auth.getUserId()))
         // if (companies) setIsAlreadyCoach(companies.some(id => id === auth.getUserId()))
-      })
-  }, [])
+        getData()
+  }, [!stateUpdate])
 
   const DisplayedComponent = dashboardComponents[selectedComponent]
 
@@ -264,6 +268,8 @@ export default function CoachProfile({ history }) {
         handleComponentChange={(component, tab) => handleComponentChange(component, tab)}
         componentTabValue={componentTabValue}
         info={user}
+        refreshState={setStateUpdate}
+        refreshData={() => getData()}
         />
 
       </main>

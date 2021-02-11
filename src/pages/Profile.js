@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const Profile = ({ match, handleComponentChange, info }) => {
+const Profile = ({ match, handleChange, handleComponentChange, info }) => {
 
 
   const profileId = match ? match.params.id : auth.getUserId()
@@ -109,9 +109,11 @@ const Profile = ({ match, handleComponentChange, info }) => {
 
   async function getData() {
     if (info) {
+      console.log('eggs')
       setUser(info)
       setProfileInfo(info)
     } else {
+      console.log('beans')
       let user
       let profile
       let company = false
@@ -485,7 +487,7 @@ const Profile = ({ match, handleComponentChange, info }) => {
                 // className={classes.button}
                 variant="contained"
                 color="primary"
-                onClick={() => handleComponentChange('Edit', 0)}
+                onClick={user.category === 'coach' ? (event) => handleComponentChange('Edit', 0) : (event) => handleChange(event, 2)}
               >
                 Edit Details
           </Button>
