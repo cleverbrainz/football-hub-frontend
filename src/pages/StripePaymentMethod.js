@@ -54,6 +54,9 @@ function CheckoutForm({
     id: null
   })
   const [user, setUser] = useState()
+  const [terms, setTerms] = useState('')
+  const [termsAgreed, setTermsAgreed] = useState(false)
+  const [termsDialog, setTermsDialog] = useState(false)
 
 
 
@@ -63,9 +66,17 @@ function CheckoutForm({
     setUser(user)
   }
 
+  const getTerms = async () => {
+    const data = await axios.get(`/users/${companyId}`)
+    console.log(data)
+    const user = await data.data[0]
+    user.contactInformation?.terms ? setTerms(user.contactInformation.terms) : setTerms('Terms go here')
+  }
+
   useEffect(() => {
 
     getUserData()
+    getTerms()
 
     axios.get(`/connected-account/${stripeId}/product`)
       .then(res => {
@@ -125,6 +136,11 @@ function CheckoutForm({
 
   }
 
+  function handleAgreeToTerms() {
+    setTermsAgreed(true)
+    setTermsDialog(false)
+  }
+
   function calculateProration(start, end, price) {
     const courseDuration = moment(end, 'YYYY-MM-DD').diff(moment(start, 'YYYY-MM-DD'), 'weeks')
     const weeklyPrice = (price.unit_amount / courseDuration).toFixed(2)
@@ -135,6 +151,8 @@ function CheckoutForm({
   }
 
   return (
+
+    !termsDialog ? 
     <>
 
       <Dialog
@@ -197,12 +215,42 @@ function CheckoutForm({
 
         </DialogContent>
         <DialogActions>
-          <Button onClick={handlePlanSelection} color="primary">
+          <Button onClick={() => setTermsDialog(true)}>
+            View Terms & Conditions
+          </Button>
+          <Button disabled={!termsAgreed} onClick={handlePlanSelection} color="primary">
             Pay Now
           </Button>
         </DialogActions>
       </Dialog>
     </>
+    :
+    <>
+
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title"> T's and C's </DialogTitle>
+      <DialogContent >
+
+        <Typography>
+          {terms}
+        </Typography>
+
+      </DialogContent>
+      <DialogActions>
+        <Button>
+          View Terms & Conditions
+        </Button>
+        <Button onClick={() => handleAgreeToTerms()} color="primary">
+          I agree
+        </Button>
+      </DialogActions>
+    </Dialog>
+  </>
   );
 }
 
