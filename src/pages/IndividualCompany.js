@@ -645,7 +645,7 @@ return (
         <Divider style={{width: '80%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.2)', margin: '55px 0 30px 0'}} />
         {/* reviews */}
 
-        <section className={classes.reviewSection}>
+        {/* <section className={classes.reviewSection}>
         <Typography style={{ margin: '30px 0' }} component='div' >
               <Box
                 fontSize={25} fontWeight="fontWeightBold" m={0}>
@@ -687,7 +687,7 @@ return (
             </div>
         </section>
         <Divider style={{width: '80%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.2)', marginTop: '55px'}} />
-      </div>
+      </div> */}
 
    
 
