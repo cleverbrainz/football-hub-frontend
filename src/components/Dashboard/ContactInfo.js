@@ -9,11 +9,13 @@ import AddLocationSharpIcon from '@material-ui/icons/AddLocationSharp';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+import { TextareaAutosize } from '@material-ui/core';
 import {
   Typography,
   Button,
   OutlinedInput,
   Snackbar,
+  Container
 } from "@material-ui/core";
 import MuiAlert from '@material-ui/lab/Alert';
 import Box from '@material-ui/core/Box';
@@ -90,12 +92,14 @@ export default function ContactInfo({ componentTabValue, handleComponentChange }
     twitter: '',
     facebook: '',
     adminEmail: '',
+    terms: '',
     companyId: auth.getUserId()
   })
 
+
   const [snackBarOpen, setSnackBarOpen] = useState(false)
 
-  const { website, instagram, twitter, facebook, adminEmail } = basicContactInfo
+  const { website, instagram, twitter, facebook, adminEmail, terms } = basicContactInfo
 
   useEffect(() => {
     axios
@@ -230,6 +234,7 @@ export default function ContactInfo({ componentTabValue, handleComponentChange }
         >
           <Tab label="Company Details" icon={<ExploreSharpIcon />} {...a11yProps(0)} />
           <Tab label="Basic Contact Info" icon={<AddLocationSharpIcon />} {...a11yProps(1)} />
+          <Tab label="Your Terms And Conditions" icon={<AddLocationSharpIcon />} {...a11yProps(1)} />
         </Tabs>
       </AppBar>
 
@@ -241,6 +246,27 @@ export default function ContactInfo({ componentTabValue, handleComponentChange }
       {/* tab 2 content */}
       <TabPanel className={classes.formContainer} value={value} index={1}>
         {basicContactForm}
+      </TabPanel>
+
+      <TabPanel className={classes.formContainer} value={value} index={2}>
+        <Container className={classes.form}>
+        <Typography>Please enter the Terms & Conditions you wish to be agreed when a customer books onto one of your courses.</Typography>
+        <TextareaAutosize 
+          onChange={(e) => setBasicContactInfo({ ...basicContactInfo, terms: e.target.value })} 
+          defaultValue={terms} 
+          style={{ width: '100%', marginBottom: '10px'}} 
+          rowsMin={20}
+          />
+        <Button
+        className={classes.button}
+        type='submit'
+        variant="contained"
+        color="primary"
+        onClick={(e) => handleSubmit(e)}
+        >
+        Save
+        </Button>
+        </Container>
       </TabPanel>
 
       <Snackbar open={snackBarOpen} autoHideDuration={1000} onClose={closeSnackBar}>
