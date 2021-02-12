@@ -9,9 +9,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import { KeyboardArrowLeft, KeyboardArrowRight, ExpandMore } from "@material-ui/icons";
 import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
 import VerifiedUserSharpIcon from '@material-ui/icons/VerifiedUserSharp';
+import EmailIcon from '@material-ui/icons/Email';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import InstagramIcon from '@material-ui/icons/Instagram';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import ComputerIcon from '@material-ui/icons/Computer';
 import MuiAlert from '@material-ui/lab/Alert';
 import axios from 'axios';
-import { TimelineLite } from 'gsap';
+import { TimelineLite, gsap } from 'gsap';
 import React, { useEffect, useState } from 'react';
 import CourseBookingDialogue from '../components/CourseBookingDialogue';
 import EnquiryModal from '../components/EnquiryModal';
@@ -19,7 +24,10 @@ import Footer from '../components/Footer';
 import auth from '../lib/auth';
 import { campMultiDayCollection } from '../lib/firebase';
 import Stripe from '../pages/Stripe'
+import PreCheckoutLogin from '../components/PreCheckoutLogin'
 import { set } from 'date-fns';
+import { CSSRulePlugin } from "gsap/CSSRulePlugin";
+gsap.registerPlugin(CSSRulePlugin);
 
 
 const useStyles = makeStyles((theme) => ({
@@ -161,7 +169,6 @@ const IndividualCompany = ({ location, history, match }) => {
   const { preview, listingId } = match.params
   const classes = useStyles()
   const [modalOpen, setModal] = useState(false)
-  const [selectedService, setSelectedService] = useState()
   const [previewPage, setPreviewPage] = useState(preview ? true : false)
   const [previewData, setPreviewData] = useState()
   const { companyName, bio, reasons_to_join, coaches, camps, services, courses, companyId, accountId } = previewPage ? previewData ? previewData : {} : location.state
@@ -176,7 +183,9 @@ const IndividualCompany = ({ location, history, match }) => {
   })
 const [ageSelection, setAgeSelection] = useState()
 const [listingImages, setListingImages] = useState()
-console.log(preview)
+const [companyContactInfo, setCompanyContactInfo] = useState()
+const [loginBeforeEnquiry, setLoginBeforeEnquiry] = useState(false)
+// console.log(preview)
 
   const reviews = [...Array(6).keys()]
 
@@ -185,9 +194,10 @@ console.log(preview)
 
   async function getListingImages(companyId) {
     const data = await axios.get(`/users/${companyId}`)
-    const images = await data.data[0].images
+    const { images, contactInformation } = await data.data[0]
     console.log('THISSS IS IMAGESSS', images)
     setListingImages(images)
+    setCompanyContactInfo(contactInformation)
   }
 
 
@@ -242,8 +252,14 @@ console.log(preview)
  
 
   const toggleModal = service => {
-    if (modalOpen === false) setSelectedService(service)
-    setModal(!modalOpen)
+    if (!auth.isLoggedIn()) {
+      setLoginBeforeEnquiry(true)
+    } else {
+      // if (modalOpen === false) setSelectedService(service)
+      setLoginBeforeEnquiry(false)
+      setModal(!modalOpen)
+    }
+   
   }
 
   const HandleSlide = (e) => {
@@ -412,6 +428,85 @@ return (
         <Divider style={{width: '80%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.2)', margin: '55px 0 30px 0'}} />
 
 
+        <section className={classes.section}>
+
+        <div className={classes.description}>
+            <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
+              <Box
+                fontSize={25} fontWeight="fontWeightBold" m={0}>
+                Services 
+              </Box>
+            </Typography>
+
+            {services.map((el, i) => {
+              return (
+                <Accordion key={i}>
+                  <AccordionSummary
+                    style={{minHeight: '70px'}}
+                    expandIcon={<ExpandMore />}
+                  >
+                    <Typography className={classes.accordion}> {el.name} </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails style={{display: 'block'}}>
+                    <Typography>
+                    {el.description}
+                    </Typography>
+
+                  {/* {auth.isLoggedIn() ? ( */}
+                  <Button onClick={() => toggleModal(el.name)} variant="contained" style={{margin: '20px 0 5px 0'}}>
+                    Click to enquire
+                  </Button>
+                  {/* ) : <p  style={{margin: '20px 0 5px 0', color: 'blue'}}> Please login to make an enquiry </p>}   */}
+                  </AccordionDetails>
+
+                  
+                </Accordion>
+              )
+            })}
+          </div>
+
+             <div className={classes.coachContainer}>
+
+              <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
+              <Box
+                fontSize={25} fontWeight="fontWeightBold" m={0}>
+                Get in touch
+              </Box>
+            </Typography>
+
+
+           
+              <div className={classes.social}> 
+                <EmailIcon style={{fontSize: '25px', marginRight: '15px'}}/> 
+                <p> {companyContactInfo && companyContactInfo.adminEmail}</p>  
+              </div>
+
+              <div className={classes.social}> 
+                <ComputerIcon style={{fontSize: '25px', marginRight: '15px'}}/> 
+                <p> {companyContactInfo && companyContactInfo.website} </p>  
+              </div>
+
+              <div className={classes.social}> 
+                <FacebookIcon style={{fontSize: '25px', marginRight: '15px'}}/> 
+                <p> {companyContactInfo && companyContactInfo.facebook} </p>  
+              </div>
+              
+              <div className={classes.social}> 
+                <InstagramIcon style={{fontSize: '25px', marginRight: '15px'}}/> 
+                <p> {companyContactInfo && companyContactInfo.instagram} </p>  
+              </div>
+              
+              <div className={classes.social}> 
+                <TwitterIcon style={{fontSize: '25px', marginRight: '15px'}}/> 
+                <p> {companyContactInfo && companyContactInfo.twitter} </p>  
+              </div>
+            </div>
+            
+
+        </section>
+
+        <Divider style={{width: '80%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.2)', margin: '55px 0 30px 0'}} />
+
             {/* booking and services */}
 
             <section className={classes.section}>
@@ -541,67 +636,7 @@ return (
             ))}
            
             
-              {/* <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
-              <Box
-                fontSize={25} fontWeight="fontWeightBold" m={0}>
-                Services 
-              </Box>
-            </Typography> */}
-
-            {/* {services.map((el, i) => {
-              return (
-                <Accordion key={i}>
-                  <AccordionSummary
-                    style={{minHeight: '70px'}}
-                    expandIcon={<ExpandMore />}
-                  >
-                    <Typography className={classes.accordion}> {el.name} </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails style={{display: 'block'}}>
-                    <Typography>
-                    {el.description}
-                    </Typography>
-
-                  {auth.isLoggedIn() ? (
-                  <Button onClick={() => toggleModal(el.name)} variant="contained" style={{margin: '20px 0 5px 0'}}>
-                    Click to enquire
-                  </Button>
-                  ) : <p  style={{margin: '20px 0 5px 0', color: 'blue'}}> Please login to make an enquiry </p>}  
-                  </AccordionDetails>
-
-                  
-                </Accordion>
-              )
-            })} */}
             
-              {/* <Typography style={{ margin: '70px 0 30px 0' }} component='div' >
-              <Box
-                fontSize={25} fontWeight="fontWeightBold" m={0}>
-                Get in touch
-              </Box>
-            </Typography>
-
-            <div className={classes.social}> 
-              <LocationOnIcon style={{fontSize: '32px', marginRight: '15px'}} /> 
-              <p>London, United Kingdom</p>  
-            </div>
-
-
-            <div className={classes.social}> 
-              <CallIcon style={{fontSize: '32px', marginRight: '15px'}}/> 
-              <p> 0123456789 </p> 
-            </div>
-
-            <div className={classes.social}> 
-              <InstagramIcon style={{fontSize: '32px', marginRight: '15px'}}/> 
-              <p> @footballcompany </p>  
-            </div>
-
-            <div className={classes.social}> 
-              <FacebookIcon style={{fontSize: '32px', marginRight: '15px'}}/> 
-              <p> @footballcompany </p>  
-            </div> */}
-
               </div>
 
             </section>
@@ -665,11 +700,18 @@ return (
       </Snackbar>
 
 
+      {loginBeforeEnquiry && <PreCheckoutLogin 
+      open={loginBeforeEnquiry}
+      handleClose={() => setLoginBeforeEnquiry(false)}
+      followUpAction={'general'}
+      toggleModal={() => toggleModal()}
+      />}
+
       {
-        modalOpen && <EnquiryModal
-        openSnackBar={() => setSnackBarOpen(true)}
+        (modalOpen && !loginBeforeEnquiry) && <EnquiryModal
+          openSnackBar={() => setSnackBarOpen(true)}
           toggleModal={() => toggleModal()}
-          selectedService={selectedService}
+          // selectedService={selectedService}
           companyId={companyId}
           companyName={companyName} />
       }

@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     // textAlign: 'center',
     flexDirection: 'column',
     justifyContent: 'space-around',
+    transform: 'translateY(5vh)',
     [theme.breakpoints.up('md')]: {
       height: '54vh',
       // textAlign: 'initial',

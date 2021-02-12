@@ -42,7 +42,8 @@ export default function PreCheckoutLogin({
   open,
   handleClose,
   handleClick,
-  followUpAction
+  followUpAction,
+  toggleModal
 }) {
 
   const classes = useStyles();
@@ -114,6 +115,8 @@ export default function PreCheckoutLogin({
       .finally(res => {
         if (followUpAction === 'enquiry') {
           handleClose()
+        } else if (followUpAction === 'general') {
+          toggleModal()
         } else {
           handleClose()
           handleClick()
