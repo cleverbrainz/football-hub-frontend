@@ -161,7 +161,7 @@ const Summary = ({ handleComponentChange }) => {
         case 'players':
           Object.keys(players).forEach((key) => {
             const { name, status, age, dob } = players[key]
-            textArr.push(`Added ${name} as ${status} player. Age: (${age ? auth.dobToAge(age) : auth.dobToAge(dob)})`)
+            textArr.push(`Added ${name} as ${status} player.${age ? isNaN(auth.dobToAge(age)) ? ''  : ` Age: ${auth.dobToAge(age)}` : isNaN(auth.dobToAge(dob)) ? ''  : ` Age: ${auth.dobToAge(age)}`}`)
           })
           break
 
