@@ -2,9 +2,11 @@ import React from "react";
 import { Popup } from "react-map-gl";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
-import { TimelineLite, Power2 } from "gsap";
+import { TimelineLite, Power2, gsap } from "gsap";
+import { CSSRulePlugin } from "gsap/CSSRulePlugin";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
 import CancelSharpIcon from "@material-ui/icons/CancelSharp";
+gsap.registerPlugin(CSSRulePlugin);
 
 const useStyles = makeStyles((theme) => ({
   slideshowRoot: {

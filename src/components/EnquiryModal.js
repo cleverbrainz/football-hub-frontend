@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     // alignItems: 'center'
-    width: '80%',
+    width: '70%',
     minWidth: '270px',
     height: '90%'
   }, 
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const EnquiryModal = ({ toggleModal, selectedService, companyId, companyName, openSnackBar }) => {
+const EnquiryModal = ({ toggleModal, companyId, companyName, openSnackBar }) => {
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -87,7 +87,7 @@ const EnquiryModal = ({ toggleModal, selectedService, companyId, companyName, op
       <div onClick={toggleModal} className='modal-background'></div>
       <div className="modal-content">
 
-        <Typography style={{ margin: '50px 0 0 0' }} component='div' >
+        <Typography style={{ marginTop: '25px' }} component='div' >
           <Box
             fontSize={22} fontWeight="fontWeightBold" m={0}>
             Send an enquiry
@@ -104,7 +104,7 @@ const EnquiryModal = ({ toggleModal, selectedService, companyId, companyName, op
           <Typography component='div' >
             <Box
               fontSize={16} fontWeight="fontWeightBold" m={0}>
-              Re: {selectedService}
+              Re: General Enquiry
             </Box>
           </Typography>
 
