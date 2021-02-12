@@ -443,11 +443,11 @@ const App = () => {
     const token = localStorage.token
     if (token) {
       const decodedToken = jwt.decode(token)
-      if (decodedToken.exp * 1000 < Date.now()) {
+      if (!decodedToken || (decodedToken.exp * 1000) < Date.now()) {
         auth.logOut()
         window.location.href = '/'
       }
-    }
+    } 
   }, [])
 
 
