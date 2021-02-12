@@ -10,11 +10,15 @@ function setToken(token) {
 function isLoggedIn() {
 
   if (!localStorage.token) return false
+  // if (localStorage.token === null) return false
+  console.log(localStorage.token)
 
   const decodedToken = jwt.decode(localStorage.token)
 
   if (decodedToken.exp * 1000 < Date.now()) {
     localStorage.removeItem('token')
+    localStorage.removeItem('category')
+    return false
   }
   return (localStorage.token)
 }
@@ -24,7 +28,8 @@ function getToken() {
 }
 
 function logOut() {
-  localStorage.clear()
+  localStorage.removeItem('token')
+  localStorage.removeItem('category')
   return firebaseApp.auth().signOut()
 }
 
@@ -42,7 +47,13 @@ function getUserId() {
 
 
 function dobToAge(age) {
-  const dobArr = age.split('-').map(Number)
+  let dobArr
+  try {
+    dobArr = age.split('-').map(Number)
+  } catch {
+    return NaN
+  }
+  
   console.log(dobArr)
   const millisecondsDOB = new Date(age)
   console.log({dobArr, millisecondsDOB})

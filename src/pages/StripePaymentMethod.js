@@ -76,7 +76,7 @@ function CheckoutForm({
   async function handlePlanSelection() {
 
     const { id, type } = selectedPlan
-    const { userId, name, stripeId, email } = user
+    const { userId, name, stripeId, email, dob, age } = user
     let checkout
 
 
@@ -89,7 +89,7 @@ function CheckoutForm({
         connectedAccountId: connectedAccount,
         customerId: stripeId,
         metadata: {
-          dob: '',
+          dob: dob ? dob : age,
           companyId,
           courseId,
           name,
