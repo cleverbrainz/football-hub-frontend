@@ -685,9 +685,9 @@ return (
               })}
             
             </div>
-        </section>
-        <Divider style={{width: '80%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.2)', marginTop: '55px'}} />
-      </div> */}
+        </section> */}
+        {/* <Divider style={{width: '80%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.2)', marginTop: '55px'}} /> */}
+      </div>
 
    
 

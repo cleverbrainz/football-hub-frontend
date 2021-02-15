@@ -19,7 +19,8 @@ const SwitchLanguageFab = (props) => {
       height: '40px',
       position: 'fixed',
       right: '2%',
-      bottom: '2%'
+      bottom: '2%',
+      zIndex: '1000'
     },
   }))
   const classes = useStyles()
