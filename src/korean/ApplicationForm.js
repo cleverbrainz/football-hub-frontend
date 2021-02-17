@@ -1,299 +1,435 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'
-import {
-  Typography,
-  Grid,
-  Fab,
-  Box,
-  Switch,
-  Card,
-  CardActions,
-  CardContent,
-  Button,
-  InputAdornment,
-  FormControl,
-  Input,
-  FormControlLabel,
-  Radio
-} from "@material-ui/core";
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import EmailSharpIcon from '@material-ui/icons/EmailSharp';
+import PropTypes from 'prop-types';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import Check from '@material-ui/icons/Check';
+import PersonSharpIcon from '@material-ui/icons/PersonSharp';
+import HistorySharpIcon from '@material-ui/icons/HistorySharp';
+import DirectionsRunSharpIcon from '@material-ui/icons/DirectionsRunSharp';
+import StepConnector from '@material-ui/core/StepConnector';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Box from '@material-ui/core/Box';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 
 
+const ColorlibConnector = withStyles({
+  alternativeLabel: {
+    top: 22,
+  },
+  active: {
+    '& $line': {
+      backgroundColor: 'orange',
+    },
+  },
+  completed: {
+    '& $line': {
+      backgroundColor: 'orange',
+    },
+  },
+  line: {
+    height: 3,
+    border: 0,
+    backgroundColor: '#eaeaf0',
+    borderRadius: 1,
+  },
+})(StepConnector);
 
-const ApplicationForm = ({ locale }) => {
-  const [forgottenPassword, setForgottenPassword] = useState(false)
-  const [registrationOrLogin, setRegistrationOrLogin] = useState('login')
-  const [registerDetails, setRegisterDetails] = useState({
-    category: 'player'
-  })
+const useColorlibStepIconStyles = makeStyles({
+  root: {
+    backgroundColor: '#ccc',
+    zIndex: 1,
+    color: '#fff',
+    width: 37,
+    height: 37,
+    display: 'flex',
+    borderRadius: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  active: {
+    backgroundColor: 'orange',
+    boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
+  },
+  completed: {
+    backgroundColor: 'orange',
+  },
+  icon: {
+    fontSize: '20px'
+  }
+});
 
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      width: '100vw',
-      height: '100vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      ...(registrationOrLogin !== 'login' && {
-        paddingTop: '90px',
-      }),
-      [theme.breakpoints.up('sm')]: {
-        paddingTop: '0'
-      },
-    },
-    main: {
-      height: '63vh',
-      display: 'flex',
-      width: '85%',
-      flexDirection: 'column',
-      justifyContent: 'space-around',
-      transform: 'translateY(5vh)',
-      [theme.breakpoints.up('sm')]: {
-        height: '54vh',
-        width: 'auto',
-        // textAlign: 'initial',
-      },
+function ColorlibStepIcon(props) {
+  const classes = useColorlibStepIconStyles();
+  const { active, completed } = props;
 
-    },
-    boldText: {
-      color: 'orange',
+  const icons = {
+    1: <PersonSharpIcon className={classes.icon} />,
+    2: <HistorySharpIcon className={classes.icon} />,
+    3: <DirectionsRunSharpIcon className={classes.icon} />,
+  };
 
-      [theme.breakpoints.up('sm')]: {
-        '&:nth-of-type(1)': {
-          transform: 'translate(-75px, -25px)'
-        },
-      },
-    },
-    form: {
-      marginBottom: '20px',
-      [theme.breakpoints.up('sm')]: {
-        '&:nth-of-type(1)': {
-          transform: 'translateX(80px)'
-        },
-      },
-    },
-    inputContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      margin: '15px 0'
-    },
-    link: {
-      fontSize: '15px',
-      textDecoration: 'underline'
-    },
-    button: {
-      display: 'flex',
-      justifyContent: 'center',
-      transform: 'translateX(0)',
-      marginTop: '20px',
-      [theme.breakpoints.up('sm')]: {
-        transform: 'translateX(32px)',
-      },
-    },
-    formFooter: {
-      [theme.breakpoints.up('sm')]: {
-        transform: 'translateX(-30px)'
-      },
-    },
-    radio: {
-      transform: 'translate(0px, 7px)',
-      [theme.breakpoints.up('sm')]: {
-        transform: 'translate(160px, 8px)',
-      },
-    }
+  return (
+    <div
+      className={clsx(classes.root, {
+        [classes.active]: active,
+        [classes.completed]: completed,
+      })}
+    >
+      {icons[String(props.icon)]}
+    </div>
+  );
+}
 
-  }));
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    paddingTop: '110px'
+  },
+  button: {
+    marginRight: theme.spacing(1),
+  },
+  instructions: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
+  title: {
+    fontSize: 22,
+    textAlign: 'center',
+    margin: '10px 0',
+    [theme.breakpoints.up('md')]: {
+      fontSize: 27
+    },
+  },
+  formContainer: {
+    width: '85%',
+    margin: '0 auto',
+    overflow: 'scroll',
+    height: '60vh',
+    paddingBottom: '25px',
+    [theme.breakpoints.up('md')]: {
+      width: '70%',
+    },
+  },
+  label: {
+    fontWeight: 'bold',
+    marginBottom: '3px'
+  },
+  field: {
+    flex: 1,
+    margin: '20px 0',
+    [theme.breakpoints.up('md')]: {
+      margin: '7px 5px'
+    },
 
-  function handleRadioButtonChange() {
-    const { category } = registerDetails
-    if (category === 'parent') {
-      setRegisterDetails({ ...registerDetails, category: 'player' })
-    } else {
-      setRegisterDetails({ ...registerDetails, category: 'parent' })
+  },
+  webfield: {
+    flex: 1,
+    margin: '15px 0',
+    [theme.breakpoints.up('md')]: {
+      margin: '12px 20px '
+    },
+  },
+  videoContainer: {
+    marginTop: '30px',
+    display: 'flex',
+    flexDirection: 'column',
+
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+    },
+  }
+}));
+
+
+
+
+export default function ApplicationForm() {
+  const classes = useStyles();
+  const [activeStep, setActiveStep] = useState(2);
+  const [videoSource, setVideoSource] = useState('https://www.youtube.com/embed/HmWpssuh_9A?rel=0')
+  const steps = getSteps();
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
+
+  function getSteps() {
+    return ['Player Information', 'Football History', 'Challenges'];
+  }
+
+  function getStepContent(step) {
+    switch (step) {
+      case 0:
+        return 'Select campaign settings...';
+      case 1:
+        return secondPage;
+      case 2:
+        return thirdPage;
+      default:
+        return 'Unknown step';
     }
   }
 
-  const classes = useStyles()
+  const videoLinks = [
+    {
+      title: '#1',
+      src: 'https://www.youtube.com/embed/HmWpssuh_9A?rel=0'
+    },
+    {
+      title: '#2',
+      src: 'https://www.youtube.com/embed/1OWOrbmvUhc?rel=0'
+    },
+    {
+      title: '#3',
+      src: 'https://www.youtube.com/embed/Q-hR_gNElo0?rel=0'
+    },
+
+  ]
+
+  const secondPage = (
+    <>
+      <div class="field">
+
+        <div class="field-body">
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Current Club</label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="text" placeholder="Current Club" />
+
+            </p>
+          </div>
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label > <span style={{ color: 'red' }}>*</span> Current Coaching School </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="email" placeholder="Current Coaching School" />
+
+            </p>
+          </div>
+        </div>
+
+        <div class="field-body">
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label >Previous Clubs </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="text" placeholder="Previous Clubs " />
+
+            </p>
+          </div>
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label >Previous Trials Attended </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="email" placeholder="Previous Trials Attended " />
+
+            </p>
+          </div>
+        </div>
+
+
+        <div class="field-body">
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label >Web URL of Video Footage</label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="text" placeholder="Web URL of Video Footage" />
+
+            </p>
+          </div>
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label > <span style={{ color: 'red' }}>*</span> Social Media Link </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="email" placeholder="Social Media Link " />
+
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="field">
+        <div class="field-body">
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Write about yourself  </label>
+              <p style={{ fontWeight: 'initial' }} class="help"> Tell us more about your experiences, including achievements and goals </p>
+            </div>
+
+            <div class="control">
+
+              <textarea style={{ minHeight: '15rem' }} class="textarea" placeholder="Write a short description about yourself "></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+
+  const thirdPage = (
+    <>
+      <Typography component='div' >
+        <Box
+          fontSize={20}
+          fontWeight="fontWeightBold" m={0}>
+          Complete the following challenges
+        </Box>
+        <Box
+          fontSize={16}
+          fontWeight="fontWeightRegular" m={0}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. In at pellentesque purus, at euismod ligula.
+        </Box>
+      </Typography>
+
+      <section className={classes.videoContainer}>
+        <div>
+          <iframe title='video' 
+          width="480" 
+          height="245" 
+          src={videoSource} 
+          frameborder="0" 
+          allow="accelerometer; 
+          autoplay; 
+          clipboard-write; 
+          encrypted-media; 
+          gyroscope; 
+          picture-in-picture" allowfullscreen>
+            
+          </iframe>
+          
+          <Breadcrumbs aria-label="breadcrumb">
+         {/* <Typography> Demonstration Videos: </Typography>  */}
+            {videoLinks.map(el => {
+              return (
+                <Link
+                  style={{ color: videoSource === el.src ? 'blue' : 'initial' }}
+                  onClick={() => setVideoSource(el.src)}
+                  > 
+                  {el.title} 
+                </Link>
+              )
+            })}
+          </Breadcrumbs>
+        </div>
+
+
+
+        <div style={{ flex: 1 }}>
+          <div className={classes.webfield}>
+            <div className={classes.label}>
+              <label > Challenge #1 Link </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="text" placeholder="Web URL of Video Footage" />
+            </p>
+          </div>
+          <div className={classes.webfield}>
+            <div className={classes.label}>
+              <label > Challenge #2 Link </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="text" placeholder="Web URL of Video Footage" />
+            </p>
+          </div>
+          <div className={classes.webfield}>
+            <div className={classes.label}>
+              <label > Challenge #3 Link </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="text" placeholder="Web URL of Video Footage" />
+            </p>
+          </div>
+        </div>
+
+      </section>
+
+    </>
+  )
 
   return (
     <div className={classes.root}>
-      <main className={classes.main}>
-        <Typography component='div' >
-          <Box
-            className={classes.boldText}
-            fontSize={20} fontWeight="fontWeightBold" m={0}>
-            Indulge Benfica Camp: {registrationOrLogin === 'login' ? 'Sign In' : 'Create an Account'}
-          </Box>
-          <Box
-            className={classes.boldText}
-            fontSize={16} fontWeight="fontWeightBold" m={0}>
-            {registrationOrLogin === 'login' ? 'Already have an account?' : 'Not a registered player yet?'}
-          </Box>
-          <Box
-            fontSize={15} fontWeight="fontWeightRegular" m={0}>
-            Enter your {registrationOrLogin === 'login' ?
-              'email address and password (both are case-sensitive).' :
-              'details to create your account (fields are case-sensitive).'}
-          </Box>
-        </Typography>
+      <Typography component='div' >
+        <Box
+          className={classes.title}
+          fontWeight="fontWeightBold" m={0}>
+          Project Football Korea: Application Form
+        </Box>
+      </Typography>
 
+      <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
 
-
-        <form className={classes.form} action="">
-
-          {(!forgottenPassword && registrationOrLogin !== 'login') && (
-            <>
-              <FormControlLabel
-                checked={registerDetails.category === 'parent'}
-                onClick={handleRadioButtonChange}
-                className={classes.radio}
-                value="parent" control={<Radio />}
-                label="I am a parent registering for my child" />
-
-              {registerDetails.category === 'parent' &&
-                <div class="field" className={classes.inputContainer}>
-                  <p
-                    style={{ alignSelf: 'flex-end' }}
-                    class="control" >
-                    <span
-                      style={{ color: 'red' }}> *  </span> Parent Name:
-          <input
-                      class='input'
-                      style={{
-                        marginLeft: 10,
-                        transform: 'translateY(2px)',
-                        width: '350px'
-                      }}
-                      type="text" />
-                  </p>
-                </div>
-              }
-
-
-              <div class="field" className={classes.inputContainer}>
-                <p
-                  style={{ alignSelf: 'flex-end' }}
-                  class="control" >
-                  <span
-                    style={{ color: 'red' }}> *  </span> Player Name:
-              <input
-                    class='input'
-                    style={{
-                      marginLeft: 10,
-                      transform: 'translateY(2px)',
-                      width: '350px'
-                    }}
-                    type="text" />
-                </p>
-              </div>
-            </>
-          )}
-
-          <div class="field" className={classes.inputContainer}>
-            <p
-              style={{ alignSelf: 'flex-end' }}
-              class="control" >
-              <span
-                style={{ color: 'red' }}> *  </span> Email Address:
-              <input class='input'
-                style={{
-                  marginLeft: 10,
-                  transform: 'translateY(2px)',
-                  width: '350px'
-                }}
-                type="email" />
-            </p>
-          </div>
-
-          {(!forgottenPassword &&
-            <>
-              <div class="field" className={classes.inputContainer}>
-                <p
-                  style={{ alignSelf: 'flex-end' }}
-                  class="control" >
-                  <span
-                    style={{ color: 'red' }}> *  </span> Password:
-              <input
-                    class='input'
-                    style={{
-                      marginLeft: 10,
-                      transform: 'translateY(2px)',
-                      width: '350px'
-                    }}
-                    type="password" />
-                </p>
-              </div>
-
-              {registrationOrLogin !== 'login' && (
-                <div class="field" className={classes.inputContainer}>
-                  <p
-                    style={{ alignSelf: 'flex-end' }}
-                    class="control" >
-                    <span
-                      style={{ color: 'red' }}> *  </span> Confirm Password:
-              <input
-                      class='input'
-                      style={{
-                        marginLeft: 10,
-                        transform: 'translateY(2px)',
-                        width: '350px'
-                      }}
-                      type="password" />
-                  </p>
-                </div>
-              )}
-
-            </>
-          )}
-
-          <div className={classes.button}>
-            <Button
-              variant="outlined"
-              color="primary"
-            // onClick={() => console.log(registerDetails.category)}
-            // onClick={() => history.push('/apply')}
-            // endIcon={<ArrowForwardIcon />}
-            >
-              {!forgottenPassword ? registrationOrLogin === 'login' ? 'Sign In' : 'Create Account' : 'Reset Password'}
+      <div>
+        {activeStep === steps.length ? (
+          <div>
+            <Typography className={classes.instructions}>
+              All steps completed - you&apos;re finished
+            </Typography>
+            <Button onClick={handleReset} className={classes.button}>
+              Reset
             </Button>
-
-            <Link
-              style={{ margin: '8px 0 0 15px ' }}
-              onClick={() => setForgottenPassword(!forgottenPassword)}
-              className={classes.link}>
-              {!forgottenPassword ? registrationOrLogin === 'login' ? 'Forgot your password?' : '' : 'Sign In'} </Link>
-
           </div>
-
-        </form>
-
-        <Typography
-          className={classes.formFooter}
-          component='div'>
-          <Box
-            style={{ color: 'orange' }}
-            fontSize={16} fontWeight="fontWeightBold" m={0}>
-            {registrationOrLogin === 'login' ? 'Not a registered player yet?' : 'Already have an account?'}
-          </Box>
-          <Box
-            fontSize={14} fontWeight="fontWeightRegular" m={0}>
-            <Link className={classes.link}
-              onClick={() => {
-                setRegistrationOrLogin(registrationOrLogin === 'registration' ? 'login' : 'registration')
-                registrationOrLogin === 'login' && setForgottenPassword(false)
-                }}>
-              {registrationOrLogin === 'login' ? 'Create an account' : 'Sign in'}</Link> to
-         continue your application for the Indulge Benfica Camp.
-          </Box>
-        </Typography>
-
-      </main>
+        ) : (
 
 
+            <div className={classes.formContainer}>
+              <Typography className={classes.instructions}>
+                {getStepContent(activeStep)}
+              </Typography>
+              <div style={{ textAlign: 'end' }}>
+
+
+                <Button
+                  style={{ display: activeStep === 0 ? 'none' : 'initial' }}
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  className={classes.button}>
+                  Back
+              </Button>
+
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleNext}
+                  className={classes.button}
+                  endIcon={<ArrowForwardIcon />}>
+
+                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                </Button>
+              </div>
+            </div>
+          )}
+      </div>
     </div>
   );
-};
-
-export default ApplicationForm;
+}

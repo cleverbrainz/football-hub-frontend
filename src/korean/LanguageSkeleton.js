@@ -2,11 +2,11 @@ const languages = {
   en: {
 
     marketingPage: {
-      mainTitle: 'Apply for the Indulge Benfica Camp',
-      headerMain: 'Main header goes here',
-      headerParagraph: `Short description of what it is goes here. Short description of what it is goes here. 
-      Short description of what it is goes here. Short description of what it is goes here.Short description of what it is goes here. 
-      Short description of what it is goes here.`,
+      mainTitle: 'Project Football Korea',
+      headerMain: 'What is Project Football Korea?',
+      headerParagraph: `Indulge football has created the perfect expereince for football players aged between 15-18 to experience
+      a gret methodology from the world famous and award-winning Benfica FC Academy. Benfica will be selecting players from each age grou[ for an
+      all-expenses paid 2 week professional trial at the Benfica Campus in Portugal.`,
       headerList: 'Reason to apply goes in this bullet point',
       subSectionHeaders: ['FEATURES', 'All you need to know about our features', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'],
       subSectionCards: [
@@ -32,14 +32,6 @@ const languages = {
         },
         {
           title: 'Card 6',
-          paragraph: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-        },
-        {
-          title: 'Card 7',
-          paragraph: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-        },
-        {
-          title: 'Card 8',
           paragraph: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
         }
       ],
@@ -76,14 +68,6 @@ const languages = {
       headerList: '안녕하세요',
       subSectionHeaders: ['안녕하세요', '안녕하세요', '안녕하세요'],
       subSectionCards: [
-        {
-          title: '안녕하세요',
-          paragraph: '안녕하세요'
-        },
-        {
-          title: '안녕하세요',
-          paragraph: '안녕하세요'
-        },
         {
           title: '안녕하세요',
           paragraph: '안녕하세요'

@@ -8,6 +8,7 @@ import Marketing from './Marketing'
 import ApplicationForm from './ApplicationForm'
 import SwitchLanguageFab from './SwitchLanguageFab'
 import ApplicationProcessFlow from './ApplicationProcessFlow'
+import UserAuthForm from './UserAuthForm'
 import HomeNav from '../components/Navbars/HomeNav'
 
 
@@ -26,8 +27,16 @@ const RouteContainer = (props) => {
         locale === 'en' ? setLocale('ko') : setLocale('en')
       }} />
     <Switch>
+    
     <Route exact path="/apply/success=true" component={ApplicationProcessFlow} /> 
     <Route exact path="/apply" component={ApplicationForm} />
+    <Route exact path="/user-account"
+        render={(props) => (
+          <UserAuthForm
+            {...props}
+            locale={locale} />
+        )} />
+
       <Route exact path="/"
         render={(props) => (
           <Marketing
