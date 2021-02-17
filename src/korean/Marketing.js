@@ -38,17 +38,35 @@ const useStyles = makeStyles((theme) => ({
       width: '80%',
     },
   },
+  title: {
+    margin: '40px'
+  },
   jumbotron: {
-    minHeight: '55vh',
-    margin: '55px 0',
+    minHeight: '50vh',
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
-    [theme.breakpoints.up('md')]: {
-      flexDirection: 'row'
+    '&:nth-of-type(2)': {
+      margin: '20px 0',
+     
     },
+    '&:nth-of-type(3)': {
+      margin: '0',
+      flexDirection: 'column-reverse'
+    },
+    // '&:nth-of-type(2)': {
+    //   flexDirection: 'column-reverse'
+    // },
+
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+      '&:nth-of-type(3)': {
+        flexDirection: 'row'
+      },
+    },
+    
   },
   media: {
     width: '80%',
@@ -61,48 +79,87 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-around',
-    height: '55vh',
+    height: '50vh',
     [theme.breakpoints.up('md')]: {
       width: '45%',
     },
+    textAlign: 'initial'
   },
   list: {
-    margin: '13px 0',
+    margin: '5px 0',
     listStyleType: 'circle'
   },
   subsection: {
     width: '100%',
-    minHeight: '70vh',
+    minHeight: '75vh',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     textAlign: 'center',
     marginBottom: 40,
+    '&:nth-of-type(1)': {
+      minHeight: '60vh',
+    },
+    
     [theme.breakpoints.up('md')]: {
       width: '80%',
+      '&:nth-of-type(1)': {
+        minHeight: '75vh',
+      },
     },
   },
   cardContainer: {
     display: 'flex',
+    flexWrap: 'nowrap',
+    width: '100%',
+    overflow: 'scroll',
+    padding: '0 20px',
     flex: 1,
-    flexWrap: 'wrap',
-    height: '85%',
-    justifyContent: 'space-around',
-    alignContent: 'space-evenly'
+    alignItems: 'center',
+    [theme.breakpoints.up('md')]: {
+      alignContent: 'space-evenly',
+      flexWrap: 'wrap',
+      height: '100%',
+      justifyContent: 'space-around',
+    },
   },
   card: {
-    minWidth: 220,
-    width: '23%'
+    minWidth: 320,
+    width: '80%',
+    margin: '0 15px',
+    minHeight: 250,
+    backgroundColor: '#f1f1f1',
+    textAlign: 'left',
+    [theme.breakpoints.up('md')]: {
+      width: '30%',
+      margin: '0',
+      minHeight: 180,
+      minWidth: 220,
+    },
   },
   campCardContainer: {
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'space-around',
+    alignItems: 'center',
     width: '100%',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+    },
   },
   campCard: {
-    height: '35vh',
-    width: '30%',
-    position: 'relative'
+    height: '30vh',
+    width: '80%',
+    position: 'relative',
+    margin: '20px 0',
+    [theme.breakpoints.up('sm')]: {
+      width: '50%',
+    },
+    [theme.breakpoints.up('md')]: {
+      width: '30%',
+
+    },
+    
   },
   campCardTextContainer: {
     height: '80%'
@@ -116,6 +173,16 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     bottom: '4%',
     right: '3%'
+
+  },
+  campSubText: {
+    width: '80%', 
+    margin: '10px auto 40px auto',
+    textAlign: 'initial',
+    [theme.breakpoints.up('md')]: {
+      width: '90%',
+      textAlign: 'center',
+    },
 
   }
 }));
@@ -141,7 +208,9 @@ const Marketing = (props) => {
   return (
     <div className={classes.root}>
       <main className={classes.main}>
-        <Typography component='div' >
+        <Typography 
+        className={classes.title}
+        component='div' >
           <Box
             fontSize={35} fontWeight="fontWeightBold" m={0}>
             {mainTitle}
@@ -160,14 +229,19 @@ const Marketing = (props) => {
               </Box>
             </Typography>
 
-            <p> {headerParagraph} </p>
+            {/* <p> {headerParagraph} </p> */}
 
-            <ul>
-              <li className={classes.list}> {headerList} </li>
-              <li className={classes.list}> {headerList} </li>
-              <li className={classes.list}> {headerList} </li>
-              <li className={classes.list}> {headerList} </li>
-            </ul>
+            <p>
+              Indulge football are proud to host Benfica FC and to welcome them for the very first time
+              to South Korea. We have partnered with Benfica to create Korea's first elite football talent identification
+              camp experience.
+            </p>
+
+            <p>
+              Indulge football has created the perfect expereince for football players aged between 15-18 to experience
+        a gret methodology from the world famous and award-winning Benfica FC Academy. Benfica will be selecting players from each age grou[ for an
+        all-expenses paid 2 week professional trial at the Benfica Campus in Portugal.
+            </p>
           </section>
         </div>
       </main>
@@ -175,14 +249,9 @@ const Marketing = (props) => {
       <section className={classes.subsection}>
         <Typography component='div'>
           <Box
-            style={{ color: 'orange' }}
-            fontSize={14} fontWeight="fontWeightBold" m={0}>
-            {subSectionHeaders[0]}
-          </Box>
-          <Box
             style={{ margin: '10px 0 15px 0' }}
             fontSize={30} fontWeight="fontWeightBold" m={0}>
-            {subSectionHeaders[1]}
+            Why apply to the project?
           </Box>
           <Box
             fontSize={16} fontWeight="fontWeightRegular" m={0}>
@@ -195,11 +264,14 @@ const Marketing = (props) => {
             return (
               <Card className={classes.card}>
                 <CardContent>
-                  <Typography variant="h5" component="h2">
-                    {el.title}
+                  <Typography
+                    style={{ marginBottom: '20px' }}
+                    variant="h6" component="h6">
+                    Be one of the first
                   </Typography>
                   <Typography variant="body2" component="p">
-                    {el.paragraph}
+                    This is the first footballing experience in Korea which guarantees the opportunity for a professional
+                    trial in Portugal with Benfica FC following a successful..
                   </Typography>
                 </CardContent>
                 <CardActions>
@@ -216,11 +288,136 @@ const Marketing = (props) => {
         <Typography style={{ marginBottom: '25px' }} component='div'>
           <Box
             fontSize={30} fontWeight="fontWeightBold" m={0}>
-            {subSectionCampsTitle}
+            About the Camp
+          </Box>
+        </Typography>
+
+        <div className={classes.jumbotron}>
+        
+          <section className={classes.jumbotronText}>
+        
+            <Typography component='div' >
+              <Box
+                fontSize={20} fontWeight="fontWeightBold" m={0}>
+                What can you expect?
+              </Box>
+
+              <ul>
+                <li className={classes.list}> 4 nights' accommodation in a 4* hotel. Choice of single or twin room </li>
+                <li className={classes.list}> Full board menu designed for professional athletes </li>
+                <li className={classes.list}> At least 4 hours of football coaching a day </li>
+                <li className={classes.list}> 3 football education seminars across the camp </li>
+                <li className={classes.list}> Official Benfica FC & Indulge Football training kit including tracksuit, wet top, and 2 x shirt, shorts and socks </li>
+                <li className={classes.list}> Individual player feedback reports </li>
+                <li className={classes.list}> Benfica FC completion certificate</li>
+                <li className={classes.list}> Individual player performance tracking technology </li>
+                <li className={classes.list}> Transfers between hotel and training ground </li>
+                <li className={classes.list}> COVID-19 testing </li>
+                <li className={classes.list}> Sports insurance </li>
+              </ul>
+            </Typography>
+          </section>
+          <img className={classes.media}
+            src="https://images.unsplash.com/photo-1493662404096-9ecc84ebba6b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2400&q=80" alt="" />
+        </div>
+      </section>
+
+      <section className={classes.subsection}>
+        <Typography style={{ marginBottom: '25px' }} component='div'>
+          <Box
+            fontSize={30} fontWeight="fontWeightBold" m={0}>
+            About Benfica FC
+          </Box>
+        </Typography>
+
+        <div className={classes.jumbotron}>
+          
+        <img className={classes.media}
+            src="https://images.unsplash.com/photo-1509023464722-18d996393ca8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80" alt="" />
+          <section className={classes.jumbotronText} >
+            <Typography component='div' >
+              <Box
+                fontSize={20} fontWeight="fontWeightBold" m={0}>
+                The Methodology
+              </Box>
+
+              <p>
+                The methodology applied in Project Football will be the same that Sport
+  Lisboa e Benfica uses in the training of its athletes, and which guarantees the
+  sustainability of its professional squads. Through specific training that Sport Lisboa e
+  Benfica will provide, you will be able to develop your technical, tactical, physical and
+  psychological skills. Aspects like, running technique, relationship with the ball, tactical
+  circulation and attacking and defensive game principles will be worked on a daily basis
+  in both individual and collective contexts.
+            </p>
+
+              <p>
+                The training schedules will be developed by SL Benfica's coaches, accredited by
+    the Federação Portuguesa de Futebol (FPF) and UEFA. There will be 3 categories
+    (U16 to U18), each having specific technical-tactical training. In addition, you will
+    also be observed and evaluated by Sport Lisboa e Benfica's Technical and Scouting
+    Departments.
+            </p>
+            </Typography>
+          </section>
+          
+        </div>
+
+        <div className={classes.jumbotron}>
+       
+
+          <section className={classes.jumbotronText}>
+            <Typography component='div' >
+              <Box
+                fontSize={20} fontWeight="fontWeightBold" m={0}>
+                The Coaches
+              </Box>
+
+              <p>
+                Accredited by the Portuguese Football Federation (FPF) and UEFA, the SL Benfica
+  coaches are decisive elements in the development of the Club's young athletes. It will
+  be them following your evolution during Project Football. The technical director in
+  charge will be Pedro Marques:
+            </p>
+
+              <p>
+                UEFA A Licence
+  Graduated in Physical Education and Sports Science at the Faculty of Human Kinetics
+  in Lisbon. Post-Graduation in High-Performance Training at the Faculty of Human Kinetics in
+  Lisbon. Technical Director of Sport Lisboa e Benfica's Youth Football.
+            </p>
+            </Typography>
+          </section>
+         
+          <img className={classes.media}
+            src="https://images.unsplash.com/photo-1431440869543-efaf3388c585?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80" alt="" />
+
+        </div>
+        
+      </section>
+
+      <section className={classes.subsection}>
+        <Typography style={{ marginBottom: '25px' }} component='div'>
+          <Box
+            fontSize={30} fontWeight="fontWeightBold" m={0}>
+            How to apply?
+          </Box>
+          <Box
+        className={classes.campSubText}
+            fontSize={16} fontWeight="fontWeightRegular" m={0}>
+            All players will need to apply for this experience via ftballer.com. You will create your own player profile
+            and will asked to complete several football related challenges as part of your assessment. Your profile will then
+            be assessed by the UEFA coaches from EPL Academies and senior staff from NYSES. Successful applicats will then be
+            invited into camp.
+          </Box>
+          <Box
+            fontSize={16} fontWeight="fontWeightBold" m={0}>
+            Select your age group and apply
           </Box>
         </Typography>
 
         <div className={classes.campCardContainer}>
+
           {subSectionCampsCards.map(el => {
             return (
               <Card variant="outlined" className={classes.campCard}>

@@ -11,7 +11,11 @@ const styles = {
     width: '100%',
     backgroundColor: 'transparent',
     transition: '0.3s',
-    padding: window.innerWidth > 600 ? '0 40px' : 0
+    padding: window.innerWidth > 600 ? '0 40px' : 0,
+    ...(localStorage.version === 'South Korea' && {
+      boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.1), 0px 1px 10px 0px rgba(0,0,0,0.12)',
+      backgroundColor: 'white'
+    })
   },
   subContainer: {
     height: '100%',
@@ -38,17 +42,19 @@ function HomeNav() {
   useEffect(() => {
     const nav = document.querySelector('nav')
 
-    window.addEventListener('scroll', () => {
-      setScrollPosition(window.pageYOffset)
-
-      if (scrollPosition > 340) {
-        nav.style.backgroundColor = 'white'
-        nav.style.boxShadow = '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.1), 0px 1px 10px 0px rgba(0,0,0,0.12)'
-      } else {
-        nav.style.backgroundColor = 'transparent'
-        nav.style.boxShadow = ''
-      }
-    })
+    if (localStorage.version === 'United Kingdom') {
+      window.addEventListener('scroll', () => {
+        setScrollPosition(window.pageYOffset)
+  
+        if (scrollPosition > 340) {
+          nav.style.backgroundColor = 'white'
+          nav.style.boxShadow = '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.1), 0px 1px 10px 0px rgba(0,0,0,0.12)'
+        } else {
+          nav.style.backgroundColor = 'transparent'
+          nav.style.boxShadow = ''
+        }
+      })
+    }
   })
 
   const handleBurgerMenu = () => {
