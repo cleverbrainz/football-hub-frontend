@@ -16,11 +16,13 @@ function isLoggedIn() {
   const decodedToken = jwt.decode(localStorage.token)
 
   if (decodedToken.exp * 1000 < Date.now()) {
-    localStorage.removeItem('token')
-    localStorage.removeItem('category')
-    return false
+    firebaseApp.auth().currentUser.getIdToken().then(token => {
+      localStorage.setItem('token', token)
+    })
+    // localStorage.removeItem('token')
+    // localStorage.removeItem('category')
   }
-  return (localStorage.token)
+  return true
 }
 
 function getToken() {

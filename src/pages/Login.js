@@ -75,8 +75,6 @@ export default function Login({ history, location }) {
     const { email, password } = loginFields
     firebaseApp.auth().signInWithEmailAndPassword(email, password)
       .then(data => {
-        console.log(data.user.getIdToken())
-        auth.setToken(data.user.getIdToken())
         axios.get(`/users/${data.user.uid}`)
           .then(res => {
             console.log(res.data)
@@ -139,12 +137,13 @@ export default function Login({ history, location }) {
   //   }
   // }
   const localCatCheck = (localStorage.getItem('category') !== null)
-  console.log(localCatCheck)
+  const loginCheck = auth.isLoggedIn()
+  console.log(loginCheck, localCatCheck)
 
   if (!user) return null
   return (
     <>
-          { (auth.isLoggedIn() && localCatCheck) ?
+          { (loginCheck && localCatCheck) ?
           (localStorage.getItem('category') === 'company' ? 
           <Redirect to={{ pathname: "/tester" }} /> : 
           localStorage.getItem('category') === 'coach' ? 

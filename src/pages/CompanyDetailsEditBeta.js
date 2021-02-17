@@ -324,7 +324,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
                     <div className={classes.wrapper}>
                       <a target="_blank" rel="noopener noreferrer" href={companyInfo.documents[item]}><Button variant='outlined'
                         color="primary" disabled={dataChange[item]}> View current uploaded certificate</Button></a>
-                        { companyInfo.verification[`${item.split('_')[1]}DocumentCheck`] ? <div className={classes.verify}><CheckIcon /><p>Verified</p></div> : companyInfo.verificationId.companyInfo || pending ? <div className={classes.verify}><HourglassEmptyIcon /><p>Pending</p></div> : <div className={classes.verify}><CrossIcon /><p>Rejected</p></div> }
+                        { companyInfo.verification[`${item.split('_')[1]}DocumentCheck`] ? <div className={classes.verify}><CheckIcon /><p>Verified</p></div> : companyInfo.verificationId?.companyInfo || pending ? <div className={classes.verify}><HourglassEmptyIcon /><p>Pending</p></div> : <div className={classes.verify}><CrossIcon /><p>Rejected</p></div> }
                       {dataChange[item] && <CircularProgress size={24} className={classes.buttonProgress} />}
                     </div> :
                     <p>no document uploaded</p>
