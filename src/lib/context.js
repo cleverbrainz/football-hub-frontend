@@ -1,4 +1,3 @@
-import { zhCN } from 'date-fns/esm/locale'
 import React, { useEffect, useState, createContext, useMemo } from 'react'
 import auth from './auth'
 import { firebaseApp } from './firebase'
@@ -31,6 +30,7 @@ export const AuthProvider = ({ children }) => {
           });
         });
       }else{
+        console.log('no user')
         setUser({
           'user': null,
           'checked': true

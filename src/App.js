@@ -440,14 +440,24 @@ const App = () => {
     const version = localStorage.version
     if (version) setNavigationRoute(version === 'United Kingdom' ? enRoutes : krRoutes)
 
-    const token = localStorage.token
-    if (token) {
-      const decodedToken = jwt.decode(token)
-      if (!decodedToken || (decodedToken.exp * 1000) < Date.now()) {
-        auth.logOut()
-        window.location.href = '/'
-      }
-    } 
+
+    // if (!auth.isLoggedIn()) {
+    //   auth.logOut()
+    //   window.location.href = '/'
+    // }
+
+    // const token = localStorage.token
+    // if (token) {
+    //   const decodedToken = jwt.decode(token)
+    //   if (!decodedToken) {
+    //     console.log('app logout no Decoded Token')
+        
+    //   } else if (decodedToken.exp * 1000 < Date.now()) {
+    //     console.log('app logout expired Token')
+    //     auth.logOut()
+    //     window.location.href = '/'
+    //   }
+    // }
   }, [])
 
 

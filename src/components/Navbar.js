@@ -15,11 +15,13 @@ function Navbar() {
   useEffect(() => {
     setPathName(location.pathname)
     console.log((authUser.user))
+    if (!authUser.user.checked) return
+    console.log('checked Nav')
     setLoggedIn(authUser.user !== null ? authUser.user.user !== null ? true : false : false)
   }, [location.pathname, authUser.user])
 
   console.log('nav', loggedIn)
-
+  if (!authUser.user.checked) return null
   return (
     <>
       {pathName === '/' ? (
