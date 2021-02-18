@@ -30,8 +30,7 @@ function getToken() {
 }
 
 function logOut() {
-  localStorage.removeItem('token')
-  localStorage.removeItem('category')
+  localStorage.clear()
   return firebaseApp.auth().signOut()
 }
 
