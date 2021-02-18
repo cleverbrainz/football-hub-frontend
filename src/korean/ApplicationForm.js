@@ -16,6 +16,7 @@ import Link from '@material-ui/core/Link';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Box from '@material-ui/core/Box';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
 
 
 const ColorlibConnector = withStyles({
@@ -118,7 +119,8 @@ const useStyles = makeStyles((theme) => ({
   },
   label: {
     fontWeight: 'bold',
-    marginBottom: '3px'
+    marginBottom: '3px',
+    fontSize: '14px'
   },
   field: {
     flex: 1,
@@ -143,6 +145,14 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       flexDirection: 'row',
     },
+  },
+  subHeading: {
+    margin: 0,
+    color: 'orange',
+    [theme.breakpoints.up('md')]: {
+      marginBottom: '10px',
+
+    },
   }
 }));
 
@@ -151,7 +161,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ApplicationForm() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(0);
   const [videoSource, setVideoSource] = useState('https://www.youtube.com/embed/HmWpssuh_9A?rel=0')
   const steps = getSteps();
 
@@ -175,7 +185,7 @@ export default function ApplicationForm() {
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return 'Select campaign settings...';
+        return firstPage;
       case 1:
         return secondPage;
       case 2:
@@ -200,6 +210,161 @@ export default function ApplicationForm() {
     },
 
   ]
+
+  const firstPage = (
+    <>
+      <Typography className={classes.subHeading} component='div' >
+        <Box
+          fontSize={18}
+          fontWeight="fontWeightBold" m={0}>
+          Personal Details
+        </Box>
+      </Typography>
+
+      <div class="field">
+        <div class="field-body">
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Player Full Name </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="text" placeholder="Player Full Name" />
+            </p>
+          </div>
+
+          <div className={classes.field} style={{ flex: 0.4 }}>
+            <div className={classes.label}>
+              <label > <span style={{ color: 'red' }}>*</span> Gender </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="email" placeholder="Gender" />
+            </p>
+          </div>
+
+          <div className={classes.field} style={{ flex: 0.4 }}>
+            <div className={classes.label}>
+              <label > <span style={{ color: 'red' }}>*</span> Date of Birth </label>
+            </div>
+            <p class="control" >
+              <input class="input" type="date" />
+            </p>
+          </div>
+
+
+        </div>
+
+        <div class="field-body">
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Address Line 1 </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="text" placeholder="Address Line 1" />
+            </p>
+          </div>
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label>Address Line 2 </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="text" placeholder="Address Line 2" />
+            </p>
+          </div>
+
+        </div>
+        <div class="field-body" style={{ width: '40%' }}>
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> City </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="text" placeholder="City" />
+            </p>
+          </div>
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Postcode </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="text" placeholder=" Postcode" />
+            </p>
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+      <Typography component='div'
+        className={classes.subHeading} >
+        <Box
+          fontSize={18}
+          fontWeight="fontWeightBold" m={0}>
+          Player Attributes
+        </Box>
+      </Typography>
+
+      <div class="field-body" style={{ width: '70%' }}>
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> Height (cm) </label>
+          </div>
+          <p class="control is-expanded">
+            <input class="input" type="number" min={150} placeholder="Height" />
+          </p>
+        </div>
+
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> Weight (kg) </label>
+          </div>
+          <p class="control is-expanded">
+            <input class="input" type="number" min={50} placeholder="Weight" />
+          </p>
+        </div>
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> Preferred Position </label>
+          </div>
+          <div class="select">
+            <select>
+              <option value="Argentina"> Goalkeeper </option>
+              <option value="Bolivia"> Right Fullback </option>
+              <option value="Bolivia"> Left Fullback </option>
+              <option value="Bolivia"> Center Back</option>
+              <option value="Bolivia"> Defending / Holding Midfielder </option>
+              <option value="Bolivia"> Right Midfielder / Winger </option>
+              <option value="Bolivia"> Left Midfielder / Wingers </option>
+              <option value="Bolivia">Central / Box-to-Box Midfielder </option>
+              <option value="Bolivia"> Attacking Midfielder / Playmaker </option>
+              <option value="Bolivia">Striker </option>
+            </select>
+          </div>
+        </div>
+
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> Preferred Foot </label>
+          </div>
+          <div class="select">
+            <select>
+              <option value="Argentina"> Left </option>
+              <option value="Bolivia"> Right </option>
+              <option value="Bolivia"> Both </option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+
+
+    </>
+  )
 
   const secondPage = (
     <>
@@ -308,29 +473,17 @@ export default function ApplicationForm() {
 
       <section className={classes.videoContainer}>
         <div>
-          <iframe title='video' 
-          width="480" 
-          height="245" 
-          src={videoSource} 
-          frameborder="0" 
-          allow="accelerometer; 
-          autoplay; 
-          clipboard-write; 
-          encrypted-media; 
-          gyroscope; 
-          picture-in-picture" allowfullscreen>
-            
-          </iframe>
-          
+          <iframe title='video' width="480" height="245" src={videoSource} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe>
+
           <Breadcrumbs aria-label="breadcrumb">
-         {/* <Typography> Demonstration Videos: </Typography>  */}
+            {/* <Typography> Demonstration Videos: </Typography>  */}
             {videoLinks.map(el => {
               return (
                 <Link
                   style={{ color: videoSource === el.src ? 'blue' : 'initial' }}
                   onClick={() => setVideoSource(el.src)}
-                  > 
-                  {el.title} 
+                >
+                  {el.title}
                 </Link>
               )
             })}
@@ -415,6 +568,15 @@ export default function ApplicationForm() {
                   onClick={handleBack}
                   className={classes.button}>
                   Back
+              </Button>
+
+              <Button
+                  // onClick={handleBack}
+                  variant="outlined"
+                  color="primary"
+                  className={classes.button}
+                  endIcon={<SaveAltIcon />}>
+                  Save draft
               </Button>
 
                 <Button
