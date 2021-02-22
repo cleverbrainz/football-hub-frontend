@@ -252,6 +252,11 @@ const UserAuthForm = ({ locale }) => {
             <Button
               variant="outlined"
               color="primary"
+              // onClick={!forgottenPassword ? 
+              //   () => handlePassword() : 
+              //   registrationOrLogin === 'login' ? () => handleLogin() :
+              //   () => handleCreateAccount()
+              // }
             // onClick={() => console.log(registerDetails.category)}
             // onClick={() => history.push('/apply')}
             // endIcon={<ArrowForwardIcon />}

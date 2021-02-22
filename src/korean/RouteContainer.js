@@ -10,6 +10,7 @@ import SwitchLanguageFab from './SwitchLanguageFab'
 import ApplicationProcessFlow from './ApplicationProcessFlow'
 import UserAuthForm from './UserAuthForm'
 import HomeNav from '../components/Navbars/HomeNav'
+import ApplicationDashboard from './ApplicationDashboard';
 
 
 const RouteContainer = (props) => {
@@ -43,6 +44,8 @@ const RouteContainer = (props) => {
             {...props}
             locale={locale} />
         )} />
+
+      <Route exact path="/dashboard" component={ApplicationDashboard}/>
 
      
     </Switch>
