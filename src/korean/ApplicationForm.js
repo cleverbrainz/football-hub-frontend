@@ -16,7 +16,10 @@ import Link from '@material-ui/core/Link';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Box from '@material-ui/core/Box';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
+import CloudUploadSharpIcon from '@material-ui/icons/CloudUploadSharp';
+import axios from 'axios'
+import { useStripe } from "@stripe/react-stripe-js";
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -118,7 +121,8 @@ const useStyles = makeStyles((theme) => ({
   },
   label: {
     fontWeight: 'bold',
-    marginBottom: '3px'
+    marginBottom: '3px',
+    fontSize: '14px'
   },
   field: {
     flex: 1,
@@ -143,6 +147,14 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       flexDirection: 'row',
     },
+  },
+  subHeading: {
+    margin: 0,
+    color: 'orange',
+    [theme.breakpoints.up('md')]: {
+      marginBottom: '10px',
+
+    },
   }
 }));
 
@@ -150,32 +162,96 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function ApplicationForm() {
+  const stripe = useStripe()
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(0);
   const [videoSource, setVideoSource] = useState('https://www.youtube.com/embed/HmWpssuh_9A?rel=0')
+  const [applicationDetails, setApplicationDetails] = useState({
+    personal_details: {
+      name: '',
+      gender: '',
+      dob: '',
+      address_line_1: '',
+      address_line_2: '',
+      city: '',
+      postcode: '',
+      residency_certificate: ''
+    },
+    player_attributes: {
+      height: '',
+      weight: '',
+      position: '',
+      preferred_foot: ''
+    },
+    football_history: {
+      current_club: '',
+      current_coaching_school: '',
+      previous_clubs: '',
+      previous_trails_attended: '',
+      highlights_footage_link: '',
+      social_media_link: '',
+      bio_description: ''
+    },
+    challenges: {
+      link_1: '',
+      link_2: '',
+      link_3: '',
+    },
+    ratings: {
+      indulge: 0,
+      application: 0,
+      challenges: 0
+    }
+  })
   const steps = getSteps();
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  const handleNext = async () => {
+    if (activeStep === 2) {
+      let checkout = await axios.post('/korean-application-fee', {})
+      const session = await checkout.data
+
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      })
+
+      if (result.error) {
+        // props.history.push('/checkout')
+      }
+
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
-
   function getSteps() {
     return ['Player Information', 'Football History', 'Challenges'];
+  }
+
+  function handleApplicationChange(e) {
+    const { name, value } = e.target
+
+    Object.keys(applicationDetails).forEach(x => {
+      if (applicationDetails[x].hasOwnProperty(name)) {
+        const y = applicationDetails[x]
+        setApplicationDetails({
+          ...applicationDetails,
+          [x]: {
+            ...y, [name]: value
+          }
+        })
+      }
+    })
   }
 
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return 'Select campaign settings...';
+        return firstPage;
       case 1:
         return secondPage;
       case 2:
@@ -201,6 +277,210 @@ export default function ApplicationForm() {
 
   ]
 
+  const firstPage = (
+    <>
+      <Typography className={classes.subHeading} component='div' >
+        <Box
+          fontSize={18}
+          fontWeight="fontWeightBold" m={0}>
+          Personal Details
+        </Box>
+      </Typography>
+
+      <div class="field">
+        <div class="field-body">
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Player Full Name </label>
+            </div>
+            <p class="control is-expanded">
+              <input class="input" type="text" name='name' placeholder="Player Full Name" />
+            </p>
+          </div>
+
+          <div className={classes.field} style={{ flex: 0.4 }}>
+            <div className={classes.label}>
+              <label > <span style={{ color: 'red' }}>*</span> Gender </label>
+            </div>
+            <div class="select" style={{ width: '100%' }}>
+              <select name='gender' style={{ width: '100%' }}>
+                <option value="male"> Male </option>
+                <option value="female"> Female </option>
+                <option value="custom"> Custom</option>
+              </select>
+            </div>
+          </div>
+
+          <div className={classes.field} style={{ flex: 0.4 }}>
+            <div className={classes.label}>
+              <label > <span style={{ color: 'red' }}>*</span> Date of Birth </label>
+            </div>
+            <p class="control" >
+              <input name='dob' class="input" type="date" />
+            </p>
+          </div>
+
+
+
+
+        </div>
+
+        <div class="field-body">
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Address Line 1 </label>
+            </div>
+            <p class="control is-expanded">
+              <input name='address_line_1' class="input" type="text" placeholder="Address Line 1" />
+            </p>
+          </div>
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label>Address Line 2 </label>
+            </div>
+            <p class="control is-expanded">
+              <input name='address_line_2' class="input" type="text" placeholder="Address Line 2" />
+            </p>
+          </div>
+
+        </div>
+
+        <div class="field-body"
+          style={{ width: '40%' }}
+        >
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> City </label>
+            </div>
+            <p class="control is-expanded">
+              <input name='city' class="input" type="text" placeholder="City" />
+            </p>
+          </div>
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Postcode </label>
+            </div>
+            <p class="control is-expanded">
+              <input name='postcode' class="input" type="text" placeholder=" Postcode" />
+            </p>
+          </div>
+
+
+
+
+        </div>
+
+        <div class="field-body">
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span>
+                Resident Registration / Family Relation Certificate
+               </label>
+            </div>
+            <div class="file has-name">
+              <label class="file-label">
+                <input class="file-input" type="file" name='residency_certificate' />
+                <span class="file-cta">
+                  <span style={{ marginRight: '15px' }} class="file-icon">
+                    <CloudUploadSharpIcon
+                      style={{
+                        fontSize: '23px',
+                        transform: 'translate(-2px, -2px)'
+                      }}
+                    />
+                  </span>
+                  <span class="file-label">
+                    Upload a file...
+                </span>
+                </span>
+                {/* render span file-name when document is uploaded to show file name */}
+                {/* <span class="file-name">
+                  Screen Shot 2017-07-29 at 15.54.25.png
+               </span> */}
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+
+
+      </div>
+
+
+      <Typography component='div'
+        className={classes.subHeading} >
+        <Box
+          fontSize={18}
+          fontWeight="fontWeightBold" m={0}>
+          Player Attributes
+        </Box>
+      </Typography>
+
+      <div class="field-body" style={{ width: '70%' }}>
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> Height (cm) </label>
+          </div>
+          <p class="control is-expanded">
+            <input name='height' class="input" type="number" min={150} placeholder="Height" />
+          </p>
+        </div>
+
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> Weight (kg) </label>
+          </div>
+          <p class="control is-expanded">
+            <input name='weight' class="input" type="number" min={50} placeholder="Weight" />
+          </p>
+        </div>
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> Preferred Position </label>
+          </div>
+          <div class="select">
+            <select name='position'>
+              <option value="goalkeeper"> Goalkeeper </option>
+              <option value="right fullback"> Right Fullback </option>
+              <option value="left fullback"> Left Fullback </option>
+              <option value="center back"> Center Back</option>
+              <option value="defending / holding midfielder"> Defending / Holding Midfielder </option>
+              <option value="right midfielder / winger"> Right Midfielder / Winger </option>
+              <option value="left midfielder / winger"> Left Midfielder / Wingers </option>
+              <option value="central / box-to-box midfielder">Central / Box-to-Box Midfielder </option>
+              <option value="attacking midfielder / playmaker"> Attacking Midfielder / Playmaker </option>
+              <option value="striker">Striker </option>
+            </select>
+          </div>
+        </div>
+
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> Preferred Foot </label>
+          </div>
+          <div class="select">
+            <select name='preferred_foot'>
+              <option value="left"> Left </option>
+              <option value="right"> Right </option>
+              <option value="both"> Both </option>
+            </select>
+          </div>
+        </div>
+
+
+
+      </div>
+
+
+
+    </>
+  )
+
   const secondPage = (
     <>
       <div class="field">
@@ -212,7 +492,7 @@ export default function ApplicationForm() {
               <label> <span style={{ color: 'red' }}>*</span> Current Club</label>
             </div>
             <p class="control is-expanded">
-              <input class="input" type="text" placeholder="Current Club" />
+              <input name='current_club' class="input" type="text" placeholder="Current Club" />
 
             </p>
           </div>
@@ -221,7 +501,7 @@ export default function ApplicationForm() {
               <label > <span style={{ color: 'red' }}>*</span> Current Coaching School </label>
             </div>
             <p class="control is-expanded">
-              <input class="input" type="email" placeholder="Current Coaching School" />
+              <input name='current_coaching_school' class="input" type="email" placeholder="Current Coaching School" />
 
             </p>
           </div>
@@ -233,7 +513,7 @@ export default function ApplicationForm() {
               <label >Previous Clubs </label>
             </div>
             <p class="control is-expanded">
-              <input class="input" type="text" placeholder="Previous Clubs " />
+              <input name='previous_clubs' class="input" type="text" placeholder="Previous Clubs " />
 
             </p>
           </div>
@@ -242,7 +522,7 @@ export default function ApplicationForm() {
               <label >Previous Trials Attended </label>
             </div>
             <p class="control is-expanded">
-              <input class="input" type="email" placeholder="Previous Trials Attended " />
+              <input name='previous_trails_attended' class="input" type="email" placeholder="Previous Trials Attended " />
 
             </p>
           </div>
@@ -255,7 +535,7 @@ export default function ApplicationForm() {
               <label >Web URL of Video Footage</label>
             </div>
             <p class="control is-expanded">
-              <input class="input" type="text" placeholder="Web URL of Video Footage" />
+              <input name='highlights_footage_link' class="input" type="text" placeholder="Web URL of Video Footage" />
 
             </p>
           </div>
@@ -264,7 +544,7 @@ export default function ApplicationForm() {
               <label > <span style={{ color: 'red' }}>*</span> Social Media Link </label>
             </div>
             <p class="control is-expanded">
-              <input class="input" type="email" placeholder="Social Media Link " />
+              <input name='social_media_link' class="input" type="email" placeholder="Social Media Link " />
 
             </p>
           </div>
@@ -283,7 +563,7 @@ export default function ApplicationForm() {
 
             <div class="control">
 
-              <textarea style={{ minHeight: '15rem' }} class="textarea" placeholder="Write a short description about yourself "></textarea>
+              <textarea name='bio_description' style={{ minHeight: '15rem' }} class="textarea" placeholder="Write a short description about yourself "></textarea>
             </div>
           </div>
         </div>
@@ -308,29 +588,17 @@ export default function ApplicationForm() {
 
       <section className={classes.videoContainer}>
         <div>
-          <iframe title='video' 
-          width="480" 
-          height="245" 
-          src={videoSource} 
-          frameborder="0" 
-          allow="accelerometer; 
-          autoplay; 
-          clipboard-write; 
-          encrypted-media; 
-          gyroscope; 
-          picture-in-picture" allowfullscreen>
-            
-          </iframe>
-          
+          <iframe title='video' width="480" height="245" src={videoSource} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe>
+
           <Breadcrumbs aria-label="breadcrumb">
-         {/* <Typography> Demonstration Videos: </Typography>  */}
+            {/* <Typography> Demonstration Videos: </Typography>  */}
             {videoLinks.map(el => {
               return (
                 <Link
                   style={{ color: videoSource === el.src ? 'blue' : 'initial' }}
                   onClick={() => setVideoSource(el.src)}
-                  > 
-                  {el.title} 
+                >
+                  {el.title}
                 </Link>
               )
             })}
@@ -345,7 +613,7 @@ export default function ApplicationForm() {
               <label > Challenge #1 Link </label>
             </div>
             <p class="control is-expanded">
-              <input class="input" type="text" placeholder="Web URL of Video Footage" />
+              <input name='link_1' class="input" type="text" placeholder="Web URL of Video Footage" />
             </p>
           </div>
           <div className={classes.webfield}>
@@ -353,7 +621,7 @@ export default function ApplicationForm() {
               <label > Challenge #2 Link </label>
             </div>
             <p class="control is-expanded">
-              <input class="input" type="text" placeholder="Web URL of Video Footage" />
+              <input name='link_2' class="input" type="text" placeholder="Web URL of Video Footage" />
             </p>
           </div>
           <div className={classes.webfield}>
@@ -361,7 +629,7 @@ export default function ApplicationForm() {
               <label > Challenge #3 Link </label>
             </div>
             <p class="control is-expanded">
-              <input class="input" type="text" placeholder="Web URL of Video Footage" />
+              <input name='link_3' class="input" type="text" placeholder="Web URL of Video Footage" />
             </p>
           </div>
         </div>
@@ -389,47 +657,45 @@ export default function ApplicationForm() {
         ))}
       </Stepper>
 
-      <div>
-        {activeStep === steps.length ? (
-          <div>
-            <Typography className={classes.instructions}>
-              All steps completed - you&apos;re finished
-            </Typography>
-            <Button onClick={handleReset} className={classes.button}>
-              Reset
-            </Button>
-          </div>
-        ) : (
+      <div className={classes.formContainer}>
+        <Typography className={classes.instructions}>
+          <form onChange={(e) => handleApplicationChange(e)} action="">
+            {getStepContent(activeStep)}
+          </form>
+
+        </Typography>
+        <div style={{ textAlign: 'end' }}>
 
 
-            <div className={classes.formContainer}>
-              <Typography className={classes.instructions}>
-                {getStepContent(activeStep)}
-              </Typography>
-              <div style={{ textAlign: 'end' }}>
-
-
-                <Button
-                  style={{ display: activeStep === 0 ? 'none' : 'initial' }}
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  className={classes.button}>
-                  Back
+          <Button
+            style={{ display: activeStep === 0 ? 'none' : 'initial' }}
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            className={classes.button}>
+            Back
               </Button>
 
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleNext}
-                  className={classes.button}
-                  endIcon={<ArrowForwardIcon />}>
+          <Button
+            // onClick={handleBack}
+            variant="outlined"
+            color="primary"
+            className={classes.button}
+            endIcon={<SaveAltIcon />}>
+            Save draft
+              </Button>
 
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                </Button>
-              </div>
-            </div>
-          )}
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleNext}
+            className={classes.button}
+            endIcon={<ArrowForwardIcon />}>
+
+            {activeStep === steps.length - 1 ? 'Submit & Pay' : 'Next'}
+          </Button>
+        </div>
       </div>
+
     </div>
   );
 }
