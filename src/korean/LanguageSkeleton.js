@@ -4,35 +4,35 @@ const languages = {
     marketingPage: {
       mainTitle: 'Project Football Korea',
       headerMain: 'What is Project Football Korea?',
-      headerParagraph: `Indulge football has created the perfect expereince for football players aged between 15-18 to experience
-      a gret methodology from the world famous and award-winning Benfica FC Academy. Benfica will be selecting players from each age grou[ for an
-      all-expenses paid 2 week professional trial at the Benfica Campus in Portugal.`,
+      headerParagraph: `This is the first time Benfica FC will be in South Korea and we wanted to bring their award-winning academy to train and identify the new football superstar!  
+      Project Football Korea is a football talent identification experience like no other.  This is the ultimate football camp for players aged between 15-18 to train and learn from the world-famous Benfica FC. `,
       headerList: 'Reason to apply goes in this bullet point',
       subSectionHeaders: ['FEATURES', 'All you need to know about our features', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'],
       subSectionCards: [
         {
-          title: 'Card 1',
-          paragraph: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+          title: 'Be One of the First',
+          paragraph: `This is the first footballing experience in Korea which guarantees the opportunity for a professional
+          trial in Portugal with Benfica FC following a successful camp`
         },
         {
-          title: 'Card 2',
-          paragraph: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+          title: 'Development Experience ',
+          paragraph: ` All players will be taught using the same model which has produced Bernardo Silva, Ruben Dias, Ederson, Joao Cancelo, Victor Lindelof, Joao Felix!`
         },
         {
-          title: 'Card 3',
-          paragraph: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+          title: 'Player Representation ',
+          paragraph: `All players will have the opportunity to be signed and individually represented by Indulge Football player agency who are KFA (Korean Football Association) registered.`
         },
         {
-          title: 'Card 4',
-          paragraph: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+          title: 'Individual Assessment',
+          paragraph: `All players will be assessed and given a personalized report to aid further development.`
         },
         {
-          title: 'Card 5',
-          paragraph: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+          title: 'Football Technology ',
+          paragraph: `Everyone player will be asked to wear ISDA technology, and every kick will be filmed for individual analysis from UEFA A accredited coaches.`
         },
         {
-          title: 'Card 6',
-          paragraph: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+          title: 'Football Education',
+          paragraph: `Becoming professional requires dedication off the pitch and in our camp you will have 3 seminars on sports psychology, nutrition, and football pathways. `
         }
       ],
       subSectionCampsTitle: 'Camp Dates',
