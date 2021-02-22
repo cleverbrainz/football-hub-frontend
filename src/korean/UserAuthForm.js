@@ -320,6 +320,7 @@ const UserAuthForm = ({ locale }) => {
             <Button
               variant="outlined"
               color="primary"
+
               onClick={(e) => handleUserAuth(e.target.innerHTML)}
             // endIcon={<ArrowForwardIcon />}
             >
