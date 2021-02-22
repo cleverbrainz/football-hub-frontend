@@ -2,32 +2,33 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom'
 import {
   Typography,
-  Grid,
-  Fab,
   Box,
-  Switch,
-  Card,
-  CardActions,
-  CardContent,
   Button,
-  InputAdornment,
-  FormControl,
-  Input,
   FormControlLabel,
-  Radio
+  Radio,
+  Snackbar
 } from "@material-ui/core";
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import EmailSharpIcon from '@material-ui/icons/EmailSharp';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-
+import axios from 'axios'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import MuiAlert from '@material-ui/lab/Alert';
 
 
 const UserAuthForm = ({ locale }) => {
   const [forgottenPassword, setForgottenPassword] = useState(false)
   const [registrationOrLogin, setRegistrationOrLogin] = useState('login')
+  const [isLoading, setIsLoading] = useState(false)
   const [registerDetails, setRegisterDetails] = useState({
-    category: 'player'
+    category: 'player',
+    email: '',
+    password: '',
+    confirm_password: '',
+    player_name: ''
   })
+  const [message, setMessage] = useState(null)
+  const [open, setOpen] = useState(false)
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -84,6 +85,7 @@ const UserAuthForm = ({ locale }) => {
       textDecoration: 'underline'
     },
     button: {
+      position: 'relative',
       display: 'flex',
       justifyContent: 'center',
       transform: 'translateX(0)',
@@ -91,6 +93,9 @@ const UserAuthForm = ({ locale }) => {
       [theme.breakpoints.up('sm')]: {
         transform: 'translateX(32px)',
       },
+    },
+    progress: {
+      position: 'absolute'
     },
     formFooter: {
       [theme.breakpoints.up('sm')]: {
@@ -106,14 +111,70 @@ const UserAuthForm = ({ locale }) => {
 
   }));
 
-  function handleRadioButtonChange() {
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
+  const closeSnackBar = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setOpen(false);
+  };
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target
     const { category } = registerDetails
-    if (category === 'parent') {
+
+    if (name === 'category' && category === 'player') {
+      setRegisterDetails({ ...registerDetails, category: 'parent' })
+    } else if (name === 'category' && category === 'parent') {
       setRegisterDetails({ ...registerDetails, category: 'player' })
     } else {
-      setRegisterDetails({ ...registerDetails, category: 'parent' })
+      setRegisterDetails({ ...registerDetails, [name]: value })
     }
+
   }
+
+  const handleAfterRequestStates = (message) => {
+    setMessage(message)
+    setOpen(true)
+    setIsLoading(false)
+  }
+
+  function handleUserAuth(text) {
+    const { email, password } = registerDetails
+    setIsLoading(true)
+    switch (text) {
+
+      case 'Reset Password':
+        axios.post('/resetpassword', { email })
+          .then(res => handleAfterRequestStates({
+            success: 'An email has been sent to your inbox to reset your password.'
+          }))
+          .catch(err => handleAfterRequestStates({
+            error: 'Please check the email provided.'
+          }))
+
+        break;
+
+      case 'Sign In':
+        console.log(email, password)
+        axios.post('/login', { email, password })
+          .then(res => handleAfterRequestStates({
+            success: 'User has logged in.'
+          }))
+          .catch(err => handleAfterRequestStates({
+            error: 'Please check the details provided.'
+          }))
+
+        break;
+
+      default:
+        break;
+    }
+
+
+  }
+
 
   const classes = useStyles()
 
@@ -141,13 +202,14 @@ const UserAuthForm = ({ locale }) => {
 
 
 
-        <form className={classes.form} action="">
+        <form className={classes.form} onChange={(e) => handleFormChange(e)}>
 
           {(!forgottenPassword && registrationOrLogin !== 'login') && (
             <>
               <FormControlLabel
                 checked={registerDetails.category === 'parent'}
-                onClick={handleRadioButtonChange}
+                // onClick={() => handleRadioButtonChange()}
+                name='category'
                 className={classes.radio}
                 value="parent" control={<Radio />}
                 label="I am a parent registering for my child" />
@@ -160,6 +222,7 @@ const UserAuthForm = ({ locale }) => {
                     <span
                       style={{ color: 'red' }}> *  </span> Parent Name:
           <input
+                      name='parent_name'
                       class='input'
                       style={{
                         marginLeft: 10,
@@ -179,6 +242,7 @@ const UserAuthForm = ({ locale }) => {
                   <span
                     style={{ color: 'red' }}> *  </span> Player Name:
               <input
+                    name='player_name'
                     class='input'
                     style={{
                       marginLeft: 10,
@@ -197,7 +261,9 @@ const UserAuthForm = ({ locale }) => {
               class="control" >
               <span
                 style={{ color: 'red' }}> *  </span> Email Address:
-              <input class='input'
+              <input
+                class='input'
+                name='email'
                 style={{
                   marginLeft: 10,
                   transform: 'translateY(2px)',
@@ -216,6 +282,7 @@ const UserAuthForm = ({ locale }) => {
                   <span
                     style={{ color: 'red' }}> *  </span> Password:
               <input
+                    name='password'
                     class='input'
                     style={{
                       marginLeft: 10,
@@ -234,6 +301,7 @@ const UserAuthForm = ({ locale }) => {
                     <span
                       style={{ color: 'red' }}> *  </span> Confirm Password:
               <input
+                      name='confirm_password'
                       class='input'
                       style={{
                         marginLeft: 10,
@@ -252,11 +320,11 @@ const UserAuthForm = ({ locale }) => {
             <Button
               variant="outlined"
               color="primary"
-            // onClick={() => console.log(registerDetails.category)}
-            // onClick={() => history.push('/apply')}
+              onClick={(e) => handleUserAuth(e.target.innerHTML)}
             // endIcon={<ArrowForwardIcon />}
             >
               {!forgottenPassword ? registrationOrLogin === 'login' ? 'Sign In' : 'Create Account' : 'Reset Password'}
+              {isLoading && <CircularProgress size={30} className={classes.progress} />}
             </Button>
 
             <Link
@@ -283,16 +351,27 @@ const UserAuthForm = ({ locale }) => {
               onClick={() => {
                 setRegistrationOrLogin(registrationOrLogin === 'registration' ? 'login' : 'registration')
                 registrationOrLogin === 'login' && setForgottenPassword(false)
-                }}>
+              }}>
               {registrationOrLogin === 'login' ? 'Create an account' : 'Sign in'}</Link> to
-         continue your application for the Indulge Benfica Camp.
+continue your application for the Indulge Benfica Camp.
           </Box>
         </Typography>
 
       </main>
 
 
+      {message && <Snackbar
+        open={open}
+        autoHideDuration={5000}
+        onClose={closeSnackBar}>
+        <Alert onClose={closeSnackBar} severity={message.success ? 'success' : 'error'}>
+          {message.success ? message.success : message.error}
+        </Alert>
+      </Snackbar>}
+
     </div>
+
+
   );
 };
 
