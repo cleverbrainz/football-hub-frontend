@@ -29,9 +29,9 @@ const RouteContainer = (props) => {
       }} />
     <Switch>
     
-    <Route exact path="/apply/success=true" component={ApplicationProcessFlow} /> 
+    <Route exact path="/application" component={ApplicationProcessFlow} /> 
     <Route exact path="/apply" component={ApplicationForm} />
-    <Route exact path="/user-account"
+    <Route exact path="/authentication"
         render={(props) => (
           <UserAuthForm
             {...props}

@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     '&:nth-of-type(2)': {
       margin: '20px 0',
-     
+
     },
     '&:nth-of-type(3)': {
       margin: '0',
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'row'
       },
     },
-    
+
   },
   media: {
     width: '80%',
@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
     '&:nth-of-type(1)': {
       minHeight: '60vh',
     },
-    
+
     [theme.breakpoints.up('md')]: {
       width: '80%',
       '&:nth-of-type(1)': {
@@ -127,13 +127,13 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 320,
     width: '80%',
     margin: '0 15px',
-    minHeight: 250,
+    minHeight: 230,
     backgroundColor: '#f1f1f1',
     textAlign: 'left',
     [theme.breakpoints.up('md')]: {
       width: '30%',
       margin: '0',
-      minHeight: 180,
+      minHeight: 200,
       minWidth: 220,
     },
   },
@@ -159,7 +159,7 @@ const useStyles = makeStyles((theme) => ({
       width: '30%',
 
     },
-    
+
   },
   campCardTextContainer: {
     height: '80%'
@@ -176,7 +176,7 @@ const useStyles = makeStyles((theme) => ({
 
   },
   campSubText: {
-    width: '80%', 
+    width: '80%',
     margin: '10px auto 40px auto',
     textAlign: 'initial',
     [theme.breakpoints.up('md')]: {
@@ -208,9 +208,9 @@ const Marketing = (props) => {
   return (
     <div className={classes.root}>
       <main className={classes.main}>
-        <Typography 
-        className={classes.title}
-        component='div' >
+        <Typography
+          className={classes.title}
+          component='div' >
           <Box
             fontSize={35} fontWeight="fontWeightBold" m={0}>
             {mainTitle}
@@ -232,15 +232,12 @@ const Marketing = (props) => {
             {/* <p> {headerParagraph} </p> */}
 
             <p>
-              Indulge football are proud to host Benfica FC and to welcome them for the very first time
-              to South Korea. We have partnered with Benfica to create Korea's first elite football talent identification
-              camp experience.
+              This is the first time Benfica FC will be in South Korea and we wanted to bring their award-winning academy to train and identify the new football superstar!
+  Project Football Korea is a football talent identification experience like no other.  This is the ultimate football camp for players aged between 15-18 to train and learn from the world-famous Benfica FC.
             </p>
 
             <p>
-              Indulge football has created the perfect expereince for football players aged between 15-18 to experience
-        a gret methodology from the world famous and award-winning Benfica FC Academy. Benfica will be selecting players from each age grou[ for an
-        all-expenses paid 2 week professional trial at the Benfica Campus in Portugal.
+              Our residential camp will provide for the best environment for you to perform and demonstrate your footballing ability, and 3 players per age group will be selected for a two-week, expenses paid professional trial with Benfica FC in Portugal.
             </p>
           </section>
         </div>
@@ -267,11 +264,10 @@ const Marketing = (props) => {
                   <Typography
                     style={{ marginBottom: '20px' }}
                     variant="h6" component="h6">
-                    Be one of the first
+                    {el.title}
                   </Typography>
                   <Typography variant="body2" component="p">
-                    This is the first footballing experience in Korea which guarantees the opportunity for a professional
-                    trial in Portugal with Benfica FC following a successful..
+                    {el.paragraph}
                   </Typography>
                 </CardContent>
                 <CardActions>
@@ -293,9 +289,9 @@ const Marketing = (props) => {
         </Typography>
 
         <div className={classes.jumbotron}>
-        
+
           <section className={classes.jumbotronText}>
-        
+
             <Typography component='div' >
               <Box
                 fontSize={20} fontWeight="fontWeightBold" m={0}>
@@ -307,13 +303,10 @@ const Marketing = (props) => {
                 <li className={classes.list}> Full board menu designed for professional athletes </li>
                 <li className={classes.list}> At least 4 hours of football coaching a day </li>
                 <li className={classes.list}> 3 football education seminars across the camp </li>
-                <li className={classes.list}> Official Benfica FC & Indulge Football training kit including tracksuit, wet top, and 2 x shirt, shorts and socks </li>
+                <li className={classes.list}> Official Benfica FC & Indulge Football training kit</li>
                 <li className={classes.list}> Individual player feedback reports </li>
-                <li className={classes.list}> Benfica FC completion certificate</li>
                 <li className={classes.list}> Individual player performance tracking technology </li>
-                <li className={classes.list}> Transfers between hotel and training ground </li>
                 <li className={classes.list}> COVID-19 testing </li>
-                <li className={classes.list}> Sports insurance </li>
               </ul>
             </Typography>
           </section>
@@ -328,43 +321,38 @@ const Marketing = (props) => {
             fontSize={30} fontWeight="fontWeightBold" m={0}>
             About Benfica FC
           </Box>
+
+          <Box
+            className={classes.campSubText}
+            fontSize={16} fontWeight="fontWeightRegular" m={0}>
+           The mission of Benfica’s academy is to guarantee the quality of technical training and educational enrichment of its players, of all age groups, with a focus on the integration into the clubs first team, promoting human values such as respect, responsibility, solidarity, justice and tolerance.” 
+          </Box>
         </Typography>
 
         <div className={classes.jumbotron}>
-          
-        <img className={classes.media}
+
+          <img className={classes.media}
             src="https://images.unsplash.com/photo-1509023464722-18d996393ca8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80" alt="" />
           <section className={classes.jumbotronText} >
             <Typography component='div' >
               <Box
                 fontSize={20} fontWeight="fontWeightBold" m={0}>
-                The Methodology
+                Camp Methodology
               </Box>
 
               <p>
-                The methodology applied in Project Football will be the same that Sport
-  Lisboa e Benfica uses in the training of its athletes, and which guarantees the
-  sustainability of its professional squads. Through specific training that Sport Lisboa e
-  Benfica will provide, you will be able to develop your technical, tactical, physical and
-  psychological skills. Aspects like, running technique, relationship with the ball, tactical
-  circulation and attacking and defensive game principles will be worked on a daily basis
-  in both individual and collective contexts.
+                The training schedules are developed by SL Benfica’s coaches, accredited by the Federação Portuguesa de Futebol (FPF) and UEFA. The methodology used is the same that Sport Lisboa e Benfica uses in the training of its professional athletes. 
+                <br /> <br />
+                Through specific training that Sport Lisboa e Benfica will provide, you will be able to develop your technical, tactical, physical and psychological skills. Aspects like, running technique, relationship with the ball, tactical circulation and attacking and defensive game principles will be worked daily in both individual and collective contexts.
             </p>
 
-              <p>
-                The training schedules will be developed by SL Benfica's coaches, accredited by
-    the Federação Portuguesa de Futebol (FPF) and UEFA. There will be 3 categories
-    (U16 to U18), each having specific technical-tactical training. In addition, you will
-    also be observed and evaluated by Sport Lisboa e Benfica's Technical and Scouting
-    Departments.
-            </p>
             </Typography>
           </section>
-          
+
         </div>
 
         <div className={classes.jumbotron}>
-       
+
 
           <section className={classes.jumbotronText}>
             <Typography component='div' >
@@ -374,26 +362,23 @@ const Marketing = (props) => {
               </Box>
 
               <p>
-                Accredited by the Portuguese Football Federation (FPF) and UEFA, the SL Benfica
-  coaches are decisive elements in the development of the Club's young athletes. It will
-  be them following your evolution during Project Football. The technical director in
-  charge will be Pedro Marques:
+                Accredited by the Portuguese Football Federation (FPF) and UEFA, the SL Benfica coaches are decisive elements in the development of the club’s athletes. They'll follow your evolution during Project Football, overseen by their Technical Director, Pedro Marques:
             </p>
+            <br />
+              <ul>
+                <li className={classes.list}> UEFA A License. </li>
+                <li className={classes.list}> Graduated in Physical Education and Sports Science and Post-Graduation in High-Performance Training at the Faculty of Human Kinetics in Lisbon.  </li>
+                <li className={classes.list}> Technical Director of Sport Lisboa e Benfica's Youth Football. </li>
+              </ul>
 
-              <p>
-                UEFA A Licence
-  Graduated in Physical Education and Sports Science at the Faculty of Human Kinetics
-  in Lisbon. Post-Graduation in High-Performance Training at the Faculty of Human Kinetics in
-  Lisbon. Technical Director of Sport Lisboa e Benfica's Youth Football.
-            </p>
             </Typography>
           </section>
-         
+
           <img className={classes.media}
             src="https://images.unsplash.com/photo-1431440869543-efaf3388c585?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80" alt="" />
 
         </div>
-        
+
       </section>
 
       <section className={classes.subsection}>
@@ -403,12 +388,9 @@ const Marketing = (props) => {
             How to apply?
           </Box>
           <Box
-        className={classes.campSubText}
+            className={classes.campSubText}
             fontSize={16} fontWeight="fontWeightRegular" m={0}>
-            All players will need to apply for this experience via ftballer.com. You will create your own player profile
-            and will asked to complete several football related challenges as part of your assessment. Your profile will then
-            be assessed by the UEFA coaches from EPL Academies and senior staff from NYSES. Successful applicats will then be
-            invited into camp.
+            All players will be asked to apply and undertake football challenges designed by “UEFA A” qualified coaches who work in English Premier League Academies. And have years of experiences assessing youth talent. Upon completing this assessment, we will invite the best 70 players at U16/U17 and U18 for a 4 night/5day residential camp conducted by the award-winning Benfica FC academy staff 
           </Box>
           <Box
             fontSize={16} fontWeight="fontWeightBold" m={0}>
