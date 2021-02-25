@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
 import {
   Typography,
@@ -14,9 +14,11 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import axios from 'axios'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import MuiAlert from '@material-ui/lab/Alert';
+import auth from '../lib/auth'
+import { useStripe } from "@stripe/react-stripe-js";
 
-
-const UserAuthForm = ({ locale }) => {
+const UserAuthForm = ({ locale, history }) => {
+  const stripe = useStripe()
   const [forgottenPassword, setForgottenPassword] = useState(false)
   const [registrationOrLogin, setRegistrationOrLogin] = useState('login')
   const [isLoading, setIsLoading] = useState(false)
@@ -111,6 +113,7 @@ const UserAuthForm = ({ locale }) => {
 
   }));
 
+
   function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
   }
@@ -120,18 +123,17 @@ const UserAuthForm = ({ locale }) => {
     setOpen(false);
   };
 
+  const handleRadioButtonChange = () => {
+    const { category } = registerDetails
+    setRegisterDetails({
+      ...registerDetails,
+      category: category === 'player' ? 'parent' : 'player'
+    })
+  }
+
   const handleFormChange = (e) => {
     const { name, value } = e.target
-    const { category } = registerDetails
-
-    if (name === 'category' && category === 'player') {
-      setRegisterDetails({ ...registerDetails, category: 'parent' })
-    } else if (name === 'category' && category === 'parent') {
-      setRegisterDetails({ ...registerDetails, category: 'player' })
-    } else {
-      setRegisterDetails({ ...registerDetails, [name]: value })
-    }
-
+    setRegisterDetails({ ...registerDetails, [name]: value })
   }
 
   const handleAfterRequestStates = (message) => {
@@ -140,8 +142,50 @@ const UserAuthForm = ({ locale }) => {
     setIsLoading(false)
   }
 
+  function loginUser(existed) {
+    const { email, password, player_name } = registerDetails
+    axios.post('/login', { email, password })
+    .then(res => {
+      const { application_fee_paid, token, stripeId } = res.data
+      const fee_needed = application_fee_paid === 'unpaid'
+      const created = !existed ? 'been created and automatically' : ''
+
+      auth.setToken(token)
+
+      handleAfterRequestStates({
+        success: `User has ${created} logged in. Redirecting to ${fee_needed ? 'payment' : 'application'}...`
+      })
+
+      setTimeout(async () => {
+      
+        if (application_fee_paid === 'unpaid') {
+          let checkout = await axios.post('/korean-application-fee', {
+            stripeId,
+            email
+          })
+          const session = await checkout.data
+
+          const result = await stripe.redirectToCheckout({
+            sessionId: session.id,
+          })
+
+          if (result.error) {
+            handleAfterRequestStates({ error: 'Could not redirect you to payment. Please try again.' })
+          }
+        } else {
+          history.push('/application')
+        }
+        
+      }, 2000);
+      
+    })
+    .catch(err => handleAfterRequestStates({
+      error: 'Invalid credentials'
+    }))
+  }
+
   function handleUserAuth(text) {
-    const { email, password } = registerDetails
+    const { email, password, player_name } = registerDetails
     setIsLoading(true)
     switch (text) {
 
@@ -151,20 +195,24 @@ const UserAuthForm = ({ locale }) => {
             success: 'An email has been sent to your inbox to reset your password.'
           }))
           .catch(err => handleAfterRequestStates({
-            error: 'Please check the email provided.'
+            error: 'Invalid credentials'
           }))
 
         break;
 
       case 'Sign In':
         console.log(email, password)
-        axios.post('/login', { email, password })
-          .then(res => handleAfterRequestStates({
-            success: 'User has logged in.'
-          }))
-          .catch(err => handleAfterRequestStates({
-            error: 'Please check the details provided.'
-          }))
+        loginUser(true)
+
+        break;
+
+      case 'Create Account':
+
+        axios.post('/registerUserViaApplication', registerDetails)
+          .then(res => {
+            loginUser(false)
+          })
+          .catch(err => handleAfterRequestStates(err.response.data))
 
         break;
 
@@ -202,16 +250,16 @@ const UserAuthForm = ({ locale }) => {
 
 
 
-        <form className={classes.form} onChange={(e) => handleFormChange(e)}>
+        <form className={classes.form} >
 
           {(!forgottenPassword && registrationOrLogin !== 'login') && (
             <>
               <FormControlLabel
                 checked={registerDetails.category === 'parent'}
-                // onClick={() => handleRadioButtonChange()}
+                onClick={() => handleRadioButtonChange()}
                 name='category'
                 className={classes.radio}
-                value="parent" control={<Radio />}
+                control={<Radio />}
                 label="I am a parent registering for my child" />
 
               {registerDetails.category === 'parent' &&
@@ -222,6 +270,7 @@ const UserAuthForm = ({ locale }) => {
                     <span
                       style={{ color: 'red' }}> *  </span> Parent Name:
           <input
+                      onChange={(e) => handleFormChange(e)}
                       name='parent_name'
                       class='input'
                       style={{
@@ -242,6 +291,7 @@ const UserAuthForm = ({ locale }) => {
                   <span
                     style={{ color: 'red' }}> *  </span> Player Name:
               <input
+                    onChange={(e) => handleFormChange(e)}
                     name='player_name'
                     class='input'
                     style={{
@@ -262,6 +312,7 @@ const UserAuthForm = ({ locale }) => {
               <span
                 style={{ color: 'red' }}> *  </span> Email Address:
               <input
+                onChange={(e) => handleFormChange(e)}
                 class='input'
                 name='email'
                 style={{
@@ -282,6 +333,7 @@ const UserAuthForm = ({ locale }) => {
                   <span
                     style={{ color: 'red' }}> *  </span> Password:
               <input
+                    onChange={(e) => handleFormChange(e)}
                     name='password'
                     class='input'
                     style={{
@@ -301,6 +353,7 @@ const UserAuthForm = ({ locale }) => {
                     <span
                       style={{ color: 'red' }}> *  </span> Confirm Password:
               <input
+                      onChange={(e) => handleFormChange(e)}
                       name='confirm_password'
                       class='input'
                       style={{
@@ -320,7 +373,7 @@ const UserAuthForm = ({ locale }) => {
             <Button
               variant="outlined"
               color="primary"
-
+              disabled={isLoading}
               onClick={(e) => handleUserAuth(e.target.innerHTML)}
             // endIcon={<ArrowForwardIcon />}
             >
@@ -366,7 +419,12 @@ continue your application for the Indulge Benfica Camp.
         autoHideDuration={5000}
         onClose={closeSnackBar}>
         <Alert onClose={closeSnackBar} severity={message.success ? 'success' : 'error'}>
-          {message.success ? message.success : message.error}
+          {message.success ?
+            message.success :
+            message.error ?
+              message.error : (
+                Object.keys(message).map(x => <li> {message[x]} </li>)
+              )}
         </Alert>
       </Snackbar>}
 
