@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
+import Tooltip from '@material-ui/core/Tooltip';
 import StepLabel from '@material-ui/core/StepLabel';
-import Check from '@material-ui/icons/Check';
 import PersonSharpIcon from '@material-ui/icons/PersonSharp';
 import HistorySharpIcon from '@material-ui/icons/HistorySharp';
 import DirectionsRunSharpIcon from '@material-ui/icons/DirectionsRunSharp';
@@ -15,10 +15,15 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Box from '@material-ui/core/Box';
+import Snackbar from '@material-ui/core/Snackbar';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import CloudUploadSharpIcon from '@material-ui/icons/CloudUploadSharp';
 import axios from 'axios'
+import MuiAlert from '@material-ui/lab/Alert';
+import CircularProgress from '@material-ui/core/CircularProgress'
+import auth from '../lib/auth'
+import Skeleton from '@material-ui/lab/Skeleton';
 import { useStripe } from "@stripe/react-stripe-js";
 
 const ColorlibConnector = withStyles({
@@ -96,6 +101,10 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginRight: theme.spacing(1),
+    position: 'relative'
+  },
+  progress: {
+    position: 'absolute'
   },
   instructions: {
     marginTop: theme.spacing(1),
@@ -148,6 +157,15 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: 'row',
     },
   },
+  video: {
+    height: '40vw',
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      height: 245,
+      minWidth: 470
+    },
+    position: 'relative'
+  },
   subHeading: {
     margin: 0,
     color: 'orange',
@@ -155,17 +173,26 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: '10px',
 
     },
+  },
+  bufferText: {
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    fontWeight: 'bold',
   }
 }));
 
 
 
 
-export default function ApplicationForm() {
-  const stripe = useStripe()
+export default function ApplicationForm({ history, location }) {
   const classes = useStyles();
+  const [message, setMessage] = useState()
+  const [isLoading, setIsLoading] = useState(false)
   const [activeStep, setActiveStep] = useState(0);
-  const [videoSource, setVideoSource] = useState('https://www.youtube.com/embed/HmWpssuh_9A?rel=0')
+  const [videoSource, setVideoSource] = useState()
+
+
   const [applicationDetails, setApplicationDetails] = useState({
     personal_details: {
       name: '',
@@ -205,18 +232,111 @@ export default function ApplicationForm() {
   })
   const steps = getSteps();
 
+
+  const videoLinks = {
+    goalkeeper_demos: [
+      {
+        title: 'Demo 1',
+        src: 'https://www.youtube.com/embed/HmWpssuh_9A?rel=0'
+      },
+      {
+        title: 'Demo 2',
+        src: 'https://www.youtube.com/embed/1OWOrbmvUhc?rel=0'
+      },
+      {
+        title: 'Demo 3',
+        src: 'https://www.youtube.com/embed/Q-hR_gNElo0?rel=0'
+      }
+    ],
+    outfield_demos: [
+      {
+        title: 'Demo 1',
+        src: 'https://www.youtube.com/embed/al41qjS04-Q?rel=0'
+      },
+      {
+        title: 'Demo 2',
+        src: 'https://www.youtube.com/embed/3wAQxJeyyXo?rel=0'
+      },
+      {
+        title: 'Demo 3',
+        src: 'https://www.youtube.com/embed/qUm8TSGtenI?rel=0'
+      }
+    ],
+  }
+
+  function getData() {
+    axios.get(`/users/${auth.getUserId()}`)
+      .then(res => {
+        const { benfica_application } = res.data[0].applications
+        const { position } = benfica_application.player_attributes
+        const { goalkeeper_demos, outfield_demos } = videoLinks
+        setVideoSource(position === 'goalkeeper' ? goalkeeper_demos[0].src : outfield_demos[0].src)
+        setApplicationDetails(benfica_application)
+
+      })
+  }
+
+
+  useEffect(() => {
+
+    if (!auth.getUserId()) {
+      history.push('/authentication')
+      return
+    } else {
+      getData()
+    }
+
+
+  }, [])
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
+  const closeSnackBar = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setMessage();
+  };
+
+  function handleApplicationSave(type) {
+    setIsLoading(true)
+
+    axios.patch(`/users/${auth.getUserId()}`, {
+      userId: auth.getUserId(),
+      updates: {
+        dob: applicationDetails.personal_details.dob,
+        applications: {
+          benfica_application: {
+            ...applicationDetails
+          }
+        }
+      }
+    }, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+      .then(res => {
+        setMessage({
+          success: type ? 'Application submitted successfully. Redirecting...' :
+            'Application successfully saved and updated'
+        })
+        setIsLoading(false)
+      })
+      .catch(err => {
+        setIsLoading(false)
+        setMessage({
+          error: 'Something went wrong. Please try saving again'
+        })
+      })
+  }
+
+
   const handleNext = async () => {
     if (activeStep === 2) {
-      let checkout = await axios.post('/korean-application-fee', {})
-      const session = await checkout.data
+      handleApplicationSave('submit')
 
-      const result = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      })
+      setTimeout(() => {
+        history.push('/success=true')
+        localStorage.removeItem('token')
+      }, (3000));
 
-      if (result.error) {
-        // props.history.push('/checkout')
-      }
 
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -235,6 +355,11 @@ export default function ApplicationForm() {
   function handleApplicationChange(e) {
     const { name, value } = e.target
 
+    if (value === 'goalkeeper' ||
+      (value !== 'goalkeeper' && position === 'goalkeeper')) {
+      setVideoSource()
+    }
+
     Object.keys(applicationDetails).forEach(x => {
       if (applicationDetails[x].hasOwnProperty(name)) {
         const y = applicationDetails[x]
@@ -246,6 +371,39 @@ export default function ApplicationForm() {
         })
       }
     })
+  }
+
+  const handleResidencyDocumentUpload = (e) => {
+
+    const doc = e.target.files
+
+    setIsLoading(true)
+    const certificate = new FormData()
+    certificate.append('owner', auth.getUserId())
+    certificate.append('certificate', doc[0], doc[0].name)
+
+    console.log(doc[0].name)
+
+    axios.post('/korean-residency', certificate,
+      { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+      .then(res => {
+        getData()
+        setMessage({ success: 'Residency certificate successfully uploaded.' })
+        setIsLoading(false)
+      })
+      .catch(async err => {
+        const res = err.response.data.error
+
+        await setMessage({
+          error: res === 'Error verifying token' ?
+            'Your session has expired. Redirecting to login...' : 'Document could not be uploaded. Please try again.'
+        })
+        await setIsLoading(false)
+
+        setTimeout(() => {
+          history.push('/authentication')
+        }, (3000));
+      })
   }
 
   function getStepContent(step) {
@@ -261,21 +419,34 @@ export default function ApplicationForm() {
     }
   }
 
-  const videoLinks = [
-    {
-      title: '#1',
-      src: 'https://www.youtube.com/embed/HmWpssuh_9A?rel=0'
-    },
-    {
-      title: '#2',
-      src: 'https://www.youtube.com/embed/1OWOrbmvUhc?rel=0'
-    },
-    {
-      title: '#3',
-      src: 'https://www.youtube.com/embed/Q-hR_gNElo0?rel=0'
-    },
-
-  ]
+  const {
+    name,
+    gender,
+    dob,
+    address_line_1,
+    address_line_2,
+    city,
+    postcode,
+    residency_certificate } = applicationDetails.personal_details
+  const {
+    height,
+    weight,
+    position,
+    preferred_foot } = applicationDetails.player_attributes
+  const {
+    current_club,
+    current_coaching_school,
+    previous_clubs,
+    previous_trails_attended,
+    highlights_footage_link,
+    social_media_link,
+    bio_description
+  } = applicationDetails.football_history
+  const {
+    link_1,
+    link_2,
+    link_3
+  } = applicationDetails.challenges
 
   const firstPage = (
     <>
@@ -295,7 +466,11 @@ export default function ApplicationForm() {
               <label> <span style={{ color: 'red' }}>*</span> Player Full Name </label>
             </div>
             <p class="control is-expanded">
-              <input class="input" type="text" name='name' placeholder="Player Full Name" />
+              <input
+                value={name}
+                class="input" type="text"
+                name='name'
+                placeholder="Player Full Name" />
             </p>
           </div>
 
@@ -304,7 +479,8 @@ export default function ApplicationForm() {
               <label > <span style={{ color: 'red' }}>*</span> Gender </label>
             </div>
             <div class="select" style={{ width: '100%' }}>
-              <select name='gender' style={{ width: '100%' }}>
+              <select value={gender} name='gender' style={{ width: '100%' }}>
+                <option disabled={gender !== ''} value=""> </option>
                 <option value="male"> Male </option>
                 <option value="female"> Female </option>
                 <option value="custom"> Custom</option>
@@ -317,7 +493,7 @@ export default function ApplicationForm() {
               <label > <span style={{ color: 'red' }}>*</span> Date of Birth </label>
             </div>
             <p class="control" >
-              <input name='dob' class="input" type="date" />
+              <input value={dob} name='dob' class="input" type="date" />
             </p>
           </div>
 
@@ -332,7 +508,9 @@ export default function ApplicationForm() {
               <label> <span style={{ color: 'red' }}>*</span> Address Line 1 </label>
             </div>
             <p class="control is-expanded">
-              <input name='address_line_1' class="input" type="text" placeholder="Address Line 1" />
+              <input
+                value={address_line_1}
+                name='address_line_1' class="input" type="text" placeholder="Address Line 1" />
             </p>
           </div>
 
@@ -341,7 +519,7 @@ export default function ApplicationForm() {
               <label>Address Line 2 </label>
             </div>
             <p class="control is-expanded">
-              <input name='address_line_2' class="input" type="text" placeholder="Address Line 2" />
+              <input value={address_line_2} name='address_line_2' class="input" type="text" placeholder="Address Line 2" />
             </p>
           </div>
 
@@ -356,7 +534,7 @@ export default function ApplicationForm() {
               <label> <span style={{ color: 'red' }}>*</span> City </label>
             </div>
             <p class="control is-expanded">
-              <input name='city' class="input" type="text" placeholder="City" />
+              <input value={city} name='city' class="input" type="text" placeholder="City" />
             </p>
           </div>
 
@@ -365,7 +543,7 @@ export default function ApplicationForm() {
               <label> <span style={{ color: 'red' }}>*</span> Postcode </label>
             </div>
             <p class="control is-expanded">
-              <input name='postcode' class="input" type="text" placeholder=" Postcode" />
+              <input value={postcode} name='postcode' class="input" type="text" placeholder=" Postcode" />
             </p>
           </div>
 
@@ -383,7 +561,11 @@ export default function ApplicationForm() {
             </div>
             <div class="file has-name">
               <label class="file-label">
-                <input class="file-input" type="file" name='residency_certificate' />
+                <input
+                  onChange={(e) => handleResidencyDocumentUpload(e)}
+                  class="file-input"
+                  type="file"
+                  name='residency_certificate' />
                 <span class="file-cta">
                   <span style={{ marginRight: '15px' }} class="file-icon">
                     <CloudUploadSharpIcon
@@ -397,10 +579,16 @@ export default function ApplicationForm() {
                     Upload a file...
                 </span>
                 </span>
-                {/* render span file-name when document is uploaded to show file name */}
-                {/* <span class="file-name">
-                  Screen Shot 2017-07-29 at 15.54.25.png
-               </span> */}
+
+                {residency_certificate &&
+                  <span
+                    onClick={() => window.open(residency_certificate, '_blank')}
+                    class="file-name">
+                    <Tooltip placement="bottom-start" title="Click to view uploaded document">
+                     <span> {residency_certificate} </span> 
+                    </Tooltip>
+                  </span>}
+
               </label>
             </div>
           </div>
@@ -427,7 +615,7 @@ export default function ApplicationForm() {
             <label> <span style={{ color: 'red' }}>*</span> Height (cm) </label>
           </div>
           <p class="control is-expanded">
-            <input name='height' class="input" type="number" min={150} placeholder="Height" />
+            <input value={height} name='height' class="input" type="number" min={150} placeholder="Height" />
           </p>
         </div>
 
@@ -436,7 +624,7 @@ export default function ApplicationForm() {
             <label> <span style={{ color: 'red' }}>*</span> Weight (kg) </label>
           </div>
           <p class="control is-expanded">
-            <input name='weight' class="input" type="number" min={50} placeholder="Weight" />
+            <input value={weight} name='weight' class="input" type="number" min={50} placeholder="Weight" />
           </p>
         </div>
         <div className={classes.field}>
@@ -444,7 +632,8 @@ export default function ApplicationForm() {
             <label> <span style={{ color: 'red' }}>*</span> Preferred Position </label>
           </div>
           <div class="select">
-            <select name='position'>
+            <select value={position} name='position'>
+              <option disabled={position !== ''} value=""> </option>
               <option value="goalkeeper"> Goalkeeper </option>
               <option value="right fullback"> Right Fullback </option>
               <option value="left fullback"> Left Fullback </option>
@@ -464,7 +653,8 @@ export default function ApplicationForm() {
             <label> <span style={{ color: 'red' }}>*</span> Preferred Foot </label>
           </div>
           <div class="select">
-            <select name='preferred_foot'>
+            <select value={preferred_foot} name='preferred_foot'>
+              <option disabled={preferred_foot !== ''} value=""> </option>
               <option value="left"> Left </option>
               <option value="right"> Right </option>
               <option value="both"> Both </option>
@@ -492,7 +682,7 @@ export default function ApplicationForm() {
               <label> <span style={{ color: 'red' }}>*</span> Current Club</label>
             </div>
             <p class="control is-expanded">
-              <input name='current_club' class="input" type="text" placeholder="Current Club" />
+              <input value={current_club} name='current_club' class="input" type="text" placeholder="Current Club" />
 
             </p>
           </div>
@@ -501,7 +691,7 @@ export default function ApplicationForm() {
               <label > <span style={{ color: 'red' }}>*</span> Current Coaching School </label>
             </div>
             <p class="control is-expanded">
-              <input name='current_coaching_school' class="input" type="email" placeholder="Current Coaching School" />
+              <input value={current_coaching_school} name='current_coaching_school' class="input" type="email" placeholder="Current Coaching School" />
 
             </p>
           </div>
@@ -513,7 +703,7 @@ export default function ApplicationForm() {
               <label >Previous Clubs </label>
             </div>
             <p class="control is-expanded">
-              <input name='previous_clubs' class="input" type="text" placeholder="Previous Clubs " />
+              <input value={previous_clubs} name='previous_clubs' class="input" type="text" placeholder="Previous Clubs " />
 
             </p>
           </div>
@@ -522,7 +712,7 @@ export default function ApplicationForm() {
               <label >Previous Trials Attended </label>
             </div>
             <p class="control is-expanded">
-              <input name='previous_trails_attended' class="input" type="email" placeholder="Previous Trials Attended " />
+              <input value={previous_trails_attended} name='previous_trails_attended' class="input" type="email" placeholder="Previous Trials Attended " />
 
             </p>
           </div>
@@ -535,7 +725,7 @@ export default function ApplicationForm() {
               <label >Web URL of Video Footage</label>
             </div>
             <p class="control is-expanded">
-              <input name='highlights_footage_link' class="input" type="text" placeholder="Web URL of Video Footage" />
+              <input value={highlights_footage_link} name='highlights_footage_link' class="input" type="text" placeholder="Web URL of Video Footage" />
 
             </p>
           </div>
@@ -544,7 +734,7 @@ export default function ApplicationForm() {
               <label > <span style={{ color: 'red' }}>*</span> Social Media Link </label>
             </div>
             <p class="control is-expanded">
-              <input name='social_media_link' class="input" type="email" placeholder="Social Media Link " />
+              <input value={social_media_link} name='social_media_link' class="input" type="email" placeholder="Social Media Link " />
 
             </p>
           </div>
@@ -563,7 +753,7 @@ export default function ApplicationForm() {
 
             <div class="control">
 
-              <textarea name='bio_description' style={{ minHeight: '15rem' }} class="textarea" placeholder="Write a short description about yourself "></textarea>
+              <textarea value={bio_description} name='bio_description' style={{ minHeight: '15rem' }} class="textarea" placeholder="Write a short description about yourself "></textarea>
             </div>
           </div>
         </div>
@@ -588,20 +778,29 @@ export default function ApplicationForm() {
 
       <section className={classes.videoContainer}>
         <div>
-          <iframe title='video' width="480" height="245" src={videoSource} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe>
 
-          <Breadcrumbs aria-label="breadcrumb">
+          <div className={classes.video}>
+            {!videoSource ? <p className={classes.bufferText}> Please select one of the demonstration videos below </p> :
+              <iframe title='video' width='100%' height='100%' src={videoSource} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe>
+            }
+          </div>
+
+
+
+          <Breadcrumbs style={{ marginTop: '10px' }} aria-label="breadcrumb">
             {/* <Typography> Demonstration Videos: </Typography>  */}
-            {videoLinks.map(el => {
-              return (
-                <Link
-                  style={{ color: videoSource === el.src ? 'blue' : 'initial' }}
-                  onClick={() => setVideoSource(el.src)}
-                >
-                  {el.title}
-                </Link>
-              )
-            })}
+
+            {videoLinks[position === 'goalkeeper' ?
+              'goalkeeper_demos' : 'outfield_demos'].map(el => {
+                return (
+                  <Link
+                    style={{ color: videoSource === el.src ? 'blue' : 'initial' }}
+                    onClick={() => setVideoSource(el.src)}
+                  >
+                    {el.title}
+                  </Link>
+                )
+              })}
           </Breadcrumbs>
         </div>
 
@@ -613,7 +812,7 @@ export default function ApplicationForm() {
               <label > Challenge #1 Link </label>
             </div>
             <p class="control is-expanded">
-              <input name='link_1' class="input" type="text" placeholder="Web URL of Video Footage" />
+              <input value={link_1} name='link_1' class="input" type="text" placeholder="Web URL of Video Footage" />
             </p>
           </div>
           <div className={classes.webfield}>
@@ -621,7 +820,7 @@ export default function ApplicationForm() {
               <label > Challenge #2 Link </label>
             </div>
             <p class="control is-expanded">
-              <input name='link_2' class="input" type="text" placeholder="Web URL of Video Footage" />
+              <input value={link_2} name='link_2' class="input" type="text" placeholder="Web URL of Video Footage" />
             </p>
           </div>
           <div className={classes.webfield}>
@@ -629,7 +828,7 @@ export default function ApplicationForm() {
               <label > Challenge #3 Link </label>
             </div>
             <p class="control is-expanded">
-              <input name='link_3' class="input" type="text" placeholder="Web URL of Video Footage" />
+              <input value={link_3} name='link_3' class="input" type="text" placeholder="Web URL of Video Footage" />
             </p>
           </div>
         </div>
@@ -669,32 +868,45 @@ export default function ApplicationForm() {
 
           <Button
             style={{ display: activeStep === 0 ? 'none' : 'initial' }}
-            disabled={activeStep === 0}
+            disabled={activeStep === 0 || isLoading}
             onClick={handleBack}
             className={classes.button}>
+
             Back
               </Button>
 
           <Button
-            // onClick={handleBack}
+            disabled={isLoading}
+            onClick={() => handleApplicationSave()}
             variant="outlined"
             color="primary"
             className={classes.button}
             endIcon={<SaveAltIcon />}>
+            {isLoading && <CircularProgress size={30} className={classes.progress} />}
             Save draft
               </Button>
 
           <Button
+            disabled={isLoading}
             variant="outlined"
             color="primary"
             onClick={handleNext}
             className={classes.button}
             endIcon={<ArrowForwardIcon />}>
-
-            {activeStep === steps.length - 1 ? 'Submit & Pay' : 'Next'}
+            {isLoading && <CircularProgress size={30} className={classes.progress} />}
+            {activeStep === steps.length - 1 ? 'Submit Application' : 'Next'}
           </Button>
         </div>
       </div>
+
+      {message && <Snackbar
+        open={message}
+        autoHideDuration={5000}
+        onClose={closeSnackBar}>
+        <Alert onClose={closeSnackBar} severity={message.success ? 'success' : 'error'}>
+          {message.success ? message.success : message.error}
+        </Alert>
+      </Snackbar>}
 
     </div>
   );

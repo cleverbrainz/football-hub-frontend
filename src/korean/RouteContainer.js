@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Redirect
 } from 'react-router-dom'
 import Marketing from './Marketing'
 import ApplicationForm from './ApplicationForm'
@@ -29,8 +30,8 @@ const RouteContainer = (props) => {
       }} />
     <Switch>
     
-    <Route exact path="/application" component={ApplicationProcessFlow} /> 
-    <Route exact path="/apply" component={ApplicationForm} />
+    <Route exact path="/success=true" component={ApplicationProcessFlow} /> 
+    <Route exact path="/application" component={ApplicationForm} />
     <Route exact path="/authentication"
         render={(props) => (
           <UserAuthForm
