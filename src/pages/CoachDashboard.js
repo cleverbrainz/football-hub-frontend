@@ -142,10 +142,12 @@ export default function CoachProfile({ history }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [editModal, setEditModal] = useState(false)
   const [user, setUser] = useState(null)
   const [selectedComponent, setSelectedComponent] = useState('Summary');
   const [componentTabValue, setComponentTabValue] = useState(0)
   const [stateUpdate, setStateUpdate] = useState(false)
+  const [pending, setPending] = useState(false)
 
   const [drawerItems, setDrawerItems] = useState({
     Summary: BubbleChartSharp,
@@ -162,11 +164,20 @@ export default function CoachProfile({ history }) {
     Edit: CompanyAddCoach
   }
 
-  const handleComponentChange = async (selectedComponent, tabValue) => {
+  const handleComponentChange = async (selectedComponent, tabValue, isPending=pending) => {
 
-    setComponentTabValue(tabValue)
+    if (!isPending) {
+      setEditModal(false)
+      setPending(false)
+      setComponentTabValue(tabValue)
+      setSelectedComponent(selectedComponent)
+    } else {
 
-    setSelectedComponent(selectedComponent)
+      setEditModal(true)
+    }
+
+
+
   }
 
   const getData = async function() {
@@ -252,7 +263,13 @@ export default function CoachProfile({ history }) {
           {Object.keys(drawerItems).map((text, index) => {
             const Icon = drawerItems[text]
             return (
-              <ListItem onClick={() => setSelectedComponent(text)} style={{ paddingLeft: '24px', marginTop: '25px' }} button key={text}>
+              <ListItem onClick={() => {
+                if (!pending) {
+                  setSelectedComponent(text)
+                } else {
+                  setEditModal(true)
+                }
+                }} style={{ paddingLeft: '24px', marginTop: '25px' }} button key={text}>
                 <ListItemIcon> <Icon /> </ListItemIcon>
                 <ListItemText primary={text} />
               </ListItem>
@@ -265,11 +282,14 @@ export default function CoachProfile({ history }) {
         {/* <div className={classes.toolbar} /> */}
 
         <DisplayedComponent 
-        handleComponentChange={(component, tab) => handleComponentChange(component, tab)}
+        handleComponentChange={(component, tab, isPending) => handleComponentChange(component, tab, isPending)}
         componentTabValue={componentTabValue}
         info={user}
         refreshState={setStateUpdate}
         refreshData={() => getData()}
+        pending={pending}
+        setPending={setPending}
+        modal={editModal}
         />
 
       </main>
