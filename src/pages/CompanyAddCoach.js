@@ -12,6 +12,11 @@ import {
   OutlinedInput,
   Container,
 } from "@material-ui/core";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import CheckIcon from '@material-ui/icons/Check';
 import CrossIcon from '@material-ui/icons/Clear'
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
@@ -80,14 +85,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CompanyAddCoach({ info, handleComponentChange, changePage, refreshState, refreshData }) {
+export default function CompanyAddCoach({ info, setInfo, handleComponentChange, changePage, refreshState, refreshData, pending, setPending, modal, setModal }) {
   const classes = useStyles();
 
-  console.log(info)
+  // console.log(info)
   
   const { userId, imageURL } = info;
 
+  
+  // const [pending, setPending] = useState(false)
+  const [updated, setUpdated] = useState({})
   const [user, setUser] = useState(info)
+
+  console.log(user)
 
 
 
@@ -95,16 +105,16 @@ export default function CompanyAddCoach({ info, handleComponentChange, changePag
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
   // const [dataChange, setDataChange] = useState(false);
-  const [avatarImage, setAvatarImage] = useState(info.coachInfo.imageURL)
-  const [name, setName] = React.useState(info.name);
-  const [email, setEmail] = React.useState(info.email);
-  const [phone, setPhone] = React.useState(info.main_contact_number);
+  const [avatarImage, setAvatarImage] = useState(user.coachInfo?.imageURL ? user.coachInfo.imageURL : '')
+  const [name, setName] = React.useState(user.name);
+  const [email, setEmail] = React.useState(user.email);
+  const [phone, setPhone] = React.useState(user.main_contact_number);
   const [level, setLevel] = React.useState();
-  const [coachInfo, setCoachInfo] = React.useState(info.coachInfo);
-  const [verified, setVerified] = React.useState(info.verified);
-  const [existing, setExisting] = React.useState(info.companies && info.companies.length > 0 ? true : false)
+  const [coachInfo, setCoachInfo] = React.useState(user.coachInfo);
+  // const [documents, setDocuments] = React.useState(user.documents)
+  const [verified, setVerified] = React.useState(user.verified);
+  const [existing, setExisting] = React.useState(user.companies && user.companies.length > 0 ? true : false)
   const [imageUpload, setImageUpload] = useState(false)
-  const [pending, setPending] = useState(false)
   const [dataChange, setDataChange] = useState({
     coachingCertificate: false,
     dbsCertificate: false,
@@ -147,9 +157,12 @@ export default function CompanyAddCoach({ info, handleComponentChange, changePag
       
       refreshState(true)
       if (info.category === 'company') {
-        changePage(null, 0)
+        changePage(e, 0, false)
        } else {
-         refreshData().then(() => handleComponentChange('Summary', 0))
+         refreshData().then(() => {
+          setPending(false)
+          handleComponentChange('Summary', 0, false)
+        })
        } 
       })
       .catch((error) => {
@@ -174,11 +187,18 @@ export default function CompanyAddCoach({ info, handleComponentChange, changePag
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
-        console.log(res.data)
-        const resInfo = res.data.coachInfo ? res.data.coachInfo : res.data.data.coachInfo 
-        console.log(resInfo);
-        setCoachInfo({ ...coachInfo, ...resInfo })
+        // console.log(res.data)
+        const updatedUser = res.data.data ? res.data.data : res.data
+        const resInfo = res.data.coachInfo ? res.data.coachInfo : res.data.data.coachInfo
+        const updatedVerification = res.data.verification ? res.data.verification : res.data.data.verification
+        // console.log(resInfo);
+        console.log('updated file!')
         setPending(true)
+        // setInfo({ ...user, ...updatedVerification })
+        setUser({ ...updatedUser })
+        setCoachInfo({ ...resInfo })
+        // setDocuments({ })
+        // refreshState(true)
         setDataChange({ ...dataChange, [type]: false })
         // setDataChange(false);
       })
@@ -364,7 +384,7 @@ export default function CompanyAddCoach({ info, handleComponentChange, changePag
             {dataChange.coachingCertificate && (
               <CircularProgress size={24} className={classes.buttonProgress} />
             )}
-            { user.verification.coachDocumentationCheck ? <div className={classes.verify}><CheckIcon /><p>Verified</p></div> : user.verificationId.coachInfo || pending ? <div className={classes.verify}><HourglassEmptyIcon /><p>Pending</p></div> : <div className={classes.verify}><CrossIcon /><p>Rejected</p></div> }
+            { user.verification.coachDocumentationCheck ? <div className={classes.verify}><CheckIcon /><p>Verified</p></div> : user.verificationId?.coachInfo || pending ? <div className={classes.verify}><HourglassEmptyIcon /><p>Pending</p></div> : <div className={classes.verify}><CrossIcon /><p>Rejected</p></div> }
           </div>
         ) : (
           <p>no document uploaded</p>
@@ -417,7 +437,7 @@ export default function CompanyAddCoach({ info, handleComponentChange, changePag
             {dataChange.dbsCertificate && (
               <CircularProgress size={24} className={classes.buttonProgress} />
             )}
-             { user.verification.dbsDocumentationCheck ? <div className={classes.verify}><CheckIcon /><p>Verified</p></div> : user.verificationId.coachInfo || pending ? <div className={classes.verify}><HourglassEmptyIcon /><p>Pending</p></div> : <div className={classes.verify}><CrossIcon /><p>Rejected</p></div> }
+             { user.verification.dbsDocumentationCheck ? <div className={classes.verify}><CheckIcon /><p>Verified</p></div> : user.verificationId?.coachInfo || pending ? <div className={classes.verify}><HourglassEmptyIcon /><p>Pending</p></div> : <div className={classes.verify}><CrossIcon /><p>Rejected</p></div> }
           </div>
         ) : (
           <p>no document uploaded</p>
@@ -436,6 +456,27 @@ export default function CompanyAddCoach({ info, handleComponentChange, changePag
     </form>
     <Typography style={{ textAlign: 'center' }}>Please add the information and documents for your coaching certificate and DBS status.
     {<br/>} Once you have uploaded these ftballer.com will review and advise if they are accepted or not.</Typography>
+    <Dialog
+      open={modal}
+      handleClose={() => setModal(false)}>
+
+      <DialogTitle className={classes.title}>
+        There are unsaved changes
+      </DialogTitle>
+
+      <DialogContent className={classes.root}>
+        <Typography>You have made changes to your documents, do you want to save and submit them for verification?</Typography>
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={(event) => {
+          handleSubmit(event)
+        }} color="primary">
+          Save Documents
+        </Button>
+      </DialogActions>
+
+    </ Dialog>
     </>
   );
 }

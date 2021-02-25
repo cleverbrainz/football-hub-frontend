@@ -45,7 +45,12 @@ const RouteContainer = (props) => {
             locale={locale} />
         )} />
 
-      <Route exact path="/dashboard" component={ApplicationDashboard}/>
+      <Route exact path="/dashboard" render={(props) => (
+        <ApplicationDashboard
+        {...props}
+        locale={locale}
+        />
+        )} />
 
      
     </Switch>
