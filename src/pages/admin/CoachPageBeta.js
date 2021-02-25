@@ -122,10 +122,11 @@ function CoachPageBeta({ componentTabValue, handleComponentChange }) {
 
   const [companyCoaches, setCompanyCoaches] = useState()
   const [allAppCoaches, setAllAppCoaches] = useState()
-
+  const [coachEditPending, setCoachEditPending] = useState(false)
   const [newCoachDetail, setNewCoachDetail] = useState('')
   const [externalCoachDetail, setExternalCoachDetail] = useState()
   const [open, setOpen] = useState(false)
+  const [CoachEditOpen, setCoachEditOpen] = useState(false)
   const [deleteInProgress, setDeleteInProgress] = useState(false)
   const [coachIdToBeDeleted, setCoachIdToBeDeleted] = useState()
   const [existingAppCoachToBeAdded, setExistingAppCoachToBeAdded] = useState()
@@ -232,15 +233,21 @@ function CoachPageBeta({ componentTabValue, handleComponentChange }) {
       })
   }
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-    setDeleteInProgress(false)
+  const handleChange = (event, newValue, pending=coachEditPending) => {
+    if (!pending) {
+      setCoachEditOpen(false)
+      setValue(newValue);
+      setCoachEditPending(false)
+      setDeleteInProgress(false)
+    } else {
+      setCoachEditOpen(true)
+    }
   };
 
   const InternalCoachForm = (
     // <FormPropsTextFields classes={classes} />
 
-    <CompanyAddCoach changePage={handleChange} refreshState={setDeleteInProgress} info={user} />
+    <CompanyAddCoach changePage={handleChange} refreshState={setDeleteInProgress} info={user} setInfo={setUser} />
   )
 
   const Already = (
@@ -282,8 +289,8 @@ function CoachPageBeta({ componentTabValue, handleComponentChange }) {
         >
           <Tab label="Current Coaches" icon={<PeopleAltSharpIcon />} {...a11yProps(0)} />
           <Tab label="Add New Coach" icon={<PersonAddSharpIcon />} {...a11yProps(1)} />
-          <Tab label="Edit Details" icon={<PersonAddSharpIcon />} {...a11yProps(2)} />
-          <Tab label="Coach Profile" icon={<PersonAddSharpIcon />} {...a11yProps(3)} />
+          {alreadyCoach && <Tab label="Edit Details" icon={<PersonAddSharpIcon />} {...a11yProps(2)} />}
+          {alreadyCoach && <Tab label="Coach Profile" icon={<PersonAddSharpIcon />} {...a11yProps(3)} />}
         </Tabs>
       </AppBar>
 
@@ -397,7 +404,15 @@ function CoachPageBeta({ componentTabValue, handleComponentChange }) {
       </TabPanel>
 
       <TabPanel value={value} index={2}>
-        <CompanyAddCoach changePage={handleChange} handleComponentChange={handleComponentChange} refreshState={setDeleteInProgress} info={user} />
+        <CompanyAddCoach 
+          changePage={handleChange} 
+          handleComponentChange={handleComponentChange} 
+          refreshState={setDeleteInProgress} 
+          setPending={setCoachEditPending} 
+          pending={coachEditPending} 
+          info={user}
+          modal={CoachEditOpen}
+          setModal={setCoachEditOpen} />
       </TabPanel>
 
       <TabPanel value={value} index={3}>

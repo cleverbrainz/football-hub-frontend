@@ -173,7 +173,7 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
     const handleSendRequest = (e) => {
       e.preventDefault()
       if (!isCompany) return
-      axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId, coachName: user.name, coachEmail: user.email, type: window.location.hostname })
+      axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId, coachName: profileInfo.name, coachEmail: profileInfo.email, type: window.location.hostname })
         .then(res => {
           console.log(res.data)
           setRequestSent(true)
@@ -338,7 +338,7 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
     const handleSendRequest = (e) => {
       e.preventDefault()
       if (!isCompany) return
-      axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId, coachName: user.name, coachEmail: user.email, type: window.location.hostname })
+      axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId, coachName: profileInfo.name, coachEmail: profileInfo.email, type: window.location.hostname })
         .then(res => {
           console.log(res.data)
           setRequestSent(true)
