@@ -1,4 +1,4 @@
-const languages = {
+export const languages = {
   en: {
 
     marketingPage: {
@@ -55,7 +55,7 @@ const languages = {
           days: 'Tuesday - Friday',
           location: 'Seoul'
         }],
-        subSectionCampsCardButton: 'Apply Now'
+      subSectionCampsCardButton: 'Apply Now'
     },
 
   },
@@ -113,10 +113,117 @@ const languages = {
           days: '안녕하세요',
           location: '안녕하세요'
         }],
-        subSectionCampsCardButton: '안녕하세요'
+      subSectionCampsCardButton: '안녕하세요'
     }
 
   }
 }
 
-export default languages
+
+const arr = [
+  {
+    "pages": "marketing",
+    "sections": "1a",
+    "english": "hello",
+    "korean": "what"
+  },
+  {
+    "pages": "marketing",
+    "sections": "1b",
+    "english": "bye",
+    "korean": "why"
+  },
+  {
+    "pages": "marketing",
+    "sections": "2",
+    "english": "hello",
+    "korean": "what"
+  },
+  {
+    "pages": "marketing",
+    "sections": "3",
+    "english": "bye",
+    "korean": "why"
+  },
+  {
+    "pages": "marketing",
+    "sections": "4",
+    "english": "hello",
+    "korean": "what"
+  },
+  {
+    "pages": "application",
+    "sections": "1a",
+    "english": "bye",
+    "korean": "why"
+  },
+  {
+    "pages": "application",
+    "sections": "2",
+    "english": "hello",
+    "korean": "what"
+  },
+  {
+    "pages": "loginn",
+    "sections": "3a",
+    "english": "bye",
+    "korean": "why"
+  },
+  {
+    "pages": "login",
+    "sections": "3b",
+    "english": "hello",
+    "korean": "what"
+  },
+  {
+    "pages": "login",
+    "sections": "1a",
+    "english": "bye",
+    "korean": "why"
+  },
+  {
+    "pages": "login",
+    "sections": "2",
+    "english": "hello",
+    "korean": "what"
+  },
+  {
+    "pages": "login",
+    "sections": "3a",
+    "english": "bye",
+    "korean": "why"
+  },
+  {
+    "pages": "login",
+    "sections": "3b",
+    "english": "hello",
+    "korean": "what"
+  }
+]
+
+function convert(arr) {
+  let obj = {}
+
+  arr.forEach(x => {
+    if (!(x.pages in obj)) {
+      obj[x.pages] = {
+        [x.sections]: {
+          en: x.english,
+          ko: x.korean
+        }
+      }
+    } else {
+      obj[x.pages] = {
+        ...obj[x.pages],
+        [x.sections]: {
+          en: x.english,
+          ko: x.korean
+        }
+      }
+    }
+  })
+
+  return obj
+}
+
+export const { application, marketing, login, loginn } = convert(arr)

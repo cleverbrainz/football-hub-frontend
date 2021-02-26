@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Typography,
   Grid,
@@ -73,6 +73,10 @@ const useStyles = makeStyles((theme) => ({
 const ApplicationProcessFlow = () => {
 
   const classes = useStyles()
+
+  useEffect(() => {
+    localStorage.removeItem('token')
+  }, [])
 
   return (
     <div className={classes.root}>

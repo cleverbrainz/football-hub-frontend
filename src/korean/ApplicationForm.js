@@ -23,7 +23,7 @@ import axios from 'axios'
 import MuiAlert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress'
 import auth from '../lib/auth'
-import Skeleton from '@material-ui/lab/Skeleton';
+import moment from 'moment'
 import { useStripe } from "@stripe/react-stripe-js";
 
 const ColorlibConnector = withStyles({
@@ -232,6 +232,34 @@ export default function ApplicationForm({ history, location }) {
   })
   const steps = getSteps();
 
+  const {
+    name,
+    gender,
+    dob,
+    address_line_1,
+    address_line_2,
+    city,
+    postcode,
+    residency_certificate } = applicationDetails.personal_details
+  const {
+    height,
+    weight,
+    position,
+    preferred_foot } = applicationDetails.player_attributes
+  const {
+    current_club,
+    current_coaching_school,
+    previous_clubs,
+    previous_trails_attended,
+    highlights_footage_link,
+    social_media_link,
+    bio_description
+  } = applicationDetails.football_history
+  const {
+    link_1,
+    link_2,
+    link_3
+  } = applicationDetails.challenges
 
   const videoLinks = {
     goalkeeper_demos: [
@@ -267,11 +295,25 @@ export default function ApplicationForm({ history, location }) {
   function getData() {
     axios.get(`/users/${auth.getUserId()}`)
       .then(res => {
-        const { benfica_application } = res.data[0].applications
-        const { position } = benfica_application.player_attributes
+        const { applications, name } = res.data[0]
         const { goalkeeper_demos, outfield_demos } = videoLinks
-        setVideoSource(position === 'goalkeeper' ? goalkeeper_demos[0].src : outfield_demos[0].src)
-        setApplicationDetails(benfica_application)
+        const { personal_details } = applicationDetails
+
+        if (!applications.hasOwnProperty('benfica_application')) {
+
+          setApplicationDetails({
+            ...applicationDetails,
+            personal_details: {
+              ...personal_details,
+              name
+            }
+          })
+        } else {
+          const { benfica_application } = res.data[0].applications
+          const { position } = benfica_application.player_attributes
+          setVideoSource(position === 'goalkeeper' ? goalkeeper_demos[0].src : outfield_demos[0].src)
+          setApplicationDetails(benfica_application)
+        }
 
       })
   }
@@ -285,8 +327,6 @@ export default function ApplicationForm({ history, location }) {
     } else {
       getData()
     }
-
-
   }, [])
 
   function Alert(props) {
@@ -300,13 +340,19 @@ export default function ApplicationForm({ history, location }) {
 
   function handleApplicationSave(type) {
     setIsLoading(true)
+    const age = moment('2021-08-31').diff(dob, 'years')
+    const group = age < 16 ? 16 : (age !== 18 && age < 19) ? age + 1 : 18
 
     axios.patch(`/users/${auth.getUserId()}`, {
       userId: auth.getUserId(),
       updates: {
-        dob: applicationDetails.personal_details.dob,
+        dob,
         applications: {
           benfica_application: {
+            ...(type && {
+              age_group: `Under ${group}s`,
+              submitted: true
+            }),
             ...applicationDetails
           }
         }
@@ -334,7 +380,6 @@ export default function ApplicationForm({ history, location }) {
 
       setTimeout(() => {
         history.push('/success=true')
-        localStorage.removeItem('token')
       }, (3000));
 
 
@@ -354,23 +399,54 @@ export default function ApplicationForm({ history, location }) {
 
   function handleApplicationChange(e) {
     const { name, value } = e.target
+    const { player_attributes, personal_details } = applicationDetails
 
     if (value === 'goalkeeper' ||
       (value !== 'goalkeeper' && position === 'goalkeeper')) {
       setVideoSource()
-    }
+      setApplicationDetails({
+        ...applicationDetails,
+        player_attributes: {
+          ...player_attributes,
+          [name]: value
+        }
+      })
+    } else if (name === 'dob') {
+      const age = moment('2021-08-31').diff(value, 'years')
+      const group = age < 16 ? 16 : (age !== 18 && age < 19) ? age + 1 : 18
 
-    Object.keys(applicationDetails).forEach(x => {
-      if (applicationDetails[x].hasOwnProperty(name)) {
-        const y = applicationDetails[x]
+      setMessage(age < 19 ? {
+        info: `You will be placed with the Under ${group}s age group.`
+      } : {
+          error: `Your date of birth will not be recorded as it exceeds the camps age limit.`
+        })
+
+      if (age < 19) {
         setApplicationDetails({
           ...applicationDetails,
-          [x]: {
-            ...y, [name]: value
+          personal_details: {
+            ...personal_details,
+            dob: value
           }
         })
       }
-    })
+
+
+    } else {
+      Object.keys(applicationDetails).forEach(x => {
+        if (applicationDetails[x].hasOwnProperty(name)) {
+          const y = applicationDetails[x]
+          setApplicationDetails({
+            ...applicationDetails,
+            [x]: {
+              ...y, [name]: value
+            }
+          })
+        }
+      })
+    }
+
+
   }
 
   const handleResidencyDocumentUpload = (e) => {
@@ -382,7 +458,7 @@ export default function ApplicationForm({ history, location }) {
     certificate.append('owner', auth.getUserId())
     certificate.append('certificate', doc[0], doc[0].name)
 
-    console.log(doc[0].name)
+    handleApplicationSave()
 
     axios.post('/korean-residency', certificate,
       { headers: { Authorization: `Bearer ${auth.getToken()}` } })
@@ -419,34 +495,7 @@ export default function ApplicationForm({ history, location }) {
     }
   }
 
-  const {
-    name,
-    gender,
-    dob,
-    address_line_1,
-    address_line_2,
-    city,
-    postcode,
-    residency_certificate } = applicationDetails.personal_details
-  const {
-    height,
-    weight,
-    position,
-    preferred_foot } = applicationDetails.player_attributes
-  const {
-    current_club,
-    current_coaching_school,
-    previous_clubs,
-    previous_trails_attended,
-    highlights_footage_link,
-    social_media_link,
-    bio_description
-  } = applicationDetails.football_history
-  const {
-    link_1,
-    link_2,
-    link_3
-  } = applicationDetails.challenges
+
 
   const firstPage = (
     <>
@@ -585,7 +634,7 @@ export default function ApplicationForm({ history, location }) {
                     onClick={() => window.open(residency_certificate, '_blank')}
                     class="file-name">
                     <Tooltip placement="bottom-start" title="Click to view uploaded document">
-                     <span> {residency_certificate} </span> 
+                      <span> {residency_certificate} </span>
                     </Tooltip>
                   </span>}
 
@@ -633,16 +682,22 @@ export default function ApplicationForm({ history, location }) {
           </div>
           <div class="select">
             <select value={position} name='position'>
+
               <option disabled={position !== ''} value=""> </option>
               <option value="goalkeeper"> Goalkeeper </option>
-              <option value="right fullback"> Right Fullback </option>
-              <option value="left fullback"> Left Fullback </option>
-              <option value="center back"> Center Back</option>
-              <option value="defending / holding midfielder"> Defending / Holding Midfielder </option>
-              <option value="right midfielder / winger"> Right Midfielder / Winger </option>
-              <option value="left midfielder / winger"> Left Midfielder / Wingers </option>
-              <option value="central / box-to-box midfielder">Central / Box-to-Box Midfielder </option>
-              <option value="attacking midfielder / playmaker"> Attacking Midfielder / Playmaker </option>
+              <option value="right back"> Right Back </option>
+              <option value="right wing back"> Right Wing Back  </option>
+              <option value="right wing"> Right Wing </option>
+              <option value="right midfield"> Right Midfield </option>
+              <option value="centre back"> Centre Back </option>
+              <option value="sweeper"> Sweeper </option>
+              <option value="left back"> Left Back</option>
+              <option value="left wing back"> Left Wing Back</option>
+              <option value="left wing"> Left Wing </option>
+              <option value="left midfield"> Left Midfield</option>
+              <option value="central midfield"> Central Midfield </option>
+              <option value="defensive midfield"> Defensive Midfield </option>
+              <option value="attacking midfield"> Attacking Midfield </option>
               <option value="striker">Striker </option>
             </select>
           </div>
@@ -903,8 +958,8 @@ export default function ApplicationForm({ history, location }) {
         open={message}
         autoHideDuration={5000}
         onClose={closeSnackBar}>
-        <Alert onClose={closeSnackBar} severity={message.success ? 'success' : 'error'}>
-          {message.success ? message.success : message.error}
+        <Alert onClose={closeSnackBar} severity={Object.keys(message)[0]}>
+          {message[Object.keys(message)[0]]}
         </Alert>
       </Snackbar>}
 

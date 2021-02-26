@@ -146,7 +146,7 @@ const UserAuthForm = ({ locale, history }) => {
     const { email, password, player_name } = registerDetails
     axios.post('/login', { email, password })
     .then(res => {
-      const { application_fee_paid, token, stripeId } = res.data
+      const { application_fee_paid, token, stripeId, applications } = res.data
       const fee_needed = application_fee_paid === 'unpaid'
       const created = !existed ? 'been created and automatically' : ''
 
@@ -173,7 +173,13 @@ const UserAuthForm = ({ locale, history }) => {
             handleAfterRequestStates({ error: 'Could not redirect you to payment. Please try again.' })
           }
         } else {
-          history.push('/application')
+          const { benfica_application } = applications
+          if (benfica_application && benfica_application.submitted)  {
+            history.push('/success=true')
+          } else {
+            history.push('/application')
+          }
+         
         }
         
       }, 2000);
