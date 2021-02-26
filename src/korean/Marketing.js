@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import languages from './LanguageSkeleton'
+import { languages, marketing } from './LanguageSkeleton'
 import {
   Typography,
   Grid,
@@ -203,6 +203,9 @@ const Marketing = (props) => {
     subSectionCampsCardButton
   } = languages[locale].marketingPage
 
+  useEffect(() => {
+    console.log(marketing)
+  }, [])
 
 
   return (
@@ -431,7 +434,7 @@ const Marketing = (props) => {
                     variant="outlined"
                     color="primary"
                     className={classes.button}
-                    onClick={() => history.push('/apply')}
+                    onClick={() => history.push('/authentication')}
                     endIcon={<ArrowForwardIcon />}>
                     {subSectionCampsCardButton}
                   </Button>
