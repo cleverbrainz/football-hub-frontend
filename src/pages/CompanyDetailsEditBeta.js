@@ -210,41 +210,6 @@ function CompanyDetailsEdit({ handleComponentChange }) {
               onChange={(e) => setCompanyInfo({ ...companyInfo, name: e.target.value })}
             ></OutlinedInput>
           </FormControl>
-          <FormControl variant="outlined" className={classes.spacing}>
-            <InputLabel htmlFor="component-outlined"> Main Email </InputLabel>
-            <OutlinedInput
-              label="Company Email"
-              value={!companyInfo.main_email ? companyInfo.email : companyInfo.main_email }
-              onChange={(e) => setCompanyInfo({ ...companyInfo, main_email: e.target.value })}
-            />
-          </FormControl>
-          <FormControl variant="outlined" className={classes.spacing}>
-            <InputLabel htmlFor="component-outlined">
-              {" "}
-              Main Contact Number{" "}
-            </InputLabel>
-            <OutlinedInput
-              label="Main Contact Number"
-              value={companyInfo.main_contact_number}
-              onChange={(e) => setCompanyInfo({ ...companyInfo, main_contact_number: e.target.value })}
-            />
-          </FormControl>
-          <FormControl variant="outlined" className={classes.spacing}>
-            <InputLabel htmlFor="component-outlined"> Accounts Email </InputLabel>
-            <OutlinedInput
-              label="Accounts email (Optional)"
-              value={companyInfo.accounts_email}
-              onChange={(e) => setCompanyInfo({ ...companyInfo, accounts_email: e.target.value })}
-            />
-          </FormControl>
-          <FormControl variant="outlined" className={classes.spacing}>
-            <InputLabel htmlFor="component-outlined"> Accounts Contact Number </InputLabel>
-            <OutlinedInput
-              label="Accounts Contact Number (Optional)"
-              value={companyInfo.accounts_contact_number}
-              onChange={(e) => setCompanyInfo({ ...companyInfo, accounts_contact_number: e.target.value })}
-            />
-          </FormControl>
           {/* <FormControl variant="outlined" className={classes.spacing}>
             <InputLabel htmlFor="component-outlined"> Company Registration Number </InputLabel>
             <OutlinedInput
@@ -261,8 +226,6 @@ function CompanyDetailsEdit({ handleComponentChange }) {
               onChange={(e) => setCompanyInfo({ ...companyInfo, vat_number: e.target.value })}
             />
           </FormControl>
-        </div>
-        <div className={classes.subforms}>
           <FormControl className={classes.spacing} variant="outlined">
             <InputLabel htmlFor="component-outlined" id="level">
               Type Of Company
@@ -287,6 +250,8 @@ function CompanyDetailsEdit({ handleComponentChange }) {
               onChange={(e) => setCompanyInfo({ ...companyInfo, company_registration_number: e.target.value })}
             />
           </FormControl>}
+        </div>
+        <div className={classes.subforms}>
           {['public_liability_insurance', 'professional_indemnity_insurance'].map(item => {
             const sentence = item.split('_').map(word => word[0].toUpperCase() + word.slice(1)).join(' ')
             return (

@@ -8,6 +8,8 @@ import FormLabel from '@material-ui/core/FormLabel'
 import PropTypes from 'prop-types';
 import ListIcon from '@material-ui/icons/List';
 import PersonIcon from '@material-ui/icons/Person';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import {
   Box,
   Container,
@@ -144,11 +146,12 @@ function AlertDialog({ open, setOpen, handleSave, setEditing }) {
 }
 
 
-const Application = ({ permissions, application, applications, setApplications, index, setEditing, open, setOpen, editing }) => {
+const Application = ({ permissions, application, applications, setApplications, index, setEditing, open, setOpen, editing, averages }) => {
   const [userId, email, applicationInfo] = application
   const { personal_details, player_attributes, challenges, football_history } = applicationInfo
 
   const [ratings, setRatings] = useState(applicationInfo.ratings)
+  const [averagePositionScore, averageCategoryScore, playerCategory] = averages(player_attributes.position)
 
   console.log({ratings})
 
@@ -212,9 +215,12 @@ const Application = ({ permissions, application, applications, setApplications, 
       <Typography>{<a href={football_history.highlights_footage_link} target="_blank" rel="noopener noreferrer">View Highlights Footage</a>}</Typography>
       
         <br />
-        <Typography variant="h6">Overall Score: {Object.values(ratings.challengesMap).reduce((x,y) => x + y, 0) === 0 || ratings.application === 0 ? 'N/A' : Number((Object.values(ratings.challengesMap).reduce((x,y) => x + y, 0) / 3).toFixed(1)) + Number(ratings.application)}</Typography>
         <Typography>Application Score: {ratings.application === 0 ? 'N/A' : ratings.application}</Typography>
-        <Typography>Challenge Score: {ratings.challenges === 0 ? 'N/A' : (Object.values(ratings.challengesMap).reduce((x,y) => x + y, 0) / 3).toFixed(1)}</Typography>
+        <Typography>Challenge Score: {Object.values(ratings.challengesMap).some(value => value === 0) ? 'N/A' : (Object.values(ratings.challengesMap).reduce((x,y) => x + y, 0))}</Typography>
+        <Typography variant="h6">Overall Score: {Object.values(ratings.challengesMap).reduce((x,y) => x + y, 0) === 0 || ratings.application === 0 ? 'N/A' : Number((Object.values(ratings.challengesMap).reduce((x,y) => x + y, 0))) + Number(ratings.application)}</Typography>
+        <br />
+        <Typography>Average score for {player_attributes.position}: {averagePositionScore}</Typography>
+        { !['Striker', 'Goalkeeper'].some(x => x === player_attributes.position) && <Typography>Average score for {playerCategory}: {averageCategoryScore}</Typography> }
         <br />
         <Typography>Approve For Course</Typography>
         <FormControl style={{ display: 'flex', flexDirection: 'row'}}>
@@ -267,7 +273,8 @@ const Application = ({ permissions, application, applications, setApplications, 
     highlights_footage_link: '',
     social_media_link: '',
     bio_description: '', */}
-
+<br />
+        <Typography>{<a href={football_history.highlights_footage_link} target="_blank" rel="noopener noreferrer">View Highlights Footage</a>}</Typography>
         <br />
         <Typography>Select Rating For Application</Typography>
         <FormControl style={{ display: 'flex', flexDirection: 'row'}}>
@@ -275,10 +282,12 @@ const Application = ({ permissions, application, applications, setApplications, 
         <Select value={ratings.application} style={{ marginRight: '10px' }} onChange={(event) => {
           setEditing(true)
           setRatings({ ...ratings, application: event.target.value})}}>
-        <MenuItem value={0} disabled>-</MenuItem>
-          <MenuItem value={3}>3</MenuItem>
-          <MenuItem value={2}>2</MenuItem>
-          <MenuItem value={1}>1</MenuItem>
+        <MenuItem value={0} disabled>Unrated</MenuItem>
+          <MenuItem value={5}>5 - Poor</MenuItem>
+          <MenuItem value={4}>4 - Below Average</MenuItem>
+          <MenuItem value={3}>3 - Average</MenuItem>
+          <MenuItem value={2}>2 - Good</MenuItem>
+          <MenuItem value={1}>1 - Excellent</MenuItem>
         </Select>
         {/* <FormHelperText></FormHelperText> */}
         { editing && <Button variant="contained" color="primary" onClick={(event) => handleSave(event)}>Save</Button>}
@@ -314,10 +323,12 @@ const Application = ({ permissions, application, applications, setApplications, 
           setEditing(true)
           setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge1: event.target.value}})
           }}>
-        <MenuItem value={0} disabled>-</MenuItem>
-          <MenuItem value={3}>3</MenuItem>
-          <MenuItem value={2}>2</MenuItem>
-          <MenuItem value={1}>1</MenuItem>
+        <MenuItem value={0} disabled>Unrated</MenuItem>
+          <MenuItem value={5}>5 - Poor</MenuItem>
+          <MenuItem value={4}>4 - Below Average</MenuItem>
+          <MenuItem value={3}>3 - Average</MenuItem>
+          <MenuItem value={2}>2 - Good</MenuItem>
+          <MenuItem value={1}>1 - Excellent</MenuItem>
         </Select>
         </FormControl>
         <Typography>Challenge 2: <a href={challenges.link_2} target="_blank" rel="noopener noreferrer">Open video</a></Typography><FormControl>
@@ -325,10 +336,12 @@ const Application = ({ permissions, application, applications, setApplications, 
         setEditing(true)
         setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge2: event.target.value}})
         }}>
-      <MenuItem value={0} disabled>-</MenuItem>
-        <MenuItem value={3}>3</MenuItem>
-        <MenuItem value={2}>2</MenuItem>
-        <MenuItem value={1}>1</MenuItem>
+      <MenuItem value={0} disabled>Unrated</MenuItem>
+          <MenuItem value={5}>5 - Poor</MenuItem>
+          <MenuItem value={4}>4 - Below Average</MenuItem>
+          <MenuItem value={3}>3 - Average</MenuItem>
+          <MenuItem value={2}>2 - Good</MenuItem>
+          <MenuItem value={1}>1 - Excellent</MenuItem>
       </Select>
       </FormControl>
         <Typography>Challenge 3: <a href={challenges.link_3} target="_blank" rel="noopener noreferrer">Open video</a></Typography><FormControl>
@@ -336,14 +349,17 @@ const Application = ({ permissions, application, applications, setApplications, 
         setEditing(true)
         setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge3: event.target.value}})
         }}>
-      <MenuItem value={0} disabled>-</MenuItem>
-        <MenuItem value={3}>3</MenuItem>
-        <MenuItem value={2}>2</MenuItem>
-        <MenuItem value={1}>1</MenuItem>
+      <MenuItem value={0} disabled>Unrated</MenuItem>
+        <MenuItem value={5}>5 - Poor</MenuItem>
+          <MenuItem value={4}>4 - Below Average</MenuItem>
+          <MenuItem value={3}>3  - Average</MenuItem>
+          <MenuItem value={2}>2  - Good</MenuItem>
+          <MenuItem value={1}>1  - Excellent</MenuItem>
       </Select>
       </FormControl>
         <br />
-        <Typography>{<a href={football_history.highlights_footage_link} target="_blank" rel="noopener noreferrer">View Highlights Footage</a>}</Typography>
+        <br />
+        { player_attributes.position === 'Goalkeeper' && <Typography>{<a href={football_history.highlights_footage_link} target="_blank" rel="noopener noreferrer">View Highlights Footage</a>}</Typography> }
         <br />
         <Typography>Current Rating For Challenges</Typography>
         <FormControl style={{ display: 'flex', flexDirection: 'row'}}>
@@ -357,7 +373,7 @@ const Application = ({ permissions, application, applications, setApplications, 
           <MenuItem value={2}>2</MenuItem>
           <MenuItem value={1}>1</MenuItem>
         </Select> */}
-        <Typography>{(Object.values(ratings.challengesMap).reduce((acc, res) => acc + res, 0) / 3).toFixed(1)}</Typography>
+        <Typography>{(Object.values(ratings.challengesMap).reduce((acc, res) => acc + res, 0))}</Typography>
         { editing && <Button variant="contained" color="primary" onClick={(event) => handleSave(event)}>Save</Button>}
         {/* <FormHelperText></FormHelperText> */}
       </FormControl>
@@ -381,15 +397,121 @@ const ApplicationDashboard = ({locale}) => {
   const [coursesModerating, setCoursesModerating] = useState(['course1', 'course2'])
   const [selectedCourse, setSelectedCourse] = useState('select')
   const [applications, setApplications] = useState([])
+  const [filteredApplications, setFilteredApplications] = useState([])
   const [applicantIndex, setApplicantIndex] = useState(0)
   const [editing, setEditing] = useState(false)
   const [open, setOpen] = useState(false)
+  const [filters, setFilters] = useState({
+    ageRange: '0-100',
+    positionCategory: 'All',
+    position: 'All'
+  })
+  const [sort, setSort] = useState({ type: '', direction: 'down' })
+
+  const positions = {
+    Defence: ['Right Back', 'Right Wing Back', 'Left Wing Back', 'Left Back', 'Centre Back', 'Sweeper'],
+    Midfield: ['Right Wing', 'Right Midfield', 'Left Wing', 'Left Midfield', 'Central Midfield', 'Defensive Midfield', 'Attacking Midfield'],
+    Attack: ['Striker'],
+    Goalkeeper: ['Goalkeeper'],
+  }
+
+  const getAverageScore = (position, cat='') => {
+
+    let playerCategory = cat
+    if (cat !== 'All') {
+      for (const cat of Object.keys(positions)) {
+        if (positions[cat].some(x => x === position)) {
+          playerCategory = cat
+        }
+      }
+    }
+    const filteredCategoryPlayers = []
+    const filteredPositionPlayers = []
+    for (const application of applications) {
+      const [id, email, player] = application
+      if (player.ratings.application > 0 && !Object.values(player.ratings.challengesMap).some(x => x === 0)) {
+        const sum = Number(player.ratings.application) + Number(Object.values(player.ratings.challengesMap).reduce((x,y) => x + y, 0))
+        if (playerCategory === 'All' || (positions[playerCategory].includes(player.player_attributes.position) && position === 'All')) {
+          filteredCategoryPlayers.push(sum)
+          filteredPositionPlayers.push(sum)
+        } else if (position === player.player_attributes.position) {
+          filteredCategoryPlayers.push(sum)
+        }
+      }
+    }
+    const averagePositionScore = filteredPositionPlayers.length > 0 ? (filteredPositionPlayers.reduce((a, b) => a + b, 0) / filteredPositionPlayers.length).toFixed(1) : 'N/A'
+    const averageCategoryScore = filteredCategoryPlayers.length > 0 ? (filteredCategoryPlayers.reduce((a, b) => a + b, 0) / filteredCategoryPlayers.length).toFixed(1) : 'N/A'
+    console.log(filteredCategoryPlayers)
+
+    return [averagePositionScore, averageCategoryScore, playerCategory]
+  }
+
   // const [language, setLanguage] = useState(null)
 
   // console.log(props)
 
   // const benficaUserIds = ['aBDdhuP8D9abnRD3LxoOKuNu7Wr2', 'vfqmRwEAeXMijj2WUozS8aT034M2', '6KIIPGyFOzLPePWhCeupWCBBjRw1']
-  const benficaUserIds = ['aBDdhuP8D9abnRD3LxoOKuNu7Wr2', 'vfqmRwEAeXMijj2WUozS8aT034M2', 'zAUwes3cC5ZMLHBPV79AKeM9vVK2']
+  const benficaUserIds = ['aBDdhuP8D9abnRD3LxoOKuNu7Wr2', 'vfqmRwEAeXMijj2WUozS8aT034M2', 'zAUwes3cC5ZMLHBPV79AKeM9vVK2', 'Tyel8gUXLCNK1o9Cx7DobGAtRPk2']
+
+
+  const handleFilterChange = (event) => {
+    console.log(event)
+    const name = event.target.name
+    const newFilters = name === 'positionCategory' ? { ...filters, [name]: event.target.value, position: 'All'} : { ...filters, [name]: event.target.value }
+    console.log(newFilters)
+    const [lowAge, highAge] = newFilters.ageRange.split('-')
+    const filteredPlayers = []
+    for (const application of applications) {
+      const [id, email, player] = application
+      // if (
+      //   Number(auth.dobToAge(player.personal_details.dob)) >= lowAge &&
+      //   Number(auth.dobToAge(player.personal_details.dob)) <= highAge
+      // ) {
+        if (newFilters.positionCategory === 'All') {
+          filteredPlayers.push(application)
+        } else if (positions[newFilters.positionCategory].includes(player.player_attributes.position)) {
+          if (newFilters.position === 'All' || newFilters.position === player.player_attributes.position) {
+            filteredPlayers.push(application)
+          }
+        } 
+      // }
+    }
+
+    console.log({filteredPlayers})
+    setFilters(newFilters)
+    setFilteredApplications(filteredPlayers)
+  }
+
+  const handleSort = (event, type) => {
+    const [parent, key] = type.split(' ')
+    console.log(parent, key)
+    // console.log(event)
+    const newSort = sort.type === key ? sort.direction === 'down' ? { type: key, direction: 'up' } : { type: key, direction: 'down' } : { type: key, direction: 'down' }
+    event.preventDefault()
+    const sorted = [...filteredApplications]
+    if (key === 'dob') {
+      sorted.sort((a, b) => b[2][parent][key].localeCompare(a[2][parent][key]))
+    } else if (key === 'score') {
+      sorted.sort((a, b) => {
+        const sortA = Object.values(a[2].ratings.challengesMap).some(x => x === 0) ? 100 : (Number(a[2].ratings.application) + Number(Object.values(a[2].ratings.challengesMap).reduce((x,y) => x + y, 0)))
+        const sortB = Object.values(b[2].ratings.challengesMap).some(x => x === 0) ? 100 : (Number(b[2].ratings.application) + Number(Object.values(b[2].ratings.challengesMap).reduce((x,y) => x + y, 0)))
+        return sortA - sortB
+        // return (Number(a[2].ratings.application) + Number(Object.values(a[2].ratings.challengesMap).reduce((x,y) => x + y, 0))) - (Number(b[2].ratings.application) + Number(Object.values(b[2].ratings.challengesMap).reduce((x,y) => x + y, 0)))
+      })
+    } else {
+      sorted.sort((a, b) => a[2][parent][key].localeCompare(b[2][parent][key]))
+    }
+    
+    if (sorted[0][0] === filteredApplications[0][0] && newSort.type === sort.type) {
+     sorted.reverse()
+    }
+      
+    //  === filteredApplications ? filteredApplications.sort((a, b) => b[2][parent][key] > a[2][parent][key]) : filteredApplications.sort((a, b) => a[2][parent][key] > b[2][parent][key])
+    console.log(sorted)
+    setSort({ ...newSort })
+    setFilteredApplications(sorted)
+    
+  }
   
 
   console.log(permissions)
@@ -408,6 +530,7 @@ const ApplicationDashboard = ({locale}) => {
       applicantArray.push(app)
     }
     setApplications(applicantArray)
+    setFilteredApplications(applicantArray)
     // for (const course of courses) {
     //   let courseData = await axios.get(`/courses/${course}`)
     //   courseData = await courseData.data[0]
@@ -431,6 +554,8 @@ const ApplicationDashboard = ({locale}) => {
       Age: 'Age',
       City: 'City',
       Status: 'Status',
+      Position: 'Position',
+      Score: 'Score',
       Approved: 'Approved',
       ViewApplication: 'View Application'
     },
@@ -442,6 +567,8 @@ const ApplicationDashboard = ({locale}) => {
       Age: '나이',
       City: '시티',
       Status: '상태',
+      Position: 'Position',
+      Score: 'Score',
       Approved: '승인 됨',
       ViewApplication: '응용 프로그램보기'
 
@@ -516,29 +643,146 @@ const ApplicationDashboard = ({locale}) => {
       </AppBar>
 
       <TabPanel value={tabValue} index={0}>
+        <Container style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', textAlign: 'center' }}>
+          <div>
+      <FormControl>
+                    <InputLabel id="demo-simple-select-label">
+                      Category
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={filters.positionCategory}
+                      inputProps={{
+                        name: 'positionCategory',
+                      }}
+                      onChange={handleFilterChange}
+                    >
+                      <MenuItem value={'All'}>All positions</MenuItem>
+                      <MenuItem value={'Goalkeeper'}>Goalkeeper</MenuItem>
+                      <MenuItem value={'Defence'}>Defence</MenuItem>
+                      <MenuItem value={'Midfield'}>Midfield</MenuItem>
+                      <MenuItem value={'Attack'}>Attack</MenuItem>
+                    </Select>
+                  </FormControl>
+                  { !['All', 'Attack', 'Goalkeeper'].some(x => x === filters.positionCategory) && <FormControl>
+                  <InputLabel id="demo-simple-select-label">
+                      Position
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={filters.position}
+                      inputProps={{
+                        name: 'position',
+                      }}
+                      onChange={handleFilterChange}
+                    >
+                      <MenuItem value={'All'}>All</MenuItem>
+                     { positions[filters.positionCategory].map(position => {
+                        return (
+                          <MenuItem value={position}>{position}</MenuItem>
+                        )
+                      })}
+                    </Select>
+                  </FormControl> }
+                  </div>
+                  
+                  {/* <FormControl>
+                    <InputLabel id="demo-simple-select-label">
+                      Age
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={filters.ageRange}
+                      inputProps={{
+                        name: 'ageRange',
+                      }}
+                      onChange={handleFilterChange}
+                    >
+                      <MenuItem value={'0-100'}>All</MenuItem>
+                      <MenuItem value={'20-24'}>20 - 24</MenuItem>
+                      <MenuItem value={'24-29'}>24 - 29</MenuItem>
+                      <MenuItem value={'30-35'}>30 - 34</MenuItem>
+                      {/* Age Groups: 15-16 - 17 - 18 */}
+                    {/* </Select> */}
+                  {/* </FormControl> */}
+                  { permissions === 0 && <Typography variant="h6">{filters.positionCategory === 'All' ? `Average Completed Application Score: ${getAverageScore('All', 'All')[0]}` : filters.position === 'All' ? `Average ${filters.positionCategory} Score: ${getAverageScore('All', filters.positionCategory)[1]}` : `Average ${filters.position} Score: ${getAverageScore(filters.position, filters.positionCategory)[1]}` }</Typography> }
+                  </Container>
       <Table>
         <TableHead>
         <TableRow>
-                <TableCell align="right">{text[locale].Name}</TableCell>
-                <TableCell align="right">{text[locale].Age}</TableCell>
-                <TableCell align="right">{text[locale].City}</TableCell>
-                <TableCell align="right">{text[locale].Status}</TableCell>
+                <TableCell align="right">
+                  <Button onClick={(event) => handleSort(event, 'personal_details name')}>
+                    {text[locale].Name} {sort.type === 'name' ? sort.direction === 'down' ? <ArrowDropDownIcon/> : <ArrowDropUpIcon/> : <ArrowDropDownIcon style={{ opacity: 0}}/>  }
+                  </Button>
+                </TableCell>
+                <TableCell align="right" >
+                  <Button onClick={(event) => handleSort(event, 'personal_details dob')}>
+                    {text[locale].Age}  {sort.type === 'dob' ? sort.direction === 'down' ? <ArrowDropDownIcon/> : <ArrowDropUpIcon/> : <ArrowDropDownIcon style={{ opacity: 0}}/>  }
+                  </Button>
+                </TableCell>
+                <TableCell align="right">
+                  <Button onClick={(event) => handleSort(event, 'personal_details city')}>
+                    {text[locale].City} {sort.type === 'city' ? sort.direction === 'down' ? <ArrowDropDownIcon/> : <ArrowDropUpIcon/> : <ArrowDropDownIcon style={{ opacity: 0}}/>  }
+                  </Button>
+                </TableCell>
+                { (permissions === 0 || permissions === 2) && 
+                <TableCell align="right" >
+                  <Button onClick={(event) => handleSort(event, 'player_attributes position')}>
+                    {text[locale].Position} {sort.type === 'position' ? sort.direction === 'down' ? <ArrowDropDownIcon/> : <ArrowDropUpIcon/> : <ArrowDropDownIcon style={{ opacity: 0}}/> }
+                  </Button>
+                  </TableCell> 
+                }
+                <TableCell align="right">
+                  {/* <Button onClick={(event) => handleSort(event, 'personal_details status')}> */}
+                  {/* {text[locale].Status} {sort.type === 'city' ? sort.direction === 'down' ? <ArrowDropDownIcon/> : <ArrowDropUpIcon/> : '' } */}
+                  {/* </Button> */}
+                  {text[locale].Status}
+                  </TableCell>
+                { permissions === 0 && 
+                  <TableCell align="right">
+                    <Button onClick={(event) => handleSort(event, 'player score')}>
+                      {text[locale].Score} {sort.type === 'score' ? sort.direction === 'down' ? <ArrowDropDownIcon/> : <ArrowDropUpIcon/> : <ArrowDropDownIcon style={{ opacity: 0}}/> }
+                    </Button>
+                  </TableCell> }
                 { permissions === 0 && <TableCell align="right">{text[locale].Approved}</TableCell> }
                 <TableCell align="right"></TableCell>
               </TableRow>
         </TableHead>
         <TableBody>
-          { applications.map(([userId, email, applicant], index) => {
-            const { personal_details, ratings } = applicant
+          { filteredApplications.map(([userId, email, applicant], index) => {
+            const { personal_details, player_attributes, ratings } = applicant
             return (
               <TableRow>
                 <TableCell>{personal_details.name}</TableCell>
-                <TableCell>{personal_details.dob}</TableCell>
+                <TableCell>{auth.dobToAge(personal_details.dob)}</TableCell>
                 <TableCell>{personal_details.city}</TableCell>
-                { permissions === 0 ? <TableCell>{ratings.application > 0 && ratings.challenges > 0 ? 'Checked' : 'Awaiting Check'}</TableCell> :
-                permissions === 1 ? <TableCell>{ratings.application > 0 ? 'Checked' : 'Awaiting Check'}</TableCell> : 
-                <TableCell>{Object.values(ratings.challengesMap).reduce((x,y) => x + y, 0) > 0 ? 'Checked' : 'Awaiting Check'}</TableCell>}
-                { permissions === 0 && <TableCell>{ratings.indulge === 0 ? 'Awaiting Approval' : ratings.indulge }</TableCell> }
+                { (permissions === 0 || permissions === 2)&& 
+                <TableCell>{player_attributes.position}</TableCell> 
+                }
+                { permissions === 0 ? 
+                <TableCell>
+                  {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? 'Checked' : 'Awaiting Check'}
+                </TableCell> :
+                permissions === 1 ? 
+                <TableCell>
+                  {ratings.application > 0 ? 'Checked' : 'Awaiting Check'}
+                  </TableCell> : 
+                <TableCell>
+                  {!Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? 'Checked' : 'Awaiting Check'}
+                  </TableCell>
+                }
+                { permissions === 0 && 
+                <TableCell>
+                  {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? Number(ratings.application) + Number(Object.values(ratings.challengesMap).reduce((x,y) => x + y, 0)) : 'N/A' }
+                </TableCell> }
+                { permissions === 0 && 
+                <TableCell>
+                  {ratings.indulge === 0 ? 'Awaiting Approval' : ratings.indulge }
+                  </TableCell>
+                }
                 <TableCell><Link onClick={() => {
                   setApplicantIndex(index) 
                   setTabValue(1)}}>{text[locale].ViewApplication}</Link></TableCell>
@@ -549,7 +793,7 @@ const ApplicationDashboard = ({locale}) => {
       </Table>
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
-      <Application editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} application={applications[applicantIndex]} permissions={permissions} setApplications={setApplications} index={applicantIndex}/>
+      <Application editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} index={applicantIndex} averages={getAverageScore}/>
       </TabPanel>
     </Container>
   )
