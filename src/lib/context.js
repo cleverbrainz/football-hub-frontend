@@ -19,7 +19,8 @@ export const AuthProvider = ({ children }) => {
       console.log('authchange!!!')
       console.log(user)
       console.log(firebaseApp.auth().currentUser)
-      if(user !== null){
+      if (user !== null) {
+      // if (user !== null && user.emailVerified) {
         user.getIdToken().then(token => {
           console.log(token)
           auth.setToken(token)
@@ -29,14 +30,14 @@ export const AuthProvider = ({ children }) => {
             'checked': true
           });
         });
-      }else{
-        console.log('no user')
-        setUser({
-          'user': null,
-          'checked': true
-        });
-        setUserData({})
-      }
+    } else {
+      console.log('no user')
+      setUser({
+        'user': null,
+        'checked': true
+      });
+      setUserData({})
+    }
     });
   }, [])
 

@@ -75,6 +75,7 @@ export default function Login({ history, location }) {
     const { email, password } = loginFields
     firebaseApp.auth().signInWithEmailAndPassword(email, password)
       .then(data => {
+        // if (data.user.emailVerified) {
         axios.get(`/users/${data.user.uid}`)
           .then(res => {
             console.log(res.data)
@@ -88,6 +89,10 @@ export default function Login({ history, location }) {
               history.push('/testercoach')
             }
           })
+      //   } else {
+      //     firebaseApp.auth().signOut()
+      //     setLoginError({ message: 'Email has not yet been verifed. Please check your emails for a verification link.' })
+      //   }
       })
       .catch(err => {
         console.log(err)
