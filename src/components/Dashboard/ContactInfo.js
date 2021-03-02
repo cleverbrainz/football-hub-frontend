@@ -65,16 +65,28 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     margin: '0 auto',
-    width: '50%',
+    width: '90%',
     display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
+    // flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'start'
+  },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    textAlign: "center",
   },
   spacing: {
     width: '60%',
     margin: '10px 0'
-  }
+  },
+  subforms: {
+    width: '50%',
+    display: 'flex',
+    flexDirection: 'column'
+  },
 }));
 
 
@@ -85,6 +97,7 @@ export default function ContactInfo({ componentTabValue, handleComponentChange }
   const [value, setValue] = useState(componentTabValue);
   const [stateRefreshInProgress, setStateRefreshInProgress] = useState(false)
   const  [newInfo, setNewInfo] = useState(true)
+  const [companyInfo, setCompanyInfo] = useState({})
 
   const [basicContactInfo, setBasicContactInfo] = useState({
     website: '',
@@ -109,6 +122,7 @@ export default function ContactInfo({ componentTabValue, handleComponentChange }
           setNewInfo(false)
           setBasicContactInfo({ ...res.data[0].contactInformation })
         }
+        setCompanyInfo(res.data[0])
       })
       .catch(e => console.log(e))
   }, [!stateRefreshInProgress]);
@@ -157,8 +171,46 @@ export default function ContactInfo({ componentTabValue, handleComponentChange }
   };
 
   const basicContactForm = (
-
-    <form className={classes.form} onSubmit={(e) => handleSubmit(e)} autoComplete="off" >
+<Container className={classes.container}>
+    <form className={classes.form} autoComplete="off" >
+      <div className={classes.subforms}>
+      <FormControl variant="outlined" className={classes.spacing}>
+            <InputLabel htmlFor="component-outlined"> Main Email </InputLabel>
+            <OutlinedInput
+              label="Company Email"
+              value={!companyInfo.main_email ? companyInfo.email : companyInfo.main_email }
+              onChange={(e) => setCompanyInfo({ ...companyInfo, main_email: e.target.value })}
+            />
+          </FormControl>
+          <FormControl variant="outlined" className={classes.spacing}>
+            <InputLabel htmlFor="component-outlined">
+              {" "}
+              Main Contact Number{" "}
+            </InputLabel>
+            <OutlinedInput
+              label="Main Contact Number"
+              value={companyInfo.main_contact_number}
+              onChange={(e) => setCompanyInfo({ ...companyInfo, main_contact_number: e.target.value })}
+            />
+          </FormControl>
+          <FormControl variant="outlined" className={classes.spacing}>
+            <InputLabel htmlFor="component-outlined"> Accounts Email </InputLabel>
+            <OutlinedInput
+              label="Accounts email (Optional)"
+              value={companyInfo.accounts_email}
+              onChange={(e) => setCompanyInfo({ ...companyInfo, accounts_email: e.target.value })}
+            />
+          </FormControl>
+          <FormControl variant="outlined" className={classes.spacing}>
+            <InputLabel htmlFor="component-outlined"> Accounts Contact Number </InputLabel>
+            <OutlinedInput
+              label="Accounts Contact Number (Optional)"
+              value={companyInfo.accounts_contact_number}
+              onChange={(e) => setCompanyInfo({ ...companyInfo, accounts_contact_number: e.target.value })}
+            />
+          </FormControl>
+      </div>
+      <div className={classes.subforms}>
       <FormControl variant="outlined" className={classes.spacing}>
         <InputLabel htmlFor="component-outlined"> Website link </InputLabel>
         <OutlinedInput
@@ -205,17 +257,20 @@ export default function ContactInfo({ componentTabValue, handleComponentChange }
           onChange={(e) => setBasicContactInfo({ ...basicContactInfo, adminEmail: e.target.value })}
         />
       </FormControl>
+      </div>
 
-      <Button
+      
+    </form>
+    <Button
         className={classes.button}
         type='submit'
         variant="contained"
         color="primary"
+        onClick={(e) => handleSubmit(e)}
       >
         Save
         </Button>
-    </form>
-
+    </Container>
   )
 
   return (
