@@ -191,6 +191,7 @@ export default function ApplicationForm({ history, location }) {
   const [isLoading, setIsLoading] = useState(false)
   const [activeStep, setActiveStep] = useState(0);
   const [videoSource, setVideoSource] = useState()
+  const [isSafari, setIsSafari] = useState(false)
 
 
   const [applicationDetails, setApplicationDetails] = useState({
@@ -295,6 +296,7 @@ export default function ApplicationForm({ history, location }) {
   function getData() {
     axios.get(`/users/${auth.getUserId()}`)
       .then(res => {
+        console.log('THISS ISSSS', res.data[0])
         const { applications, name } = res.data[0]
         const { goalkeeper_demos, outfield_demos } = videoLinks
         const { personal_details } = applicationDetails
@@ -320,6 +322,13 @@ export default function ApplicationForm({ history, location }) {
 
 
   useEffect(() => {
+
+    const uA = navigator.userAgent;
+    const vendor = navigator.vendor;
+
+    if (/Safari/i.test(uA) && /Apple Computer/.test(vendor) && !/Mobi|Android/i.test(uA)) {
+      setIsSafari(true)
+    }
 
     if (!auth.getUserId()) {
       history.push('/authentication')
@@ -412,16 +421,30 @@ export default function ApplicationForm({ history, location }) {
         }
       })
     } else if (name === 'dob') {
+
+      if (isSafari &&
+        value.split('').length !== 10 &&
+        dob.split('').length !== 10) {
+        return setApplicationDetails({
+          ...applicationDetails,
+          personal_details: {
+            ...personal_details,
+            dob: value
+          }
+        })
+      }
+
+
       const age = moment('2021-08-31').diff(value, 'years')
       const group = age < 16 ? 16 : (age !== 18 && age < 19) ? age + 1 : 18
 
-      setMessage(age < 19 ? {
+      setMessage((age > 14 && age < 19) ? {
         info: `You will be placed with the Under ${group}s age group.`
       } : {
-          error: `Your date of birth will not be recorded as it exceeds the camps age limit.`
+          error: `Your date of birth will not be saved as it does not fall within the camps age limit.`
         })
 
-      if (age < 19) {
+      if (age > 14 && age < 19) {
         setApplicationDetails({
           ...applicationDetails,
           personal_details: {
@@ -539,10 +562,22 @@ export default function ApplicationForm({ history, location }) {
 
           <div className={classes.field} style={{ flex: 0.4 }}>
             <div className={classes.label}>
-              <label > <span style={{ color: 'red' }}>*</span> Date of Birth </label>
+              <label > <span style={{ color: 'red' }}>*</span>
+                {`Date of Birth ${isSafari ? '(YYYY-MM-DD)' : ''}`}
+              </label>
             </div>
-            <p class="control" >
-              <input value={dob} name='dob' class="input" type="date" />
+            <p class={isSafari ? 'control is-expanded' : 'control'} >
+
+              {isSafari ?
+                <input
+                  value={dob}
+                  class="input"
+                  type="text"
+                  name='dob'
+                  placeholder="YYYY-MM-DD" />
+                : <input value={dob} name='dob' class="input" type="date" />}
+
+
             </p>
           </div>
 
@@ -559,7 +594,10 @@ export default function ApplicationForm({ history, location }) {
             <p class="control is-expanded">
               <input
                 value={address_line_1}
-                name='address_line_1' class="input" type="text" placeholder="Address Line 1" />
+                name='address_line_1'
+                class="input"
+                type="text"
+                placeholder="Address Line 1" />
             </p>
           </div>
 
@@ -586,6 +624,8 @@ export default function ApplicationForm({ history, location }) {
               <input value={city} name='city' class="input" type="text" placeholder="City" />
             </p>
           </div>
+
+
 
           <div className={classes.field}>
             <div className={classes.label}>

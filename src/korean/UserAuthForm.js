@@ -142,52 +142,52 @@ const UserAuthForm = ({ locale, history }) => {
     setIsLoading(false)
   }
 
-  function loginUser(existed) {
+  function loginUser() {
     const { email, password, player_name } = registerDetails
     axios.post('/login', { email, password })
-    .then(res => {
-      const { application_fee_paid, token, stripeId, applications } = res.data
-      const fee_needed = application_fee_paid === 'unpaid'
-      const created = !existed ? 'been created and automatically' : ''
+      .then(res => {
+        const { application_fee_paid, token, stripeId, applications } = res.data
+        const fee_needed = application_fee_paid === 'unpaid'
 
-      auth.setToken(token)
+        console.log(res.data[0])
+        auth.setToken(token)
 
-      handleAfterRequestStates({
-        success: `User has ${created} logged in. Redirecting to ${fee_needed ? 'payment' : 'application'}...`
-      })
+        handleAfterRequestStates({
+          success: `User has logged in. Redirecting to ${fee_needed ? 'payment' : 'application'}...`
+        })
 
-      setTimeout(async () => {
-      
-        if (application_fee_paid === 'unpaid') {
-          let checkout = await axios.post('/korean-application-fee', {
-            stripeId,
-            email
-          })
-          const session = await checkout.data
+        setTimeout(async () => {
 
-          const result = await stripe.redirectToCheckout({
-            sessionId: session.id,
-          })
+          if (application_fee_paid === 'unpaid') {
+            let checkout = await axios.post('/korean-application-fee', {
+              stripeId,
+              email
+            })
+            const session = await checkout.data
 
-          if (result.error) {
-            handleAfterRequestStates({ error: 'Could not redirect you to payment. Please try again.' })
-          }
-        } else {
-          const { benfica_application } = applications
-          if (benfica_application && benfica_application.submitted)  {
-            history.push('/success=true')
+            const result = await stripe.redirectToCheckout({
+              sessionId: session.id,
+            })
+
+            if (result.error) {
+              handleAfterRequestStates({ error: 'Could not redirect you to payment. Please try again.' })
+            }
           } else {
-            history.push('/application')
+            const { benfica_application } = applications
+            if (benfica_application && benfica_application.submitted) {
+              history.push('/success=true')
+            } else {
+              history.push('/application')
+            }
+
           }
-         
-        }
-        
-      }, 2000);
-      
-    })
-    .catch(err => handleAfterRequestStates({
-      error: 'Invalid credentials'
-    }))
+
+        }, 1000);
+
+      })
+      .catch(err => handleAfterRequestStates({
+        error: 'Invalid credentials'
+      }))
   }
 
   function handleUserAuth(text) {
@@ -208,15 +208,17 @@ const UserAuthForm = ({ locale, history }) => {
 
       case 'Sign In':
         console.log(email, password)
-        loginUser(true)
-
+        loginUser()
         break;
 
       case 'Create Account':
 
         axios.post('/registerUserViaApplication', registerDetails)
-          .then(res => {
-            loginUser(false)
+          .then(async res => {
+            handleAfterRequestStates({
+              success: 'An email has been sent to your inbox to validate your email address.'
+            })
+            setRegistrationOrLogin('login')
           })
           .catch(err => handleAfterRequestStates(err.response.data))
 

@@ -122,80 +122,80 @@ export const languages = {
 
 const arr = [
   {
-    "pages": "marketing",
-    "sections": "1a",
+    "page": "marketing",
+    "section": "1a",
     "english": "hello",
     "korean": "what"
   },
   {
-    "pages": "marketing",
-    "sections": "1b",
+    "page": "marketing",
+    "section": "1b",
     "english": "bye",
     "korean": "why"
   },
   {
-    "pages": "marketing",
-    "sections": "2",
+    "page": "marketing",
+    "section": "2",
     "english": "hello",
     "korean": "what"
   },
   {
-    "pages": "marketing",
-    "sections": "3",
+    "page": "marketing",
+    "section": "3",
     "english": "bye",
     "korean": "why"
   },
   {
-    "pages": "marketing",
-    "sections": "4",
+    "page": "marketing",
+    "section": "4",
     "english": "hello",
     "korean": "what"
   },
   {
-    "pages": "application",
-    "sections": "1a",
+    "page": "application",
+    "section": "1a",
     "english": "bye",
     "korean": "why"
   },
   {
-    "pages": "application",
-    "sections": "2",
+    "page": "application",
+    "section": "2",
     "english": "hello",
     "korean": "what"
   },
   {
-    "pages": "loginn",
-    "sections": "3a",
+    "page": "loginn",
+    "section": "3a",
     "english": "bye",
     "korean": "why"
   },
   {
-    "pages": "login",
-    "sections": "3b",
+    "page": "login",
+    "section": "3b",
     "english": "hello",
     "korean": "what"
   },
   {
-    "pages": "login",
-    "sections": "1a",
+    "page": "login",
+    "section": "1a",
     "english": "bye",
     "korean": "why"
   },
   {
-    "pages": "login",
-    "sections": "2",
+    "page": "login",
+    "section": "2",
     "english": "hello",
     "korean": "what"
   },
   {
-    "pages": "login",
-    "sections": "3a",
+    "page": "login",
+    "section": "3a",
     "english": "bye",
     "korean": "why"
   },
   {
-    "pages": "login",
-    "sections": "3b",
+    "page": "login",
+    "section": "3b",
     "english": "hello",
     "korean": "what"
   }
@@ -205,17 +205,17 @@ function convert(arr) {
   let obj = {}
 
   arr.forEach(x => {
-    if (!(x.pages in obj)) {
-      obj[x.pages] = {
-        [x.sections]: {
+    if (!(x.page in obj)) {
+      obj[x.page] = {
+        [x.section]: {
           en: x.english,
           ko: x.korean
         }
       }
     } else {
-      obj[x.pages] = {
-        ...obj[x.pages],
-        [x.sections]: {
+      obj[x.page] = {
+        ...obj[x.page],
+        [x.section]: {
           en: x.english,
           ko: x.korean
         }
