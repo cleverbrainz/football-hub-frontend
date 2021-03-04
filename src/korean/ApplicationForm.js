@@ -260,7 +260,11 @@ export default function ApplicationForm({ history, location, locale }) {
     ratings: {
       indulge: 0,
       application: 0,
-      challenges: 0
+      challengesMap: {
+        challenge1: 0,
+        challenge2: 0,
+        challenge3: 0
+      }
     }
   })
   const steps = getSteps();
@@ -426,10 +430,20 @@ export default function ApplicationForm({ history, location, locale }) {
       }
     }, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
-        setMessage({
-          success: type ? snackbar_messages['1a'][locale] : snackbar_messages['1b'][locale]
-        })
-        setIsLoading(false)
+        if (type === 'submit') {
+          axios.post('/contactPlayer', { 
+            type: 'applicationReceived', 
+            recipient: { recipientId: auth.getUserId() }, 
+            emailContent: { contentCourse: `Benfica Camp: Under ${group}s`},
+            locale: locale 
+          }).then((res) => {
+            setMessage({ success: snackbar_messages['1a'][locale], info: res.info })
+            setIsLoading(false)
+          })
+        } else {
+          setMessage({ success: snackbar_messages['1b'][locale] })
+          setIsLoading(false)
+        }
       })
       .catch(err => {
         setIsLoading(false)
