@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
+import { authorization, snackbar_messages } from './LanguageSkeleton'
 import {
   Typography,
   Box,
   Button,
   FormControlLabel,
   Radio,
-  Snackbar
+  Snackbar,
+  Checkbox,
+  FormControl
 } from "@material-ui/core";
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import EmailSharpIcon from '@material-ui/icons/EmailSharp';
@@ -18,16 +21,18 @@ import auth from '../lib/auth'
 import { useStripe } from "@stripe/react-stripe-js";
 
 const UserAuthForm = ({ locale, history }) => {
+
   const stripe = useStripe()
   const [forgottenPassword, setForgottenPassword] = useState(false)
   const [registrationOrLogin, setRegistrationOrLogin] = useState('login')
   const [isLoading, setIsLoading] = useState(false)
+  const [checkedTermsConditions, setCheckedTermsConditions] = useState(false)
   const [registerDetails, setRegisterDetails] = useState({
     category: 'player',
     email: '',
     password: '',
     confirm_password: '',
-    player_name: ''
+    player_name: '',
   })
   const [message, setMessage] = useState(null)
   const [open, setOpen] = useState(false)
@@ -106,9 +111,12 @@ const UserAuthForm = ({ locale, history }) => {
     },
     radio: {
       transform: 'translate(0px, 7px)',
+
       [theme.breakpoints.up('sm')]: {
         transform: 'translate(160px, 8px)',
+
       },
+
     }
 
   }));
@@ -149,11 +157,11 @@ const UserAuthForm = ({ locale, history }) => {
         const { application_fee_paid, token, stripeId, applications } = res.data
         const fee_needed = application_fee_paid === 'unpaid'
 
-        console.log(res.data[0])
+        console.log(snackbar_messages)
         auth.setToken(token)
 
         handleAfterRequestStates({
-          success: `User has logged in. Redirecting to ${fee_needed ? 'payment' : 'application'}...`
+          success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['7g'][locale].split('/')[fee_needed ? 0 : 1]}`
         })
 
         setTimeout(async () => {
@@ -170,7 +178,7 @@ const UserAuthForm = ({ locale, history }) => {
             })
 
             if (result.error) {
-              handleAfterRequestStates({ error: 'Could not redirect you to payment. Please try again.' })
+              handleAfterRequestStates({ error: snackbar_messages['7b'][locale] })
             }
           } else {
             const { benfica_application } = applications
@@ -186,37 +194,47 @@ const UserAuthForm = ({ locale, history }) => {
 
       })
       .catch(err => handleAfterRequestStates({
-        error: 'Invalid credentials'
+        error: snackbar_messages['7c'][locale]
       }))
   }
 
   function handleUserAuth(text) {
     const { email, password, player_name } = registerDetails
     setIsLoading(true)
+    console.log(text)
     switch (text) {
 
       case 'Reset Password':
+      case '비밀번호 재설정':
         axios.post('/resetpassword', { email })
           .then(res => handleAfterRequestStates({
-            success: 'An email has been sent to your inbox to reset your password.'
+            success: snackbar_messages['7d'][locale]
           }))
           .catch(err => handleAfterRequestStates({
-            error: 'Invalid credentials'
+            error: snackbar_messages['7c'][locale]
           }))
 
         break;
 
       case 'Sign In':
+      case '로그인':
         console.log(email, password)
         loginUser()
         break;
 
       case 'Create Account':
+      case '계정 등록':
+        if (!checkedTermsConditions) {
+          handleAfterRequestStates({
+            error: 'Please indicate that you have read and understood the Terms & Conditions'
+          })
+          return
+        }
 
         axios.post('/registerUserViaApplication', registerDetails)
           .then(async res => {
             handleAfterRequestStates({
-              success: 'An email has been sent to your inbox to validate your email address.'
+              success: snackbar_messages['7f'][locale]
             })
             setRegistrationOrLogin('login')
           })
@@ -231,6 +249,9 @@ const UserAuthForm = ({ locale, history }) => {
 
   }
 
+  const terms_paragraph = (
+    <p> I agree to the <a target='_blank' href='https://bit.ly/3sI1iS5'> Terms & Conditions </a> </p>
+  );
 
   const classes = useStyles()
 
@@ -241,18 +262,18 @@ const UserAuthForm = ({ locale, history }) => {
           <Box
             className={classes.boldText}
             fontSize={20} fontWeight="fontWeightBold" m={0}>
-            Indulge Benfica Camp: {registrationOrLogin === 'login' ? 'Sign In' : 'Create an Account'}
+            {authorization['1a'][locale]}: {registrationOrLogin === 'login' ? authorization['5b'][locale] : authorization['5a'][locale]}
           </Box>
           <Box
             className={classes.boldText}
             fontSize={16} fontWeight="fontWeightBold" m={0}>
-            {registrationOrLogin === 'login' ? 'Already have an account?' : 'Not a registered player yet?'}
+            {registrationOrLogin === 'login' ? authorization['2a'][locale] : authorization['2b'][locale]}
           </Box>
           <Box
             fontSize={15} fontWeight="fontWeightRegular" m={0}>
-            Enter your {registrationOrLogin === 'login' ?
-              'email address and password (both are case-sensitive).' :
-              'details to create your account (fields are case-sensitive).'}
+            {registrationOrLogin === 'login' ?
+              authorization['3a'][locale] :
+              authorization['3b'][locale]}
           </Box>
         </Typography>
 
@@ -268,16 +289,21 @@ const UserAuthForm = ({ locale, history }) => {
                 name='category'
                 className={classes.radio}
                 control={<Radio />}
-                label="I am a parent registering for my child" />
+                label={authorization['4a'][locale]} />
 
               {registerDetails.category === 'parent' &&
                 <div class="field" className={classes.inputContainer}>
                   <p
                     style={{ alignSelf: 'flex-end' }}
-                    class="control" >
-                    <span
-                      style={{ color: 'red' }}> *  </span> Parent Name:
-          <input
+                    class="control">
+
+                    <span style={{ color: 'red' }}>
+                      *
+                      </span>
+
+                    {authorization['4b'][locale]}
+
+                    <input
                       onChange={(e) => handleFormChange(e)}
                       name='parent_name'
                       class='input'
@@ -297,8 +323,8 @@ const UserAuthForm = ({ locale, history }) => {
                   style={{ alignSelf: 'flex-end' }}
                   class="control" >
                   <span
-                    style={{ color: 'red' }}> *  </span> Player Name:
-              <input
+                    style={{ color: 'red' }}> *  </span>  {authorization['4c'][locale]}
+                  <input
                     onChange={(e) => handleFormChange(e)}
                     name='player_name'
                     class='input'
@@ -318,7 +344,7 @@ const UserAuthForm = ({ locale, history }) => {
               style={{ alignSelf: 'flex-end' }}
               class="control" >
               <span
-                style={{ color: 'red' }}> *  </span> Email Address:
+                style={{ color: 'red' }}> *  </span>  {authorization['4d'][locale]}
               <input
                 onChange={(e) => handleFormChange(e)}
                 class='input'
@@ -339,8 +365,8 @@ const UserAuthForm = ({ locale, history }) => {
                   style={{ alignSelf: 'flex-end' }}
                   class="control" >
                   <span
-                    style={{ color: 'red' }}> *  </span> Password:
-              <input
+                    style={{ color: 'red' }}> *  </span> {authorization['4e'][locale]}
+                  <input
                     onChange={(e) => handleFormChange(e)}
                     name='password'
                     class='input'
@@ -354,24 +380,40 @@ const UserAuthForm = ({ locale, history }) => {
               </div>
 
               {registrationOrLogin !== 'login' && (
-                <div class="field" className={classes.inputContainer}>
-                  <p
-                    style={{ alignSelf: 'flex-end' }}
-                    class="control" >
-                    <span
-                      style={{ color: 'red' }}> *  </span> Confirm Password:
-              <input
-                      onChange={(e) => handleFormChange(e)}
-                      name='confirm_password'
-                      class='input'
-                      style={{
-                        marginLeft: 10,
-                        transform: 'translateY(2px)',
-                        width: '350px'
-                      }}
-                      type="password" />
-                  </p>
-                </div>
+                <>
+                  <div class="field" className={classes.inputContainer}>
+                    <p
+                      style={{ alignSelf: 'flex-end' }}
+                      class="control" >
+                      <span
+                        style={{ color: 'red' }}> *  </span>  {authorization['4f'][locale]}
+                      <input
+                        onChange={(e) => handleFormChange(e)}
+                        name='confirm_password'
+                        class='input'
+                        style={{
+                          marginLeft: 10,
+                          transform: 'translateY(2px)',
+                          width: '350px'
+                        }}
+                        type="password" />
+                    </p>
+                  </div>
+
+                  <FormControlLabel
+                    className={classes.radio}
+                    onClick={() => setCheckedTermsConditions(!checkedTermsConditions)}
+                    style={{ margin: '-30px -13px' }}
+                    control={
+                      <Checkbox
+                        checked={checkedTermsConditions}
+                        color="secondary"
+                      />
+                    }
+                    label={terms_paragraph}
+                  />
+
+                </>
               )}
 
             </>
@@ -385,7 +427,8 @@ const UserAuthForm = ({ locale, history }) => {
               onClick={(e) => handleUserAuth(e.target.innerHTML)}
             // endIcon={<ArrowForwardIcon />}
             >
-              {!forgottenPassword ? registrationOrLogin === 'login' ? 'Sign In' : 'Create Account' : 'Reset Password'}
+              {!forgottenPassword ? registrationOrLogin === 'login' ? authorization['5b'][locale] :
+                authorization['5a'][locale] : authorization['5c'][locale]}
               {isLoading && <CircularProgress size={30} className={classes.progress} />}
             </Button>
 
@@ -393,7 +436,7 @@ const UserAuthForm = ({ locale, history }) => {
               style={{ margin: '8px 0 0 15px ' }}
               onClick={() => setForgottenPassword(!forgottenPassword)}
               className={classes.link}>
-              {!forgottenPassword ? registrationOrLogin === 'login' ? 'Forgot your password?' : '' : 'Sign In'} </Link>
+              {!forgottenPassword ? registrationOrLogin === 'login' ? authorization['6'][locale] : '' : authorization['5b'][locale]} </Link>
 
           </div>
 
@@ -405,7 +448,7 @@ const UserAuthForm = ({ locale, history }) => {
           <Box
             style={{ color: 'orange' }}
             fontSize={16} fontWeight="fontWeightBold" m={0}>
-            {registrationOrLogin === 'login' ? 'Not a registered player yet?' : 'Already have an account?'}
+            {registrationOrLogin === 'login' ? authorization['7b'][locale] : authorization['7a'][locale]}
           </Box>
           <Box
             fontSize={14} fontWeight="fontWeightRegular" m={0}>
@@ -414,8 +457,8 @@ const UserAuthForm = ({ locale, history }) => {
                 setRegistrationOrLogin(registrationOrLogin === 'registration' ? 'login' : 'registration')
                 registrationOrLogin === 'login' && setForgottenPassword(false)
               }}>
-              {registrationOrLogin === 'login' ? 'Create an account' : 'Sign in'}</Link> to
-continue your application for the Indulge Benfica Camp.
+              {registrationOrLogin === 'login' ? authorization['1b'][locale].split(':')[1].trim()
+                : authorization['5b'][locale]}</Link> {registrationOrLogin === 'login' ? authorization['8b'][locale] : authorization['8a'][locale]}
           </Box>
         </Typography>
 

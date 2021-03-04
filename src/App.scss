@@ -150,10 +150,36 @@ body,
 
   .control {
     input[type="date"] {
-      display:block;
+      display: block;
       -webkit-appearance: textfield;
       -moz-appearance: textfield;
       min-height: 1.2em;
     }
+  }
+
+  .css-yk16xz-control {
+    min-height: 40px;
+  }
+  .css-tj5bde-Svg {
+    fill: #3273dc;
+  }
+
+  .MuiAppBar-root {
+    height: 70px;
+    background-color: white;
+
+    .MuiTabs-flexContainer {
+      // padding-top: 0;
+      justify-content: flex-start;
+
+      .MuiTab-wrapper {
+        font-size: 11.2px;
+      }
+    }
+  }
+
+  .is-small {
+    font-size: 13.5px;
+    border-radius: 4px;
   }
 }

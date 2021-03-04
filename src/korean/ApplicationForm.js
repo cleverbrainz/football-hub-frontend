@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { application, snackbar_messages } from './LanguageSkeleton'
 import PropTypes from 'prop-types';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -24,7 +25,16 @@ import MuiAlert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress'
 import auth from '../lib/auth'
 import moment from 'moment'
-import { useStripe } from "@stripe/react-stripe-js";
+import Selector, { components } from 'react-select';
+import makeAnimated from 'react-select/animated';
+import InfoSharpIcon from '@material-ui/icons/InfoSharp';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+import { Switch } from '@material-ui/core';
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -72,6 +82,7 @@ const useColorlibStepIconStyles = makeStyles({
   }
 });
 
+
 function ColorlibStepIcon(props) {
   const classes = useColorlibStepIconStyles();
   const { active, completed } = props;
@@ -101,7 +112,11 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginRight: theme.spacing(1),
-    position: 'relative'
+    position: 'relative',
+    fontSize: '12px',
+    [theme.breakpoints.up('md')]: {
+      fontSize: '14px'
+    },
   },
   progress: {
     position: 'absolute'
@@ -141,11 +156,18 @@ const useStyles = makeStyles((theme) => ({
     },
 
   },
+  webfieldContainer: {
+    flex: 1,
+    transform: 'translateY(0px)',
+    [theme.breakpoints.up('md')]: {
+      transform: 'translateY(-30px)'
+    }
+  },
   webfield: {
     flex: 1,
     margin: '15px 0',
     [theme.breakpoints.up('md')]: {
-      margin: '12px 20px '
+      margin: '20px 20px '
     },
   },
   videoContainer: {
@@ -179,7 +201,13 @@ const useStyles = makeStyles((theme) => ({
     top: '50%',
     transform: 'translateY(-50%)',
     fontWeight: 'bold',
+  },
+  chip: {
+    transform: 'translateY(-1px)',
+    fontSize: '11px',
+    margin: '0 5px'
   }
+
 }));
 
 
@@ -187,11 +215,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ApplicationForm({ history, location, locale }) {
   const classes = useStyles();
+  const theme = useTheme();
   const [message, setMessage] = useState()
   const [isLoading, setIsLoading] = useState(false)
   const [activeStep, setActiveStep] = useState(0);
   const [videoSource, setVideoSource] = useState()
   const [isSafari, setIsSafari] = useState(false)
+  const animatedComponents = makeAnimated();
+  const [open, setOpen] = useState(false);
 
 
   const [applicationDetails, setApplicationDetails] = useState({
@@ -209,7 +240,8 @@ export default function ApplicationForm({ history, location, locale }) {
       height: '',
       weight: '',
       position: '',
-      preferred_foot: ''
+      preferred_foot: '',
+      other_positions: []
     },
     football_history: {
       current_club: '',
@@ -250,6 +282,7 @@ export default function ApplicationForm({ history, location, locale }) {
     height,
     weight,
     position,
+    other_positions,
     preferred_foot } = applicationDetails.player_attributes
   const {
     current_club,
@@ -269,33 +302,57 @@ export default function ApplicationForm({ history, location, locale }) {
   const videoLinks = {
     goalkeeper_demos: [
       {
-        title: 'Demo 1',
+        title: application['8'][locale].split('.')[0],
         src: 'https://www.youtube.com/embed/HmWpssuh_9A?rel=0'
       },
       {
-        title: 'Demo 2',
+        title: application['8'][locale].split('.')[1],
         src: 'https://www.youtube.com/embed/1OWOrbmvUhc?rel=0'
       },
       {
-        title: 'Demo 3',
+        title: application['8'][locale].split('.')[2],
         src: 'https://www.youtube.com/embed/Q-hR_gNElo0?rel=0'
       }
     ],
     outfield_demos: [
       {
-        title: 'Demo 1',
+        title: application['8'][locale].split('.')[0],
         src: 'https://www.youtube.com/embed/al41qjS04-Q?rel=0'
       },
       {
-        title: 'Demo 2',
+        title: application['8'][locale].split('.')[1],
         src: 'https://www.youtube.com/embed/3wAQxJeyyXo?rel=0'
       },
       {
-        title: 'Demo 3',
+        title: application['8'][locale].split('.')[2],
         src: 'https://www.youtube.com/embed/qUm8TSGtenI?rel=0'
       }
     ],
   }
+
+
+  const isValidNewOption = (inputValue, selectValue) => {
+    return inputValue.length > 0 && selectValue.length < 2;
+  }
+
+
+  const playing_positions = [
+
+    { value: 'goalkeper', label: 'Goalkeeper' },
+    { value: 'right back', label: 'Right Back' },
+    { value: 'right wing back', label: 'Right Wing Back' },
+    { value: 'right wing', label: 'Right Wing' },
+    { value: 'right midfield', label: 'Right Midfield' },
+    { value: 'centre back', label: 'Centre Back' },
+    { value: 'sweeper', label: 'Sweeper' },
+    { value: 'left back', label: 'Left Back' },
+    { value: 'left wing back', label: 'Left Wing Back' },
+    { value: 'left wing', label: 'Left Wing' },
+    { value: 'left midfield', label: 'Left Midfield' },
+    { value: 'central midfield', label: 'Central Midfield' },
+    { value: 'defensive midfield', label: 'Defensive Midfield' },
+    { value: 'attacking midfield', label: 'Attacking Midfield' },
+    { value: 'striker', label: 'Striker' }]
 
   function getData() {
     axios.get(`/users/${auth.getUserId()}`)
@@ -353,7 +410,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
   function handleApplicationSave(type) {
     setIsLoading(true)
-    const age = moment('2021-08-31').diff(dob, 'years')
+    const age = moment('2021-12-31').diff(dob, 'years')
     const group = age < 16 ? 16 : (age !== 18 && age < 19) ? age + 1 : 18
 
     axios.patch(`/users/${auth.getUserId()}`, {
@@ -363,6 +420,7 @@ export default function ApplicationForm({ history, location, locale }) {
         applications: {
           benfica_application: {
             ...(type && {
+              localization: locale,
               age_group: `Under ${group}s`,
               submitted: true
             }),
@@ -379,24 +437,43 @@ export default function ApplicationForm({ history, location, locale }) {
             emailContent: { contentCourse: `Benfica Camp: Under ${group}s`},
             locale: locale 
           }).then((res) => {
-            setMessage({ success: 'Application successfully submitted', info: res.info })
+            setMessage({ success: snackbar_messages['1a'][locale], info: res.info })
             setIsLoading(false)
           })
         } else {
-          setMessage({ success: 'Application successfully saved and updated' })
+          setMessage({ success: snackbar_messages['1b'][locale] })
           setIsLoading(false)
         }
       })
       .catch(err => {
         setIsLoading(false)
         setMessage({
-          error: 'Something went wrong. Please try saving again'
+          error: snackbar_messages['2'][locale]
         })
       })
   }
 
+  const handleClickOpen = () => {
+    console.log('bye')
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    console.log('fired')
+    setOpen(false);
+  };
+
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
+  const scroll = () => {
+    const div = document.querySelector('#scrollable')
+    div.scrollTop = 0
+  }
 
   const handleNext = async () => {
+
     if (activeStep === 2) {
       handleApplicationSave('submit')
 
@@ -406,22 +483,25 @@ export default function ApplicationForm({ history, location, locale }) {
 
 
     } else {
+      scroll()
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
 
   };
 
   const handleBack = () => {
+    scroll()
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   function getSteps() {
-    return ['Player Information', 'Football History', 'Challenges'];
+    return [application['2a'][locale], application['2b'][locale], application['2c'][locale]];
   }
 
   function handleApplicationChange(e) {
-    const { name, value } = e.target
+
     const { player_attributes, personal_details } = applicationDetails
+    const { name, value } = e.target
 
     if (value === 'goalkeeper' ||
       (value !== 'goalkeeper' && position === 'goalkeeper')) {
@@ -448,13 +528,13 @@ export default function ApplicationForm({ history, location, locale }) {
       }
 
 
-      const age = moment('2021-08-31').diff(value, 'years')
+      const age = moment('2021-12-31').diff(value, 'years')
       const group = age < 16 ? 16 : (age !== 18 && age < 19) ? age + 1 : 18
 
       setMessage((age > 14 && age < 19) ? {
-        info: `You will be placed with the Under ${group}s age group.`
+        info: snackbar_messages['3'][locale].replace('s', `${group}s`)
       } : {
-          error: `Your date of birth will not be saved as it does not fall within the camps age limit.`
+          error: snackbar_messages['4'][locale]
         })
 
       if (age > 14 && age < 19) {
@@ -469,6 +549,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
 
     } else {
+
       Object.keys(applicationDetails).forEach(x => {
         if (applicationDetails[x].hasOwnProperty(name)) {
           const y = applicationDetails[x]
@@ -500,7 +581,7 @@ export default function ApplicationForm({ history, location, locale }) {
       { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
         getData()
-        setMessage({ success: 'Residency certificate successfully uploaded.' })
+        setMessage({ success: snackbar_messages['5'][locale] })
         setIsLoading(false)
       })
       .catch(async err => {
@@ -508,7 +589,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
         await setMessage({
           error: res === 'Error verifying token' ?
-            'Your session has expired. Redirecting to login...' : 'Document could not be uploaded. Please try again.'
+            snackbar_messages['6a'][locale] : snackbar_messages['6b'][locale]
         })
         await setIsLoading(false)
 
@@ -531,6 +612,19 @@ export default function ApplicationForm({ history, location, locale }) {
     }
   }
 
+  const Menu = props => {
+    const optionSelectedLength = props.getValue().length || 0;
+
+    return (
+      <components.Menu {...props}>
+        {optionSelectedLength < 2 ? (
+          props.children
+        ) : (
+            <div>Max limit achieved</div>
+          )}
+      </components.Menu>
+    );
+  };
 
 
   const firstPage = (
@@ -539,7 +633,7 @@ export default function ApplicationForm({ history, location, locale }) {
         <Box
           fontSize={18}
           fontWeight="fontWeightBold" m={0}>
-          Personal Details
+          {application['3'][locale]}
         </Box>
       </Typography>
 
@@ -548,27 +642,32 @@ export default function ApplicationForm({ history, location, locale }) {
 
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> Player Full Name </label>
+              <label> <span style={{ color: 'red' }}>*</span>
+
+                {application['2a'][locale]}
+
+              </label>
             </div>
             <p class="control is-expanded">
               <input
                 value={name}
                 class="input" type="text"
                 name='name'
-                placeholder="Player Full Name" />
+                placeholder={application['2a'][locale]} />
             </p>
           </div>
 
           <div className={classes.field} style={{ flex: 0.4 }}>
             <div className={classes.label}>
-              <label > <span style={{ color: 'red' }}>*</span> Gender </label>
+              <label > <span style={{ color: 'red' }}>*</span>
+                {application['4b'][locale]}
+              </label>
             </div>
             <div class="select" style={{ width: '100%' }}>
               <select value={gender} name='gender' style={{ width: '100%' }}>
                 <option disabled={gender !== ''} value=""> </option>
-                <option value="male"> Male </option>
-                <option value="female"> Female </option>
-                <option value="custom"> Custom</option>
+                <option value="male"> {application['4c'][locale].split('/')[1]} </option>
+                <option value="female"> {application['4c'][locale].split('/')[0]}</option>
               </select>
             </div>
           </div>
@@ -576,7 +675,7 @@ export default function ApplicationForm({ history, location, locale }) {
           <div className={classes.field} style={{ flex: 0.4 }}>
             <div className={classes.label}>
               <label > <span style={{ color: 'red' }}>*</span>
-                {`Date of Birth ${isSafari ? '(YYYY-MM-DD)' : ''}`}
+                {`${application['4d'][locale]} ${isSafari ? '(YYYY-MM-DD)' : ''}`}
               </label>
             </div>
             <p class={isSafari ? 'control is-expanded' : 'control'} >
@@ -602,7 +701,7 @@ export default function ApplicationForm({ history, location, locale }) {
         <div class="field-body">
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> Address Line 1 </label>
+              <label> <span style={{ color: 'red' }}>*</span> {application['4e'][locale]} </label>
             </div>
             <p class="control is-expanded">
               <input
@@ -616,7 +715,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
           <div className={classes.field}>
             <div className={classes.label}>
-              <label>Address Line 2 </label>
+              <label> {application['4f'][locale]}</label>
             </div>
             <p class="control is-expanded">
               <input value={address_line_2} name='address_line_2' class="input" type="text" placeholder="Address Line 2" />
@@ -631,7 +730,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> City </label>
+              <label> <span style={{ color: 'red' }}>*</span> {application['4g'][locale]} </label>
             </div>
             <p class="control is-expanded">
               <input value={city} name='city' class="input" type="text" placeholder="City" />
@@ -642,7 +741,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> Postcode </label>
+              <label> <span style={{ color: 'red' }}>*</span> {application['4h'][locale]}</label>
             </div>
             <p class="control is-expanded">
               <input value={postcode} name='postcode' class="input" type="text" placeholder=" Postcode" />
@@ -658,8 +757,8 @@ export default function ApplicationForm({ history, location, locale }) {
           <div className={classes.field}>
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span>
-                Resident Registration / Family Relation Certificate
-               </label>
+                {application['4i'][locale]}
+              </label>
             </div>
             <div class="file has-name">
               <label class="file-label">
@@ -678,8 +777,8 @@ export default function ApplicationForm({ history, location, locale }) {
                     />
                   </span>
                   <span class="file-label">
-                    Upload a file...
-                </span>
+                    {application['4j'][locale]}
+                  </span>
                 </span>
 
                 {residency_certificate &&
@@ -707,58 +806,33 @@ export default function ApplicationForm({ history, location, locale }) {
         <Box
           fontSize={18}
           fontWeight="fontWeightBold" m={0}>
-          Player Attributes
+          {application['5a'][locale]}
         </Box>
       </Typography>
 
-      <div class="field-body" style={{ width: '70%' }}>
-        <div className={classes.field}>
+      <div class="field-body" style={{ width: '100%' }}>
+        <div className={classes.field} style={{ flex: 'none' }}>
           <div className={classes.label}>
-            <label> <span style={{ color: 'red' }}>*</span> Height (cm) </label>
+            <label> <span style={{ color: 'red' }}>*</span> {application['5b'][locale]} (cm) </label>
           </div>
           <p class="control is-expanded">
-            <input value={height} name='height' class="input" type="number" min={150} placeholder="Height" />
+            <input value={height} name='height' class="input" type="number" min={150} placeholder={application['4e'][locale]} />
           </p>
         </div>
 
-        <div className={classes.field}>
+        <div className={classes.field} style={{ flex: 'none' }}>
           <div className={classes.label}>
-            <label> <span style={{ color: 'red' }}>*</span> Weight (kg) </label>
+            <label> <span style={{ color: 'red' }}>*</span> {application['5c'][locale]} (kg) </label>
           </div>
           <p class="control is-expanded">
-            <input value={weight} name='weight' class="input" type="number" min={50} placeholder="Weight" />
+            <input value={weight} name='weight' class="input" type="number" min={50} placeholder={application['4e'][locale]} />
           </p>
         </div>
-        <div className={classes.field}>
-          <div className={classes.label}>
-            <label> <span style={{ color: 'red' }}>*</span> Preferred Position </label>
-          </div>
-          <div class="select">
-            <select value={position} name='position'>
 
-              <option disabled={position !== ''} value=""> </option>
-              <option value="goalkeeper"> Goalkeeper </option>
-              <option value="right back"> Right Back </option>
-              <option value="right wing back"> Right Wing Back  </option>
-              <option value="right wing"> Right Wing </option>
-              <option value="right midfield"> Right Midfield </option>
-              <option value="centre back"> Centre Back </option>
-              <option value="sweeper"> Sweeper </option>
-              <option value="left back"> Left Back</option>
-              <option value="left wing back"> Left Wing Back</option>
-              <option value="left wing"> Left Wing </option>
-              <option value="left midfield"> Left Midfield</option>
-              <option value="central midfield"> Central Midfield </option>
-              <option value="defensive midfield"> Defensive Midfield </option>
-              <option value="attacking midfield"> Attacking Midfield </option>
-              <option value="striker">Striker </option>
-            </select>
-          </div>
-        </div>
 
-        <div className={classes.field}>
+        <div className={classes.field} style={{ flex: 'none' }}>
           <div className={classes.label}>
-            <label> <span style={{ color: 'red' }}>*</span> Preferred Foot </label>
+            <label> <span style={{ color: 'red' }}>*</span> {application['5e'][locale]} </label>
           </div>
           <div class="select">
             <select value={preferred_foot} name='preferred_foot'>
@@ -771,8 +845,73 @@ export default function ApplicationForm({ history, location, locale }) {
         </div>
 
 
+      </div>
+
+      <div className="field-body">
+        <div className={classes.field} style={{ flex: 'none' }}>
+
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> {application['5d'][locale]} </label>
+          </div>
+
+          <div class="select">
+            <select value={position} name='position'>
+              <option disabled={position !== ''} value=""> </option>
+              {playing_positions.map(x => <option value={x.value.toLowerCase()}> {x.label} </option>)}
+            </select>
+          </div>
+
+        </div>
+
+        <div className={classes.field} style={{ flex: 'none' }}>
+          <div className={classes.label}>
+            <label> Other Positions </label>
+          </div>
+
+          <Selector
+            style={{ minWidth: '200px' }}
+            closeMenuOnSelect={false}
+            components={{ Menu }}
+            isMulti
+            value={playing_positions.filter(x => other_positions.includes(x.value))}
+            name='other_positions'
+            onChange={(x, y) => {
+              const { option, action, removedValue } = y
+              const { player_attributes } = applicationDetails
+
+              let arr
+
+              if (action === 'clear') {
+                arr = []
+              } else if (action === 'remove-value') {
+                const { value } = removedValue
+                arr = other_positions
+                arr.splice(other_positions.indexOf(value), 1)
+              } else {
+                const { value } = option
+                arr = other_positions.concat(value)
+              }
+
+              setApplicationDetails({
+                ...applicationDetails,
+                player_attributes: {
+                  ...player_attributes,
+                  other_positions: arr
+                }
+              })
+            }}
+            isValidNewOption={isValidNewOption}
+            isSearchable={false}
+            options={playing_positions}
+          />
+
+        </div>
+
 
       </div>
+
+
+
 
 
 
@@ -787,19 +926,19 @@ export default function ApplicationForm({ history, location, locale }) {
 
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> Current Club</label>
+              <label> <span style={{ color: 'red' }}>*</span> {application['6a'][locale]}</label>
             </div>
             <p class="control is-expanded">
-              <input value={current_club} name='current_club' class="input" type="text" placeholder="Current Club" />
+              <input value={current_club} name='current_club' class="input" type="text" placeholder={application['6a'][locale]} />
 
             </p>
           </div>
           <div className={classes.field}>
             <div className={classes.label}>
-              <label > <span style={{ color: 'red' }}>*</span> Current Coaching School </label>
+              <label > <span style={{ color: 'red' }}>*</span>  {application['6b'][locale]} </label>
             </div>
             <p class="control is-expanded">
-              <input value={current_coaching_school} name='current_coaching_school' class="input" type="email" placeholder="Current Coaching School" />
+              <input value={current_coaching_school} name='current_coaching_school' class="input" type="email" placeholder={application['6b'][locale]} />
 
             </p>
           </div>
@@ -808,19 +947,19 @@ export default function ApplicationForm({ history, location, locale }) {
         <div class="field-body">
           <div className={classes.field}>
             <div className={classes.label}>
-              <label >Previous Clubs </label>
+              <label >  {application['6c'][locale]} </label>
             </div>
             <p class="control is-expanded">
-              <input value={previous_clubs} name='previous_clubs' class="input" type="text" placeholder="Previous Clubs " />
+              <input value={previous_clubs} name='previous_clubs' class="input" type="text" placeholder={application['6c'][locale]} />
 
             </p>
           </div>
           <div className={classes.field}>
             <div className={classes.label}>
-              <label >Previous Trials Attended </label>
+              <label >  {application['6d'][locale]}</label>
             </div>
             <p class="control is-expanded">
-              <input value={previous_trails_attended} name='previous_trails_attended' class="input" type="email" placeholder="Previous Trials Attended " />
+              <input value={previous_trails_attended} name='previous_trails_attended' class="input" type="email" placeholder={application['6d'][locale]} />
 
             </p>
           </div>
@@ -830,19 +969,19 @@ export default function ApplicationForm({ history, location, locale }) {
         <div class="field-body">
           <div className={classes.field}>
             <div className={classes.label}>
-              <label >Web URL of Video Footage</label>
+              <label >  {application['6e'][locale]} </label>
             </div>
             <p class="control is-expanded">
-              <input value={highlights_footage_link} name='highlights_footage_link' class="input" type="text" placeholder="Web URL of Video Footage" />
+              <input value={highlights_footage_link} name='highlights_footage_link' class="input" type="text" placeholder={application['6e'][locale]} />
 
             </p>
           </div>
           <div className={classes.field}>
             <div className={classes.label}>
-              <label > <span style={{ color: 'red' }}>*</span> Social Media Link </label>
+              <label > <span style={{ color: 'red' }}>*</span> {application['6f'][locale]} </label>
             </div>
             <p class="control is-expanded">
-              <input value={social_media_link} name='social_media_link' class="input" type="email" placeholder="Social Media Link " />
+              <input value={social_media_link} name='social_media_link' class="input" type="email" placeholder={application['6f'][locale]} />
 
             </p>
           </div>
@@ -855,13 +994,13 @@ export default function ApplicationForm({ history, location, locale }) {
         <div class="field-body">
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> Write about yourself  </label>
-              <p style={{ fontWeight: 'initial' }} class="help"> Tell us more about your experiences, including achievements and goals </p>
+              <label> <span style={{ color: 'red' }}>*</span>  {application['6g'][locale]} </label>
+              <p style={{ fontWeight: 'initial' }} class="help">  {application['6h'][locale]} </p>
             </div>
 
             <div class="control">
 
-              <textarea value={bio_description} name='bio_description' style={{ minHeight: '15rem' }} class="textarea" placeholder="Write a short description about yourself "></textarea>
+              <textarea value={bio_description} name='bio_description' style={{ minHeight: '15rem' }} class="textarea" placeholder={application['6g'][locale]}></textarea>
             </div>
           </div>
         </div>
@@ -875,7 +1014,7 @@ export default function ApplicationForm({ history, location, locale }) {
         <Box
           fontSize={20}
           fontWeight="fontWeightBold" m={0}>
-          Complete the following challenges
+          {application['7a'][locale]}
         </Box>
         <Box
           fontSize={16}
@@ -914,29 +1053,38 @@ export default function ApplicationForm({ history, location, locale }) {
 
 
 
-        <div style={{ flex: 1 }}>
+        <div className={classes.webfieldContainer} >
           <div className={classes.webfield}>
             <div className={classes.label}>
-              <label > Challenge #1 Link </label>
+              <label>  {application['9a'][locale]}  </label>
+              <InfoSharpIcon
+                onClick={handleClickOpen}
+                style={{ fontSize: '21px', transform: 'translate(10px, 5px)' }} />
             </div>
             <p class="control is-expanded">
-              <input value={link_1} name='link_1' class="input" type="text" placeholder="Web URL of Video Footage" />
+              <input value={link_1} name='link_1' class="input" type="text" placeholder={application['9a'][locale]} />
             </p>
           </div>
           <div className={classes.webfield}>
             <div className={classes.label}>
-              <label > Challenge #2 Link </label>
+              <label>  {application['9b'][locale]} </label>
+              <InfoSharpIcon
+                onClick={handleClickOpen}
+                style={{ fontSize: '21px', transform: 'translate(10px, 5px)' }} />
             </div>
             <p class="control is-expanded">
-              <input value={link_2} name='link_2' class="input" type="text" placeholder="Web URL of Video Footage" />
+              <input value={link_2} name='link_2' class="input" type="text" placeholder={application['9b'][locale]} />
             </p>
           </div>
           <div className={classes.webfield}>
             <div className={classes.label}>
-              <label > Challenge #3 Link </label>
+              <label >  {application['9c'][locale]} </label>
+              <InfoSharpIcon
+                onClick={handleClickOpen}
+                style={{ fontSize: '21px', transform: 'translate(10px, 5px)' }} />
             </div>
             <p class="control is-expanded">
-              <input value={link_3} name='link_3' class="input" type="text" placeholder="Web URL of Video Footage" />
+              <input value={link_3} name='link_3' class="input" type="text" placeholder={application['9c'][locale]} />
             </p>
           </div>
         </div>
@@ -952,7 +1100,7 @@ export default function ApplicationForm({ history, location, locale }) {
         <Box
           className={classes.title}
           fontWeight="fontWeightBold" m={0}>
-          Project Football Korea: Application Form
+          {application['1'][locale]}
         </Box>
       </Typography>
 
@@ -964,7 +1112,7 @@ export default function ApplicationForm({ history, location, locale }) {
         ))}
       </Stepper>
 
-      <div className={classes.formContainer}>
+      <div id='scrollable' className={classes.formContainer}>
         <Typography className={classes.instructions}>
           <form onChange={(e) => handleApplicationChange(e)} action="">
             {getStepContent(activeStep)}
@@ -980,8 +1128,8 @@ export default function ApplicationForm({ history, location, locale }) {
             onClick={handleBack}
             className={classes.button}>
 
-            Back
-              </Button>
+            {application['10a'][locale]}
+          </Button>
 
           <Button
             disabled={isLoading}
@@ -991,8 +1139,8 @@ export default function ApplicationForm({ history, location, locale }) {
             className={classes.button}
             endIcon={<SaveAltIcon />}>
             {isLoading && <CircularProgress size={30} className={classes.progress} />}
-            Save draft
-              </Button>
+            {application['10b'][locale]}
+          </Button>
 
           <Button
             disabled={isLoading}
@@ -1002,7 +1150,7 @@ export default function ApplicationForm({ history, location, locale }) {
             className={classes.button}
             endIcon={<ArrowForwardIcon />}>
             {isLoading && <CircularProgress size={30} className={classes.progress} />}
-            {activeStep === steps.length - 1 ? 'Submit Application' : 'Next'}
+            {activeStep === steps.length - 1 ? application['10c'][locale] : application['10d'][locale]}
           </Button>
         </div>
       </div>
@@ -1015,6 +1163,25 @@ export default function ApplicationForm({ history, location, locale }) {
           {message[Object.keys(message)[0]]}
         </Alert>
       </Snackbar>}
+
+      {open && <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">
+          Instructions on challenges goes here
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Let Google help apps determine location. This means sending anonymous location data to
+            Google, even when no apps are running.
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>}
 
     </div>
   );
