@@ -203,6 +203,8 @@ const Marketing = (props) => {
     subSectionCampsCardButton
   } = languages[locale].marketingPage
 
+
+
   useEffect(() => {
     console.log(marketing)
   }, [])
@@ -216,7 +218,7 @@ const Marketing = (props) => {
           component='div' >
           <Box
             fontSize={35} fontWeight="fontWeightBold" m={0}>
-            {mainTitle}
+            {marketing[1][locale]}
           </Box>
         </Typography>
 
@@ -228,19 +230,16 @@ const Marketing = (props) => {
             <Typography component='div' >
               <Box
                 fontSize={28} fontWeight="fontWeightRegular" m={0}>
-                {headerMain}
+                {marketing['2a'][locale]}
               </Box>
             </Typography>
 
-            {/* <p> {headerParagraph} </p> */}
-
             <p>
-              This is the first time Benfica FC will be in South Korea and we wanted to bring their award-winning academy to train and identify the new football superstar!
-  Project Football Korea is a football talent identification experience like no other.  This is the ultimate football camp for players aged between 15-18 to train and learn from the world-famous Benfica FC.
+              {marketing['2b'][locale].split('/')[0]}
             </p>
 
             <p>
-              Our residential camp will provide for the best environment for you to perform and demonstrate your footballing ability, and 3 players per age group will be selected for a two-week, expenses paid professional trial with Benfica FC in Portugal.
+              {marketing['2b'][locale].split('/')[1]}
             </p>
           </section>
         </div>
@@ -251,26 +250,27 @@ const Marketing = (props) => {
           <Box
             style={{ margin: '10px 0 15px 0' }}
             fontSize={30} fontWeight="fontWeightBold" m={0}>
-            Why apply to the project?
+            {marketing['3a'][locale]}
           </Box>
           <Box
             fontSize={16} fontWeight="fontWeightRegular" m={0}>
-            {subSectionHeaders[2]}
+            {marketing['3b'][locale]}
           </Box>
         </Typography>
 
         <div className={classes.cardContainer}>
-          {subSectionCards.map(el => {
+          {[{ ...marketing['4a'] }, { ...marketing['4b'] }, { ...marketing['4c'] },
+          { ...marketing['4d'] }, { ...marketing['4e'] }, { ...marketing['4f'] }].map(el => {
             return (
               <Card className={classes.card}>
                 <CardContent>
                   <Typography
                     style={{ marginBottom: '20px' }}
                     variant="h6" component="h6">
-                    {el.title}
+                    {el[locale].split('/')[0]}
                   </Typography>
                   <Typography variant="body2" component="p">
-                    {el.paragraph}
+                    {el[locale].split('/')[1]}
                   </Typography>
                 </CardContent>
                 <CardActions>
@@ -287,7 +287,7 @@ const Marketing = (props) => {
         <Typography style={{ marginBottom: '25px' }} component='div'>
           <Box
             fontSize={30} fontWeight="fontWeightBold" m={0}>
-            About the Camp
+            {marketing['5a'][locale]}
           </Box>
         </Typography>
 
@@ -298,18 +298,13 @@ const Marketing = (props) => {
             <Typography component='div' >
               <Box
                 fontSize={20} fontWeight="fontWeightBold" m={0}>
-                What can you expect?
+                {marketing['5b'][locale]}
               </Box>
 
               <ul>
-                <li className={classes.list}> 4 nights' accommodation in a 4* hotel. Choice of single or twin room </li>
-                <li className={classes.list}> Full board menu designed for professional athletes </li>
-                <li className={classes.list}> At least 4 hours of football coaching a day </li>
-                <li className={classes.list}> 3 football education seminars across the camp </li>
-                <li className={classes.list}> Official Benfica FC & Indulge Football training kit</li>
-                <li className={classes.list}> Individual player feedback reports </li>
-                <li className={classes.list}> Individual player performance tracking technology </li>
-                <li className={classes.list}> COVID-19 testing </li>
+                {marketing['5c'][locale].split('.').map(sentence => {
+                  return <li className={classes.list}> {sentence} </li>
+                })}
               </ul>
             </Typography>
           </section>
@@ -322,13 +317,13 @@ const Marketing = (props) => {
         <Typography style={{ marginBottom: '25px' }} component='div'>
           <Box
             fontSize={30} fontWeight="fontWeightBold" m={0}>
-            About Benfica FC
+            {marketing['6a'][locale]}
           </Box>
 
           <Box
             className={classes.campSubText}
             fontSize={16} fontWeight="fontWeightRegular" m={0}>
-           The mission of Benfica’s academy is to guarantee the quality of technical training and educational enrichment of its players, of all age groups, with a focus on the integration into the clubs first team, promoting human values such as respect, responsibility, solidarity, justice and tolerance.” 
+            {marketing['6b'][locale]}
           </Box>
         </Typography>
 
@@ -340,14 +335,16 @@ const Marketing = (props) => {
             <Typography component='div' >
               <Box
                 fontSize={20} fontWeight="fontWeightBold" m={0}>
-                Camp Methodology
+                {marketing['6c'][locale]}
               </Box>
 
               <p>
-                The training schedules are developed by SL Benfica’s coaches, accredited by the Federação Portuguesa de Futebol (FPF) and UEFA. The methodology used is the same that Sport Lisboa e Benfica uses in the training of its professional athletes. 
-                <br /> <br />
-                Through specific training that Sport Lisboa e Benfica will provide, you will be able to develop your technical, tactical, physical and psychological skills. Aspects like, running technique, relationship with the ball, tactical circulation and attacking and defensive game principles will be worked daily in both individual and collective contexts.
-            </p>
+                {marketing['6d'][locale].split('/')[0]}
+              </p>
+              <br />
+              <p>
+                {marketing['6d'][locale].split('/')[1]}
+              </p>
 
             </Typography>
           </section>
@@ -361,17 +358,17 @@ const Marketing = (props) => {
             <Typography component='div' >
               <Box
                 fontSize={20} fontWeight="fontWeightBold" m={0}>
-                The Coaches
+                {marketing['6e'][locale]}
               </Box>
 
               <p>
-                Accredited by the Portuguese Football Federation (FPF) and UEFA, the SL Benfica coaches are decisive elements in the development of the club’s athletes. They'll follow your evolution during Project Football, overseen by their Technical Director, Pedro Marques:
-            </p>
-            <br />
+                {marketing['6f'][locale]}
+              </p>
+              <br />
               <ul>
-                <li className={classes.list}> UEFA A License. </li>
-                <li className={classes.list}> Graduated in Physical Education and Sports Science and Post-Graduation in High-Performance Training at the Faculty of Human Kinetics in Lisbon.  </li>
-                <li className={classes.list}> Technical Director of Sport Lisboa e Benfica's Youth Football. </li>
+                {marketing['6g'][locale].split('.').map(sentence => {
+                  return <li className={classes.list}> {sentence} </li>
+                })}
               </ul>
 
             </Typography>
@@ -388,45 +385,49 @@ const Marketing = (props) => {
         <Typography style={{ marginBottom: '25px' }} component='div'>
           <Box
             fontSize={30} fontWeight="fontWeightBold" m={0}>
-            How to apply?
+            {marketing['7a'][locale]}
           </Box>
           <Box
             className={classes.campSubText}
             fontSize={16} fontWeight="fontWeightRegular" m={0}>
-            All players will be asked to apply and undertake football challenges designed by “UEFA A” qualified coaches who work in English Premier League Academies. And have years of experiences assessing youth talent. Upon completing this assessment, we will invite the best 70 players at U16/U17 and U18 for a 4 night/5day residential camp conducted by the award-winning Benfica FC academy staff 
+            {marketing['7b'][locale]}
           </Box>
           <Box
             fontSize={16} fontWeight="fontWeightBold" m={0}>
-            Select your age group and apply
+            {marketing['7c'][locale]}
           </Box>
         </Typography>
 
         <div className={classes.campCardContainer}>
 
-          {subSectionCampsCards.map(el => {
+          {[{ ...marketing['7d'] }, { ...marketing['7e'] },
+          { ...marketing['7f'] }].map(el => {
             return (
               <Card variant="outlined" className={classes.campCard}>
                 <CardContent className={classes.campCardTextContainer}>
                   <Typography variant="h6" component="h2">
-                    {el.age}
+                    {el[locale].split('.')[0]}
                   </Typography>
                   <Typography
                     className={classes.campCardText}
                     variant="body2" component="p">
                     <EventSharpIcon
-                      style={{ marginRight: '15px' }} /> {el.date}
+                      style={{ marginRight: '15px' }} />  {el[locale].split('.')[1]}
                   </Typography>
-                  <Typography
-                    className={classes.campCardText}
-                    variant="body2" component="p">
-                    <ScheduleSharpIcon
-                      style={{ marginRight: '15px' }} /> {el.days}
-                  </Typography>
+                  
+                  {locale === 'en' &&
+                    <Typography
+                      className={classes.campCardText}
+                      variant="body2" component="p">
+                      <ScheduleSharpIcon
+                        style={{ marginRight: '15px' }} />  {el[locale].split('.')[2]}
+                    </Typography>}
+
                   <Typography
                     className={classes.campCardText}
                     variant="body2" component="p">
                     <RoomSharpIcon
-                      style={{ marginRight: '15px' }} /> {el.location}
+                      style={{ marginRight: '15px' }} /> {el[locale].split('.')[locale === 'en' ? 3 : 2]}
                   </Typography>
                 </CardContent>
                 <CardActions>
@@ -436,7 +437,7 @@ const Marketing = (props) => {
                     className={classes.button}
                     onClick={() => history.push('/authentication')}
                     endIcon={<ArrowForwardIcon />}>
-                    {subSectionCampsCardButton}
+                    {el[locale].split('.')[locale === 'en' ? 4 : 3]}
                   </Button>
                 </CardActions>
               </Card>
