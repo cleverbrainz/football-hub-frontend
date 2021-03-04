@@ -185,7 +185,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function ApplicationForm({ history, location }) {
+export default function ApplicationForm({ history, location, locale }) {
   const classes = useStyles();
   const [message, setMessage] = useState()
   const [isLoading, setIsLoading] = useState(false)
@@ -228,7 +228,11 @@ export default function ApplicationForm({ history, location }) {
     ratings: {
       indulge: 0,
       application: 0,
-      challenges: 0
+      challengesMap: {
+        challenge1: 0,
+        challenge2: 0,
+        challenge3: 0
+      }
     }
   })
   const steps = getSteps();
@@ -368,11 +372,20 @@ export default function ApplicationForm({ history, location }) {
       }
     }, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
-        setMessage({
-          success: type ? 'Application submitted successfully. Redirecting...' :
-            'Application successfully saved and updated'
-        })
-        setIsLoading(false)
+        if (type === 'submit') {
+          axios.post('/contactPlayer', { 
+            type: 'applicationReceived', 
+            recipient: { recipientId: auth.getUserId() }, 
+            emailContent: { contentCourse: `Benfica Camp: Under ${group}s`},
+            locale: locale 
+          }).then((res) => {
+            setMessage({ success: 'Application successfully submitted', info: res.info })
+            setIsLoading(false)
+          })
+        } else {
+          setMessage({ success: 'Application successfully saved and updated' })
+          setIsLoading(false)
+        }
       })
       .catch(err => {
         setIsLoading(false)
