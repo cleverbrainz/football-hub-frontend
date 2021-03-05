@@ -128,8 +128,6 @@ const useStyles = makeStyles((theme) => ({
 //   }
 // }
 
-
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   const classes = useStyles()
@@ -200,7 +198,7 @@ function AlertDialog({ open, setOpen, handleSave, setEditing }) {
 }
 
 
-const Application = ({ permissions, application, applications, setApplications, index, setEditing, open, setOpen, editing, averages }) => {
+const Application = ({ permissions, application, applications, setApplications, index, setEditing, open, setOpen, editing, averages, text, locale }) => {
 
   const classes = useStyles()
   const [userId, email, applicationInfo] = application
@@ -291,7 +289,7 @@ const Application = ({ permissions, application, applications, setApplications, 
             </Select>
           </div>
 
-          {editing && <Button style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event, true)}>Save</Button>}
+          {editing && <Button style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event, true)}>{text[locale].Save}</Button>}
         </FormControl>
       </Typography>
 
@@ -494,7 +492,7 @@ const Application = ({ permissions, application, applications, setApplications, 
             <Box
               style={{ color: 'orange' }}
               fontSize={12} fontWeight="fontWeightBold" m={0}>
-              Select Rating
+              {text[locale].SelectRating}
           </Box>
 
             <Select
@@ -505,22 +503,22 @@ const Application = ({ permissions, application, applications, setApplications, 
                 setRatings({ ...ratings, application: event.target.value })
               }}>
               <MenuItem value={0} disabled>Unrated</MenuItem>
-              <MenuItem value={5}>5 - Poor</MenuItem>
-              <MenuItem value={4}>4 - Below Average</MenuItem>
-              <MenuItem value={3}>3 - Average</MenuItem>
-              <MenuItem value={2}>2 - Good</MenuItem>
-              <MenuItem value={1}>1 - Excellent</MenuItem>
+              <MenuItem value={5}>{text[locale].Poor}</MenuItem>
+              <MenuItem value={4}>{text[locale].BelowAverage}</MenuItem>
+              <MenuItem value={3}>{text[locale].Average}</MenuItem>
+              <MenuItem value={2}>{text[locale].Good}</MenuItem>
+              <MenuItem value={1}>{text[locale].Excellent}</MenuItem>
             </Select>
           </div>
 
-          {editing && <Button style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event)}> Save </Button>}
+          {editing && <Button style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event)}>{text[locale].Save}</Button>}
         </FormControl>
       </Typography>
 
       <Typography className={classes.inputContainers} component='div' >
         <Box
           fontSize={16} fontWeight="fontWeightBold" m={0}>
-          Personal Details
+          {text[locale].PlayerDetails}
         </Box>
       </Typography>
 
@@ -528,12 +526,13 @@ const Application = ({ permissions, application, applications, setApplications, 
       <div class="field-body">
         {Object.keys(personal_details).map(el => {
           if (el.includes('address') || el === 'city' || el === 'postcode' || el === 'name') return
-          const label = el === 'dob' ? 'Date of Birth' : el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+          // const label = el === 'dob' ? 'Date of Birth' : el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
           return (
             <div class='field'
               onClick={() => el === 'residency_certificate' ? window.open(personal_details[el], '_blank') : undefined}
               style={{ flex: el !== 'residency_certificate' ? 0.4 : 1, marginRight: '20px' }}>
-              <label className={classes.label} > {label} </label>
+              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
               <div class="control">
                 <input class="input is-small" type="text" value={personal_details[el]} readonly />
               </div>
@@ -543,7 +542,7 @@ const Application = ({ permissions, application, applications, setApplications, 
 
         <div class="field"
           style={{ marginRight: '10px' }}>
-          <label className={classes.label}> Address </label>
+          <label className={classes.label}> {text[locale].Address} </label>
           <div class="control">
             <input class="input is-small" type="text"
               value={[address_line_1, address_line_2, city, postcode].join(', ')} readonly />
@@ -555,7 +554,7 @@ const Application = ({ permissions, application, applications, setApplications, 
       <Typography className={classes.inputContainers} component='div'>
         <Box
           fontSize={16} fontWeight="fontWeightBold" m={0}>
-          Player Attributes
+          {text[locale].PlayerAttributes}
         </Box>
       </Typography>
 
@@ -564,7 +563,8 @@ const Application = ({ permissions, application, applications, setApplications, 
           const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
           return (
             <div class='field' style={{ flex: 'none' }}>
-              <label className={classes.label} > {label} </label>
+              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+              {/* <label className={classes.label} > {label} </label> */}
               <div class="control">
                 <input class="input is-small" type="text" value={player_attributes[el]} readonly />
               </div>
@@ -576,7 +576,7 @@ const Application = ({ permissions, application, applications, setApplications, 
       <Typography className={classes.inputContainers} component='div'>
         <Box
           fontSize={16} fontWeight="fontWeightBold" m={0}>
-          Application Details
+          {text[locale].ApplicationDetails}
         </Box>
       </Typography>
 
@@ -587,7 +587,8 @@ const Application = ({ permissions, application, applications, setApplications, 
           const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
           return (
             <div class='field' style={{ flex: el !== 'previous_trials_attended' ? 0.7 : 1, marginBottom: '10px' }}>
-              <label className={classes.label} > {label} </label>
+              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+              {/* <label className={classes.label} > {label} </label> */}
               <div class="control">
                 <input class="input is-small" type="text" value={football_history[el]} readonly />
               </div>
@@ -603,7 +604,8 @@ const Application = ({ permissions, application, applications, setApplications, 
           const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
           return (
             <div class='field' style={{ marginBottom: '10px' }} >
-              <label className={classes.label} > {label} </label>
+              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+              {/* <label className={classes.label} > {label} </label> */}
               <div class="control">
                 <input class="input is-small" type="text" value={football_history[el]} readonly />
               </div>
@@ -962,6 +964,8 @@ const ApplicationDashboard = ({ locale }) => {
     // const { courses, adminLevel } = userData
     // const courseArray = []
     const applicantArray = []
+    const arr = await axios.get('/getApplicationIds')
+    console.log({arr})
     for (const benficaUser of benficaUserIds) {
       let userData = await axios.get(`/users/${benficaUser}`)
       userData = await userData.data[0]
@@ -988,6 +992,7 @@ const ApplicationDashboard = ({ locale }) => {
   const text = {
     en: {
       Courses: 'Courses',
+      SelectACourse: 'Select A Course',
       ApplicationList: 'Application List',
       ViewSingleApplication: 'View Mode',
       Name: 'Name',
@@ -997,20 +1002,85 @@ const ApplicationDashboard = ({ locale }) => {
       Position: 'Position',
       Score: 'Score',
       Approved: 'Approved',
-      ViewApplication: 'View Application'
+      AwaitingApproval: 'Awaiting Approval',
+      ViewApplication: 'View Application',
+      Category: 'Category',
+      Checked: 'Checked',
+      AwaitingCheck: 'Awaiting Check',
+      Yes: 'Yes',
+      No: 'No',
+      AllPositions: 'All Positions',
+      SelectRating: 'Select Rating',
+      Poor: '5 - Poor',
+      BelowAverage: '4 - Below Average',
+      Average: '3 - Average',
+      Good: '2 - Good',
+      Excellent: '1 - Excellent',
+      Dob: 'Date Of Birth',
+      Gender: 'Gender',
+      'Residency Certificate': null,
+      Address: 'Address',
+      Height: 'Height',
+      Weight: 'Weight (Kg)',
+      'Preferred Foot': null,
+      PlayerDetails: null,
+      ApplicationDetails: 'Application Details',
+      'Previous Trails Attended': null,
+      'Current Coaching School': null,
+      'Current Club': null,
+      'Social Media Link': null,
+      'Highlights Footage Link': null,
+      'Previous Clubs': null,
+      Description: null,
+      Save: 'Save',
+      Back: 'Back'
+      
     },
     ko: {
       Courses: '과정',
-      ApplicationList: '응용',
+      SelectACourse: '프로그램 선택',
+      ApplicationList: '지원서 목록',
       ViewSingleApplication: '보기 모드',
       Name: '이름',
       Age: '나이',
       City: '시티',
       Status: '상태',
-      Position: 'Position',
-      Score: 'Score',
-      Approved: '승인 됨',
-      ViewApplication: '응용 프로그램보기'
+      Position: '포지션',
+      Score: '점수',
+      Approved: '승인됨',
+      AwaitingApproval: '미승인',
+      ViewApplication: '지원서 보기',
+      Category: '카테고리',
+      Checked: '확인됨',
+      AwaitingCheck: '미확인',
+      Yes: '예',
+      No: '아니오',
+      AllPositions: '모든 포지션',
+      SelectRating: '지원자 평점',
+      Poor: '5 - 하',
+      BelowAverage: '4 - 중하',
+      Average: '3 - 중',
+      Good: '2 - 중상',
+      Excellent: '1 - 상',
+      Dob: '생년월일',
+      Gender: '성별',
+      'Residency Certificate': '거주지 증빙 서류',
+      Address: '주소',
+      Height: '키',
+      Weight: '몸무게 (Kg)',
+      'Preferred Foot': '주발',
+      PlayerDetails: '선수 정보',
+      ApplicationDetails: '지원서 정보',
+      'Previous Trails Attended': '선수 선발 테스트/대회 참가 이력',
+      'Current Coaching School': '현재 소속 아카데미',
+      'Current Club': '현재 소속 구단',
+      'Social Media Link': '소셜 미디어 링크',
+      'Highlights Footage Link': 'URL 또는 동영상',
+      'Previous Clubs': '과거 소속 구단',
+      Description: 'Description',
+      Save: '저장',
+      Back: '뒤로가기'
+
 
     }
   }
@@ -1046,7 +1116,7 @@ const ApplicationDashboard = ({ locale }) => {
         <InputLabel>{text[locale].Courses}</InputLabel>
         <Select value={selectedCourse} onChange={(event) => setSelectedCourse(event.target.value)}>
           <MenuItem value="select" disabled>
-            Select a course to view applications
+            {text[locale].SelectACourse}
           </MenuItem>
           {coursesModerating.map((course, index) => {
             return (
@@ -1084,7 +1154,7 @@ const ApplicationDashboard = ({ locale }) => {
               onClick={() => setTabValue(0)}
               className={classes.button}
               startIcon={<ArrowBackSharpIcon />}>
-              Back
+              {text[locale].Back}
           </Button>}
 
 
@@ -1104,7 +1174,7 @@ const ApplicationDashboard = ({ locale }) => {
             <Typography component='div' >
               <Box
                 fontSize={22} fontWeight="fontWeightBold" m={-1}>
-                Indulge Benfica Camp: Applications
+                Indulge Benfica Camp: {text[locale].ApplicationList}
               </Box>
             </Typography>
 
@@ -1112,7 +1182,7 @@ const ApplicationDashboard = ({ locale }) => {
             <div>
               <FormControl className={classes.select}>
                 <InputLabel id="demo-simple-select-label">
-                  Category
+                  {text[locale].Category}
                   </InputLabel>
                 <Select
                   style={{ fontSize: '14px' }}
@@ -1124,7 +1194,7 @@ const ApplicationDashboard = ({ locale }) => {
                   }}
                   onChange={handleFilterChange}
                 >
-                  <MenuItem value={'All'}>All positions</MenuItem>
+                  <MenuItem value={'All'}>{text[locale].AllPositions}</MenuItem>
                   <MenuItem value={'Goalkeeper'}>Goalkeeper</MenuItem>
                   <MenuItem value={'Defence'}>Defence</MenuItem>
                   <MenuItem value={'Midfield'}>Midfield</MenuItem>
@@ -1134,7 +1204,7 @@ const ApplicationDashboard = ({ locale }) => {
 
               {!['All', 'Attack', 'Goalkeeper'].some(x => x === filters.positionCategory) && <FormControl className={classes.select}>
                 <InputLabel id="demo-simple-select-label">
-                  Position
+                {text[locale].Position}
                     </InputLabel>
                 <Select
                   style={{ fontSize: '14px' }}
@@ -1146,7 +1216,7 @@ const ApplicationDashboard = ({ locale }) => {
                   }}
                   onChange={handleFilterChange}
                 >
-                  <MenuItem value={'All'}>All</MenuItem>
+                  <MenuItem value={'All'}>{text[locale].AllPositions}</MenuItem>
                   {positions[filters.positionCategory].map(position => {
                     return (
                       <MenuItem value={position}>{position}</MenuItem>
@@ -1243,14 +1313,14 @@ const ApplicationDashboard = ({ locale }) => {
                   }
                   {permissions === 0 ?
                     <TableCell>
-                      {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? 'Checked' : 'Awaiting Check'}
+                      {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck }
                     </TableCell> :
                     permissions === 1 ?
                       <TableCell>
-                        {ratings.application > 0 ? 'Checked' : 'Awaiting Check'}
+                        {ratings.application > 0 ? text[locale].Checked : text[locale].AwaitingCheck }
                       </TableCell> :
                       <TableCell>
-                        {!Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? 'Checked' : 'Awaiting Check'}
+                        {!Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck }
                       </TableCell>
                   }
                   {permissions === 0 &&
@@ -1259,7 +1329,7 @@ const ApplicationDashboard = ({ locale }) => {
                     </TableCell>}
                   {permissions === 0 &&
                     <TableCell>
-                      {ratings.indulge === 0 ? 'Awaiting Approval' : ratings.indulge}
+                      {ratings.indulge === 0 ? text[locale].AwaitingApproval : ratings.indulge }
                     </TableCell>
                   }
                   <TableCell><Link className={classes.tabs} onClick={() => {
@@ -1273,7 +1343,7 @@ const ApplicationDashboard = ({ locale }) => {
         </Table>
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
-        <Application editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} index={applicantIndex} averages={getAverageScore} />
+        <Application editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} index={applicantIndex} averages={getAverageScore} text={text} locale={locale} />
       </TabPanel>
     </Container>
   )
