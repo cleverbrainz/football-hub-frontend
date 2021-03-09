@@ -17,6 +17,7 @@ import Link from '@material-ui/core/Link';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Box from '@material-ui/core/Box';
 import Snackbar from '@material-ui/core/Snackbar';
+import ClearSharpIcon from '@material-ui/icons/ClearSharp';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import CloudUploadSharpIcon from '@material-ui/icons/CloudUploadSharp';
@@ -27,6 +28,8 @@ import auth from '../lib/auth'
 import moment from 'moment'
 import Selector, { components } from 'react-select';
 import makeAnimated from 'react-select/animated';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 import InfoSharpIcon from '@material-ui/icons/InfoSharp';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -35,6 +38,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { Switch } from '@material-ui/core';
+import {
+  FormControlLabel,
+  Radio,
+} from "@material-ui/core";
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -245,11 +252,15 @@ export default function ApplicationForm({ history, location, locale }) {
     },
     football_history: {
       current_club: '',
-      current_coaching_school: '',
-      previous_clubs: '',
-      previous_trails_attended: '',
+      previous_clubs: [{
+        age_group: '',
+        club: '',
+        league: '',
+        k1_affiliated: false
+      }],
+      private_coaching: false,
+      awards_achieved: false,
       highlights_footage_link: '',
-      social_media_link: '',
       bio_description: ''
     },
     challenges: {
@@ -286,11 +297,10 @@ export default function ApplicationForm({ history, location, locale }) {
     preferred_foot } = applicationDetails.player_attributes
   const {
     current_club,
-    current_coaching_school,
+    private_coaching,
+    awards_achieved,
     previous_clubs,
-    previous_trails_attended,
     highlights_footage_link,
-    social_media_link,
     bio_description
   } = applicationDetails.football_history
   const {
@@ -384,6 +394,8 @@ export default function ApplicationForm({ history, location, locale }) {
 
   useEffect(() => {
 
+    // handleApplicationSave('submit')
+
     const uA = navigator.userAgent;
     const vendor = navigator.vendor;
 
@@ -431,11 +443,11 @@ export default function ApplicationForm({ history, location, locale }) {
     }, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
         if (type === 'submit') {
-          axios.post('/contactPlayer', { 
-            type: 'applicationReceived', 
-            recipient: { recipientId: auth.getUserId() }, 
-            emailContent: { contentCourse: `Benfica Camp: Under ${group}s`},
-            locale: locale 
+          axios.post('/contactPlayer', {
+            type: 'applicationReceived',
+            recipient: { recipientId: auth.getUserId() },
+            emailContent: { contentCourse: `Benfica Camp: Under ${group}s` },
+            locale: locale
           }).then((res) => {
             setMessage({ success: snackbar_messages['1a'][locale], info: res.info })
             setIsLoading(false)
@@ -475,11 +487,10 @@ export default function ApplicationForm({ history, location, locale }) {
   const handleNext = async () => {
 
     if (activeStep === 2) {
-      handleApplicationSave('submit')
 
-      setTimeout(() => {
-        history.push('/success=true')
-      }, (3000));
+      setOpen(true)
+
+
 
 
     } else {
@@ -498,12 +509,25 @@ export default function ApplicationForm({ history, location, locale }) {
     return [application['2a'][locale], application['2b'][locale], application['2c'][locale]];
   }
 
-  function handleApplicationChange(e) {
+  function handleApplicationChange(e, i) {
 
-    const { player_attributes, personal_details } = applicationDetails
-    const { name, value } = e.target
+    const { player_attributes, personal_details, football_history } = applicationDetails
+    const { id, name, value } = e.target
 
-    if (value === 'goalkeeper' ||
+
+    if (name === 'previous_clubs') {
+      const arr = previous_clubs
+      arr[i] = { ...arr[i], [id]: value }
+
+      setApplicationDetails({
+        ...applicationDetails,
+        football_history: {
+          ...football_history,
+          previous_clubs: arr
+        }
+      })
+
+    } else if (value === 'goalkeeper' ||
       (value !== 'goalkeeper' && position === 'goalkeeper')) {
       setVideoSource()
       setApplicationDetails({
@@ -626,14 +650,96 @@ export default function ApplicationForm({ history, location, locale }) {
     );
   };
 
-
   const firstPage = (
     <>
       <Typography className={classes.subHeading} component='div' >
         <Box
           fontSize={18}
           fontWeight="fontWeightBold" m={0}>
-          {application['3'][locale]}
+          Guardian Details
+        </Box>
+      </Typography>
+
+      <div className="field">
+        <div class="field-body">
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span>
+                First Name
+              </label>
+            </div>
+            <p class="control is-expanded">
+              <input
+                value={name}
+                class="input" type="text"
+                name='guardian_first_name'
+                placeholder='John' />
+            </p>
+          </div>
+
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span>
+                Last Name
+              </label>
+            </div>
+            <p class="control is-expanded">
+              <input
+                value={name}
+                class="input" type="text"
+                name='guardian_last_name'
+                placeholder='Doe' />
+            </p>
+          </div>
+
+
+
+        </div>
+
+        <div className="field-body">
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span>
+                Email Address
+              </label>
+            </div>
+            <p class="control is-expanded">
+              <input
+                value={name}
+                class="input" type="email"
+                name='guardian_email_address'
+                placeholder='john_doe@hotmail.com' />
+            </p>
+          </div>
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span>
+                Contact Number
+               </label>
+            </div>
+            <div className="field has-addons">
+              <p class="control">
+                <a class="button is-static">
+                  +44
+              </a>
+              </p>
+              <p class="control is-expanded">
+                <input class="input" type="tel" placeholder='123456789' />
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Typography className={classes.subHeading} component='div' >
+        <Box
+          fontSize={18}
+          fontWeight="fontWeightBold" m={0}>
+          Player Details
         </Box>
       </Typography>
 
@@ -644,7 +750,27 @@ export default function ApplicationForm({ history, location, locale }) {
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span>
 
-                {application['2a'][locale]}
+                {/* {application['2a'][locale]} */}
+                First Name
+
+              </label>
+            </div>
+            <p class="control is-expanded">
+              <input
+                value={name}
+                class="input" type="text"
+                name='name'
+                placeholder={application['2a'][locale]} />
+            </p>
+          </div>
+
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span>
+
+                {/* {application['2a'][locale]} */}
+                Last Name
 
               </label>
             </div>
@@ -688,8 +814,6 @@ export default function ApplicationForm({ history, location, locale }) {
                   name='dob'
                   placeholder="YYYY-MM-DD" />
                 : <input value={dob} name='dob' class="input" type="date" />}
-
-
             </p>
           </div>
 
@@ -725,7 +849,7 @@ export default function ApplicationForm({ history, location, locale }) {
         </div>
 
         <div class="field-body"
-          style={{ width: '40%' }}
+          style={{ width: '70%' }}
         >
 
           <div className={classes.field}>
@@ -736,6 +860,16 @@ export default function ApplicationForm({ history, location, locale }) {
               <input value={city} name='city' class="input" type="text" placeholder="City" />
             </p>
           </div>
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Country </label>
+            </div>
+            <p class="control is-expanded">
+              <input value={city} name='country' class="input" type="text" placeholder="South Korea" />
+            </p>
+          </div>
+
 
 
 
@@ -754,6 +888,18 @@ export default function ApplicationForm({ history, location, locale }) {
         </div>
 
         <div class="field-body">
+
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Nationality</label>
+            </div>
+            <p class="control is-expanded">
+              <input value={city} name='nationality' class="input" type="text" placeholder="Korean" />
+            </p>
+          </div>
+
+
+
           <div className={classes.field}>
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span>
@@ -793,6 +939,8 @@ export default function ApplicationForm({ history, location, locale }) {
               </label>
             </div>
           </div>
+
+
 
         </div>
 
@@ -920,81 +1068,251 @@ export default function ApplicationForm({ history, location, locale }) {
 
   const secondPage = (
     <>
+
+      <Typography className={classes.subHeading} component='div' >
+        <Box
+          fontSize={18}
+          fontWeight="fontWeightBold" m={0}>
+          Playing Details
+        </Box>
+      </Typography>
+
+
       <div class="field">
 
-        <div class="field-body">
 
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> {application['6a'][locale]}</label>
-            </div>
-            <p class="control is-expanded">
-              <input value={current_club} name='current_club' class="input" type="text" placeholder={application['6a'][locale]} />
-
-            </p>
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> {application['6a'][locale]}</label>
           </div>
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label > <span style={{ color: 'red' }}>*</span>  {application['6b'][locale]} </label>
-            </div>
-            <p class="control is-expanded">
-              <input value={current_coaching_school} name='current_coaching_school' class="input" type="email" placeholder={application['6b'][locale]} />
+          <p class="control is-expanded">
+            <input value={current_club} name='current_club' class="input" type="text" placeholder={application['6a'][locale]} />
 
-            </p>
-          </div>
+          </p>
         </div>
+
+
+
+
+        <div className="field-body">
+          <FormControlLabel
+            style={{ transform: 'translateX(5px)' }}
+
+            onClick={() => {
+              setApplicationDetails({
+                ...applicationDetails,
+                football_history: {
+                  ...applicationDetails.football_history,
+                  private_coaching: !private_coaching
+                }
+              })
+            }}
+            control={<Radio checked={private_coaching} />}
+            label='Please check if you are currently attending private coaching sessions' />
+
+        </div>
+
+        {private_coaching && <>
+
+          <div className="field-body">
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> Coach Name</label>
+              </div>
+              <p class="control is-expanded">
+                <input value={applicationDetails.private_coach_name && applicationDetails.private_coach_name}
+                  name='private_coach_name'
+                  class="input" type="text" placeholder='Coach Name' />
+              </p>
+            </div>
+          </div>
+
+        </>}
+
+
 
         <div class="field-body">
           <div className={classes.field}>
             <div className={classes.label}>
               <label >  {application['6c'][locale]} </label>
-            </div>
-            <p class="control is-expanded">
-              <input value={previous_clubs} name='previous_clubs' class="input" type="text" placeholder={application['6c'][locale]} />
+              <p style={{ fontWeight: 'initial', position: 'relative' }} class="help"> Add a maximum of 3 previous clubs
 
-            </p>
-          </div>
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label >  {application['6d'][locale]}</label>
-            </div>
-            <p class="control is-expanded">
-              <input value={previous_trails_attended} name='previous_trails_attended' class="input" type="email" placeholder={application['6d'][locale]} />
+             {previous_clubs.length !== 3 && <Fab
+                  onClick={() => {
+                    setApplicationDetails({
+                      ...applicationDetails,
+                      football_history: {
+                        ...applicationDetails.football_history,
+                        previous_clubs: [...previous_clubs, {
+                          age_group: '',
+                          league: '',
+                          club: '',
+                          k1_affiliated: false
+                        }]
+                      }
+                    })
+                  }}
+                  style={{
+                    position: 'absolute',
+                    top: '-15px',
+                    right: previous_clubs.length === 1 ? 0 : '45px',
+                    width: '36px',
+                    height: '10px'
+                  }}
+                  size="small" color="primary" aria-label="add">
+                  <AddIcon />
+                </Fab>}
 
-            </p>
+                {previous_clubs.length !== 1 && <Fab
+                  onClick={() => {
+                    setApplicationDetails({
+                      ...applicationDetails,
+                      football_history: {
+                        ...applicationDetails.football_history,
+                        previous_clubs: previous_clubs.filter((x, i) => i !== previous_clubs.length - 1)
+                      }
+                    })
+                  }}
+                  style={{
+                    position: 'absolute',
+                    top: '-15px',
+                    right: 0,
+                    width: '36px',
+                    height: '10px'
+                  }}
+                  size="small" color="secondary" aria-label="add">
+                  <ClearSharpIcon />
+                </Fab>}
+              </p>
+            </div>
           </div>
         </div>
 
+
+        {previous_clubs.map((el, i) => {
+          return (
+            <>
+              <div class="field-body">
+                <div className={classes.field} style={{ flex: 'none' }}>
+                  <div className={classes.label}>
+                    <label> Age Group </label>
+                  </div>
+                  <div class="select">
+                    <select
+                      onChange={(e) => handleApplicationChange(e, i)}
+                      value={el.age_group} id='age_group' name='previous_clubs'>
+                      <option disabled={el.age_group !== ''} value=""> </option>
+                      <option value="under 16s"> Under 16s </option>
+                      <option value="under 10s"> Under 10s </option>
+                      <option value="under 14s"> Under 14s </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className={classes.field} style={{ flex: '0.6' }}>
+                  <div className={classes.label}>
+                    <label> Club Name </label>
+                  </div>
+                  <p class="control is-expanded">
+                    <input
+                      onChange={(e) => handleApplicationChange(e, i)}
+                      value={el.club} id='club' name='previous_clubs' class="input" type="text"
+                      placeholder='Club Name' />
+                  </p>
+                </div>
+
+                <div className={classes.field} style={{ flex: 'none' }}>
+                  <div className={classes.label}>
+                    <label> League </label>
+                  </div>
+                  <div class="select">
+                    <select
+                      onChange={(e) => handleApplicationChange(e, i)}
+                      value={el.league} id='league' name='previous_clubs'>
+                      <option disabled={preferred_foot !== ''} value=""> </option>
+                      <option value="league 1"> League 1 </option>
+                      <option value="league 2"> League 2 </option>
+                      <option value="league 3"> League 3</option>
+                    </select>
+                  </div>
+                </div>
+
+
+              </div>
+
+              <FormControlLabel
+                style={{ transform: 'translateX(5px)' }}
+
+                onClick={() => {
+                  const arr = previous_clubs
+                  arr[i] = { ...arr[i], k1_affiliated: !el.k1_affiliated }
+
+                  setApplicationDetails({
+                    ...applicationDetails,
+                    football_history: {
+                      ...applicationDetails.football_history,
+                      previous_clubs: arr
+                    }
+                  })
+                }}
+                control={<Radio checked={el.k1_affiliated} />}
+                label='This club is affiliated with a K1 club' />
+
+
+            </>
+          )
+        })}
+
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label >  {application['6e'][locale]} </label>
+          </div>
+          <p class="control is-expanded">
+            <input value={highlights_footage_link} name='highlights_footage_link' class="input" type="text" placeholder={application['6e'][locale]} />
+          </p>
+        </div>
 
         <div class="field-body">
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label >  {application['6e'][locale]} </label>
-            </div>
-            <p class="control is-expanded">
-              <input value={highlights_footage_link} name='highlights_footage_link' class="input" type="text" placeholder={application['6e'][locale]} />
-
-            </p>
-          </div>
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label > <span style={{ color: 'red' }}>*</span> {application['6f'][locale]} </label>
-            </div>
-            <p class="control is-expanded">
-              <input value={social_media_link} name='social_media_link' class="input" type="email" placeholder={application['6f'][locale]} />
-
-            </p>
-          </div>
+          <FormControlLabel
+            style={{ transform: 'translateX(5px)' }}
+            onClick={() => {
+              setApplicationDetails({
+                ...applicationDetails,
+                football_history: {
+                  ...applicationDetails.football_history,
+                  awards_achieved: !awards_achieved
+                }
+              })
+            }}
+            control={<Radio checked={awards_achieved} />}
+            label='Please check if you have achieved any awards (KFA, Regional FA, Foundation)' />
         </div>
 
-      </div>
+        {awards_achieved && <div className="field-body">
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> Award Name </label>
+            </div>
+            <div class="select">
+              <select
+                value={applicationDetails.award_name && applicationDetails.award_name}
+                name='award_name'>
+                <option value=""> </option>
+                <option value="kfa"> KFA Award </option>
+                <option value="regional"> Regional FA Award </option>
+                <option value="foundation"> Foundation Award </option>
+              </select>
+            </div>
+          </div>
+        </div>}
 
+      </div>
 
       <div class="field">
         <div class="field-body">
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span>  {application['6g'][locale]} </label>
+              <label> <span style={{ color: 'red' }}>*</span>  Personal Statement </label>
               <p style={{ fontWeight: 'initial' }} class="help">  {application['6h'][locale]} </p>
             </div>
 
@@ -1057,9 +1375,6 @@ export default function ApplicationForm({ history, location, locale }) {
           <div className={classes.webfield}>
             <div className={classes.label}>
               <label>  {application['9a'][locale]}  </label>
-              <InfoSharpIcon
-                onClick={handleClickOpen}
-                style={{ fontSize: '21px', transform: 'translate(10px, 5px)' }} />
             </div>
             <p class="control is-expanded">
               <input value={link_1} name='link_1' class="input" type="text" placeholder={application['9a'][locale]} />
@@ -1068,9 +1383,6 @@ export default function ApplicationForm({ history, location, locale }) {
           <div className={classes.webfield}>
             <div className={classes.label}>
               <label>  {application['9b'][locale]} </label>
-              <InfoSharpIcon
-                onClick={handleClickOpen}
-                style={{ fontSize: '21px', transform: 'translate(10px, 5px)' }} />
             </div>
             <p class="control is-expanded">
               <input value={link_2} name='link_2' class="input" type="text" placeholder={application['9b'][locale]} />
@@ -1079,9 +1391,6 @@ export default function ApplicationForm({ history, location, locale }) {
           <div className={classes.webfield}>
             <div className={classes.label}>
               <label >  {application['9c'][locale]} </label>
-              <InfoSharpIcon
-                onClick={handleClickOpen}
-                style={{ fontSize: '21px', transform: 'translate(10px, 5px)' }} />
             </div>
             <p class="control is-expanded">
               <input value={link_3} name='link_3' class="input" type="text" placeholder={application['9c'][locale]} />
@@ -1173,14 +1482,29 @@ export default function ApplicationForm({ history, location, locale }) {
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle id="alert-dialog-slide-title">
-          Instructions on challenges goes here
+          Application Submission
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Let Google help apps determine location. This means sending anonymous location data to
-            Google, even when no apps are running.
+            Once you submit your application, you will not be able to amend it further.
+            If you would like to review or make changes to your application, please click back
+            otherwise, please confirm that you would like to submit your application.
           </DialogContentText>
         </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose}>
+            Back
+          </Button>
+          <Button variant='outlined' onClick={() => {
+            handleApplicationSave('submit')
+            setTimeout(() => {
+              history.push('/success=true')
+            }, (3000));
+          }} color="primary" autoFocus>
+            Submit
+          </Button>
+        </DialogActions>
       </Dialog>}
 
     </div>

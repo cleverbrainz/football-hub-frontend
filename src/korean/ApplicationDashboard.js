@@ -493,7 +493,7 @@ const Application = ({ permissions, application, applications, setApplications, 
               style={{ color: 'orange' }}
               fontSize={12} fontWeight="fontWeightBold" m={0}>
               {text[locale].SelectRating}
-          </Box>
+            </Box>
 
             <Select
               value={ratings.application}
@@ -645,6 +645,19 @@ const Application = ({ permissions, application, applications, setApplications, 
         {editing && <Button style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event)}>Save</Button>}
       </Typography>
 
+
+      <div className="field-body" style={{ margin: '10px 0', borderBottom: '1px dashed grey', padding: '20px 0' }}>
+
+
+        <div class='field' style={{ flex: 'none' }}>
+          <label className={classes.label} > Current Rating For Challenges </label>
+          <div class="control">
+            <input class="input is-small is-static" type="text" value={(Object.values(ratings.challengesMap).reduce((acc, res) => acc + res, 0))}
+              readonly />
+          </div>
+        </div>
+      </div>
+
       <div className="field-body">
         <div>
           <Typography className={classes.inputContainers} component='div' >
@@ -708,17 +721,17 @@ const Application = ({ permissions, application, applications, setApplications, 
       </Typography>
 
       <div class="field-body" >
-        <div class='field'
-          onClick={() => window.open(challenges.link_1, '_blank')}>
+
+
+        <div class='field'>
           <label className={classes.label} > Link 1 </label>
-          <div class="control">
+          <div onClick={() => window.open(challenges.link_1, '_blank')} class="control">
             <input class="input is-small" type="text" value={challenges.link_1} readonly />
           </div>
-        </div>
 
-        <div className="field">
-          <FormControl>
-
+          <FormControl
+            style={{ marginTop: '15px', width: '50%' }}
+          >
             <Box
               style={{ color: 'orange' }}
               fontSize={12} fontWeight="fontWeightBold" m={0}>
@@ -740,88 +753,89 @@ const Application = ({ permissions, application, applications, setApplications, 
             </Select>
           </FormControl>
         </div>
-      </div>
 
 
-      {/* <div class='field'
-        onClick={() => window.open(challenges.link_2, '_blank')}>
-        <label className={classes.label} > Link 2 </label>
-        <div class="control">
-          <input class="input is-small" type="text" value={challenges.link_2} readonly />
+        <div class='field'>
+          <label className={classes.label} > Link 2 </label>
+          <div onClick={() => window.open(challenges.link_2, '_blank')} class="control">
+            <input class="input is-small" type="text" value={challenges.link_2} readonly />
+          </div>
+
+          <FormControl
+            style={{ marginTop: '15px', width: '50%' }}
+          >
+
+            <Box
+              style={{ color: 'orange' }}
+              fontSize={12} fontWeight="fontWeightBold" m={0}>
+              Select Rating
+            </Box>
+
+            <Select value={ratings.challengesMap.challenge2}
+              style={{ fontSize: '14px' }} onChange={(event) => {
+                setEditing(true)
+                setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge2: event.target.value } })
+              }}>
+              <MenuItem value={0} disabled>Unrated</MenuItem>
+              <MenuItem value={5}>5 - Poor</MenuItem>
+              <MenuItem value={4}>4 - Below Average</MenuItem>
+              <MenuItem value={3}>3 - Average</MenuItem>
+              <MenuItem value={2}>2 - Good</MenuItem>
+              <MenuItem value={1}>1 - Excellent</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+
+        <div class='field'>
+          <label className={classes.label} > Link 3 </label>
+          <div class="control"
+            onClick={() => window.open(challenges.link_3, '_blank')}
+          >
+            <input
+              class="input is-small" type="text" value={challenges.link_3} readonly />
+          </div>
+
+          <FormControl
+            style={{ marginTop: '15px', width: '50%' }}
+          >
+
+            <Box
+              style={{ color: 'orange' }}
+              fontSize={12} fontWeight="fontWeightBold" m={0}>
+              Select Rating
+            </Box>
+
+            <Select value={ratings.challengesMap.challenge3}
+              style={{ fontSize: '14px' }} onChange={(event) => {
+                setEditing(true)
+                setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge3: event.target.value } })
+              }}>
+              <MenuItem value={0} disabled>Unrated</MenuItem>
+              <MenuItem value={5}>5 - Poor</MenuItem>
+              <MenuItem value={4}>4 - Below Average</MenuItem>
+              <MenuItem value={3}>3 - Average</MenuItem>
+              <MenuItem value={2}>2 - Good</MenuItem>
+              <MenuItem value={1}>1 - Excellent</MenuItem>
+            </Select>
+          </FormControl>
         </div>
       </div>
 
-      <div class='field'
-        onClick={() => window.open(challenges.link_3, '_blank')}>
-        <label className={classes.label} > Link 3 </label>
-        <div class="control">
-          <input class="input is-small" type="text" value={challenges.link_3} readonly />
+
+      {player_attributes.position === 'Goalkeeper' && (
+        <div className="fieid-body" style={{ marginTop : '20px', width: '50%'}}>
+          <div class='field'>
+            <label className={classes.label} > Highlight Footage </label>
+            <div onClick={() => window.open(highlights_footage_link, '_blank')} class="control">
+              <input class="input is-small" type="text" value={highlights_footage_link} readonly />
+            </div>
+          </div>
         </div>
+      )}
 
-      </div> */}
 
-      {/* // <Grid item xs={6}>
-        //   <Typography variant="h5">Challenge Details</Typography>
-        //   <Typography>Challenge 1: <a href={challenges.link_1} target="_blank" rel="noopener noreferrer">Open video</a></Typography>
-        //   <FormControl>
-        //     <Select value={ratings.challengesMap.challenge1} style={{ marginRight: '10px' }} onChange={(event) => { 
-        //       setEditing(true)
-        //       setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge1: event.target.value } })
-        //     }}>
-        //       <MenuItem value={0} disabled>Unrated</MenuItem>
-        //       <MenuItem value={5}>5 - Poor</MenuItem>
-        //       <MenuItem value={4}>4 - Below Average</MenuItem>
-        //       <MenuItem value={3}>3 - Average</MenuItem>
-        //       <MenuItem value={2}>2 - Good</MenuItem>
-        //       <MenuItem value={1}>1 - Excellent</MenuItem>
-        //     </Select>
-        //   </FormControl>
-        //   <Typography>Challenge 2: <a href={challenges.link_2} target="_blank" rel="noopener noreferrer">Open video</a></Typography><FormControl>
-        //     <Select value={ratings.challengesMap.challenge2} style={{ marginRight: '10px' }} onChange={(event) => {
-        //       setEditing(true)
-        //       setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge2: event.target.value } })
-        //     }}>
-        //       <MenuItem value={0} disabled>Unrated</MenuItem>
-        //       <MenuItem value={5}>5 - Poor</MenuItem>
-        //       <MenuItem value={4}>4 - Below Average</MenuItem>
-        //       <MenuItem value={3}>3 - Average</MenuItem>
-        //       <MenuItem value={2}>2 - Good</MenuItem>
-        //       <MenuItem value={1}>1 - Excellent</MenuItem>
-        //     </Select>
-        //   </FormControl>
-        //   <Typography>Challenge 3: <a href={challenges.link_3} target="_blank" rel="noopener noreferrer">Open video</a></Typography><FormControl>
-        //     <Select value={ratings.challengesMap.challenge3} style={{ marginRight: '10px' }} onChange={(event) => {
-        //       setEditing(true)
-        //       setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge3: event.target.value } })
-        //     }}>
-        //       <MenuItem value={0} disabled>Unrated</MenuItem>
-        //       <MenuItem value={5}>5 - Poor</MenuItem>
-        //       <MenuItem value={4}>4 - Below Average</MenuItem>
-        //       <MenuItem value={3}>3  - Average</MenuItem>
-        //       <MenuItem value={2}>2  - Good</MenuItem>
-        //       <MenuItem value={1}>1  - Excellent</MenuItem>
-        //     </Select>
-        //   </FormControl>
-        //   <br />
-        //   <br />
-        //   {player_attributes.position === 'Goalkeeper' && <Typography>{<a href={football_history.highlights_footage_link} target="_blank" rel="noopener noreferrer">View Highlights Footage</a>}</Typography>}
-        //   <br />
-        //   <Typography>Current Rating For Challenges</Typography>
-        //   <FormControl style={{ display: 'flex', flexDirection: 'row' }}>
-  
-  {/* <Select value={ratings.challenges} style={{ marginRight: '10px' }} onChange={(event) => {
-          setEditing(true)
-          setRatings({ ...ratings, challenges: event.target.value})
-          }}>
-        <MenuItem value={0} disabled>-</MenuItem>
-          <MenuItem value={3}>3</MenuItem>
-          <MenuItem value={2}>2</MenuItem>
-          <MenuItem value={1}>1</MenuItem>
-        </Select> */}
-      {/* // <Typography>{(Object.values(ratings.challengesMap).reduce((acc, res) => acc + res, 0))}</Typography>
-  // 
+      <AlertDialog open={open} setOpen={setOpen} handleSave={handleSave} setEditing={setEditing} />
 
-  // <AlertDialog open={open} setOpen={setOpen} handleSave={handleSave} setEditing={setEditing} /> */}
     </>
   )
 }
@@ -965,7 +979,7 @@ const ApplicationDashboard = ({ locale }) => {
     // const courseArray = []
     const applicantArray = []
     const arr = await axios.get('/getApplicationIds')
-    console.log({arr})
+    console.log({ arr })
     for (const benficaUser of benficaUserIds) {
       let userData = await axios.get(`/users/${benficaUser}`)
       userData = await userData.data[0]
@@ -1034,7 +1048,7 @@ const ApplicationDashboard = ({ locale }) => {
       Description: null,
       Save: 'Save',
       Back: 'Back'
-      
+
     },
     ko: {
       Courses: '과정',
@@ -1155,7 +1169,7 @@ const ApplicationDashboard = ({ locale }) => {
               className={classes.button}
               startIcon={<ArrowBackSharpIcon />}>
               {text[locale].Back}
-          </Button>}
+            </Button>}
 
 
 
@@ -1183,7 +1197,7 @@ const ApplicationDashboard = ({ locale }) => {
               <FormControl className={classes.select}>
                 <InputLabel id="demo-simple-select-label">
                   {text[locale].Category}
-                  </InputLabel>
+                </InputLabel>
                 <Select
                   style={{ fontSize: '14px' }}
                   labelId="demo-simple-select-label"
@@ -1204,8 +1218,8 @@ const ApplicationDashboard = ({ locale }) => {
 
               {!['All', 'Attack', 'Goalkeeper'].some(x => x === filters.positionCategory) && <FormControl className={classes.select}>
                 <InputLabel id="demo-simple-select-label">
-                {text[locale].Position}
-                    </InputLabel>
+                  {text[locale].Position}
+                </InputLabel>
                 <Select
                   style={{ fontSize: '14px' }}
                   labelId="demo-simple-select-label"
@@ -1313,14 +1327,14 @@ const ApplicationDashboard = ({ locale }) => {
                   }
                   {permissions === 0 ?
                     <TableCell>
-                      {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck }
+                      {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck}
                     </TableCell> :
                     permissions === 1 ?
                       <TableCell>
-                        {ratings.application > 0 ? text[locale].Checked : text[locale].AwaitingCheck }
+                        {ratings.application > 0 ? text[locale].Checked : text[locale].AwaitingCheck}
                       </TableCell> :
                       <TableCell>
-                        {!Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck }
+                        {!Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck}
                       </TableCell>
                   }
                   {permissions === 0 &&
@@ -1329,7 +1343,7 @@ const ApplicationDashboard = ({ locale }) => {
                     </TableCell>}
                   {permissions === 0 &&
                     <TableCell>
-                      {ratings.indulge === 0 ? text[locale].AwaitingApproval : ratings.indulge }
+                      {ratings.indulge === 0 ? text[locale].AwaitingApproval : ratings.indulge}
                     </TableCell>
                   }
                   <TableCell><Link className={classes.tabs} onClick={() => {
