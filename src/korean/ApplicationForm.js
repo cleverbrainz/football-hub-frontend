@@ -439,7 +439,7 @@ export default function ApplicationForm({ history, location, locale }) {
     } else {
       getData()
     }
-  }, [locale])
+  }, [])
 
   function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
