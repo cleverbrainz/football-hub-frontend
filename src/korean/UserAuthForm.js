@@ -32,7 +32,8 @@ const UserAuthForm = ({ locale, history }) => {
     email: '',
     password: '',
     confirm_password: '',
-    player_name: '',
+    player_first_name: '',
+    player_last_name: '',
   })
   const [message, setMessage] = useState(null)
   const [open, setOpen] = useState(false)
@@ -117,6 +118,13 @@ const UserAuthForm = ({ locale, history }) => {
 
       },
 
+    },
+    helper: {
+      fontSize: '12px',
+      transform: 'translate(0px, 0px )',
+      [theme.breakpoints.up('sm')]: {
+        transform: 'translate(182px, 0px)',
+      },
     }
 
   }));
@@ -151,7 +159,7 @@ const UserAuthForm = ({ locale, history }) => {
   }
 
   function loginUser() {
-    const { email, password, player_name } = registerDetails
+    const { email, password } = registerDetails
     axios.post('/login', { email, password })
       .then(res => {
         const { application_fee_paid, token, stripeId, applications } = res.data
@@ -199,7 +207,7 @@ const UserAuthForm = ({ locale, history }) => {
   }
 
   function handleUserAuth(text) {
-    const { email, password, player_name } = registerDetails
+    const { email, password } = registerDetails
     setIsLoading(true)
     console.log(text)
     switch (text) {
@@ -264,17 +272,23 @@ const UserAuthForm = ({ locale, history }) => {
             fontSize={20} fontWeight="fontWeightBold" m={0}>
             {authorization['1a'][locale]}: {registrationOrLogin === 'login' ? authorization['5b'][locale] : authorization['5a'][locale]}
           </Box>
-          <Box
-            className={classes.boldText}
-            fontSize={16} fontWeight="fontWeightBold" m={0}>
-            {registrationOrLogin === 'login' ? authorization['2a'][locale] : authorization['2b'][locale]}
-          </Box>
-          <Box
-            fontSize={15} fontWeight="fontWeightRegular" m={0}>
-            {registrationOrLogin === 'login' ?
-              authorization['3a'][locale] :
-              authorization['3b'][locale]}
-          </Box>
+          {registrationOrLogin === 'login' && <>
+            <Box
+              className={classes.boldText}
+              fontSize={16} fontWeight="fontWeightBold" m={0}>
+              {registrationOrLogin === 'login' ? authorization['2a'][locale] : authorization['2b'][locale]}
+            </Box>
+            <Box
+              fontSize={15} fontWeight="fontWeightRegular" m={0}>
+              {registrationOrLogin === 'login' ?
+                authorization['3a'][locale] :
+                authorization['3b'][locale]}
+            </Box>
+
+          </>}
+
+
+
         </Typography>
 
 
@@ -291,6 +305,9 @@ const UserAuthForm = ({ locale, history }) => {
                 control={<Radio />}
                 label={authorization['4a'][locale]} />
 
+              <p className={classes.helper}> <span style={{ color: 'red' }}> * </span> If you are under 14, a guardian <strong> must </strong>
+                register on your behalf </p>
+
               {registerDetails.category === 'parent' &&
                 <div class="field" className={classes.inputContainer}>
                   <p
@@ -305,12 +322,24 @@ const UserAuthForm = ({ locale, history }) => {
 
                     <input
                       onChange={(e) => handleFormChange(e)}
-                      name='parent_name'
+                      name='guardian_first_name'
+                      placeholder='First Name'
                       class='input'
                       style={{
                         marginLeft: 10,
                         transform: 'translateY(2px)',
-                        width: '350px'
+                        width: '170px'
+                      }}
+                      type="text" />
+                    <input
+                      onChange={(e) => handleFormChange(e)}
+                      placeholder='Last Name'
+                      name='guardian_last_name'
+                      class='input'
+                      style={{
+                        marginLeft: 10,
+                        transform: 'translateY(2px)',
+                        width: '170px'
                       }}
                       type="text" />
                   </p>
@@ -326,12 +355,24 @@ const UserAuthForm = ({ locale, history }) => {
                     style={{ color: 'red' }}> *  </span>  {authorization['4c'][locale]}
                   <input
                     onChange={(e) => handleFormChange(e)}
-                    name='player_name'
+                    placeholder='First Name'
+                    name='player_first_name'
                     class='input'
                     style={{
                       marginLeft: 10,
                       transform: 'translateY(2px)',
-                      width: '350px'
+                      width: '170px'
+                    }}
+                    type="text" />
+                    <input
+                    onChange={(e) => handleFormChange(e)}
+                    placeholder='Last Name'
+                    name='player_last_name'
+                    class='input'
+                    style={{
+                      marginLeft: 10,
+                      transform: 'translateY(2px)',
+                      width: '170px'
                     }}
                     type="text" />
                 </p>
