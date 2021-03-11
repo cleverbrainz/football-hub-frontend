@@ -153,7 +153,7 @@ const useStyles = makeStyles((theme) => ({
   label: {
     fontWeight: 'bold',
     marginBottom: '3px',
-    fontSize: '14px'
+    fontSize: '13px'
   },
   field: {
     flex: 1,
@@ -163,38 +163,6 @@ const useStyles = makeStyles((theme) => ({
     },
 
   },
-  webfieldContainer: {
-    flex: 1,
-    transform: 'translateY(0px)',
-    [theme.breakpoints.up('md')]: {
-      transform: 'translateY(-30px)'
-    }
-  },
-  webfield: {
-    flex: 1,
-    margin: '15px 0',
-    [theme.breakpoints.up('md')]: {
-      margin: '20px 20px '
-    },
-  },
-  videoContainer: {
-    marginTop: '30px',
-    display: 'flex',
-    flexDirection: 'column',
-
-    [theme.breakpoints.up('md')]: {
-      flexDirection: 'row',
-    },
-  },
-  video: {
-    height: '40vw',
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      height: 245,
-      minWidth: 470
-    },
-    position: 'relative'
-  },
   subHeading: {
     margin: 0,
     color: 'orange',
@@ -203,16 +171,51 @@ const useStyles = makeStyles((theme) => ({
 
     },
   },
-  bufferText: {
-    position: 'absolute',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    fontWeight: 'bold',
-  },
+
   chip: {
     transform: 'translateY(-1px)',
     fontSize: '11px',
     margin: '0 5px'
+  },
+
+  challengeRowContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '20px 0',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+    },
+  },
+  challengeRowReversed: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '20px 0',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row-reverse',
+    },
+
+  },
+  challengeDescription: {
+    padding: '50px 25px 35px',
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: '50%',
+    },
+  },
+  videoContainer: {
+    width: '100%',
+    height: '40vh',
+    [theme.breakpoints.up('md')]: {
+      width: '50%',
+      height: 'auto',
+    },
+
+  },
+  challengeNumber: {
+    position: 'absolute',
+    transform: 'translate(-2px, -56px)',
+    opacity: 0.28,
+    fontFamily: 'Roboto Condensed'
   }
 
 }));
@@ -222,26 +225,28 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ApplicationForm({ history, location, locale }) {
   const classes = useStyles();
-  const theme = useTheme();
   const [message, setMessage] = useState()
   const [isLoading, setIsLoading] = useState(false)
   const [activeStep, setActiveStep] = useState(0);
-  const [videoSource, setVideoSource] = useState()
   const [isSafari, setIsSafari] = useState(false)
-  const animatedComponents = makeAnimated();
   const [open, setOpen] = useState(false);
+  const [accountCategory, setAccountCategory] = useState()
+
 
 
   const [applicationDetails, setApplicationDetails] = useState({
     personal_details: {
-      name: '',
+      player_first_name: '',
+      player_last_name: '',
       gender: '',
       dob: '',
       address_line_1: '',
       address_line_2: '',
       city: '',
       postcode: '',
-      residency_certificate: ''
+      residency_certificate: '',
+      nationality: '',
+      country: '',
     },
     player_attributes: {
       height: '',
@@ -251,13 +256,13 @@ export default function ApplicationForm({ history, location, locale }) {
       other_positions: []
     },
     football_history: {
-      current_club: '',
-      previous_clubs: [{
+      current_club: {
         age_group: '',
         club: '',
-        league: '',
-        k1_affiliated: false
-      }],
+        k1_affiliated: false,
+        middle_school: ''
+      },
+      previous_clubs: [],
       private_coaching: false,
       awards_achieved: false,
       highlights_footage_link: '',
@@ -281,13 +286,19 @@ export default function ApplicationForm({ history, location, locale }) {
   const steps = getSteps();
 
   const {
-    name,
+    player_first_name,
+    player_last_name,
+    guardian_last_name,
+    guardian_first_name,
     gender,
     dob,
     address_line_1,
     address_line_2,
     city,
     postcode,
+    nationality,
+    email,
+    country,
     residency_certificate } = applicationDetails.personal_details
   const {
     height,
@@ -309,37 +320,7 @@ export default function ApplicationForm({ history, location, locale }) {
     link_3
   } = applicationDetails.challenges
 
-  const videoLinks = {
-    goalkeeper_demos: [
-      {
-        title: application['8'][locale].split('.')[0],
-        src: 'https://www.youtube.com/embed/HmWpssuh_9A?rel=0'
-      },
-      {
-        title: application['8'][locale].split('.')[1],
-        src: 'https://www.youtube.com/embed/1OWOrbmvUhc?rel=0'
-      },
-      {
-        title: application['8'][locale].split('.')[2],
-        src: 'https://www.youtube.com/embed/Q-hR_gNElo0?rel=0'
-      }
-    ],
-    outfield_demos: [
-      {
-        title: application['8'][locale].split('.')[0],
-        src: 'https://www.youtube.com/embed/al41qjS04-Q?rel=0'
-      },
-      {
-        title: application['8'][locale].split('.')[1],
-        src: 'https://www.youtube.com/embed/3wAQxJeyyXo?rel=0'
-      },
-      {
-        title: application['8'][locale].split('.')[2],
-        src: 'https://www.youtube.com/embed/qUm8TSGtenI?rel=0'
-      }
-    ],
-  }
-
+  const [videoLinks, setVideoLinks] = useState()
 
   const isValidNewOption = (inputValue, selectValue) => {
     return inputValue.length > 0 && selectValue.length < 2;
@@ -348,7 +329,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
   const playing_positions = [
 
-    { value: 'goalkeper', label: 'Goalkeeper' },
+    { value: 'goalkeeper', label: 'Goalkeeper' },
     { value: 'right back', label: 'Right Back' },
     { value: 'right wing back', label: 'Right Wing Back' },
     { value: 'right wing', label: 'Right Wing' },
@@ -368,24 +349,73 @@ export default function ApplicationForm({ history, location, locale }) {
     axios.get(`/users/${auth.getUserId()}`)
       .then(res => {
         console.log('THISS ISSSS', res.data[0])
-        const { applications, name } = res.data[0]
-        const { goalkeeper_demos, outfield_demos } = videoLinks
-        const { personal_details } = applicationDetails
+        const { applications, email, category,
+          guardian_first_name, guardian_last_name,
+          player_first_name, player_last_name } = res.data[0]
+        const { personal_details, player_attributes } = applicationDetails
+
 
         if (!applications.hasOwnProperty('benfica_application')) {
-
           setApplicationDetails({
             ...applicationDetails,
             personal_details: {
               ...personal_details,
-              name
+              email,
+              player_first_name,
+              player_last_name,
+              ...(category === 'parent' && {
+                guardian_first_name,
+                guardian_last_name,
+              })
             }
           })
+          setVideoLinks([
+            {
+              title: application['9a'][locale],
+              src: 'https://www.youtube.com/embed/al41qjS04-Q?rel=0'
+            },
+            {
+              title: application['9b'][locale],
+              src: 'https://www.youtube.com/embed/3wAQxJeyyXo?rel=0'
+            },
+            {
+              title: application['9c'][locale],
+              src: 'https://www.youtube.com/embed/qUm8TSGtenI?rel=0'
+            }
+          ])
+          setAccountCategory(category)
         } else {
           const { benfica_application } = res.data[0].applications
           const { position } = benfica_application.player_attributes
-          setVideoSource(position === 'goalkeeper' ? goalkeeper_demos[0].src : outfield_demos[0].src)
           setApplicationDetails(benfica_application)
+          setAccountCategory(category)
+          setVideoLinks(position === 'goalkeeper' ? [
+            {
+              title: application['9a'][locale],
+              src: 'https://www.youtube.com/embed/HmWpssuh_9A?rel=0'
+            },
+            {
+              title: application['9b'][locale],
+              src: 'https://www.youtube.com/embed/1OWOrbmvUhc?rel=0'
+            },
+            {
+              title: application['9c'][locale],
+              src: 'https://www.youtube.com/embed/Q-hR_gNElo0?rel=0'
+            }
+          ] : [
+              {
+                title: application['9a'][locale],
+                src: 'https://www.youtube.com/embed/al41qjS04-Q?rel=0'
+              },
+              {
+                title: application['9b'][locale],
+                src: 'https://www.youtube.com/embed/3wAQxJeyyXo?rel=0'
+              },
+              {
+                title: application['9c'][locale],
+                src: 'https://www.youtube.com/embed/qUm8TSGtenI?rel=0'
+              }
+            ])
         }
 
       })
@@ -409,7 +439,7 @@ export default function ApplicationForm({ history, location, locale }) {
     } else {
       getData()
     }
-  }, [])
+  }, [locale])
 
   function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -489,10 +519,6 @@ export default function ApplicationForm({ history, location, locale }) {
     if (activeStep === 2) {
 
       setOpen(true)
-
-
-
-
     } else {
       scroll()
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -514,8 +540,47 @@ export default function ApplicationForm({ history, location, locale }) {
     const { player_attributes, personal_details, football_history } = applicationDetails
     const { id, name, value } = e.target
 
+    if (name === 'position') {
+      setVideoLinks(value === 'goalkeeper' ? [
+        {
+          title: application['9a'][locale],
+          src: 'https://www.youtube.com/embed/HmWpssuh_9A?rel=0'
+        },
+        {
+          title: application['9b'][locale],
+          src: 'https://www.youtube.com/embed/1OWOrbmvUhc?rel=0'
+        },
+        {
+          title: application['9c'][locale],
+          src: 'https://www.youtube.com/embed/Q-hR_gNElo0?rel=0'
+        }
+      ] : [
+          {
+            title: application['9a'][locale],
+            src: 'https://www.youtube.com/embed/al41qjS04-Q?rel=0'
+          },
+          {
+            title: application['9b'][locale],
+            src: 'https://www.youtube.com/embed/3wAQxJeyyXo?rel=0'
+          },
+          {
+            title: application['9c'][locale],
+            src: 'https://www.youtube.com/embed/qUm8TSGtenI?rel=0'
+          }
+        ])
+    }
 
-    if (name === 'previous_clubs') {
+    if (name === 'current_club') {
+      setApplicationDetails({
+        ...applicationDetails,
+        football_history: {
+          ...football_history,
+          current_club: {
+            ...current_club, [id]: value
+          }
+        }
+      })
+    } else if (name === 'previous_clubs') {
       const arr = previous_clubs
       arr[i] = { ...arr[i], [id]: value }
 
@@ -524,17 +589,6 @@ export default function ApplicationForm({ history, location, locale }) {
         football_history: {
           ...football_history,
           previous_clubs: arr
-        }
-      })
-
-    } else if (value === 'goalkeeper' ||
-      (value !== 'goalkeeper' && position === 'goalkeeper')) {
-      setVideoSource()
-      setApplicationDetails({
-        ...applicationDetails,
-        player_attributes: {
-          ...player_attributes,
-          [name]: value
         }
       })
     } else if (name === 'dob') {
@@ -652,28 +706,127 @@ export default function ApplicationForm({ history, location, locale }) {
 
   const firstPage = (
     <>
+
+
+      {accountCategory === 'parent' && <>
+
+        <Typography className={classes.subHeading} component='div' >
+          <Box
+            fontSize={15}
+            fontWeight="fontWeightBold" m={0}>
+            Guardian Details
+        </Box>
+        </Typography>
+
+
+        <div className="field" style={{
+          borderBottom: '1px #f1f1f1 dotted',
+          paddingBottom: '25px',
+          marginBottom: '20px'
+        }}>
+          <div class="field-body">
+
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> First Name
+              </label>
+              </div>
+              <p class="control is-expanded">
+                <input
+                  value={guardian_first_name}
+                  class="input" type="text"
+                  name='guardian_first_name'
+                  placeholder='John' />
+              </p>
+            </div>
+
+
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> Last Name
+              </label>
+              </div>
+              <p class="control is-expanded">
+                <input
+                  value={guardian_last_name}
+                  class="input" type="text"
+                  name='guardian_last_name'
+                  placeholder='Doe' />
+              </p>
+            </div>
+
+
+
+          </div>
+
+          <div className="field-body">
+
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> Email Address
+              </label>
+              </div>
+              <p class="control is-expanded">
+                <input
+                  value={email}
+                  class="input" type="email"
+                  name='email'
+                  placeholder='john_doe@hotmail.com' />
+              </p>
+            </div>
+
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> Contact Number
+               </label>
+              </div>
+              <div className="field has-addons">
+                <p class="control">
+                  <a class="button is-static">
+                    +44
+              </a>
+                </p>
+                <p class="control is-expanded">
+                  <input
+                    name='guardian_contact_no'
+                    value={applicationDetails.guardian_contact_no &&
+                      applicationDetails.guardian_contact_no}
+                    class="input" type="tel" placeholder='123456789' />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </>}
+
+
       <Typography className={classes.subHeading} component='div' >
         <Box
-          fontSize={18}
+          fontSize={15}
           fontWeight="fontWeightBold" m={0}>
-          Guardian Details
+          Player Details
         </Box>
       </Typography>
 
-      <div className="field">
+      <div class="field" style={{
+        borderBottom: '1px #f1f1f1 dotted',
+        paddingBottom: '25px',
+        marginBottom: '20px'
+      }}>
         <div class="field-body">
 
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span>
-                First Name
+              <label> <span style={{ color: 'red' }}>*</span> First Name
+
               </label>
             </div>
             <p class="control is-expanded">
               <input
-                value={name}
+                value={player_first_name}
                 class="input" type="text"
-                name='guardian_first_name'
+                name='player_first_name'
                 placeholder='John' />
             </p>
           </div>
@@ -681,112 +834,61 @@ export default function ApplicationForm({ history, location, locale }) {
 
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span>
-                Last Name
+              <label> <span style={{ color: 'red' }}>*</span> Last Name
               </label>
             </div>
             <p class="control is-expanded">
               <input
-                value={name}
+                value={player_last_name}
                 class="input" type="text"
-                name='guardian_last_name'
+                name='player_last_name'
                 placeholder='Doe' />
             </p>
           </div>
-
-
-
         </div>
 
-        <div className="field-body">
+        {accountCategory === 'player' && <div className="field-body">
 
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span>
-                Email Address
+              <label> <span style={{ color: 'red' }}>*</span> Email Address
               </label>
             </div>
             <p class="control is-expanded">
               <input
-                value={name}
+                value={email}
                 class="input" type="email"
-                name='guardian_email_address'
+                name='email'
                 placeholder='john_doe@hotmail.com' />
             </p>
           </div>
 
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span>
-                Contact Number
-               </label>
+              <label> <span style={{ color: 'red' }}>*</span> Contact Number
+              </label>
             </div>
             <div className="field has-addons">
               <p class="control">
                 <a class="button is-static">
                   +44
-              </a>
+                </a>
               </p>
               <p class="control is-expanded">
-                <input class="input" type="tel" placeholder='123456789' />
+                <input
+                  name='player_contact_no'
+                  value={applicationDetails.player_contact_no &&
+                    applicationDetails.player_contact_no}
+                  class="input" type="tel" placeholder='123456789' />
               </p>
             </div>
           </div>
-        </div>
-      </div>
+        </div>}
 
-      <Typography className={classes.subHeading} component='div' >
-        <Box
-          fontSize={18}
-          fontWeight="fontWeightBold" m={0}>
-          Player Details
-        </Box>
-      </Typography>
-
-      <div class="field">
-        <div class="field-body">
-
-          <div className={classes.field}>
+        <div className="field-body">
+          <div className={classes.field} style={{ flex: 0.2 }}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span>
-
-                {/* {application['2a'][locale]} */}
-                First Name
-
-              </label>
-            </div>
-            <p class="control is-expanded">
-              <input
-                value={name}
-                class="input" type="text"
-                name='name'
-                placeholder={application['2a'][locale]} />
-            </p>
-          </div>
-
-
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span>
-
-                {/* {application['2a'][locale]} */}
-                Last Name
-
-              </label>
-            </div>
-            <p class="control is-expanded">
-              <input
-                value={name}
-                class="input" type="text"
-                name='name'
-                placeholder={application['2a'][locale]} />
-            </p>
-          </div>
-
-          <div className={classes.field} style={{ flex: 0.4 }}>
-            <div className={classes.label}>
-              <label > <span style={{ color: 'red' }}>*</span>
-                {application['4b'][locale]}
+              <label > <span style={{ color: 'red' }}>*</span> {application['4b'][locale]}
               </label>
             </div>
             <div class="select" style={{ width: '100%' }}>
@@ -798,10 +900,9 @@ export default function ApplicationForm({ history, location, locale }) {
             </div>
           </div>
 
-          <div className={classes.field} style={{ flex: 0.4 }}>
+          <div className={classes.field} style={{ flex: 0.2 }}>
             <div className={classes.label}>
-              <label > <span style={{ color: 'red' }}>*</span>
-                {`${application['4d'][locale]} ${isSafari ? '(YYYY-MM-DD)' : ''}`}
+              <label > <span style={{ color: 'red' }}>*</span> {`${application['4d'][locale]} ${isSafari ? '(YYYY-MM-DD)' : ''}`}
               </label>
             </div>
             <p class={isSafari ? 'control is-expanded' : 'control'} >
@@ -816,11 +917,24 @@ export default function ApplicationForm({ history, location, locale }) {
                 : <input value={dob} name='dob' class="input" type="date" />}
             </p>
           </div>
-
-
-
-
         </div>
+
+      </div>
+
+      <div className="field"
+        style={{
+          borderBottom: '1px #f1f1f1 dotted',
+          paddingBottom: '25px',
+          marginBottom: '20px'
+        }}>
+
+        <Typography className={classes.subHeading} component='div' >
+          <Box
+            fontSize={15}
+            fontWeight="fontWeightBold" m={0}>
+            Residency Information
+        </Box>
+        </Typography>
 
         <div class="field-body">
           <div className={classes.field}>
@@ -848,9 +962,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
         </div>
 
-        <div class="field-body"
-          style={{ width: '70%' }}
-        >
+        <div class="field-body">
 
           <div className={classes.field}>
             <div className={classes.label}>
@@ -866,7 +978,7 @@ export default function ApplicationForm({ history, location, locale }) {
               <label> <span style={{ color: 'red' }}>*</span> Country </label>
             </div>
             <p class="control is-expanded">
-              <input value={city} name='country' class="input" type="text" placeholder="South Korea" />
+              <input value={country} name='country' class="input" type="text" placeholder="South Korea" />
             </p>
           </div>
 
@@ -889,12 +1001,12 @@ export default function ApplicationForm({ history, location, locale }) {
 
         <div class="field-body">
 
-          <div className={classes.field}>
+          <div className={classes.field} style={{ flex: 0.4 }}>
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span> Nationality</label>
             </div>
             <p class="control is-expanded">
-              <input value={city} name='nationality' class="input" type="text" placeholder="Korean" />
+              <input value={nationality} name='nationality' class="input" type="text" placeholder="Korean" />
             </p>
           </div>
 
@@ -902,8 +1014,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span>
-                {application['4i'][locale]}
+              <label> <span style={{ color: 'red' }}>*</span> {application['4i'][locale]}
               </label>
             </div>
             <div class="file has-name">
@@ -952,13 +1063,13 @@ export default function ApplicationForm({ history, location, locale }) {
       <Typography component='div'
         className={classes.subHeading} >
         <Box
-          fontSize={18}
+          fontSize={15}
           fontWeight="fontWeightBold" m={0}>
           {application['5a'][locale]}
         </Box>
       </Typography>
 
-      <div class="field-body" style={{ width: '100%' }}>
+      <div class="field-body">
         <div className={classes.field} style={{ flex: 'none' }}>
           <div className={classes.label}>
             <label> <span style={{ color: 'red' }}>*</span> {application['5b'][locale]} (cm) </label>
@@ -982,8 +1093,8 @@ export default function ApplicationForm({ history, location, locale }) {
           <div className={classes.label}>
             <label> <span style={{ color: 'red' }}>*</span> {application['5e'][locale]} </label>
           </div>
-          <div class="select">
-            <select value={preferred_foot} name='preferred_foot'>
+          <div class="select" style={{ width: '100%' }} >
+            <select style={{ width: '100%' }} value={preferred_foot} name='preferred_foot'>
               <option disabled={preferred_foot !== ''} value=""> </option>
               <option value="left"> Left </option>
               <option value="right"> Right </option>
@@ -991,8 +1102,6 @@ export default function ApplicationForm({ history, location, locale }) {
             </select>
           </div>
         </div>
-
-
       </div>
 
       <div className="field-body">
@@ -1002,8 +1111,8 @@ export default function ApplicationForm({ history, location, locale }) {
             <label> <span style={{ color: 'red' }}>*</span> {application['5d'][locale]} </label>
           </div>
 
-          <div class="select">
-            <select value={position} name='position'>
+          <div class="select" style={{ width: '100%' }} >
+            <select style={{ width: '100%' }} value={position} name='position'>
               <option disabled={position !== ''} value=""> </option>
               {playing_positions.map(x => <option value={x.value.toLowerCase()}> {x.label} </option>)}
             </select>
@@ -1011,13 +1120,12 @@ export default function ApplicationForm({ history, location, locale }) {
 
         </div>
 
-        <div className={classes.field} style={{ flex: 'none' }}>
+        <div className={classes.field} style={{ flex: 0.3 }}>
           <div className={classes.label}>
             <label> Other Positions </label>
           </div>
 
           <Selector
-            style={{ minWidth: '200px' }}
             closeMenuOnSelect={false}
             components={{ Menu }}
             isMulti
@@ -1071,28 +1179,14 @@ export default function ApplicationForm({ history, location, locale }) {
 
       <Typography className={classes.subHeading} component='div' >
         <Box
-          fontSize={18}
+          fontSize={15}
           fontWeight="fontWeightBold" m={0}>
-          Playing Details
+          Club & Coaching Information
         </Box>
       </Typography>
 
 
-      <div class="field">
-
-
-        <div className={classes.field}>
-          <div className={classes.label}>
-            <label> <span style={{ color: 'red' }}>*</span> {application['6a'][locale]}</label>
-          </div>
-          <p class="control is-expanded">
-            <input value={current_club} name='current_club' class="input" type="text" placeholder={application['6a'][locale]} />
-
-          </p>
-        </div>
-
-
-
+      <div class="field" style={{ paddingBottom: '25px', marginBottom: '20px', borderBottom: '1px dotted #f1f1f1' }}>
 
         <div className="field-body">
           <FormControlLabel
@@ -1129,6 +1223,74 @@ export default function ApplicationForm({ history, location, locale }) {
 
         </>}
 
+        <div class="field-body">
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> Current Club Details  </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-body">
+          <div className={classes.field} style={{ flex: 'none' }}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Age Group </label>
+            </div>
+            <div class="select">
+              <select
+                onChange={(e) => handleApplicationChange(e)}
+                value={current_club.age_group} id='age_group' name='current_club'>
+                <option disabled={current_club.age_group !== ''} value=""> </option>
+                <option value="under 16s"> Under 16s </option>
+                <option value="under 10s"> Under 10s </option>
+                <option value="under 14s"> Under 14s </option>
+              </select>
+            </div>
+          </div>
+
+          <div className={classes.field} style={{ flex: '0.35' }}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Club Name </label>
+            </div>
+            <p class="control is-expanded">
+              <input
+                onChange={(e) => handleApplicationChange(e)}
+                value={current_club.club} id='club' name='current_club' class="input" type="text"
+                placeholder='Club Name' />
+            </p>
+          </div>
+
+          <div className={classes.field} style={{ flex: '0.3' }}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Middle School </label>
+            </div>
+            <p class="control is-expanded">
+              <input
+                value={current_club.middle_school} id='middle_school' name='current_club' class="input" type="text"
+                placeholder='Middle School' />
+            </p>
+          </div>
+
+
+        </div>
+
+        <FormControlLabel
+          style={{ transform: 'translateX(5px)' }}
+
+          onClick={() => {
+            setApplicationDetails({
+              ...applicationDetails,
+              football_history: {
+                ...applicationDetails.football_history,
+                current_club: {
+                  ...current_club,
+                  k1_affiliated: !current_club.k1_affiliated
+                }
+              }
+            })
+          }}
+          control={<Radio checked={current_club.k1_affiliated} />}
+          label='This club is affiliated with a K1 club' />
 
 
         <div class="field-body">
@@ -1155,7 +1317,7 @@ export default function ApplicationForm({ history, location, locale }) {
                   style={{
                     position: 'absolute',
                     top: '-15px',
-                    right: previous_clubs.length === 1 ? 0 : '45px',
+                    right: previous_clubs.length === 0 ? 0 : '45px',
                     width: '36px',
                     height: '10px'
                   }}
@@ -1163,7 +1325,7 @@ export default function ApplicationForm({ history, location, locale }) {
                   <AddIcon />
                 </Fab>}
 
-                {previous_clubs.length !== 1 && <Fab
+                {previous_clubs.length !== 0 && <Fab
                   onClick={() => {
                     setApplicationDetails({
                       ...applicationDetails,
@@ -1195,7 +1357,7 @@ export default function ApplicationForm({ history, location, locale }) {
               <div class="field-body">
                 <div className={classes.field} style={{ flex: 'none' }}>
                   <div className={classes.label}>
-                    <label> Age Group </label>
+                    <label> <span style={{ color: 'red' }}>*</span> Age Group </label>
                   </div>
                   <div class="select">
                     <select
@@ -1209,9 +1371,9 @@ export default function ApplicationForm({ history, location, locale }) {
                   </div>
                 </div>
 
-                <div className={classes.field} style={{ flex: '0.6' }}>
+                <div className={classes.field} style={{ flex: '0.4' }}>
                   <div className={classes.label}>
-                    <label> Club Name </label>
+                    <label> <span style={{ color: 'red' }}>*</span> Club Name </label>
                   </div>
                   <p class="control is-expanded">
                     <input
@@ -1223,7 +1385,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
                 <div className={classes.field} style={{ flex: 'none' }}>
                   <div className={classes.label}>
-                    <label> League </label>
+                    <label> <span style={{ color: 'red' }}>*</span> League </label>
                   </div>
                   <div class="select">
                     <select
@@ -1263,14 +1425,20 @@ export default function ApplicationForm({ history, location, locale }) {
           )
         })}
 
-        <div className={classes.field}>
-          <div className={classes.label}>
-            <label >  {application['6e'][locale]} </label>
-          </div>
-          <p class="control is-expanded">
-            <input value={highlights_footage_link} name='highlights_footage_link' class="input" type="text" placeholder={application['6e'][locale]} />
-          </p>
-        </div>
+
+
+
+      </div>
+
+      <div className="field">
+
+        <Typography className={classes.subHeading} component='div' >
+          <Box
+            fontSize={15}
+            fontWeight="fontWeightBold" m={0}>
+            Other Playing Details
+        </Box>
+        </Typography>
 
         <div class="field-body">
           <FormControlLabel
@@ -1289,9 +1457,9 @@ export default function ApplicationForm({ history, location, locale }) {
         </div>
 
         {awards_achieved && <div className="field-body">
-          <div className={classes.field}>
+          <div className={classes.field} style={{ flex: 'none' }}>
             <div className={classes.label}>
-              <label> Award Name </label>
+              <label> Award Received </label>
             </div>
             <div class="select">
               <select
@@ -1304,9 +1472,48 @@ export default function ApplicationForm({ history, location, locale }) {
               </select>
             </div>
           </div>
+          <div className={classes.field} style={{ flex: 'none' }}>
+            <div className={classes.label}>
+              <label> Date of Award </label>
+            </div>
+            <div class="select">
+              <select
+              // name='award_name'
+              >
+                <option value=""> </option>
+                <option value="2015"> 2015</option>
+                <option value="2016"> 2016</option>
+                <option value="2017"> 2017 </option>
+                <option value="2018"> 2018</option>
+                <option value="2019"> 2019 </option>
+                <option value="2020"> 2020 </option>
+              </select>
+            </div>
+          </div>
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> Reason for Award </label>
+            </div>
+            <p class="control is-expanded">
+              <input
+                // name='private_coach_name'
+                class="input" type="text" />
+            </p>
+          </div>
         </div>}
 
-      </div>
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label >  {application['6e'][locale]} </label>
+          </div>
+          <p class="control is-expanded">
+            <input value={highlights_footage_link} name='highlights_footage_link' class="input" type="text" placeholder={application['6e'][locale]} />
+          </p>
+        </div>
+
+
+
+      </div >
 
       <div class="field">
         <div class="field-body">
@@ -1328,77 +1535,65 @@ export default function ApplicationForm({ history, location, locale }) {
 
   const thirdPage = (
     <>
-      <Typography component='div' >
-        <Box
-          fontSize={20}
-          fontWeight="fontWeightBold" m={0}>
-          {application['7a'][locale]}
-        </Box>
-        <Box
-          fontSize={16}
-          fontWeight="fontWeightRegular" m={0}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. In at pellentesque purus, at euismod ligula.
-        </Box>
-      </Typography>
 
-      <section className={classes.videoContainer}>
-        <div>
+      {videoLinks && videoLinks.map((x, i) => {
+        const value = i === 0 ? link_1 : i === 1 ? link_2 : link_3
+        const name = `link_${i + 1}`
 
-          <div className={classes.video}>
-            {!videoSource ? <p className={classes.bufferText}> Please select one of the demonstration videos below </p> :
-              <iframe title='video' width='100%' height='100%' src={videoSource} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe>
-            }
-          </div>
+        return (
 
-
-
-          <Breadcrumbs style={{ marginTop: '10px' }} aria-label="breadcrumb">
-            {/* <Typography> Demonstration Videos: </Typography>  */}
-
-            {videoLinks[position === 'goalkeeper' ?
-              'goalkeeper_demos' : 'outfield_demos'].map(el => {
-                return (
-                  <Link
-                    style={{ color: videoSource === el.src ? 'blue' : 'initial' }}
-                    onClick={() => setVideoSource(el.src)}
-                  >
-                    {el.title}
-                  </Link>
-                )
-              })}
-          </Breadcrumbs>
-        </div>
-
-
-
-        <div className={classes.webfieldContainer} >
-          <div className={classes.webfield}>
-            <div className={classes.label}>
-              <label>  {application['9a'][locale]}  </label>
+          <section className={i !== 1 ? classes.challengeRowContainer : classes.challengeRowReversed}>
+            <div className={classes.videoContainer}>
+              <iframe title='video' width='100%' height='100%' src={x.src} frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen> </iframe>
             </div>
-            <p class="control is-expanded">
-              <input value={link_1} name='link_1' class="input" type="text" placeholder={application['9a'][locale]} />
-            </p>
-          </div>
-          <div className={classes.webfield}>
-            <div className={classes.label}>
-              <label>  {application['9b'][locale]} </label>
-            </div>
-            <p class="control is-expanded">
-              <input value={link_2} name='link_2' class="input" type="text" placeholder={application['9b'][locale]} />
-            </p>
-          </div>
-          <div className={classes.webfield}>
-            <div className={classes.label}>
-              <label >  {application['9c'][locale]} </label>
-            </div>
-            <p class="control is-expanded">
-              <input value={link_3} name='link_3' class="input" type="text" placeholder={application['9c'][locale]} />
-            </p>
-          </div>
-        </div>
 
-      </section>
+            <div className={classes.challengeDescription}>
+
+              <Typography component='div' style={{ position: 'relative' }}>
+                <Box
+                  className={classes.challengeNumber}
+                  fontSize={75}
+                  fontWeight="fontWeightBold" m={0}>
+                  0{i + 1}
+                </Box>
+
+                <Box
+                  style={{ fontFamily: 'Roboto Condensed' }}
+                  fontSize={25}
+                  fontWeight="fontWeightBold" m={0}>
+                  {locale === 'en' ? x.title.slice(0, x.title.length - 4).toUpperCase() : x.title.substring(4)}
+                </Box>
+
+                <Box
+                  fontSize={14}
+                  fontWeight="fontWeightRegular" mb={5}>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non neque aliquet leo suscipit ultricies.
+               Sed cursus eros at ex vulputate pulvinar vel et nulla. In hac habitasse platea dictumst.
+                </Box>
+              </Typography>
+
+              <div className={classes.field}>
+                <div className={classes.label}>
+                  <label> <span style={{ color: 'red' }}>*</span> {x.title}
+                  </label>
+                </div>
+                <p class="control is-expanded">
+                  <input
+                    value={value}
+                    class="input" type="text"
+                    name={name} />
+                </p>
+              </div>
+
+            </div>
+          </section>
+        )
+      })}
+
+
+
 
     </>
   )
