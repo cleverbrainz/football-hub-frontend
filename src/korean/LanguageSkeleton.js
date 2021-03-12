@@ -598,20 +598,20 @@ const arr = [
   {
     "page": "application",
     "section": "9a",
-    "english": "Challenge #1 Link",
-    "korean": "챌린지 #1 링크"
+    "english": "Challenge One Link",
+    "korean": "챌린지 하나 링크"
   },
   {
     "page": "application",
     "section": "9b",
-    "english": "Challenge #2 Link",
-    "korean": "챌린지 #2 링크"
+    "english": "Challenge Two Link",
+    "korean": "챌린지 둘 링크"
   },
   {
     "page": "application",
     "section": "9c",
-    "english": "Challenge #3 Link",
-    "korean": "챌린지 #3 링크"
+    "english": "Challenge Three Link",
+    "korean": "챌린지 셋 링크"
   },
   {
     "page": "application",
