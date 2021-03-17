@@ -408,7 +408,7 @@ const MarketingBeta = (props) => {
 
   return (
     <div className={classes.root}>
-      <main ref={cardRef} className={classes.main}>
+      <main className={classes.main}>
         <Typography
           className={classes.title}
           component='div' >
@@ -418,7 +418,7 @@ const MarketingBeta = (props) => {
           </Box>
           <Box 
             style={{ marginBottom: '5px'}}
-            fontSize={28} fontWeight="fontWeightBold" m={0}>
+            fontSize={28} fontWeight="fontWeightBold" m={0} ref={cardRef}>
             {marketing[1][locale].split(' / ')[1]}
           </Box>
           <Box
