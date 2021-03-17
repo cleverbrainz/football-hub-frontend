@@ -9,6 +9,7 @@ body,
 #root {
   height: 100vh;
   position: relative;
+  scroll-behavior: smooth;
 
   ::-webkit-scrollbar {
     display: none;
@@ -181,5 +182,14 @@ body,
   .is-small {
     font-size: 13.5px;
     border-radius: 4px;
+  }
+
+  .line-clamp {
+    max-height: 60px;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
   }
 }
