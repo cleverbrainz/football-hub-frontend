@@ -162,7 +162,9 @@ const UserAuthForm = ({ locale, history }) => {
     const { email, password } = registerDetails
     axios.post('/login', { email, password })
       .then(res => {
-        const { application_fee_paid, token, stripeId, applications } = res.data
+        const { application_fee_paid, token, stripeId, applications, userId } = res.data
+        const { benfica_application } = applications
+        const { submitted } = benfica_application
         const fee_needed = application_fee_paid === 'unpaid'
 
         console.log(snackbar_messages)
@@ -189,9 +191,8 @@ const UserAuthForm = ({ locale, history }) => {
               handleAfterRequestStates({ error: snackbar_messages['7b'][locale] })
             }
           } else {
-            const { benfica_application } = applications
             if (benfica_application && benfica_application.submitted) {
-              history.push('/success=true')
+              history.push(`/user/${userId}`)
             } else {
               history.push('/application')
             }
