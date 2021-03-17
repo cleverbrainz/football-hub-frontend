@@ -13,6 +13,7 @@ import HomeNav from '../components/Navbars/HomeNav'
 import UserAuthForm from './UserAuthForm'
 // import JSONConvertor from './JSONConvertor'
 import ApplicationDashboard from './ApplicationDashboard';
+import MarketingBeta from './MarketingBeta';
 // import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 // import { koKR, enUS } from '@material-ui/core/locale';
 
@@ -55,6 +56,12 @@ const RouteContainer = (props) => {
           <Route exact path="/"
             render={(props) => (
               <Marketing
+                {...props}
+                locale={locale} />
+            )} />
+                      <Route exact path="/marketingbeta"
+            render={(props) => (
+              <MarketingBeta
                 {...props}
                 locale={locale} />
             )} />
