@@ -11,11 +11,11 @@ import SwitchLanguageFab from './SwitchLanguageFab'
 import ApplicationProcessFlow from './ApplicationProcessFlow'
 import HomeNav from '../components/Navbars/HomeNav'
 import UserAuthForm from './UserAuthForm'
+import ApplicantProfile from './ApplicantProfile'
 // import JSONConvertor from './JSONConvertor'
 import ApplicationDashboard from './ApplicationDashboard';
 import MarketingBeta from './MarketingBeta';
-// import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-// import { koKR, enUS } from '@material-ui/core/locale';
+
 
 
 const RouteContainer = (props) => {
@@ -35,9 +35,15 @@ const RouteContainer = (props) => {
           }} />
         <Switch>
 
-          {/* <Route exact path="/json" component={JSONConvertor} />  */}
           <Route exact path="/success=true" component={ApplicationProcessFlow} />
-          {/* <Route exact path="/application" component={ApplicationForm} /> */}
+
+          <Route exact path="/user/:id"
+            render={(props) => (
+              <ApplicantProfile
+                {...props}
+                locale={locale} />
+            )} />
+   
 
           <Route exact path="/application"
             render={(props) => (
