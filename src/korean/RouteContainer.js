@@ -14,8 +14,7 @@ import UserAuthForm from './UserAuthForm'
 import ApplicantProfile from './ApplicantProfile'
 // import JSONConvertor from './JSONConvertor'
 import ApplicationDashboard from './ApplicationDashboard';
-
-
+import MarketingBeta from './MarketingBeta';
 
 
 
@@ -63,6 +62,12 @@ const RouteContainer = (props) => {
           <Route exact path="/"
             render={(props) => (
               <Marketing
+                {...props}
+                locale={locale} />
+            )} />
+                      <Route exact path="/marketingbeta"
+            render={(props) => (
+              <MarketingBeta
                 {...props}
                 locale={locale} />
             )} />
