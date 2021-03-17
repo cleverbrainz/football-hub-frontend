@@ -124,20 +124,26 @@ const arr = [
   {
     "page": "marketing",
     "section": "1",
-    "english": "Project Football Korea",
-    "korean": "프로젝트 풋볼 코리아"
+    "english": "Pathway Development Programme / Residential Training Camp",
+    "korean": ""
   },
   {
     "page": "marketing",
     "section": "2a",
-    "english": "What is Project Football Korea?",
-    "korean": "프로젝트 풋볼 코리아는?"
+    "english": "South Korea 20th May to 20th June 2021",
+    "korean": ""
   },
+  // {
+  //   "page": "marketing",
+  //   "section": "2b",
+  //   "english": "This is the first time Benfica FC will be in South Korea and we wanted to bring their award-winning academy to train and identify the new football superstar! Project Football Korea is a football talent identification experience like no other. This is the ultimate football camp for players aged between 15-18 to train and learn from the world-famous Benfica FC. / Our residential camp will provide for the best environment for you to perform and demonstrate your footballing ability, and 3 players per age group will be selected for a two-week, expenses paid professional trial with Benfica FC in Portugal.",
+  //   "korean": "2019년 세계 베스트 아카데미 어워즈를 수상한 포르투갈의 명문 구단 SL 벤피카가 차기 월드스타를 발굴하기 위해 사상 최초로 한국에 직접 방문합니다! 프로젝트 풋볼 코리아는 타의 추종을 불허하는 경험과 기회를 제공합니다. / 15-18세의 축구 꿈나무들이 벤피카 코칭 스태프로부터 직접 교육과 트레이닝을 받고, 최고의 기량을 발휘하는 선수들은 연령 그룹별로 두 명씩 선발되어 추가 비용 없이 포르투갈 현지에서 2주간의 최종 입단 평가를 받게 됩니다."
+  // },
   {
     "page": "marketing",
     "section": "2b",
-    "english": "This is the first time Benfica FC will be in South Korea and we wanted to bring their award-winning academy to train and identify the new football superstar! Project Football Korea is a football talent identification experience like no other. This is the ultimate football camp for players aged between 15-18 to train and learn from the world-famous Benfica FC. / Our residential camp will provide for the best environment for you to perform and demonstrate your footballing ability, and 3 players per age group will be selected for a two-week, expenses paid professional trial with Benfica FC in Portugal.",
-    "korean": "2019년 세계 베스트 아카데미 어워즈를 수상한 포르투갈의 명문 구단 SL 벤피카가 차기 월드스타를 발굴하기 위해 사상 최초로 한국에 직접 방문합니다! 프로젝트 풋볼 코리아는 타의 추종을 불허하는 경험과 기회를 제공합니다. / 15-18세의 축구 꿈나무들이 벤피카 코칭 스태프로부터 직접 교육과 트레이닝을 받고, 최고의 기량을 발휘하는 선수들은 연령 그룹별로 두 명씩 선발되어 추가 비용 없이 포르투갈 현지에서 2주간의 최종 입단 평가를 받게 됩니다."
+    "english": "Indulge Football have partnered with xxxxxx to deliver the first camp from our football Pathway Development Programme in South Korea. This 5 day, 4 night Residential Training Camp is open to 13-15 year olds looking to advance their personal football development, You will be coached by XXXX and get personalised advice and assessment from leading experts in physical and mental development. On top of this 2 players from each age group will be awarded with an all-expenses paid experience at xxxxxx. / Each player will need to complete an initial assessment including 3 key football challenges, the fee for this is £15 and will be reviewed by Indulge Football using professional UEFA licensed coaches. Find out more below.",
+    "korean": ""
   },
   {
     "page": "marketing",
@@ -190,20 +196,26 @@ const arr = [
   {
     "page": "marketing",
     "section": "5a",
-    "english": "About the Camp",
+    "english": "The Residential Training Camp",
     "korean": "인덜지 벤피카 캠프"
   },
   {
     "page": "marketing",
     "section": "5b",
-    "english": "What Can You Expect?",
+    "english": "What's included?",
     "korean": "캠프 세부 사항"
   },
   {
     "page": "marketing",
     "section": "5c",
-    "english": "4 nights' accommodation in a 4* hotel. Choice of single or twin room. Full board menu designed for professional athletes. At least 4 hours of football coaching a day. 3 football education seminars across the camp. Official Benfica FC & Indulge Football training kit. Individual player feedback reports.  Individual player performance tracking technology. COVID-19 testing",
+    "english": "4 nights' accommodation in a 4* hotel. Choice of single or twin room / Full board - breakfast, lunch and dinner - menu designed for professional athletes. / 4 hours of football coaching a day / 3 football education seminars across the camp / Indulge Football training kit including tracksuit, wet top and 2x shirt, shorts and socks / Official Benfica FC Training kit, shirt shorts and socks / Individual player feedback reports / Benfica certificate / Individual player performance tracking technology / Transfers between hotel and training ground / COVID-19 testing / Sports insurance",
     "korean": "4성급 호텔에서 4박 5일간의 합숙. 싱글 또는 트윈 룸 선택. 프로 스포츠 선수 식단에 맞춘 식사 제공. 매일 최소 4시간의 축구 코칭. 3회의 축구 교육 세미나 개최. SL 벤피카 & 인덜지풋볼 공식 트레이닝 키트 제공. 개별 선수 평가 리포트 제공. 최첨단 선수 퍼포먼스 측정 기술 적용. 코비드-19 테스트"
+  },
+  {
+    "page": "marketing",
+    "section": "5d",
+    "english": "£1250 per person",
+    "korean": "!Korean £1250 per person Korean!"
   },
   {
     "page": "marketing",
@@ -226,7 +238,7 @@ const arr = [
   {
     "page": "marketing",
     "section": "6d",
-    "english": "The training schedules are developed by SL Benfica’s coaches, accredited by the Federação Portuguesa de Futebol (FPF) and UEFA. The methodology used is the same that Sport Lisboa e Benfica uses in the training of its professional athletes. / Through specific training that Sport Lisboa e Benfica will provide, you will be able to develop your technical, tactical, physical and psychological skills. Aspects like, running technique, relationship with the ball, tactical circulation and attacking and defensive game principles will be worked daily in both individual and collective contexts.",
+    "english": "The Methodology applied in Project Football will be the same that Sport Lisboa e Benfica uses in the training of its athletes, and which guarantees the sustainability of its professional squads. Through specific training that Sport Lisboa e Benfica will provide, you will be able to develop your technical, tactical, physical and psychological skills. Aspects like, running technique, relationship with the ball, tactical circulation and attacking and defensive game principles will be worked daily in both individual and collective contexts. / The training schedules will be developed by SL Benfica’s coaches, accredited by the Federação Portuguesa de Futebol (FPF) and UEFA. There will be 3 categories (U16 to U18), each having specific technical-tactical training. In addition you will also be observed and evaluated by Sport Lisboa e Benfica’s Technical and Scouting Departments.",
     "korean": "모든 트레이닝 스케줄은 유럽축구연맹(UEFA)과 포르투갈 축구 협회(FPF)의 승인을 받은 벤피카 코치들에 의해 짜여져 있으며, 이는 SL 벤피카가 프로 선수들을 훈련하는 방식과 같은 형태입니다. / 오직 벤피카만이 제공할 수 있는 특별한 트레이닝을 통해 참가 선수들은 기술적, 전략적, 신체적 그리고 정신적 기량을 발달시키게 됩니다. 특히 러닝 테크닉, 볼과의 관계, 전술적 흐름과 공격, 그리고 방어적 경기 원리와 같은 핵심 요소들은 개인적 & 협동적 맥락을 적용하여 매일 다루어집니다."
   },
   {
@@ -238,7 +250,7 @@ const arr = [
   {
     "page": "marketing",
     "section": "6f",
-    "english": "Accredited by the Portuguese Football Federation (FPF) and UEFA, the SL Benfica coaches are decisive elements in the development of the club’s athletes. They'll follow your evolution during Project Football, overseen by their Technical Director, Pedro Marques:",
+    "english": "Accredited by the Portuguese Football Federation (FPF) and UEFA, the SL Benfica coaches are decisive elements in the development of the Club’s young athletes. It will be them following your evolution during Project Football, overseen by their Technical Director, Pedro Marques:",
     "korean": "유럽축구연맹(UEFA)과 포르투갈 축구 협회(FPF)로부터 승인된 벤피카 코치들은 구단 소속 선수들의 기량 발달에 결정적인 역할을 하고 있습니다. 이들은 벤피카 축구 테크닉 디렉터 Pedro Marques의 총괄적 감독 아래 프로젝트 풋볼 코리아 캠프 기간 동안 참가 선수들의 퍼포먼스를 관찰하고 코칭합니다."
   },
   {
@@ -283,6 +295,73 @@ const arr = [
     "english": "Under 18s. 14th April 2021. Tuesday - Friday. Seoul. Apply now",
     "korean": "18세. 2021년 4월 14일 화요일 ~ 금요일. 서울. 참가 지원"
   },
+  {
+    "page": "marketing",
+    "section": "8a",
+    "english": "The Programme / What is the Pathway Development Programme?",
+    "korean": ""
+  },
+  {
+    "page": "marketing",
+    "section": "8b",
+    "english": "Indulge Football are proud to host **Benfica FC** and to welcome them for the very first time to South Korea. We have partnered with Benfica to create Korea's first elite football talent identification camp experience. / Indulge Football has created the perfect experience for football players aged between 15-18 to experience a great methodology from the world famous and award-winning Benfica FC Academy. Benfica will be selecting players from each age group for an all-expenses paid 2 week professional trial at the Benfica Campus in Portugal.",
+    "korean": ""
+  },
+  {
+    "page": "marketing",
+    "section": "8c",
+    "english": "About Indulge Football / Who are Indulge Football?",
+    "korean": ""
+  },
+  {
+    "page": "marketing",
+    "section": "8d",
+    "english": "Indulge Football specialise in Player Pathways, Sponsorship and Consultancy, Fan Relationship Management and Digital Solutions. / We have been trading since 2008 and during that time have managed tours and events for thousands of customers including fan packages for the FIFA World Cup, been official ticket agency of elite professional clubs such as FC Barcelona and provided professional services to Premier League players including Harry Kane, Michail Antonio and Andros Townsend. / We have recently expanded our services into Asia, starting with South Korea where we have created partnerships with top companies and organisations. The pathway Development Programme will be the first of its kind in South Korea and we are very excited to be able to help develop youth pathways there and provide connections into European football.",
+    "korean": ""
+  },
+  {
+    "page": "marketing",
+    "section": "9a",
+    "english": "The Assessment / What is the assessment? / Assessment Fee",
+    "korean": ""
+  },
+  {
+    "page": "marketing",
+    "section": "9b",
+    "english": "To be selected for the Reidential Training camp in South Korea as part of our Pathway Development Programme you will need to complete an application detailing your football experiences so far, a personal statement and to upload three football challenges set by us. The challenges have been created by Indulge Football along with an expert team of UEFA Licenses Profesional Coaches, to identify key aspects of a players ability, Your written application will also be reviewed by our partner NYSES in South Korea. / The assessment costs £15 per player and will allow us to do a thorough assessment of each player and decide who will be invited to the camp. If selected, you will have 72 hours to complete and confirm your place on the camp and pay the camp fee. For the unfortunate players who are not selected you will be able to aplly again for future camps.",
+    "korean": ""
+  },
+  {
+    "page": "marketing",
+    "section": "9c",
+    "english": "The Assessment Coaches",
+    "korean": ""
+  },
+  {
+    "page": "marketing",
+    "section": "9d",
+    "english": "Gwynne Berry / Tec4Tekkers Founder / In the early days of his career, Gwynne was a youth player with Crystal Palace F.C. Subce then he has built an impressive repertoire built on years of dedication to the sport. Having been a Professional player with 1000+ senior appearances over 23 years a few of his career achievements include: / F.A. Trophy Winner 1994 % 30 years as a professional football coach % Coached in 40 countries over 5 continents % Academy Technical Coach Crystal Palace F.C. % Academy Technical Coach West Ham United F.C. % Academy Technical Consultant Reading F.C. % Technical Coach Educator F.A. of Wales % Technical Coach Educator Latvian F.A. % Technical Coach Educator Estonian F.A. ",
+    "korean": ""
+  },
+  {
+    "page": "marketing",
+    "section": "9e",
+    "english": "Jack Johnson / Fulham U14 Academy Coach / Jack Johnson is a UEFA A licence coach and holds his FA Level 3 Youth Award. Jack has worked in Academy Football for over 12 years and is currently under 14 coach at Fulham FC. % Jack was also an academy player at Fulham FC for 7 years prior to flying out to the USA on a scholarship in Florida. Returning from Florida alongside working at Fulham Jack owns his own Coaching Company which includes a full time football Academy for 16-19 year olds at Nescot College in the UK. ",
+    "korean": ""
+  },
+  {
+  "page": "marketing",
+  "section": "9f",
+  "english": "Stuart Searle / Chelsea Ladies Head of Technical and Goalkeeper Coach / Stuart started evolving as a coach from the age of 18 when helping out with the then Wimbledon centre of excellence, leading the younger goalkeepers. The UEFA-A licenced coach joined Chelsea as an Academy goalkeeping coach in 2004 while playing for numerous high profile non-league clubs before signing on as a player. % In 2012, and back at Chelsea working in the Academy and our international department, Stuart joined Chelsea Women manager Emma Hayes in the becoming the goalkeeping coach on a part-time basis. He soon moved into a full-time role, successfully helping them win the WSL and FA Cup Double in 2015, the Spring Series in 2017, and the Double again in 2018. % As of the 2019/20 season, Stuart's role has evolved and he is now head of technical as well as goalkeeping coach.",
+  "korean": ""
+},
+  {
+    "page": "marketing",
+    "section": "10a",
+    "english": "Ready to Apply?",
+    "korean": ""
+  },
+
   {
     "page": "authorization",
     "section": "1a",

@@ -636,7 +636,6 @@ const Application = ({ permissions, application, applications, setApplications, 
 
       <Typography
         className={classes.applicationHeader}
-
         component='div' >
         <Box
           fontSize={35} fontWeight="fontWeightBold" m={0}>
@@ -850,8 +849,9 @@ const ApplicationDashboard = ({ locale }) => {
   const [user, setUser] = useState(null)
   const [permissions, setPermissions] = useState(1)
   const [tabValue, setTabValue] = useState(0)
-  const [coursesModerating, setCoursesModerating] = useState(['course1', 'course2'])
+  const [coursesModerating, setCoursesModerating] = useState(['Benfica'])
   const [selectedCourse, setSelectedCourse] = useState('select')
+  const [ageRange, setAgeRange] = useState('All')
   const [applications, setApplications] = useState([])
   const [filteredApplications, setFilteredApplications] = useState([])
   const [applicantIndex, setApplicantIndex] = useState(0)
@@ -978,14 +978,15 @@ const ApplicationDashboard = ({ locale }) => {
     // const { courses, adminLevel } = userData
     // const courseArray = []
     const applicantArray = []
-    const arr = await axios.get('/getApplicationIds')
-    console.log({ arr })
+    let arr = await axios.get('/getApplicationIds')
+    arr = await arr.data
+    console.log({arr})
     for (const benficaUser of benficaUserIds) {
       let userData = await axios.get(`/users/${benficaUser}`)
       userData = await userData.data[0]
       const app = [userData.userId, userData.email]
-      userData.applications.benfica ? app.push(userData.applications.benfica) : app.push(userData.applications.benfica_application)
-      applicantArray.push(app)
+      userData.applications.benfica ? app.push(userData.applications.benfica) : userData.applications.benfica_application ? app.push(userData.applications.benfica_application) : console.log('')
+      if (app.length === 3) applicantArray.push(app)
     }
     setApplications(applicantArray)
     setFilteredApplications(applicantArray)
@@ -1037,7 +1038,6 @@ const ApplicationDashboard = ({ locale }) => {
       Height: 'Height',
       Weight: 'Weight (Kg)',
       'Preferred Foot': null,
-      PlayerDetails: null,
       ApplicationDetails: 'Application Details',
       'Previous Trails Attended': null,
       'Current Coaching School': null,
@@ -1047,8 +1047,10 @@ const ApplicationDashboard = ({ locale }) => {
       'Previous Clubs': null,
       Description: null,
       Save: 'Save',
-      Back: 'Back'
-
+      Back: 'Back',
+      PlayerDetails: 'Player Details',
+      PlayerAttributes: 'Player Attributes',
+      
     },
     ko: {
       Courses: '과정',
@@ -1093,7 +1095,8 @@ const ApplicationDashboard = ({ locale }) => {
       'Previous Clubs': '과거 소속 구단',
       Description: 'Description',
       Save: '저장',
-      Back: '뒤로가기'
+      Back: '뒤로가기',
+      PlayerAttributes: '선수 세부 사항',
 
 
     }
@@ -1134,12 +1137,27 @@ const ApplicationDashboard = ({ locale }) => {
           </MenuItem>
           {coursesModerating.map((course, index) => {
             return (
-              <MenuItem value={index}>{course}</MenuItem>
+              <MenuItem value={course}>{course}</MenuItem>
             )
           })}
         </Select>
+          </FormControl>
+        { selectedCourse === 'Benfica' && 
+          <FormControl>
+             <InputLabel>Select Age Range</InputLabel>
+          <Select value={ageRange} onChange={(event) => setAgeRange(event.target.value)}>
+            <MenuItem value={'All'} disabled>
+            All age ranges
+            </MenuItem>
+            <MenuItem value="U16">Under 16</MenuItem>
+            <MenuItem value="U17">Under 17</MenuItem>
+            <MenuItem value="U18">Under 18</MenuItem>
+
+            </Select>
+        </FormControl>
+        }
         {/* <FormHelperText></FormHelperText> */}
-      </FormControl>
+      
 
       <AppBar
         className={classes.appBar}
@@ -1180,6 +1198,8 @@ const ApplicationDashboard = ({ locale }) => {
       </AppBar>
 
       <TabPanel value={tabValue} index={0}>
+        { selectedCourse === 'Benfica' ? 
+        <>
         <Container
         // style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', textAlign: 'center' }}
         >
@@ -1355,6 +1375,9 @@ const ApplicationDashboard = ({ locale }) => {
             })}
           </TableBody>
         </Table>
+        </> :
+        <Typography>Select a course to review applications</Typography>
+      }
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
         <Application editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} index={applicantIndex} averages={getAverageScore} text={text} locale={locale} />
