@@ -245,6 +245,7 @@ export default function ApplicationForm({ history, location, locale }) {
       city: '',
       postcode: '',
       residency_certificate: '',
+      passport: '',
       nationality: '',
       country: '',
     },
@@ -264,7 +265,11 @@ export default function ApplicationForm({ history, location, locale }) {
       },
       previous_clubs: [],
       private_coaching: false,
-      awards_achieved: false,
+      private_coach_name: '',
+      award_name: '',
+      award_date: '',
+      award_reasoning: '',
+      award_achieved: false,
       highlights_footage_link: '',
       bio_description: ''
     },
@@ -299,7 +304,8 @@ export default function ApplicationForm({ history, location, locale }) {
     nationality,
     email,
     country,
-    residency_certificate } = applicationDetails.personal_details
+    residency_certificate,
+    passport } = applicationDetails.personal_details
   const {
     height,
     weight,
@@ -309,10 +315,15 @@ export default function ApplicationForm({ history, location, locale }) {
   const {
     current_club,
     private_coaching,
-    awards_achieved,
+    award_achieved,
+    award_name,
+    award_date,
+    award_reasoning,
     previous_clubs,
     highlights_footage_link,
-    bio_description
+    bio_description,
+    private_coach_name,
+
   } = applicationDetails.football_history
   const {
     link_1,
@@ -462,7 +473,6 @@ export default function ApplicationForm({ history, location, locale }) {
         applications: {
           benfica_application: {
             ...(type && {
-              localization: locale,
               age_group: `Under ${group}s`,
               submitted: true
             }),
@@ -479,6 +489,7 @@ export default function ApplicationForm({ history, location, locale }) {
             emailContent: { contentCourse: `Benfica Camp: Under ${group}s` },
             locale: locale
           }).then((res) => {
+            handleClose()
             setMessage({ success: snackbar_messages['1a'][locale], info: res.info })
             setIsLoading(false)
           })
@@ -495,13 +506,7 @@ export default function ApplicationForm({ history, location, locale }) {
       })
   }
 
-  const handleClickOpen = () => {
-    console.log('bye')
-    setOpen(true);
-  };
-
   const handleClose = () => {
-    console.log('fired')
     setOpen(false);
   };
 
@@ -537,8 +542,10 @@ export default function ApplicationForm({ history, location, locale }) {
 
   function handleApplicationChange(e, i) {
 
+
     const { player_attributes, personal_details, football_history } = applicationDetails
     const { id, name, value } = e.target
+
 
     if (name === 'position') {
       setVideoLinks(value === 'goalkeeper' ? [
@@ -644,7 +651,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
   }
 
-  const handleResidencyDocumentUpload = (e) => {
+  const handleResidencyDocumentUpload = (e, type) => {
 
     const doc = e.target.files
 
@@ -655,11 +662,11 @@ export default function ApplicationForm({ history, location, locale }) {
 
     handleApplicationSave()
 
-    axios.post('/korean-residency', certificate,
+    axios.post(`/korean-residency/${type}`, certificate,
       { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
         getData()
-        setMessage({ success: snackbar_messages['5'][locale] })
+        setMessage({ success: 'Document successfully uploaded.' })
         setIsLoading(false)
       })
       .catch(async err => {
@@ -1001,7 +1008,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
         <div class="field-body">
 
-          <div className={classes.field} style={{ flex: 0.4 }}>
+          <div className={classes.field} style={{ flex: 0.5 }}>
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span> Nationality</label>
             </div>
@@ -1011,16 +1018,16 @@ export default function ApplicationForm({ history, location, locale }) {
           </div>
 
 
-
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> {application['4i'][locale]}
+              <label> <span style={{ color: 'red' }}>*</span>   {nationality.toLowerCase() === 'korean' ?
+                'Resident Registration Certificate' : 'Foreigner Registration Certificate'}
               </label>
             </div>
             <div class="file has-name">
-              <label class="file-label">
+              <label class="file-label"  style={{ flex: 1 }}>
                 <input
-                  onChange={(e) => handleResidencyDocumentUpload(e)}
+                  onChange={(e) => handleResidencyDocumentUpload(e, 'residency')}
                   class="file-input"
                   type="file"
                   name='residency_certificate' />
@@ -1038,18 +1045,62 @@ export default function ApplicationForm({ history, location, locale }) {
                   </span>
                 </span>
 
-                {residency_certificate &&
-                  <span
-                    onClick={() => window.open(residency_certificate, '_blank')}
-                    class="file-name">
+                <span
+                  onClick={() => window.open(residency_certificate, '_blank')}
+                  class="file-name" style={{ flex: 1 }}>
+                  {!residency_certificate ?
+                    'No file uploaded' :
                     <Tooltip placement="bottom-start" title="Click to view uploaded document">
                       <span> {residency_certificate} </span>
                     </Tooltip>
-                  </span>}
+                  }
+                </span>
 
               </label>
             </div>
           </div>
+
+          {(nationality && nationality.toLowerCase() !== 'korean') && <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Passport
+              </label>
+            </div>
+            <div class="file has-name">
+              <label class="file-label" style={{ flex: 1 }}>
+                <input
+                  onChange={(e) => handleResidencyDocumentUpload(e, 'passport')}
+                  class="file-input"
+                  type="file"
+                  name='residency_certificate' />
+                <span class="file-cta">
+                  <span style={{ marginRight: '15px' }} class="file-icon">
+                    <CloudUploadSharpIcon
+                      style={{
+                        fontSize: '23px',
+                        transform: 'translate(-2px, -2px)'
+                      }}
+                    />
+                  </span>
+                  <span class="file-label">
+                    {application['4j'][locale]}
+                  </span>
+                </span>
+
+                <span
+                  onClick={() => window.open(passport, '_blank')}
+                  class="file-name" style={{ flex: 1 }}>
+                  {!passport ?
+                    'No file uploaded' :
+                    <Tooltip placement="bottom-start" title="Click to view uploaded document">
+                      <span> {passport} </span>
+                    </Tooltip>
+                  }
+                </span>
+
+              </label>
+            </div>
+          </div>}
+
 
 
 
@@ -1214,7 +1265,7 @@ export default function ApplicationForm({ history, location, locale }) {
                 <label> <span style={{ color: 'red' }}>*</span> Coach Name</label>
               </div>
               <p class="control is-expanded">
-                <input value={applicationDetails.private_coach_name && applicationDetails.private_coach_name}
+                <input value={private_coach_name}
                   name='private_coach_name'
                   class="input" type="text" placeholder='Coach Name' />
               </p>
@@ -1448,22 +1499,22 @@ export default function ApplicationForm({ history, location, locale }) {
                 ...applicationDetails,
                 football_history: {
                   ...applicationDetails.football_history,
-                  awards_achieved: !awards_achieved
+                  award_achieved: !award_achieved
                 }
               })
             }}
-            control={<Radio checked={awards_achieved} />}
+            control={<Radio checked={award_achieved} />}
             label='Please check if you have achieved any awards (KFA, Regional FA, Foundation)' />
         </div>
 
-        {awards_achieved && <div className="field-body">
+        {award_achieved && <div className="field-body">
           <div className={classes.field} style={{ flex: 'none' }}>
             <div className={classes.label}>
               <label> Award Received </label>
             </div>
             <div class="select">
               <select
-                value={applicationDetails.award_name && applicationDetails.award_name}
+                value={award_name}
                 name='award_name'>
                 <option value=""> </option>
                 <option value="kfa"> KFA Award </option>
@@ -1478,8 +1529,8 @@ export default function ApplicationForm({ history, location, locale }) {
             </div>
             <div class="select">
               <select
-              // name='award_name'
-              >
+                name='award_date'
+                value={award_date}>
                 <option value=""> </option>
                 <option value="2015"> 2015</option>
                 <option value="2016"> 2016</option>
@@ -1496,7 +1547,8 @@ export default function ApplicationForm({ history, location, locale }) {
             </div>
             <p class="control is-expanded">
               <input
-                // name='private_coach_name'
+                value={award_reasoning}
+                name='award_reasoning'
                 class="input" type="text" />
             </p>
           </div>
