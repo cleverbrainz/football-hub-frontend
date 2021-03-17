@@ -9,8 +9,11 @@ import {
   Card,
   CardActions,
   CardContent,
-  Button
+  Button,
+  Tabs,
+  Tab
 } from "@material-ui/core";
+import TabPanel from '@material-ui/lab/TabPanel'
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import HomeNav from '../components/Navbars/HomeNav'
 import StarsSharpIcon from '@material-ui/icons/StarsSharp';
