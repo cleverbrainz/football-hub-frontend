@@ -15,11 +15,27 @@ import IconButton from '@material-ui/core/IconButton';
 import auth from '../lib/auth'
 import { AuthContext } from "../lib/context";
 import { firebaseApp } from '../lib/firebase';
+import * as firebase from "firebase";
+
 
 
 
 export default function Login({ history, location }) {
   const { user, setUserData, userData } = useContext(AuthContext);
+  // const [verificationCode, setVerificationCode] = useState('123456')
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [phoneVerifyRequired, setPhoneVerifyRequired] = useState(false)
+  const [hints, setHints] = useState([])
+  const [verificationCode2, setVerificationCode2] = useState('')
+  const [resolver, setResolver] = useState({})
+  let verificationId
+  let cred
+  let multiFactorAssertion
+  let verificationCode = 'yo'
+
+  useEffect(() => {
+    console.log("verificationCode2 updated");
+  }, [verificationCode2])
 
 
   const useStyles = makeStyles((theme) => ({
@@ -50,12 +66,14 @@ export default function Login({ history, location }) {
   const [isLoading, setIsLoading] = useState(false)
   const [loginFields, setLoginFields] = useState({
     email: '',
-    password: '',
+    password: ''
   })
   const [showPassword, setShowPassword] = useState(false)
+  const [verificationId10, setVerificationId10] = useState(null)
   const classes = useStyles();
   const emailErrors = ['auth/user-not-found', 'auth/invalid-email']
   const passwordErrors = ['auth/wrong-password',]
+  const [captchad, setCaptchad] = useState(false)
 
   const { email } = loginFields
 
@@ -64,11 +82,44 @@ export default function Login({ history, location }) {
     const fields = { ...loginFields, [name]: value }
     setLoginError('')
     setLoginFields(fields)
+    console.log(loginFields)
   }
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  const handleRecaptcha = (e) => {
+    e.preventDefault()
+    var cred = firebase.auth.PhoneAuthProvider.credential(
+      verificationId10, verificationCode2);
+    console.log(cred)
+    var multiFactorAssertion =
+      firebase.auth.PhoneMultiFactorGenerator.assertion(cred);
+    // Complete sign-in.
+
+    resolver.resolveSignIn(multiFactorAssertion)
+      .then(function (data) {
+        // User successfully signed in with the second factor phone number.
+        console.log(data)
+        axios.get(`/users/${data.user.uid}`)
+          .then(res => {
+            // console.log(res.data)
+            const { category } = res.data[0]
+            localStorage.setItem('category', category)
+            if (category === 'player' || category === 'parent') {
+              history.push(`/${auth.getUserId()}/profile`)
+            } else if (category === 'company') {
+              history.push('/tester')
+            } else {
+              history.push('/testercoach')
+            }
+          })
+      }
+      )
+
+  }
+
 
   const frontendLogin = (e) => {
     e.preventDefault()
@@ -89,15 +140,65 @@ export default function Login({ history, location }) {
               history.push('/testercoach')
             }
           })
-      //   } else {
-      //     firebaseApp.auth().signOut()
-      //     setLoginError({ message: 'Email has not yet been verifed. Please check your emails for a verification link.' })
-      //   }
+        //   } else {
+        //     firebaseApp.auth().signOut()
+        //     setLoginError({ message: 'Email has not yet been verifed. Please check your emails for a verification link.' })
+        //   }
       })
-      .catch(err => {
-        console.log(err)
-        setLoginError(err)
+      .catch(error => {
+        console.log(error)
+        if (error.code === 'auth/multi-factor-auth-required') {
+          setResolver(error.resolver)
+          setHints(error.resolver.hints[0])
+          setPhoneVerifyRequired(true)
+          // Ask user which second factor to use.
+          if (error.resolver.hints[selectedIndex].factorId ===
+            firebase.auth.PhoneMultiFactorGenerator.FACTOR_ID) {
+            var phoneInfoOptions = {
+              multiFactorHint: error.resolver.hints[selectedIndex],
+              session: error.resolver.session
+            };
+            var phoneAuthProvider = new firebase.auth.PhoneAuthProvider();
+            var recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+              'recaptcha-container',
+              {
+                'size': 'normal',
+                'callback': function (response) {
+                  // reCAPTCHA solved, you can proceed with phoneAuthProvider.verifyPhoneNumber(...).
+                  // ...
+                  // handleRecaptcha()
+                  setCaptchad(true)
+
+                },
+                'expired-callback': function () {
+                  // Response expired. Ask user to solve reCAPTCHA again.
+                  // ...
+                  // console.log('uh oh')
+                }
+              },
+              firebaseApp);
+            // Send SMS verification code
+            console.log("albdagjldfjladljhgbadljghbaljgbaljgbaljgbadljgbadljfgbalgb");
+            return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
+              .then(function (verificationId) {
+
+                setVerificationId10(verificationId)
+
+                // // Ask user for the SMS verification code.
+                // console.log('sdfdsg verificationCode2', verificationCode2)
+
+              }).catch(err => console.log({ err }))
+          } else {
+            // Unsupported second factor.
+          }
+        } else {
+          setLoginError(error)
+        }
       })
+  }
+
+  const handlePhoneVerification = () => {
+    console.log('phone verification!')
   }
 
 
@@ -143,76 +244,124 @@ export default function Login({ history, location }) {
   // }
   const localCatCheck = (localStorage.getItem('category') !== null)
   const loginCheck = auth.isLoggedIn()
-  console.log(loginCheck, localCatCheck)
 
   if (!user) return null
   return (
     <>
-          { (loginCheck && localCatCheck) ?
-          (localStorage.getItem('category') === 'company' ? 
-          <Redirect to={{ pathname: "/tester" }} /> : 
-          localStorage.getItem('category') === 'coach' ? 
-          <Redirect to={{ pathname: "/testercoach" }} /> : 
-          <Redirect to={{ pathname: `/${auth.getUserId()}/profile` }} />
+      { (loginCheck && localCatCheck) ?
+        (localStorage.getItem('category') === 'company' ?
+          <Redirect to={{ pathname: "/tester" }} /> :
+          localStorage.getItem('category') === 'coach' ?
+            <Redirect to={{ pathname: "/testercoach" }} /> :
+            <Redirect to={{ pathname: `/${auth.getUserId()}/profile` }} />
         ) : (
-          <div className={classes.container}>
-            <Typography variant='h4'> LOGIN </Typography>
-            <form
-              autoComplete='off'
-              onChange={(e) => handleFormChange(e)}
-              onSubmit={(e) => frontendLogin(e)}
-              className={classes.form}>
 
 
-              <FormControl variant="outlined">
-                <InputLabel htmlFor="component-outlined"> Email </InputLabel>
-                <OutlinedInput
-                  error={emailErrors.some(code => code === loginError.code) ? true : false}
-                  type='text'
-                  name='email' id="component-outlined" label='Email'
-                />
-              </FormControl>
 
-              <FormControl variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-password"
-                  type={showPassword ? 'text' : 'password'}
-                  error={passwordErrors.some(code => code === loginError.code) ? true : false}
-                  name='password'
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() => setShowPassword(!showPassword)}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilitySharpIcon /> : <VisibilityOffSharpIcon />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  labelWidth={70}
-                />
-              </FormControl>
+          !phoneVerifyRequired ?
 
 
-              {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
+            <div className={classes.container}>
+              <Typography variant='h4'> LOGIN </Typography>
 
-              <Button disabled={isLoading}
-                className={classes.button} type='submit'
-                variant="contained" color="primary">
-                Login
+              <form
+                autoComplete='off'
+                onChange={(e) => handleFormChange(e)}
+                onSubmit={(e) => frontendLogin(e)}
+                className={classes.form}>
+                <FormControl variant="outlined">
+                  <InputLabel htmlFor="component-outlined"> Email </InputLabel>
+                  <OutlinedInput
+                    error={emailErrors.some(code => code === loginError.code) ? true : false}
+                    type='text'
+                    name='email' id="component-outlined" label='Email'
+                  />
+                </FormControl>
+
+                <FormControl variant="outlined">
+                  <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-password"
+                    type={showPassword ? 'text' : 'password'}
+                    error={passwordErrors.some(code => code === loginError.code) ? true : false}
+                    name='password'
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => setShowPassword(!showPassword)}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilitySharpIcon /> : <VisibilityOffSharpIcon />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    labelWidth={70}
+                  />
+                </FormControl>
+
+                {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
+
+                <Button disabled={isLoading}
+                  className={classes.button} type='submit'
+                  variant="contained" color="primary">
+                  Login
         {isLoading && <CircularProgress size={30} className={classes.progress} />}
-              </Button>
-                  {/* {loginError && <Typography>{loginError}</Typography>} */}
-              {location.pathname !== '/admin/login' &&
-                <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
+                </Button>
+                {/* {loginError && <Typography>{loginError}</Typography>} */}
+                {location.pathname !== '/admin/login' &&
+                  <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
 
-            </form>
+              </form>
 
-            {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
-          </div>
+              {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
+            </div>
+            :
+            <div className={classes.container}>
+              <Typography variant='h4'> LOGIN </Typography>
+              {!captchad ? 
+              <div id='recaptcha-container' />
+              :
+              <>
+              <Typography variant="p">A confirmation code has been sent to the phone number {hints.phoneNumber}. Please enter the code below and confirm the RECAPTCHA to login.</Typography>
+              <form
+                autoComplete='off'
+                onChange={(e) => {
+                  // console.log(verificationCode2)
+                  setVerificationCode2(e.target.value)
+                }}
+                onSubmit={(e) => handleRecaptcha(e)}
+                className={classes.form}>
+                <FormControl variant="outlined">
+                  <InputLabel htmlFor="component-outlined"> Verification Code </InputLabel>
+                  <OutlinedInput
+                    // error={emailErrors.some(code => code === loginError.code) ? true : false}
+                    type='text'
+                    name='verificationCode' id="component-outlined" label='Verification Code'
+                  />
+                </FormControl>
+                {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
+               
+
+                <Button disabled={isLoading || !captchad}
+                  className={classes.button} type='submit'
+                  variant="contained" color="primary">
+                  Login
+        {isLoading && <CircularProgress size={30} className={classes.progress} />}
+                </Button>
+                {/* {loginError && <Typography>{loginError}</Typography>} */}
+                {location.pathname !== '/admin/login' &&
+                  <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
+               
+              </form>
+              </>
+              }
+
+              {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
+            </div>
+
+
         )
       }
     </>

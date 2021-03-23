@@ -239,7 +239,7 @@ const UserAuthForm = ({ locale, history }) => {
           })
           return
         }
-
+        registerDetails.language = locale
         axios.post('/registerUserViaApplication', registerDetails)
           .then(async res => {
             handleAfterRequestStates({
