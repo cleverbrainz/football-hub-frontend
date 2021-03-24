@@ -106,6 +106,7 @@ import RouteContainer from './korean/RouteContainer'
 
 import { Dialog, useMediaQuery, DialogContent, DialogTitle, Button, DialogActions } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
+import AddPhone from './pages/AddPhone'
 const stripePromise = loadStripe('pk_test_JX84GPfLfXGxVFWvGHaz1AWE')
 
 
@@ -378,6 +379,7 @@ const App = () => {
 
 
         <AuthRouter exact path="/checkout-form" component={CheckoutForm} />
+        <AuthRouter exact path="/add-phone" component={AddPhone} />
       </Switch>
     </Router>
   )
