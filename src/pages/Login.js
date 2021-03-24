@@ -158,7 +158,9 @@ export default function Login({ history, location }) {
               multiFactorHint: error.resolver.hints[selectedIndex],
               session: error.resolver.session
             };
-            var phoneAuthProvider = new firebase.auth.PhoneAuthProvider();
+            var appAuth = firebaseApp.auth()
+            appAuth.languageCode = 'ko'
+            var phoneAuthProvider = new firebase.auth.PhoneAuthProvider(appAuth);
             var recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
               'recaptcha-container',
               {
@@ -174,11 +176,11 @@ export default function Login({ history, location }) {
                   // Response expired. Ask user to solve reCAPTCHA again.
                   // ...
                   // console.log('uh oh')
-                }
+                },
+                'hl': 'ko'
               },
               firebaseApp);
             // Send SMS verification code
-            console.log("albdagjldfjladljhgbadljghbaljgbaljgbaljgbadljgbadljfgbalgb");
             return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
               .then(function (verificationId) {
 
@@ -187,7 +189,7 @@ export default function Login({ history, location }) {
                 // // Ask user for the SMS verification code.
                 // console.log('sdfdsg verificationCode2', verificationCode2)
 
-              }).catch(err => console.log({ err }))
+              }).catch(err => setLoginError(error))
           } else {
             // Unsupported second factor.
           }
