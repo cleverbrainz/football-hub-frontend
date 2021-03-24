@@ -15,6 +15,10 @@ import IconButton from '@material-ui/core/IconButton';
 import auth from '../lib/auth'
 import { AuthContext } from "../lib/context";
 import { firebaseApp } from '../lib/firebase';
+import {
+  MenuItem,
+  Select
+} from '@material-ui/core'
 import * as firebase from "firebase";
 
 const AddPhone = ({location, history}) => {
@@ -56,8 +60,9 @@ const AddPhone = ({location, history}) => {
   const [codeSent, setCodeSent] = useState(false)
   const appAuth = firebaseApp.auth()
   const currentUser = appAuth.currentUser
+  const [lang, setLang] = useState('en')
   
-  appAuth.languageCode = 'ko'
+  appAuth.languageCode = lang
 
 
 
@@ -93,7 +98,7 @@ const AddPhone = ({location, history}) => {
                   // ...
                   // console.log('uh oh')
                 },
-                'hl': 'ko'
+                'hl': lang
               },
               firebaseApp);
         const phoneInfoOptions = {
@@ -141,7 +146,13 @@ function confirmVerificationCode(e) {
     <div className={classes.container}>
               <Typography variant='h4'> Verify Phone Number </Typography>
               <div id="recaptcha-container"></div>
-
+              <Select value={lang} style={{ fontSize: '14px' }} onChange={(event) => {
+              setLang(event.target.value)
+            }}>
+              
+              <MenuItem value={'en'}>English</MenuItem>
+              <MenuItem value={'ko'}>Korean</MenuItem>
+            </Select>
               <form
                 autoComplete='off'
                 onChange={(e) => handleFormChange(e)}
