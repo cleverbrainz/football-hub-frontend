@@ -16,6 +16,10 @@ import auth from '../lib/auth'
 import { AuthContext } from "../lib/context";
 import { firebaseApp } from '../lib/firebase';
 import * as firebase from "firebase";
+import {
+  MenuItem,
+  Select
+} from '@material-ui/core'
 
 
 
@@ -32,6 +36,7 @@ export default function Login({ history, location }) {
   let cred
   let multiFactorAssertion
   let verificationCode = 'yo'
+  const [lang, setLang] = useState('en')
 
   useEffect(() => {
     console.log("verificationCode2 updated");
@@ -159,7 +164,7 @@ export default function Login({ history, location }) {
               session: error.resolver.session
             };
             var appAuth = firebaseApp.auth()
-            appAuth.languageCode = 'ko'
+            appAuth.languageCode = lang
             var phoneAuthProvider = new firebase.auth.PhoneAuthProvider(appAuth);
             var recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
               'recaptcha-container',
@@ -177,7 +182,7 @@ export default function Login({ history, location }) {
                   // ...
                   // console.log('uh oh')
                 },
-                'hl': 'ko'
+                'hl': lang
               },
               firebaseApp);
             // Send SMS verification code
@@ -265,6 +270,13 @@ export default function Login({ history, location }) {
 
             <div className={classes.container}>
               <Typography variant='h4'> LOGIN </Typography>
+              <Select value={lang} style={{ fontSize: '14px' }} onChange={(event) => {
+              setLang(event.target.value)
+            }}>
+              
+              <MenuItem value={'en'}>English</MenuItem>
+              <MenuItem value={'ko'}>Korean</MenuItem>
+            </Select>
 
               <form
                 autoComplete='off'
