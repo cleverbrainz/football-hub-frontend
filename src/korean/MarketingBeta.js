@@ -319,24 +319,24 @@ const CoachModal = ({ modalOpen, setModalOpen, locale, coach }) => {
   // const coach = marketing['9d']['en']
   return (
     <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={modalOpen}
-        className={classes.modal}
-        onClose={() => setModalOpen(false)}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={modalOpen}>
+      aria-labelledby="transition-modal-title"
+      aria-describedby="transition-modal-description"
+      open={modalOpen}
+      className={classes.modal}
+      onClose={() => setModalOpen(false)}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}
+    >
+      <Fade in={modalOpen}>
         <div className={`${classes.modalCard} ${classes.jumbotron}`}>
-                <img className={classes.coachMedia}
+          <img className={classes.coachMedia}
             src="https://images.unsplash.com/photo-1529153348965-3de49b6188bd?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80" alt="" />
 
           <section className={classes.jumbotronText}>
-          <Typography component='div' >
+            <Typography component='div' >
               <Box
                 fontSize={20} fontWeight="fontWeightBold" m={0}>
                 {coach.split(' / ')[0]}
@@ -351,31 +351,31 @@ const CoachModal = ({ modalOpen, setModalOpen, locale, coach }) => {
                 {coach.split(' / ')[2].split('% ').map(item => {
                   return (
                     <>
-                    <p>{item}</p>
-                    <br/>
+                      <p>{item}</p>
+                      <br />
                     </>
                   )
                 })}
-                { coach.split(' / ')[3] &&
-                <ul>
-                  {coach.split(' / ')[3].split('%').map(item => {
-                    return (
-                      <li className={classes.list}>
-                        {item}
-                      </li>
-                    )
-                  })}
-                </ul>
-              }
+                {coach.split(' / ')[3] &&
+                  <ul>
+                    {coach.split(' / ')[3].split('%').map(item => {
+                      return (
+                        <li className={classes.list}>
+                          {item}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                }
               </Box>
 
             </Typography>
 
           </section>
 
-              </div>
-        </Fade>
-      </Modal>
+        </div>
+      </Fade>
+    </Modal>
   )
 }
 
@@ -408,6 +408,7 @@ const MarketingBeta = (props) => {
 
   return (
     <div className={classes.root}>
+      
       <main className={classes.main}>
         <Typography
           className={classes.title}
@@ -416,28 +417,28 @@ const MarketingBeta = (props) => {
             fontSize={35} fontWeight="fontWeightBold" m={0}>
             {marketing[1][locale].split(' / ')[0]}
           </Box>
-          <Box 
-            style={{ marginBottom: '5px'}}
+          <Box
+            style={{ marginBottom: '5px' }}
             fontSize={28} fontWeight="fontWeightBold" m={0} ref={cardRef}>
             {marketing[1][locale].split(' / ')[1]}
           </Box>
           <Box
-            style={{ marginBottom: '25px'}}
+            style={{ marginBottom: '25px' }}
             fontSize={22} fontWeight="fontWeightRegular" m={0}>
             {marketing['2a'][locale]}
           </Box>
         </Typography>
-          <div className={classes.jumbotronThin} style={{ marginBottom: '50px'}}>
+        <div className={classes.jumbotronThin} style={{ marginBottom: '50px' }}>
           <img className={classes.mediaThin}
-  src="https://images.unsplash.com/photo-1493662404096-9ecc84ebba6b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2400&q=80" alt="" />
-<section className={classes.jumbotronTextWide}>
-  <p>{marketing['2b'][locale].split('/ ')[0]}</p>
-  <br />
-  <p>{marketing['2b'][locale].split('/ ')[1]}</p>
- 
-</section>
-</div>
-<Typography
+            src="https://images.unsplash.com/photo-1493662404096-9ecc84ebba6b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2400&q=80" alt="" />
+          <section className={classes.jumbotronTextWide}>
+            <p>{marketing['2b'][locale].split('/ ')[0]}</p>
+            <br />
+            <p>{marketing['2b'][locale].split('/ ')[1]}</p>
+
+          </section>
+        </div>
+        <Typography
           component='div' >
           <Box
             fontSize={24} fontWeight="fontWeightBold" m={0}>
@@ -445,12 +446,12 @@ const MarketingBeta = (props) => {
           </Box>
         </Typography>
         <div className={classes.stepsContainer}>
-{ ['Create your account and pay the £15 assessment fee', 'Tess us about you and complete the challenges', 'Your application will be reviewed for suitability', 'If successful, you will be invited to join and pay for the camp'].map((step, index) => {
-  return (
-     index === 0 ? <div>{step}</div>   : <><KeyboardArrowRightIcon style={{ fontSize: '5em'}} /><div>{step}</div></>
-  )
-})}
-</div>
+          {['Create your account and pay the £15 assessment fee', 'Tess us about you and complete the challenges', 'Your application will be reviewed for suitability', 'If successful, you will be invited to join and pay for the camp'].map((step, index) => {
+            return (
+              index === 0 ? <div>{step}</div> : <><KeyboardArrowRightIcon style={{ fontSize: '5em' }} /><div>{step}</div></>
+            )
+          })}
+        </div>
 
 
       </main>
@@ -461,61 +462,61 @@ const MarketingBeta = (props) => {
         </Box>
       </Typography> */}
 
-        <div className={classes.campCardContainer}>
+      <div className={classes.campCardContainer}>
 
-          {[{ ...marketing['7d'] }, { ...marketing['7e'] },
-          { ...marketing['7f'] }].map(el => {
-            return (
-              <Card variant="outlined" className={classes.campCard}>
-                <CardContent className={classes.campCardTextContainer}>
-                  <Typography variant="h6" component="h2">
-                    {el[locale].split('.')[0]}
-                  </Typography>
+        {[{ ...marketing['7d'] }, { ...marketing['7e'] },
+        { ...marketing['7f'] }].map(el => {
+          return (
+            <Card variant="outlined" className={classes.campCard}>
+              <CardContent className={classes.campCardTextContainer}>
+                <Typography variant="h6" component="h2">
+                  {el[locale].split('.')[0]}
+                </Typography>
+                <Typography
+                  className={classes.campCardText}
+                  variant="body2" component="p">
+                  <EventSharpIcon
+                    style={{ marginRight: '15px' }} />  {el[locale].split('.')[1]}
+                </Typography>
+
+                {locale === 'en' &&
                   <Typography
                     className={classes.campCardText}
                     variant="body2" component="p">
-                    <EventSharpIcon
-                      style={{ marginRight: '15px' }} />  {el[locale].split('.')[1]}
-                  </Typography>
-                  
-                  {locale === 'en' &&
-                    <Typography
-                      className={classes.campCardText}
-                      variant="body2" component="p">
-                      <ScheduleSharpIcon
-                        style={{ marginRight: '15px' }} />  {el[locale].split('.')[2]}
-                    </Typography>}
+                    <ScheduleSharpIcon
+                      style={{ marginRight: '15px' }} />  {el[locale].split('.')[2]}
+                  </Typography>}
 
-                  <Typography
-                    className={classes.campCardText}
-                    variant="body2" component="p">
-                    <RoomSharpIcon
-                      style={{ marginRight: '15px' }} /> {el[locale].split('.')[locale === 'en' ? 3 : 2]}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    className={classes.button}
-                    onClick={() => history.push('/authentication')}
-                    endIcon={<ArrowForwardIcon />}>
-                    {el[locale].split('.')[locale === 'en' ? 4 : 3]}
-                  </Button>
-                </CardActions>
-              </Card>
-            )
-          })}
-        </div>
+                <Typography
+                  className={classes.campCardText}
+                  variant="body2" component="p">
+                  <RoomSharpIcon
+                    style={{ marginRight: '15px' }} /> {el[locale].split('.')[locale === 'en' ? 3 : 2]}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  className={classes.button}
+                  onClick={() => history.push('/authentication')}
+                  endIcon={<ArrowForwardIcon />}>
+                  {el[locale].split('.')[locale === 'en' ? 4 : 3]}
+                </Button>
+              </CardActions>
+            </Card>
+          )
+        })}
+      </div>
 
-        <Tabs value={tabValue} onChange={(event, newValue) => setTabValue(newValue)}>
-        <Tab label="The Camp"/>
-        <Tab label="About **Club Name**"/>
-        <Tab label="The Assessment"/>
-        <Tab label="The Programme"/>
+      <Tabs value={tabValue} onChange={(event, newValue) => setTabValue(newValue)}>
+        <Tab label="The Camp" />
+        <Tab label="About **Club Name**" />
+        <Tab label="The Assessment" />
+        <Tab label="The Programme" />
       </Tabs>
 
-      
+
       <TabPanel className={classes.tabPanel} value={tabValue} index={0}>
 
 
@@ -526,7 +527,7 @@ const MarketingBeta = (props) => {
           </Box>
         </Typography>
 
-        <div className={classes.jumbotron} style={{ marginBottom: '25px'}}>
+        <div className={classes.jumbotron} style={{ marginBottom: '25px' }}>
 
           <section className={classes.jumbotronText}>
 
@@ -541,8 +542,8 @@ const MarketingBeta = (props) => {
                   return <li className={classes.list}> {sentence} </li>
                 })}
               </ul>
-            <Box
-                fontSize={24} fontWeight="fontWeightBold" m={0} style={{ textAlign: 'center'}}>
+              <Box
+                fontSize={24} fontWeight="fontWeightBold" m={0} style={{ textAlign: 'center' }}>
                 {marketing['5d'][locale]}
               </Box>
             </Typography>
@@ -586,7 +587,7 @@ const MarketingBeta = (props) => {
           })}
         </div>
 
-        
+
       </TabPanel>
 
       <TabPanel className={classes.tabPanel} value={tabValue} index={1}>
@@ -656,18 +657,18 @@ const MarketingBeta = (props) => {
 
         </div>
 
-      
+
       </TabPanel>
 
       <TabPanel className={classes.tabPanel} value={tabValue} index={2}>
 
-      <CoachModal modalOpen={modalOpen} setModalOpen={setModalOpen} locale={locale} coach={activeCoach} />
+        <CoachModal modalOpen={modalOpen} setModalOpen={setModalOpen} locale={locale} coach={activeCoach} />
 
-      <Typography style={{ marginBottom: '25px' }}
+        <Typography style={{ marginBottom: '25px' }}
           component='div' >
           <Box
             fontSize={30} fontWeight="fontWeightBold" m={0}>
-           {marketing['9a'][locale].split(' / ')[0]}
+            {marketing['9a'][locale].split(' / ')[0]}
           </Box>
         </Typography>
 
@@ -700,64 +701,64 @@ const MarketingBeta = (props) => {
         </div>
 
 
-      <Typography style={{ marginTop: '30px'}}
+        <Typography style={{ marginTop: '30px' }}
           component='div' >
           <Box
             fontSize={30} fontWeight="fontWeightBold" m={0}>
-           {marketing['9c'][locale]}
+            {marketing['9c'][locale]}
           </Box>
         </Typography>
         <div className={classes.coachContainer}>
 
-        {
-          [marketing['9d'][locale], marketing['9e'][locale], marketing['9f'][locale]].map(coach => {
-            return (
+          {
+            [marketing['9d'][locale], marketing['9e'][locale], marketing['9f'][locale]].map(coach => {
+              return (
 
-          <Card className={classes.coachCard}>
-          <CardActionArea onClick={() => {
-            setActiveCoach(coach)
-            setModalOpen(true)
-            }}>
-            <CardMedia
-              component="img"
-              className={classes.coachCardImage}
-              src="https://images.unsplash.com/photo-1529153348965-3de49b6188bd?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80"
-              title="coach picture"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-              {coach.split(' / ')[0]}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-              {coach.split(' / ')[1]}
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-          <CardActions style={{ alignItems: 'center', justifyContent: 'center'}}>
-            <Button onClick={() => setModalOpen(true)} size="small" color="primary">
-              Learn More
+                <Card className={classes.coachCard}>
+                  <CardActionArea onClick={() => {
+                    setActiveCoach(coach)
+                    setModalOpen(true)
+                  }}>
+                    <CardMedia
+                      component="img"
+                      className={classes.coachCardImage}
+                      src="https://images.unsplash.com/photo-1529153348965-3de49b6188bd?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80"
+                      title="coach picture"
+                    />
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        {coach.split(' / ')[0]}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary" component="p">
+                        {coach.split(' / ')[1]}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                  <CardActions style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <Button onClick={() => setModalOpen(true)} size="small" color="primary">
+                      Learn More
             </Button>
-          </CardActions>
-        </Card>
+                  </CardActions>
+                </Card>
 
-            )
-          })
-        }
+              )
+            })
+          }
         </div>
 
 
 
 
-      
+
       </TabPanel>
 
       <TabPanel className={classes.tabPanel} value={tabValue} index={3}>
 
-      <Typography style={{ marginBottom: '25px' }}
+        <Typography style={{ marginBottom: '25px' }}
           component='div' >
           <Box
             fontSize={30} fontWeight="fontWeightBold" m={0}>
-           {marketing['8a'][locale].split('/')[0]}
+            {marketing['8a'][locale].split('/')[0]}
           </Box>
         </Typography>
 
@@ -784,7 +785,7 @@ const MarketingBeta = (props) => {
         </div>
 
         <Typography
-          style={{ marginTop: '30px', marginBottom: '25px'}}
+          style={{ marginTop: '30px', marginBottom: '25px' }}
           component='div' >
           <Box
             fontSize={30} fontWeight="fontWeightBold" m={0}>
@@ -800,7 +801,7 @@ const MarketingBeta = (props) => {
             <Typography component='div' >
               <Box
                 fontSize={24} fontWeight="fontWeightBold" m={0}>
-                 {marketing['8c'][locale].split('/')[1]}
+                {marketing['8c'][locale].split('/')[1]}
               </Box>
             </Typography>
 
@@ -809,7 +810,7 @@ const MarketingBeta = (props) => {
             </p>
 
             <p>
-            {marketing['8d'][locale].split('/')[1]}
+              {marketing['8d'][locale].split('/')[1]}
             </p>
 
             <p>
@@ -820,18 +821,18 @@ const MarketingBeta = (props) => {
 
       </TabPanel>
 
-      
 
 
 
-      
+
+
 
       <section style={{ marginTop: '50px', marginBottom: '100px' }}>
-          <Button variant='contained'
-            onClick={(() => cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }))}
-          >
+        <Button variant='contained'
+          onClick={(() => cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }))}
+        >
           {marketing['10a'][locale]} ->
-          </Button> 
+          </Button>
       </section>
 
     </div>

@@ -19,6 +19,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import MuiAlert from '@material-ui/lab/Alert';
 import auth from '../lib/auth'
 import { useStripe } from "@stripe/react-stripe-js";
+import moment from 'moment'
 
 const UserAuthForm = ({ locale, history }) => {
 
@@ -164,19 +165,19 @@ const UserAuthForm = ({ locale, history }) => {
       .then(res => {
         const { application_fee_paid, token, stripeId, applications, userId } = res.data
         const { benfica_application } = applications
-        const { submitted } = benfica_application
-        const fee_needed = application_fee_paid === 'unpaid'
+        const fee_needed = application_fee_paid === 'unpaid' && moment().isAfter(moment('04/14/2021'))
+        const toProfile = benfica_application?.submitted
 
-        console.log(snackbar_messages)
         auth.setToken(token)
 
         handleAfterRequestStates({
-          success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['7g'][locale].split('/')[fee_needed ? 0 : 1]}`
+          success: `${snackbar_messages['7a'][locale]} ${!toProfile ? snackbar_messages['7g'][locale].split('/')[fee_needed ? 0 : 1] : 
+        'Redirecting to profile...'}`
         })
 
         setTimeout(async () => {
 
-          if (application_fee_paid === 'unpaid') {
+          if (application_fee_paid === 'unpaid' && moment().isAfter(moment('04/14/2021'))) {
             let checkout = await axios.post('/korean-application-fee', {
               stripeId,
               email
@@ -191,20 +192,21 @@ const UserAuthForm = ({ locale, history }) => {
               handleAfterRequestStates({ error: snackbar_messages['7b'][locale] })
             }
           } else {
-            if (benfica_application && benfica_application.submitted) {
+            if (benfica_application && benfica_application.hasOwnProperty('submitted')) {
               history.push(`/user/${userId}`)
             } else {
               history.push('/application')
             }
-
           }
-
         }, 1000);
 
       })
-      .catch(err => handleAfterRequestStates({
-        error: snackbar_messages['7c'][locale]
-      }))
+      .catch(err => {
+        console.log(err)
+        handleAfterRequestStates({
+          error: snackbar_messages['7c'][locale]
+        })
+      })
   }
 
   function handleUserAuth(text) {
@@ -365,7 +367,7 @@ const UserAuthForm = ({ locale, history }) => {
                       width: '170px'
                     }}
                     type="text" />
-                    <input
+                  <input
                     onChange={(e) => handleFormChange(e)}
                     placeholder='Last Name'
                     name='player_last_name'
