@@ -18,12 +18,11 @@ import axios from 'axios'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import MuiAlert from '@material-ui/lab/Alert';
 import auth from '../lib/auth'
-import { useStripe } from "@stripe/react-stripe-js";
 import moment from 'moment'
 
 const UserAuthForm = ({ locale, history }) => {
 
-  const stripe = useStripe()
+
   const [forgottenPassword, setForgottenPassword] = useState(false)
   const [registrationOrLogin, setRegistrationOrLogin] = useState('login')
   const [isLoading, setIsLoading] = useState(false)
@@ -163,42 +162,27 @@ const UserAuthForm = ({ locale, history }) => {
     const { email, password } = registerDetails
     axios.post('/login', { email, password })
       .then(res => {
-        const { application_fee_paid, token, stripeId, applications, userId } = res.data
-        const { benfica_application } = applications
+        const { application_fee_paid, token, stripeId, userId } = res.data
         const fee_needed = application_fee_paid === 'unpaid' && moment().isAfter(moment('04/14/2021'))
-        const toProfile = benfica_application?.submitted
 
         auth.setToken(token)
 
+
         handleAfterRequestStates({
-          success: `${snackbar_messages['7a'][locale]} ${!toProfile ? snackbar_messages['7g'][locale].split('/')[fee_needed ? 0 : 1] : 
-        'Redirecting to profile...'}`
+          success: `${snackbar_messages['7a'][locale]} Redirecting to profile...`
         })
 
         setTimeout(async () => {
 
-          if (application_fee_paid === 'unpaid' && moment().isAfter(moment('04/14/2021'))) {
-            let checkout = await axios.post('/korean-application-fee', {
-              stripeId,
-              email
-            })
-            const session = await checkout.data
-
-            const result = await stripe.redirectToCheckout({
-              sessionId: session.id,
-            })
-
-            if (result.error) {
-              handleAfterRequestStates({ error: snackbar_messages['7b'][locale] })
-            }
-          } else {
-            if (benfica_application && benfica_application.hasOwnProperty('submitted')) {
-              history.push(`/user/${userId}`)
-            } else {
-              history.push('/application')
-            }
+          history.push({
+            pathname: `/user/${userId}`,
+            state: {
+            application_fee_paid,
+            stripeId,
+            fee_needed
           }
-        }, 1000);
+        })
+       } ,1000)
 
       })
       .catch(err => {
