@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { application, snackbar_messages } from './LanguageSkeleton'
+import { NationalityDropDown } from './Nationality'
 import PropTypes from 'prop-types';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -244,8 +245,9 @@ export default function ApplicationForm({ history, location, locale }) {
       address_line_2: '',
       city: '',
       postcode: '',
+      contact_number: '',
       residency_certificate: '',
-      passport: '',
+      able_provide_passport: false,
       nationality: '',
       country: '',
     },
@@ -296,6 +298,7 @@ export default function ApplicationForm({ history, location, locale }) {
     guardian_last_name,
     guardian_first_name,
     gender,
+    contact_number,
     dob,
     address_line_1,
     address_line_2,
@@ -305,7 +308,7 @@ export default function ApplicationForm({ history, location, locale }) {
     email,
     country,
     residency_certificate,
-    passport } = applicationDetails.personal_details
+    able_provide_passport } = applicationDetails.personal_details
   const {
     height,
     weight,
@@ -435,8 +438,6 @@ export default function ApplicationForm({ history, location, locale }) {
 
   useEffect(() => {
 
-    // handleApplicationSave('submit')
-
     const uA = navigator.userAgent;
     const vendor = navigator.vendor;
 
@@ -466,15 +467,18 @@ export default function ApplicationForm({ history, location, locale }) {
     const age = moment('2021-12-31').diff(dob, 'years')
     const group = age < 16 ? 16 : (age !== 18 && age < 19) ? age + 1 : 18
 
+    handleClose()
+
     axios.patch(`/users/${auth.getUserId()}`, {
       userId: auth.getUserId(),
       updates: {
         dob,
         applications: {
           benfica_application: {
-            ...(type && {
+            ...(type === 'submit' && {
               age_group: `Under ${group}s`,
-              submitted: true
+              submitted: true,
+              submission_date: moment()
             }),
             ...applicationDetails
           }
@@ -489,7 +493,6 @@ export default function ApplicationForm({ history, location, locale }) {
             emailContent: { contentCourse: `Benfica Camp: Under ${group}s` },
             locale: locale
           }).then((res) => {
-            handleClose()
             setMessage({ success: snackbar_messages['1a'][locale], info: res.info })
             setIsLoading(false)
           })
@@ -520,9 +523,7 @@ export default function ApplicationForm({ history, location, locale }) {
   }
 
   const handleNext = async () => {
-
     if (activeStep === 2) {
-
       setOpen(true)
     } else {
       scroll()
@@ -651,7 +652,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
   }
 
-  const handleResidencyDocumentUpload = (e, type) => {
+  const handleResidencyDocumentUpload = (e) => {
 
     const doc = e.target.files
 
@@ -662,9 +663,10 @@ export default function ApplicationForm({ history, location, locale }) {
 
     handleApplicationSave()
 
-    axios.post(`/korean-residency/${type}`, certificate,
+    axios.post(`/korean-residency`, certificate,
       { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
+        console.log('HELLOOO DOCU UPLOADED')
         getData()
         setMessage({ success: 'Document successfully uploaded.' })
         setIsLoading(false)
@@ -795,9 +797,8 @@ export default function ApplicationForm({ history, location, locale }) {
                 </p>
                 <p class="control is-expanded">
                   <input
-                    name='guardian_contact_no'
-                    value={applicationDetails.guardian_contact_no &&
-                      applicationDetails.guardian_contact_no}
+                    name='contact_number'
+                    value={contact_number}
                     class="input" type="tel" placeholder='123456789' />
                 </p>
               </div>
@@ -814,7 +815,7 @@ export default function ApplicationForm({ history, location, locale }) {
           fontWeight="fontWeightBold" m={0}>
           Player Details
         </Box>
-      </Typography>
+      </Typography>      
 
       <div class="field" style={{
         borderBottom: '1px #f1f1f1 dotted',
@@ -883,9 +884,8 @@ export default function ApplicationForm({ history, location, locale }) {
               </p>
               <p class="control is-expanded">
                 <input
-                  name='player_contact_no'
-                  value={applicationDetails.player_contact_no &&
-                    applicationDetails.player_contact_no}
+                  name='contact_number'
+                  value={contact_number}
                   class="input" type="tel" placeholder='123456789' />
               </p>
             </div>
@@ -1006,28 +1006,28 @@ export default function ApplicationForm({ history, location, locale }) {
 
         </div>
 
-        <div class="field-body">
+        <div class="field-body" >
 
-          <div className={classes.field} style={{ flex: 0.5 }}>
+          <div className={classes.field} style={{ flex: 0 }} >
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span> Nationality</label>
             </div>
-            <p class="control is-expanded">
-              <input value={nationality} name='nationality' class="input" type="text" placeholder="Korean" />
-            </p>
+            <div class="select">
+              <NationalityDropDown value={nationality} />
+            </div>
           </div>
 
 
-          <div className={classes.field}>
+          <div className={classes.field} >
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span>   {nationality.toLowerCase() === 'korean' ?
+              <label> <span style={{ color: 'red' }}>*</span>   {nationality.toLowerCase() === 'south korean' ?
                 'Resident Registration Certificate' : 'Foreigner Registration Certificate'}
               </label>
             </div>
             <div class="file has-name">
-              <label class="file-label"  style={{ flex: 1 }}>
+              <label class="file-label">
                 <input
-                  onChange={(e) => handleResidencyDocumentUpload(e, 'residency')}
+                  onChange={(e) => handleResidencyDocumentUpload(e)}
                   class="file-input"
                   type="file"
                   name='residency_certificate' />
@@ -1059,52 +1059,26 @@ export default function ApplicationForm({ history, location, locale }) {
               </label>
             </div>
           </div>
-
-          {(nationality && nationality.toLowerCase() !== 'korean') && <div className={classes.field}>
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> Passport
-              </label>
-            </div>
-            <div class="file has-name">
-              <label class="file-label" style={{ flex: 1 }}>
-                <input
-                  onChange={(e) => handleResidencyDocumentUpload(e, 'passport')}
-                  class="file-input"
-                  type="file"
-                  name='residency_certificate' />
-                <span class="file-cta">
-                  <span style={{ marginRight: '15px' }} class="file-icon">
-                    <CloudUploadSharpIcon
-                      style={{
-                        fontSize: '23px',
-                        transform: 'translate(-2px, -2px)'
-                      }}
-                    />
-                  </span>
-                  <span class="file-label">
-                    {application['4j'][locale]}
-                  </span>
-                </span>
-
-                <span
-                  onClick={() => window.open(passport, '_blank')}
-                  class="file-name" style={{ flex: 1 }}>
-                  {!passport ?
-                    'No file uploaded' :
-                    <Tooltip placement="bottom-start" title="Click to view uploaded document">
-                      <span> {passport} </span>
-                    </Tooltip>
-                  }
-                </span>
-
-              </label>
-            </div>
-          </div>}
-
-
-
-
         </div>
+
+
+        {(nationality && nationality.toLowerCase() !== 'south korean') && <div className="field-body">
+          <FormControlLabel
+            style={{ transform: 'translate(5px, 5px)', marginTop: '5px' }}
+            onClick={() => {
+              setApplicationDetails({
+                ...applicationDetails,
+                personal_details: {
+                  ...applicationDetails.personal_details,
+                  able_provide_passport: !able_provide_passport
+                }
+              })
+            }}
+            control={<Radio checked={able_provide_passport} />}
+            label='Please check if you are able to provide a copy of your passport, if required.' />
+
+        </div>}
+
 
 
 
@@ -1171,7 +1145,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
         </div>
 
-        <div className={classes.field} style={{ flex: 0.3 }}>
+        <div className={classes.field} style={{ flex: 0.45 }}>
           <div className={classes.label}>
             <label> Other Positions </label>
           </div>
@@ -1655,7 +1629,7 @@ export default function ApplicationForm({ history, location, locale }) {
       <Typography component='div' >
         <Box
           className={classes.title}
-          fontWeight="fontWeightBold" m={0}>
+          fontWeight="fontWeightRegular" pb={3} pt={3}>
           {application['1'][locale]}
         </Box>
       </Typography>
