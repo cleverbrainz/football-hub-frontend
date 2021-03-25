@@ -110,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
       width: '20%',
       position: 'fixed',
       left: '6%',
-      top: '55%',
+      top: '49%',
     },
   },
   listItems: {
@@ -194,26 +194,10 @@ const ApplicantProfile = ({ locale, match }) => {
       .then(res => {
         const { applications } = res.data[0]
         setUser(res.data[0])
-        console.log(applications.benfica_application)
         setApplication(applications.benfica_application)
-    
       })
-      
-      // console.log(document.querySelector('#about'))
-
   }, [])
 
-  // function getMiddleElement() {
-  //   const vHeight = window.innerHeight
-  //   const sections = document.querySelector('#about')
-
-  //   console.log(sections)
-  //   // sections.forEach(x => {
-  //   //   console.log(x)
-  //   // })
-
-
-  // }
 
   function titleCase(str) {
 
