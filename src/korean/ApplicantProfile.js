@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+import { Snackbar } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
+import { application, snackbar_messages } from './LanguageSkeleton'
 import auth from '../lib/auth'
 import axios from 'axios'
 import AdjustSharpIcon from '@material-ui/icons/AdjustSharp';
 import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
+import moment from 'moment'
+import { useStripe } from "@stripe/react-stripe-js";
 
 import {
   CircularProgress,
@@ -15,7 +20,8 @@ import {
   TableHead,
   TableRow,
   TableBody,
-  TableCell
+  TableCell,
+  Button
 } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
@@ -181,12 +187,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const ApplicantProfile = ({ locale, match }) => {
+const ApplicantProfile = ({ locale, match, history, history: { location: { state } } }) => {
 
+  const stripe = useStripe()
   const classes = useStyles()
   const [user, setUser] = useState()
   const [application, setApplication] = useState()
   const [currentScrollSection, setCurrentScrollSection] = useState('about')
+  const [open, setOpen] = useState()
+  const [message, setMessage] = useState()
+
 
   useEffect(() => {
 
@@ -194,13 +204,59 @@ const ApplicantProfile = ({ locale, match }) => {
       .then(res => {
         const { applications } = res.data[0]
         setUser(res.data[0])
-        setApplication(applications.benfica_application)
+
+        if (applications.benfica_application) {
+          setApplication(applications.benfica_application)
+        }
+
       })
   }, [])
 
 
-  function titleCase(str) {
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
 
+
+  const handleAfterRequestStates = (message) => {
+    setMessage(message)
+    setOpen(true)
+  }
+
+  const closeSnackBar = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setMessage();
+  };
+
+  async function handleRedirect() {
+
+    const { fee_needed, stripeId } = state
+
+    handleAfterRequestStates({
+      success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['7g'][locale].split('/')[fee_needed ? 0 : 1]}`
+    })
+
+    // fee needed = unpaid application + date is after 14.04.21
+    if (fee_needed) {
+      let checkout = await axios.post('/korean-application-fee', {
+        stripeId,
+        email: user.email
+      })
+      const session = await checkout.data
+
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      })
+
+      if (result.error) {
+        handleAfterRequestStates({ error: snackbar_messages['7b'][locale] })
+      }
+    } else {
+      history.push('/application')
+    }
+  }
+
+  function titleCase(str) {
 
     var splitStr = str.toLowerCase().split(' ');
     for (var i = 0; i < splitStr.length; i++) {
@@ -221,27 +277,29 @@ const ApplicantProfile = ({ locale, match }) => {
 
     <div className={classes.root}>
 
-      <Paper id='nav' elevation={3} className={classes.menu}>
-        <Typography component='div' >
-          <Box
-            fontSize={17}
-            fontWeight="fontWeightBold" mb={3}>
-            Sections
+      {(application && application.hasOwnProperty('submitted')) && (
+        <Paper id='nav' elevation={3} className={classes.menu}>
+          <Typography component='div' >
+            <Box
+              fontSize={17}
+              fontWeight="fontWeightBold" mb={3}>
+              Sections
           </Box>
-        </Typography>
+          </Typography>
 
-        <ul>
+          <ul>
 
-          {nav.map((item, i) => {
-            return <li
-              className={classes.listItems}
-              style={{ fontWeight: currentScrollSection === item ? 'bold' : 'initial' }}
-              onClick={() => scrollView(item)}> {titleCase(item.replace(/-/g, i === 2 ? ' ' : ' & '))} </li>
-          })}
-        </ul>
-      </Paper>
+            {nav.map((item, i) => {
+              return <li
+                className={classes.listItems}
+                style={{ fontWeight: currentScrollSection === item ? 'bold' : 'initial' }}
+                onClick={() => scrollView(item)}> {titleCase(item.replace(/-/g, i === 2 ? ' ' : ' & '))} </li>
+            })}
+          </ul>
+        </Paper>
+      )}
 
-      {(user && application) ? (
+      {user ? (
         <div className={classes.container}>
 
           <Paper elevation={3} className={classes.profileHeader}>
@@ -260,61 +318,70 @@ const ApplicantProfile = ({ locale, match }) => {
                 style={{ borderBottom: '1px solid #f1f1f1' }}>
                 {user.name}
               </Box>
-              <Box
-                fontSize={13}
-                fontWeight="fontWeightRegular" mb={1}
-                style={{ color: 'orange', letterSpacing: '5px' }}>
-                CURRENTLY
-              </Box>
-              <Box
-                fontSize={14}
-                fontWeight="fontWeightRegular" mb={0.5}>
-                {titleCase(application.age_group)}
-              </Box>
-              <Box
-                fontSize={14}
-                fontWeight="fontWeightRegular" mb={0.5}>
-                {titleCase(application.football_history.current_club.club)}
-              </Box>
-              <Box
-                fontSize={14}
-                fontWeight="fontWeightRegular">
-                {titleCase(application.player_attributes.position)}
-              </Box>
+
+              {(application && application.hasOwnProperty('submitted')) && (
+                <>
+                  <Box
+                    fontSize={13}
+                    fontWeight="fontWeightRegular" mb={1}
+                    style={{ color: 'orange', letterSpacing: '5px' }}>
+                    CURRENTLY
+                  </Box>
+                  <Box
+                    fontSize={14}
+                    fontWeight="fontWeightRegular" mb={0.5}>
+                    {titleCase(application.age_group)}
+                  </Box>
+                  <Box
+                    fontSize={14}
+                    fontWeight="fontWeightRegular" mb={0.5}>
+                    {titleCase(application.football_history.current_club.club)}
+                  </Box>
+                  <Box
+                    fontSize={14}
+                    fontWeight="fontWeightRegular">
+                    {titleCase(application.player_attributes.position)}
+                  </Box>
+
+                </>
+              )}
 
             </Typography>
           </Paper>
 
-
-          <Paper id='about' elevation={3} className={`${classes.otherSections} nav-sections`} >
-            <Typography component='div' >
-              <Box
-                fontSize={20}
-                fontWeight="fontWeightBold" mb={3}>
-                About
+          {(application && application.hasOwnProperty('submitted')) && (
+            <Paper id='about' elevation={3} className={`${classes.otherSections} nav-sections`} >
+              <Typography component='div' >
+                <Box
+                  fontSize={20}
+                  fontWeight="fontWeightBold" mb={3}>
+                  About
               </Box>
 
-              <Box
-                id='truncate-text'
-                className='line-clamp'
-                fontSize={14}
-                fontWeight="fontWeightRegular" mb={1}>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nisi aliquid in similique fugiat iure exercitationem quas, dicta
-                qui non? Aliquid laboriosam, vel temporibus ipsam at voluptatum laborum illum iste molestias. Ipsum excepturi quasi eius modi,
-                ducimus dolores soluta ipsam laborum, officia obcaecati laboriosam, impedit ratione numquam. Eum ab impedit laboriosam facere
-                deserunt error, minus ratione non consequuntur voluptatibus doloremque eaque iure eius blanditiis consectetur nihil inventore
-                vel maiores aspernatur hic. Iusto ab inventore nihil consequatur maiores dicta. Illo inventore magnam corrupti aliquid veritatis?
-                Cupiditate deserunt dicta, excepturi necessitatibus laudantium alias beatae quo ea aspernatur optio quidem reprehenderit architecto
-                 autem tenetur?
+                <Box
+                  id='truncate-text'
+                  className='line-clamp'
+                  fontSize={14}
+                  fontWeight="fontWeightRegular" mb={1}>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nisi aliquid in similique fugiat iure exercitationem quas, dicta
+                  qui non? Aliquid laboriosam, vel temporibus ipsam at voluptatum laborum illum iste molestias. Ipsum excepturi quasi eius modi,
+                  ducimus dolores soluta ipsam laborum, officia obcaecati laboriosam, impedit ratione numquam. Eum ab impedit laboriosam facere
+                  deserunt error, minus ratione non consequuntur voluptatibus doloremque eaque iure eius blanditiis consectetur nihil inventore
+                  vel maiores aspernatur hic. Iusto ab inventore nihil consequatur maiores dicta. Illo inventore magnam corrupti aliquid veritatis?
+                  Cupiditate deserunt dicta, excepturi necessitatibus laudantium alias beatae quo ea aspernatur optio quidem reprehenderit architecto
+                   autem tenetur?
               </Box>
-            </Typography>
+              </Typography>
 
-            <p className={classes.seeMore} onClick={(e) => {
-              document.querySelector('#truncate-text').classList.remove('line-clamp')
-              e.target.style.display = 'none'
-            }}> see more </p>
+              <p className={classes.seeMore} onClick={(e) => {
+                document.querySelector('#truncate-text').classList.remove('line-clamp')
+                e.target.style.display = 'none'
+              }}> see more </p>
 
-          </Paper>
+            </Paper>
+          )}
+
+
           <Paper id='applications' elevation={3} className={`${classes.otherSections} nav-sections`}>
             <Typography component='div' >
               <Box
@@ -330,7 +397,8 @@ const ApplicantProfile = ({ locale, match }) => {
                   <TableRow>
                     <TableCell>ID </TableCell>
                     <TableCell align="right"> Name</TableCell>
-                    <TableCell align="right"> Submitted </TableCell>
+                    {(application && application.hasOwnProperty('submitted')) &&
+                      <TableCell align="right"> Submitted </TableCell>}
                     <TableCell align="right">Status</TableCell>
                   </TableRow>
                 </TableHead>
@@ -338,7 +406,8 @@ const ApplicantProfile = ({ locale, match }) => {
                   <TableRow>
                     <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
                     <TableCell align="right"> Indulge Benfica Camp </TableCell>
-                    <TableCell align="right"> 01/01/2021 </TableCell>
+                    {(application && application.hasOwnProperty('submitted')) &&
+                      <TableCell align="right"> 01/01/2021 </TableCell>}
                     <TableCell align="right" style={{ color: 'orange' }}> Pending </TableCell>
                   </TableRow>
                 </TableBody>
@@ -346,128 +415,153 @@ const ApplicantProfile = ({ locale, match }) => {
             </TableContainer>
           </Paper>
 
-          <Paper id='football-history' elevation={3} className={`${classes.otherSections} nav-sections`}>
-            <Typography component='div' >
-              <Box
-                fontSize={20}
-                fontWeight="fontWeightBold" mb={3}>
-                Football History
+          {!application?.hasOwnProperty('submitted') && (
+            <Button
+              variant='outlined'
+              color='primary'
+              onClick={() => handleRedirect()}>
+              {application ? 'Continue application' : 'Start application'}
+            </Button>
+          )}
+
+          {(application && application.hasOwnProperty('submitted')) && (
+            <>
+              <Paper id='football-history' elevation={3} className={`${classes.otherSections} nav-sections`}>
+                <Typography component='div' >
+                  <Box
+                    fontSize={20}
+                    fontWeight="fontWeightBold" mb={3}>
+                    Football History
               </Box>
-            </Typography>
+                </Typography>
 
-            {application.football_history.previous_clubs.map((el, i) => {
-              return (
+                {application.football_history.previous_clubs.map((el, i) => {
+                  return (
 
-                <div className={classes.clubRow}>
+                    <div className={classes.clubRow}>
 
-                  <AdjustSharpIcon style={{ zIndex: 100, color: 'orange', }} />
-                  {i !== application.football_history.previous_clubs.length - 1 && <div className={classes.connectorLine}></div>}
+                      <AdjustSharpIcon style={{ zIndex: 100, color: 'orange', }} />
+                      {i !== application.football_history.previous_clubs.length - 1 && <div className={classes.connectorLine}></div>}
 
-                  <Typography
-                    style={{
-                      position: 'relative',
-                      width: '90%',
-                      padding: '20px 0',
-                      borderBottom: i !== application.football_history.previous_clubs.length - 1 ? '1px solid #f1f1f1' : ''
-                    }}
-                    component='div'>
+                      <Typography
+                        style={{
+                          position: 'relative',
+                          width: '90%',
+                          padding: '20px 0',
+                          borderBottom: i !== application.football_history.previous_clubs.length - 1 ? '1px solid #f1f1f1' : ''
+                        }}
+                        component='div'>
 
+                        <Box
+                          fontSize={20}
+                          fontWeight="fontWeightRegular" mb={1}>
+                          {titleCase(el.club)}
+                        </Box>
+                        <Box
+                          style={{ opacity: '0.75' }}
+                          fontSize={14}
+                          fontWeight="fontWeightRegular" mb={1}>
+                          <span className={classes.chip}> {titleCase(el.age_group)} </span> <span className={classes.chip}> {titleCase(el.league)} </span>
+
+                          {el.k1_affiliated && <span className={classes.chip}> <CheckCircleSharpIcon style={{ color: 'green', fontSize: '15px', transform: 'translateY(3px)' }} />  K1 Affiliated </span>}
+                        </Box>
+                      </Typography>
+                    </div>
+
+                  )
+                })}
+
+              </Paper>
+
+              <div id='skills-awards' className={`${classes.awardsSectionContainer} nav-sections`}>
+                <Paper className={classes.awardSections} elevation={3}>
+                  <Typography component='div' >
                     <Box
                       fontSize={20}
-                      fontWeight="fontWeightRegular" mb={1}>
-                      {titleCase(el.club)}
-                    </Box>
-                    <Box
-                      style={{ opacity: '0.75' }}
-                      fontSize={14}
-                      fontWeight="fontWeightRegular" mb={1}>
-                      <span className={classes.chip}> {titleCase(el.age_group)} </span> <span className={classes.chip}> {titleCase(el.league)} </span>
-
-                      {el.k1_affiliated && <span className={classes.chip}> <CheckCircleSharpIcon style={{ color: 'green', fontSize: '15px', transform: 'translateY(3px)' }} />  K1 Affiliated </span>}
-                    </Box>
+                      fontWeight="fontWeightBold" mb={3}>
+                      Skills
+              </Box>
                   </Typography>
-                </div>
 
-              )
-            })}
-
-          </Paper>
-
-          <div id='skills-awards' className={`${classes.awardsSectionContainer} nav-sections`}>
-            <Paper className={classes.awardSections} elevation={3}>
-              <Typography component='div' >
-                <Box
-                  fontSize={20}
-                  fontWeight="fontWeightBold" mb={3}>
-                  Skills
+                  <ul>
+                    <li className={classes.skillItems}>Dribbling in tight spaces</li>
+                    <li className={classes.skillItems}>Shooting with accuracy</li>
+                    <li className={classes.skillItems}>Close ball control </li>
+                    <li className={classes.skillItems}>Passing to open up defence</li>
+                    <li className={classes.skillItems}>Speed to get up and down the wing</li>
+                    <li className={classes.skillItems}>Overall finesse. Match winner</li>
+                  </ul>
+                </Paper>
+                <Paper className={classes.awardSections} elevation={3}>
+                  <Typography component='div' >
+                    <Box
+                      fontSize={20}
+                      fontWeight="fontWeightBold" mb={3}>
+                      Acheivements
               </Box>
-              </Typography>
+                  </Typography>
 
-              <ul>
-                <li className={classes.skillItems}>Dribbling in tight spaces</li>
-                <li className={classes.skillItems}>Shooting with accuracy</li>
-                <li className={classes.skillItems}>Close ball control </li>
-                <li className={classes.skillItems}>Passing to open up defence</li>
-                <li className={classes.skillItems}>Speed to get up and down the wing</li>
-                <li className={classes.skillItems}>Overall finesse. Match winner</li>
-              </ul>
-            </Paper>
-            <Paper className={classes.awardSections} elevation={3}>
-              <Typography component='div' >
-                <Box
-                  fontSize={20}
-                  fontWeight="fontWeightBold" mb={3}>
-                  Acheivements
-              </Box>
-              </Typography>
-
-              <ul>
-                <li className={classes.awardItems}>
-                  <Box
-                    fontSize={16}
-                    fontWeight="fontWeightRegular" mb={-0.5}>
-                    KFA Award
+                  <ul>
+                    <li className={classes.awardItems}>
+                      <Box
+                        fontSize={16}
+                        fontWeight="fontWeightRegular" mb={-0.5}>
+                        KFA Award
                 </Box>
-                  <small style={{ fontSize: '12.5px', opacity: '0.75' }}> 2021 </small>
-                </li>
-                <li className={classes.awardItems}>
-                  <Box
-                    fontSize={16}
-                    fontWeight="fontWeightRegular" mb={-0.5}>
-                    Regional FA Award
+                      <small style={{ fontSize: '12.5px', opacity: '0.75' }}> 2021 </small>
+                    </li>
+                    <li className={classes.awardItems}>
+                      <Box
+                        fontSize={16}
+                        fontWeight="fontWeightRegular" mb={-0.5}>
+                        Regional FA Award
                 </Box>
-                  <small style={{ fontSize: '12.5px', opacity: '0.75' }}> 2020 </small>
-                </li>
-                <li className={classes.awardItems}>
-                  <Box
-                    fontSize={16}
-                    fontWeight="fontWeightRegular" mb={-0.5}>
-                    Foundation Award
+                      <small style={{ fontSize: '12.5px', opacity: '0.75' }}> 2020 </small>
+                    </li>
+                    <li className={classes.awardItems}>
+                      <Box
+                        fontSize={16}
+                        fontWeight="fontWeightRegular" mb={-0.5}>
+                        Foundation Award
                 </Box>
-                  <small style={{ fontSize: '12.5px', opacity: '0.75' }}> 2019 </small>
-                </li>
-                <li className={classes.awardItems}>
-                  <Box
-                    fontSize={16}
-                    fontWeight="fontWeightRegular" mb={-0.5}>
-                    Global Best Player Award
+                      <small style={{ fontSize: '12.5px', opacity: '0.75' }}> 2019 </small>
+                    </li>
+                    <li className={classes.awardItems}>
+                      <Box
+                        fontSize={16}
+                        fontWeight="fontWeightRegular" mb={-0.5}>
+                        Global Best Player Award
                 </Box>
-                  <small style={{ fontSize: '12.5px', opacity: '0.75' }}> 2019 </small>
-                </li>
-              </ul>
+                      <small style={{ fontSize: '12.5px', opacity: '0.75' }}> 2019 </small>
+                    </li>
+                  </ul>
 
-            </Paper>
-          </div>
-
-
-
+                </Paper>
+              </div>
+            </>
+          )}
         </div>
       ) : <CircularProgress size={65} className={classes.progress} />}
 
 
 
+      {message && <Snackbar
+        open={open}
+        autoHideDuration={5000}
+        onClose={closeSnackBar}>
+        <Alert onClose={closeSnackBar} severity={message.success ? 'success' : 'error'}>
+          {message.success ?
+            message.success :
+            message.error ?
+              message.error : (
+                Object.keys(message).map(x => <li> {message[x]} </li>)
+              )}
+        </Alert>
+      </Snackbar>}
 
     </div>
+
+
   );
 };
 
