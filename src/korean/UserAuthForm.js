@@ -19,6 +19,8 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import MuiAlert from '@material-ui/lab/Alert';
 import auth from '../lib/auth'
 import moment from 'moment'
+import { firebaseApp } from '../lib/firebase';
+import * as firebase from "firebase";
 
 const UserAuthForm = ({ locale, history }) => {
 
@@ -37,6 +39,13 @@ const UserAuthForm = ({ locale, history }) => {
   })
   const [message, setMessage] = useState(null)
   const [open, setOpen] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [phoneVerifyRequired, setPhoneVerifyRequired] = useState(false)
+  const [hints, setHints] = useState([])
+  const [verificationCode, setVerificationCode] = useState('')
+  const [verificationId, setVerificationId] = useState(null)
+  const [resolver, setResolver] = useState({})
+  const [captchad, setCaptchad] = useState(false)
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -129,6 +138,10 @@ const UserAuthForm = ({ locale, history }) => {
 
   }));
 
+  useEffect(() => {
+    console.log('statechange')
+  },[captchad, setCaptchad])
+
 
   function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -156,6 +169,116 @@ const UserAuthForm = ({ locale, history }) => {
     setMessage(message)
     setOpen(true)
     setIsLoading(false)
+  }
+
+  const handleRecaptcha = () => {
+    var cred = firebase.auth.PhoneAuthProvider.credential(
+      verificationId, verificationCode);
+    console.log(cred)
+    var multiFactorAssertion =
+      firebase.auth.PhoneMultiFactorGenerator.assertion(cred);
+    // Complete sign-in.
+
+    resolver.resolveSignIn(multiFactorAssertion)
+      .then(function (data) {
+        // User successfully signed in with the second factor phone number.
+        console.log(data)
+        axios.get(`/users/${data.user.uid}`)
+          .then(res => {
+            // console.log(res.data)
+            const { category } = res.data[0]
+            localStorage.setItem('category', category)
+            if (category === 'player' || category === 'parent') {
+              history.push(`/user/${auth.getUserId()}`)
+            } else if (category === 'company') {
+              history.push('/tester')
+            } else {
+              history.push('/testercoach')
+            }
+          })
+      }
+      )
+
+  }
+
+  const frontendLogin = () => {
+    
+    const { email, password } = registerDetails
+    firebaseApp.auth().signInWithEmailAndPassword(email, password)
+      .then(data => {
+        // if (data.user.emailVerified) {
+        axios.get(`/users/${data.user.uid}`)
+          .then(res => {
+            console.log(res.data)
+            const { category } = res.data[0]
+            localStorage.setItem('category', category)
+            if (category === 'player' || category === 'parent') {
+              history.push(`/user/${auth.getUserId()}`)
+            } else if (category === 'company') {
+              history.push('/tester')
+            } else {
+              history.push('/testercoach')
+            }
+          })
+        //   } else {
+        //     firebaseApp.auth().signOut()
+        //     setLoginError({ message: 'Email has not yet been verifed. Please check your emails for a verification link.' })
+        //   }
+      })
+      .catch(error => {
+        console.log(error)
+        if (error.code === 'auth/multi-factor-auth-required') {
+          setResolver(error.resolver)
+          setHints(error.resolver.hints[0])
+          setPhoneVerifyRequired(true)
+          // Ask user which second factor to use.
+          if (error.resolver.hints[selectedIndex].factorId ===
+            firebase.auth.PhoneMultiFactorGenerator.FACTOR_ID) {
+            var phoneInfoOptions = {
+              multiFactorHint: error.resolver.hints[selectedIndex],
+              session: error.resolver.session
+            };
+            var appAuth = firebaseApp.auth()
+            appAuth.languageCode = locale
+            var phoneAuthProvider = new firebase.auth.PhoneAuthProvider(appAuth);
+            var recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+              'recaptcha-container',
+              {
+                'size': 'normal',
+                'callback': function (response) {
+                  // reCAPTCHA solved, you can proceed with phoneAuthProvider.verifyPhoneNumber(...).
+                  // ...
+                  // handleRecaptcha()
+                  console.log('captcha!')
+                  setCaptchad(true)
+                  setIsLoading(false)
+
+                },
+                'expired-callback': function () {
+                  // Response expired. Ask user to solve reCAPTCHA again.
+                  // ...
+                  // console.log('uh oh')
+                },
+                'hl': locale
+              },
+              firebaseApp);
+            // Send SMS verification code
+            return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
+              .then(function (verificationId) {
+
+                setVerificationId(verificationId)
+
+                // // Ask user for the SMS verification code.
+                // console.log('sdfdsg verificationCode2', verificationCode2)
+
+              }).catch(err => console.log(err))
+          } else {
+            // Unsupported second factor.
+          }
+        } else {
+          console.log(error)
+        }
+      })
   }
 
   function loginUser() {
@@ -199,7 +322,7 @@ const UserAuthForm = ({ locale, history }) => {
     console.log(text)
     switch (text) {
 
-      case 'Reset Password':
+      case 'RESET PASSWORD':
       case '비밀번호 재설정':
         axios.post('/resetpassword', { email })
           .then(res => handleAfterRequestStates({
@@ -211,13 +334,14 @@ const UserAuthForm = ({ locale, history }) => {
 
         break;
 
-      case 'Sign In':
+      case 'SIGN IN':
       case '로그인':
         console.log(email, password)
-        loginUser()
+        // loginUser()
+        frontendLogin()
         break;
 
-      case 'Create Account':
+      case 'CREATE ACCOUNT':
       case '계정 등록':
         if (!checkedTermsConditions) {
           handleAfterRequestStates({
@@ -236,6 +360,12 @@ const UserAuthForm = ({ locale, history }) => {
           .catch(err => handleAfterRequestStates(err.response.data))
 
         break;
+
+      case 'VERIFY CODE':
+            console.log(email, password)
+            // loginUser()
+            handleRecaptcha()
+            break;
 
       default:
         break;
@@ -366,7 +496,7 @@ const UserAuthForm = ({ locale, history }) => {
               </div>
             </>
           )}
-
+          {!phoneVerifyRequired &&
           <div class="field" className={classes.inputContainer}>
             <p
               style={{ alignSelf: 'flex-end' }}
@@ -385,8 +515,9 @@ const UserAuthForm = ({ locale, history }) => {
                 type="email" />
             </p>
           </div>
+          }
 
-          {(!forgottenPassword &&
+          {((!forgottenPassword && !phoneVerifyRequired) &&
             <>
               <div class="field" className={classes.inputContainer}>
                 <p
@@ -446,16 +577,40 @@ const UserAuthForm = ({ locale, history }) => {
 
             </>
           )}
+          { phoneVerifyRequired &&
+          <div>
+            <div id="recaptcha-container"></div>
+            <div class="field" className={classes.inputContainer}>
+                    <p
+                      style={{ alignSelf: 'flex-end' }}
+                      class="control" >
+                      <span
+                        style={{ color: 'red' }}> *  </span>  {authorization['4g'][locale]}
+                      <input
+                        onChange={(e) => setVerificationCode(e.target.value)}
+                        name='verificationCode'
+                        class='input'
+                        style={{
+                          marginLeft: 10,
+                          transform: 'translateY(2px)',
+                          width: '350px'
+                        }}
+                        type="text" />
+                    </p>
+                  </div>
+
+          </div>
+        }
 
           <div className={classes.button}>
             <Button
               variant="outlined"
               color="primary"
               disabled={isLoading}
-              onClick={(e) => handleUserAuth(e.target.innerHTML)}
+              onClick={(e) => handleUserAuth(e.target.innerText)}
             // endIcon={<ArrowForwardIcon />}
             >
-              {!forgottenPassword ? registrationOrLogin === 'login' ? authorization['5b'][locale] :
+              { phoneVerifyRequired ? 'Verify Code' : !forgottenPassword ? registrationOrLogin === 'login' ? authorization['5b'][locale] :
                 authorization['5a'][locale] : authorization['5c'][locale]}
               {isLoading && <CircularProgress size={30} className={classes.progress} />}
             </Button>

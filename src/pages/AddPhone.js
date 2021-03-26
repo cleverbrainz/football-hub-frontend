@@ -17,19 +17,23 @@ import { AuthContext } from "../lib/context";
 import { firebaseApp } from '../lib/firebase';
 import {
   MenuItem,
-  Select
+  Select,
+  Paper
 } from '@material-ui/core'
 import * as firebase from "firebase";
 
-const AddPhone = ({location, history}) => {
+const AddPhone = ({location, history, locale}) => {
 
   const useStyles = makeStyles((theme) => ({
     container: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: location.pathname === '/admin/login' ? 'center' : 'space-evenly',
+      justifyContent: location.pathname === '/admin/login' ? 'center' : 'center',
       height: `${window.innerHeight - 80}px`,
+      width: '85vw', 
+      margin: '0 auto',
+      textAlign: 'center'
     },
     form: {
       width: '30%',
@@ -44,25 +48,35 @@ const AddPhone = ({location, history}) => {
     },
     progress: {
       position: 'absolute'
+    },
+    paper: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-evenly',
+      alignItems: 'center',
+      height: '60%',
+      width: '90%'
     }
   }));
 
 
   const { user, setUserData, userData } = useContext(AuthContext);
+
+  console.log(user.user.multiFactor.enrolledFactors[0].phoneNumber)
   const [isLoading, setIsLoading] = useState(false)
   const [loginFields, setLoginFields] = useState({
-    phoneNumber: '',
+    phoneNumber: user.user.multiFactor.enrolledFactors[0].phoneNumber,
     verificationCode: '',
     verificationId: ''
   })
+  const [verified, setVerified] = useState(user.user.multiFactor.enrolledFactors[0].factorId === 'phone' ? true : false)
   const [loginError, setLoginError] = useState('')
   const classes = useStyles();
   const [codeSent, setCodeSent] = useState(false)
   const appAuth = firebaseApp.auth()
   const currentUser = appAuth.currentUser
-  const [lang, setLang] = useState('en')
   
-  appAuth.languageCode = lang
+  appAuth.languageCode = locale
 
 
 
@@ -98,7 +112,7 @@ const AddPhone = ({location, history}) => {
                   // ...
                   // console.log('uh oh')
                 },
-                'hl': lang
+                'hl': locale
               },
               firebaseApp);
         const phoneInfoOptions = {
@@ -141,56 +155,70 @@ function confirmVerificationCode(e) {
 
 
 
-
+  if (!user.user) return null
   return (
     <div className={classes.container}>
+      <Paper elevation={3} className={classes.paper}>
               <Typography variant='h4'> Verify Phone Number </Typography>
+              <Typography variant='p'> To use Multi Factor Authentication we need to verify your phone below.{<br/>}
+              Please enter the phone number you want to use and you will be sent a verification code </Typography>
+              
               <div id="recaptcha-container"></div>
-              <Select value={lang} style={{ fontSize: '14px' }} onChange={(event) => {
-              setLang(event.target.value)
+              {/* <Select value={locale} style={{ fontSize: '14px' }} onChange={(event) => {
+              // setLang(event.target.value)
             }}>
               
               <MenuItem value={'en'}>English</MenuItem>
               <MenuItem value={'ko'}>Korean</MenuItem>
-            </Select>
+            </Select> */}
               <form
                 autoComplete='off'
                 onChange={(e) => handleFormChange(e)}
                 onSubmit={!codeSent ? (e) => sendVerificationCode(e) : (e) => confirmVerificationCode(e)}
                 className={classes.form}>
-                <FormControl variant="outlined">
+               {!codeSent ? <FormControl variant="outlined">
                   <InputLabel htmlFor="component-outlined"> Phone Number </InputLabel>
                   <OutlinedInput
                     // error={emailErrors.some(code => code === loginError.code) ? true : false}
                     type='text'
                     name='phoneNumber' id="component-outlined" label='Email'
+                    value={loginFields.phoneNumber}
+                    disabled={verified}
                   />
                 </FormControl>
-
+:
                 <FormControl variant="outlined">
                   <InputLabel htmlFor="outlined-verification-code">Verification Code</InputLabel>
                   <OutlinedInput
                     id="outlined-verification-code"
                     name='verificationCode'
                     labelWidth={70}
+                    value={loginFields.verificationCode}
                   />
                 </FormControl>
+}
 
                 {/* {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>} */}
 
-                <Button disabled={isLoading}
+                <Button disabled={isLoading || verified}
                   className={classes.button} type='submit'
-                  variant="contained" color="primary">
-                  {!codeSent ? 'Send Code' : 'Verify Code'}
+                  variant='outlined'
+              color='primary'>
+                { !verified ?
+                  !codeSent ? 'Send Code' : 'Verify Code' :
+                  'Verified'
+                }
+
         {isLoading && <CircularProgress size={30} className={classes.progress} />}
                 </Button>
                 {/* {loginError && <Typography>{loginError}</Typography>} */}
-                {location.pathname !== '/admin/login' &&
-                  <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
+                {/* {location.pathname !== '/admin/login' && */}
+                {/* <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>} */}
 
               </form>
 
               {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
+              </Paper>
             </div>
   )
 }

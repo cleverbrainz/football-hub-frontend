@@ -18,6 +18,8 @@ import ApplicationDashboard from './ApplicationDashboard';
 import MarketingDelta from './MarketingDelta';
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import AddPhone from '../pages/AddPhone';
+import AuthRouter from '../lib/PrivateRoute'
 
 
 
@@ -39,16 +41,26 @@ const RouteContainer = (props) => {
 
         <Route exact path="/success=true" component={ApplicationProcessFlow} />
 
-        <Route exact path="/user/:id"
-          render={(props) => (
+        <AuthRouter exact path="/user/:id"
+          locale={locale}
+          component={(props) => (
             <ApplicantProfile
               {...props}
               locale={locale} />
           )} />
 
+        <AuthRouter exact path="/user/:id/two-factor"
+          locale={locale}
+          component={(props) => (
+            <AddPhone
+              {...props}
+              locale={locale} />
+          )} />
 
-        <Route exact path="/application"
-          render={(props) => (
+
+        <AuthRouter exact path="/application"
+          locale={locale}
+          component={(props) => (
             <ApplicationForm
               {...props}
               locale={locale} />
@@ -68,12 +80,18 @@ const RouteContainer = (props) => {
               locale={locale} />
           )} />
 
-        <Route exact path="/dashboard" render={(props) => (
-          <ApplicationDashboard
-            {...props}
-            locale={locale}
-          />
+        <AuthRouter exact path="/dashboard" 
+          locale={locale}
+          component={(props) => (
+            <ApplicationDashboard
+              {...props}
+              locale={locale}
+            />
         )} />
+
+        
+
+        
 
 
       </Switch>

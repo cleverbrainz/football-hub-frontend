@@ -30,17 +30,15 @@ export default function Login({ history, location }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [phoneVerifyRequired, setPhoneVerifyRequired] = useState(false)
   const [hints, setHints] = useState([])
-  const [verificationCode2, setVerificationCode2] = useState('')
+  const [verificationCode, setVerificationCode] = useState('')
   const [resolver, setResolver] = useState({})
-  let verificationId
   let cred
   let multiFactorAssertion
-  let verificationCode = 'yo'
   const [lang, setLang] = useState('en')
 
   useEffect(() => {
     console.log("verificationCode2 updated");
-  }, [verificationCode2])
+  }, [verificationCode])
 
 
   const useStyles = makeStyles((theme) => ({
@@ -74,7 +72,7 @@ export default function Login({ history, location }) {
     password: ''
   })
   const [showPassword, setShowPassword] = useState(false)
-  const [verificationId10, setVerificationId10] = useState(null)
+  const [verificationId, setVerificationId] = useState(null)
   const classes = useStyles();
   const emailErrors = ['auth/user-not-found', 'auth/invalid-email']
   const passwordErrors = ['auth/wrong-password',]
@@ -97,7 +95,7 @@ export default function Login({ history, location }) {
   const handleRecaptcha = (e) => {
     e.preventDefault()
     var cred = firebase.auth.PhoneAuthProvider.credential(
-      verificationId10, verificationCode2);
+      verificationId, verificationCode);
     console.log(cred)
     var multiFactorAssertion =
       firebase.auth.PhoneMultiFactorGenerator.assertion(cred);
@@ -189,7 +187,7 @@ export default function Login({ history, location }) {
             return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
               .then(function (verificationId) {
 
-                setVerificationId10(verificationId)
+                setVerificationId(verificationId)
 
                 // // Ask user for the SMS verification code.
                 // console.log('sdfdsg verificationCode2', verificationCode2)
@@ -343,7 +341,7 @@ export default function Login({ history, location }) {
                 autoComplete='off'
                 onChange={(e) => {
                   // console.log(verificationCode2)
-                  setVerificationCode2(e.target.value)
+                  setVerificationCode(e.target.value)
                 }}
                 onSubmit={(e) => handleRecaptcha(e)}
                 className={classes.form}>
