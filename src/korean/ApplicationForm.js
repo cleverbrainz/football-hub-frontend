@@ -1720,7 +1720,7 @@ export default function ApplicationForm({ history, location, locale }) {
           <Button variant='outlined' onClick={() => {
             handleApplicationSave('submit')
             setTimeout(() => {
-              history.push('/success=true')
+              history.push(`/user/${auth.getUserId()}`)
             }, (3000));
           }} color="primary" autoFocus>
             Submit

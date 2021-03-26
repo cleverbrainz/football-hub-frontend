@@ -8,7 +8,6 @@ import {
 // import Marketing from './Marketing'
 import ApplicationForm from './ApplicationForm'
 import SwitchLanguageFab from './SwitchLanguageFab'
-import ApplicationProcessFlow from './ApplicationProcessFlow'
 import HomeNav from '../components/Navbars/HomeNav'
 import UserAuthForm from './UserAuthForm'
 import ApplicantProfile from './ApplicantProfile'

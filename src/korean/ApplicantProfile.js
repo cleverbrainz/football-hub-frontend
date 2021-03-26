@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100%',
     paddingTop: '110px',
+    paddingBottom: '50px',
     position: 'relative',
   },
   progress: {
@@ -116,7 +117,18 @@ const useStyles = makeStyles((theme) => ({
       width: '20%',
       position: 'fixed',
       left: '6%',
-      top: '49%',
+      top: '52%',
+    },
+  },
+  settings: {
+    display: 'none',
+    [theme.breakpoints.up('md')]: {
+      display: 'block',
+      padding: '25px 25px 10px',
+      width: '20%',
+      position: 'fixed',
+      right: '6%',
+      top: '15%',
     },
   },
   listItems: {
@@ -125,6 +137,16 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       cursor: 'pointer',
       color: 'orange',
+      transform: 'translateX(3px)'
+    }
+  },
+  logout: {
+    fontSize: '14px',
+    margin: '5px 0',
+    color: 'red',
+    paddingTop: '30px',
+    "&:hover": {
+      cursor: 'pointer',
       transform: 'translateX(3px)'
     }
   },
@@ -268,6 +290,12 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
     return splitStr.join(' ');
   }
 
+  function applySentenceCase(str) {
+    return str.replace(/.+?[\.\?\!](\s|$)/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
+
   function scrollView(item) {
     console.log(item)
     document.querySelector(`#${item}`).scrollIntoView({ block: 'center' })
@@ -301,6 +329,29 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
           </ul>
         </Paper>
       )}
+
+      <Paper id='nav' elevation={3} className={classes.settings}>
+        <Typography component='div' >
+          <Box
+            fontSize={17}
+            fontWeight="fontWeightBold" mb={3}>
+            Account Settings
+          </Box>
+        </Typography>
+
+        <ul>
+          <li
+            onClick={() => history.push(`/user/${auth.getUserId()}/two-factor`)}
+            className={classes.listItems}> Two Factor Authetication </li>
+          <li className={classes.listItems}> Profile Details </li>
+          <li
+            onClick={() => {
+              auth.logOut()
+              history.push('/')
+            }}
+            className={classes.logout}> Log Out</li>
+        </ul>
+      </Paper>
 
       {user ? (
         <div className={classes.container}>
@@ -366,14 +417,8 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                   className='line-clamp'
                   fontSize={14}
                   fontWeight="fontWeightRegular" mb={1}>
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nisi aliquid in similique fugiat iure exercitationem quas, dicta
-                  qui non? Aliquid laboriosam, vel temporibus ipsam at voluptatum laborum illum iste molestias. Ipsum excepturi quasi eius modi,
-                  ducimus dolores soluta ipsam laborum, officia obcaecati laboriosam, impedit ratione numquam. Eum ab impedit laboriosam facere
-                  deserunt error, minus ratione non consequuntur voluptatibus doloremque eaque iure eius blanditiis consectetur nihil inventore
-                  vel maiores aspernatur hic. Iusto ab inventore nihil consequatur maiores dicta. Illo inventore magnam corrupti aliquid veritatis?
-                  Cupiditate deserunt dicta, excepturi necessitatibus laudantium alias beatae quo ea aspernatur optio quidem reprehenderit architecto
-                   autem tenetur?
-              </Box>
+                  {applySentenceCase(application.football_history.bio_description)}
+                </Box>
               </Typography>
 
               <p className={classes.seeMore} onClick={(e) => {
@@ -410,7 +455,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                     <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
                     <TableCell align="right"> Indulge Benfica Camp </TableCell>
                     {(application && application.hasOwnProperty('submitted')) &&
-                      <TableCell align="right"> 01/01/2021 </TableCell>}
+                      <TableCell align="right"> {moment(application.submission_date).format('MMMM Do YYYY')} </TableCell>}
                     <TableCell align="right" style={{ color: 'orange' }}> Pending </TableCell>
                   </TableRow>
                 </TableBody>
@@ -420,6 +465,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
           {!application?.hasOwnProperty('submitted') && (
             <Button
+              style={{ width: '15rem', margin: '0 auto' }}
               variant='outlined'
               color='primary'
               onClick={() => handleRedirect()}>
@@ -495,51 +541,30 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                     <li className={classes.skillItems}>Overall finesse. Match winner</li>
                   </ul>
                 </Paper>
-                <Paper className={classes.awardSections} elevation={3}>
-                  <Typography component='div' >
-                    <Box
-                      fontSize={20}
-                      fontWeight="fontWeightBold" mb={3}>
-                      Acheivements
-              </Box>
-                  </Typography>
 
-                  <ul>
-                    <li className={classes.awardItems}>
+                {application.football_history.award_achieved && (
+                  <Paper className={classes.awardSections} elevation={3}>
+                    <Typography component='div' >
                       <Box
-                        fontSize={16}
-                        fontWeight="fontWeightRegular" mb={-0.5}>
-                        KFA Award
-                </Box>
-                      <small style={{ fontSize: '12.5px', opacity: '0.75' }}> 2021 </small>
-                    </li>
-                    <li className={classes.awardItems}>
-                      <Box
-                        fontSize={16}
-                        fontWeight="fontWeightRegular" mb={-0.5}>
-                        Regional FA Award
-                </Box>
-                      <small style={{ fontSize: '12.5px', opacity: '0.75' }}> 2020 </small>
-                    </li>
-                    <li className={classes.awardItems}>
-                      <Box
-                        fontSize={16}
-                        fontWeight="fontWeightRegular" mb={-0.5}>
-                        Foundation Award
-                </Box>
-                      <small style={{ fontSize: '12.5px', opacity: '0.75' }}> 2019 </small>
-                    </li>
-                    <li className={classes.awardItems}>
-                      <Box
-                        fontSize={16}
-                        fontWeight="fontWeightRegular" mb={-0.5}>
-                        Global Best Player Award
-                </Box>
-                      <small style={{ fontSize: '12.5px', opacity: '0.75' }}> 2019 </small>
-                    </li>
-                  </ul>
+                        fontSize={20}
+                        fontWeight="fontWeightBold" mb={3}>
+                        Acheivements
+                      </Box>
+                    </Typography>
 
-                </Paper>
+                    <ul>
+                      <li className={classes.awardItems}>
+                        <Box
+                          fontSize={16}
+                          fontWeight="fontWeightRegular" mb={-0.5}>
+                          {application.football_history.award_name.toUpperCase()} Award
+                        </Box>
+                        <small style={{ fontSize: '12.5px', opacity: '0.75' }}> {application.football_history.award_date} </small>
+                      </li>
+                    </ul>
+                  </Paper>
+                )}
+
               </div>
             </>
           )}

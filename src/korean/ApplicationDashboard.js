@@ -64,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
+    marginBottom: '1rem'
   },
   select: {
     fontSize: '14px',
@@ -907,7 +908,7 @@ const ApplicationDashboard = ({ locale }) => {
   // console.log(props)
 
   // const benficaUserIds = ['aBDdhuP8D9abnRD3LxoOKuNu7Wr2', 'vfqmRwEAeXMijj2WUozS8aT034M2', '6KIIPGyFOzLPePWhCeupWCBBjRw1']
-  const benficaUserIds = ['aBDdhuP8D9abnRD3LxoOKuNu7Wr2', 'vfqmRwEAeXMijj2WUozS8aT034M2', 'zAUwes3cC5ZMLHBPV79AKeM9vVK2', 'Tyel8gUXLCNK1o9Cx7DobGAtRPk2']
+  const benficaUserIds = ['aBDdhuP8D9abnRD3LxoOKuNu7Wr2', 'vfqmRwEAeXMijj2WUozS8aT034M2', 'zAUwes3cC5ZMLHBPV79AKeM9vVK2', 'Tyel8gUXLCNK1o9Cx7DobGAtRPk2', 'rXWw1onbxLcDHIJwBsozumJ6UlG2']
 
 
   const handleFilterChange = (event) => {
@@ -1207,7 +1208,7 @@ const ApplicationDashboard = ({ locale }) => {
 
             <Typography component='div' >
               <Box
-                fontSize={22} fontWeight="fontWeightBold" m={-1}>
+                fontSize={25} fontWeight="fontWeightRegular" m={-1}>
                 Indulge Benfica Camp: {text[locale].ApplicationList}
               </Box>
             </Typography>
@@ -1339,7 +1340,7 @@ const ApplicationDashboard = ({ locale }) => {
               const { personal_details, player_attributes, ratings } = applicant
               return (
                 <TableRow>
-                  <TableCell>{personal_details.name}</TableCell>
+                  <TableCell>{`${personal_details.player_first_name} ${personal_details.player_last_name}` }</TableCell>
                   <TableCell>{auth.dobToAge(personal_details.dob)}</TableCell>
                   <TableCell>{personal_details.city}</TableCell>
                   {(permissions === 0 || permissions === 2) &&
