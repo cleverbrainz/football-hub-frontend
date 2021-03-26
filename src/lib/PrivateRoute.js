@@ -4,12 +4,13 @@ import { CircularProgress } from '@material-ui/core'
 import { AuthContext } from './context';
 // import Loader from "../../Loader";
 
-const AuthRouter = ({ component: Component, ...rest }) => {
+const AuthRouter = ({ locale, component: Component, ...rest }) => {
 
     const {user} = useContext(AuthContext);
     console.log(user)
     console.log(user.user)
     console.log(!!user.checked)
+    console.log(locale)
     
     return ( 
         <Route
@@ -19,7 +20,7 @@ const AuthRouter = ({ component: Component, ...rest }) => {
                     !!user.user ? (
                             <Component {...props}/>
                     ):(
-                      <Redirect to={'/login'} />
+                      <Redirect to={locale ? '/authentication' : '/login'} />
                     )
                 ):(
                         <CircularProgress size={80} style={{ position: 'fixed', top: '50%', left: '50%' }} />
