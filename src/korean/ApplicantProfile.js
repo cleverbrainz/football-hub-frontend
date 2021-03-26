@@ -191,11 +191,12 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
   const stripe = useStripe()
   const classes = useStyles()
-  const [user, setUser] = useState()
+  const [user, setUser] = useState({})
   const [application, setApplication] = useState()
   const [currentScrollSection, setCurrentScrollSection] = useState('about')
   const [open, setOpen] = useState()
   const [message, setMessage] = useState()
+            
 
 
   useEffect(() => {
@@ -204,6 +205,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
       .then(res => {
         const { applications } = res.data[0]
         setUser(res.data[0])
+        console.log(res.data[0])
 
         if (applications.benfica_application) {
           setApplication(applications.benfica_application)
@@ -230,7 +232,8 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
   async function handleRedirect() {
 
-    const { fee_needed, stripeId } = state
+    const { stripeId, application_fee_paid } = user
+    const fee_needed = (application_fee_paid === 'unpaid' && moment().isAfter(moment('04/14/2021')))
 
     handleAfterRequestStates({
       success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['7g'][locale].split('/')[fee_needed ? 0 : 1]}`
