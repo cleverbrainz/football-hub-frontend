@@ -436,6 +436,12 @@ const arr = [
   },
   {
     "page": "authorization",
+    "section": "4g",
+    "english": "Verification Code",
+    "korean": "**Korean for Verification Code!**"
+  },
+  {
+    "page": "authorization",
     "section": "5a",
     "english": "Create Account",
     "korean": "계정 등록"
