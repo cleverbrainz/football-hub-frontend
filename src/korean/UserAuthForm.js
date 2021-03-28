@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom'
 import { authorization, snackbar_messages } from './LanguageSkeleton'
 import {
@@ -46,6 +46,9 @@ const UserAuthForm = ({ locale, history }) => {
   const [verificationId, setVerificationId] = useState(null)
   const [resolver, setResolver] = useState({})
   const [captchad, setCaptchad] = useState(false)
+  const captchaRef = useRef(null);
+  const appAuth = firebaseApp.auth()
+  appAuth.languageCode = locale
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -140,7 +143,7 @@ const UserAuthForm = ({ locale, history }) => {
 
   useEffect(() => {
     console.log('statechange')
-  },[captchad, setCaptchad])
+  },[])
 
 
   function Alert(props) {
@@ -168,6 +171,11 @@ const UserAuthForm = ({ locale, history }) => {
   const handleAfterRequestStates = (message) => {
     setMessage(message)
     setOpen(true)
+    setIsLoading(false)
+  }
+
+  const handleSolved = () => {
+    setCaptchad(true)
     setIsLoading(false)
   }
 
@@ -228,21 +236,19 @@ const UserAuthForm = ({ locale, history }) => {
       .catch(error => {
         console.log(error)
         if (error.code === 'auth/multi-factor-auth-required') {
-          setResolver(error.resolver)
-          setHints(error.resolver.hints[0])
+          // setResolver(error.resolver)
+          // setHints(error.resolver.hints[0])
           setPhoneVerifyRequired(true)
           // Ask user which second factor to use.
           if (error.resolver.hints[selectedIndex].factorId ===
             firebase.auth.PhoneMultiFactorGenerator.FACTOR_ID) {
-            var phoneInfoOptions = {
+            const phoneInfoOptions = {
               multiFactorHint: error.resolver.hints[selectedIndex],
               session: error.resolver.session
             };
-            var appAuth = firebaseApp.auth()
-            appAuth.languageCode = locale
-            var phoneAuthProvider = new firebase.auth.PhoneAuthProvider(appAuth);
-            var recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-              'recaptcha-container',
+            const phoneAuthProvider = new firebase.auth.PhoneAuthProvider(appAuth);
+            const recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+              captchaRef.current,
               {
                 'size': 'normal',
                 'callback': function (response) {
@@ -250,18 +256,18 @@ const UserAuthForm = ({ locale, history }) => {
                   // ...
                   // handleRecaptcha()
                   console.log('captcha!')
-                  setCaptchad(true)
-                  setIsLoading(false)
+                  handleSolved()
 
                 },
                 'expired-callback': function () {
                   // Response expired. Ask user to solve reCAPTCHA again.
                   // ...
-                  // console.log('uh oh')
+                  console.log('captcha expired')
                 },
                 'hl': locale
               },
               firebaseApp);
+
             // Send SMS verification code
             return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
               .then(function (verificationId) {
@@ -579,7 +585,7 @@ const UserAuthForm = ({ locale, history }) => {
           )}
           { phoneVerifyRequired &&
           <div>
-            <div id="recaptcha-container"></div>
+            <div id="recaptcha-container" ref={captchaRef}></div>
             <div class="field" className={classes.inputContainer}>
                     <p
                       style={{ alignSelf: 'flex-end' }}
@@ -661,7 +667,7 @@ const UserAuthForm = ({ locale, history }) => {
               )}
         </Alert>
       </Snackbar>}
-
+      
     </div>
 
 
