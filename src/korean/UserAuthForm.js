@@ -163,7 +163,7 @@ const UserAuthForm = ({ locale, history }) => {
     axios.post('/login', { email, password })
       .then(res => {
         const { application_fee_paid, token, stripeId, userId } = res.data
-        const fee_needed = application_fee_paid === 'unpaid' && moment().isAfter(moment('03/24/2021'))
+        const fee_needed = application_fee_paid === 'unpaid' && moment().isAfter(moment('03/20/2021'))
 
         auth.setToken(token)
 
