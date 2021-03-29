@@ -204,9 +204,7 @@ const UserAuthForm = ({ locale, history }) => {
               history.push('/testercoach')
             }
           })
-      }
-      )
-
+      })
   }
 
   const frontendLogin = () => {
@@ -228,16 +226,12 @@ const UserAuthForm = ({ locale, history }) => {
               history.push('/testercoach')
             }
           })
-        //   } else {
-        //     firebaseApp.auth().signOut()
-        //     setLoginError({ message: 'Email has not yet been verifed. Please check your emails for a verification link.' })
-        //   }
       })
       .catch(error => {
         console.log(error)
         if (error.code === 'auth/multi-factor-auth-required') {
-          // setResolver(error.resolver)
-          // setHints(error.resolver.hints[0])
+          setResolver(error.resolver)
+          setHints(error.resolver.hints[0])
           setPhoneVerifyRequired(true)
           // Ask user which second factor to use.
           if (error.resolver.hints[selectedIndex].factorId ===
@@ -252,16 +246,11 @@ const UserAuthForm = ({ locale, history }) => {
               {
                 'size': 'normal',
                 'callback': function (response) {
-                  // reCAPTCHA solved, you can proceed with phoneAuthProvider.verifyPhoneNumber(...).
-                  // ...
-                  // handleRecaptcha()
                   console.log('captcha!')
                   handleSolved()
 
                 },
                 'expired-callback': function () {
-                  // Response expired. Ask user to solve reCAPTCHA again.
-                  // ...
                   console.log('captcha expired')
                 },
                 'hl': locale
@@ -273,9 +262,6 @@ const UserAuthForm = ({ locale, history }) => {
               .then(function (verificationId) {
 
                 setVerificationId(verificationId)
-
-                // // Ask user for the SMS verification code.
-                // console.log('sdfdsg verificationCode2', verificationCode2)
 
               }).catch(err => console.log(err))
           } else {

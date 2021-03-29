@@ -56,20 +56,24 @@ const AddPhone = ({location, history, locale}) => {
       alignItems: 'center',
       height: '60%',
       width: '90%'
+    },
+    back: {
+      alignSelf: 'end',
+      margin: '0 20px'
     }
   }));
 
 
   const { user, setUserData, userData } = useContext(AuthContext);
 
-  console.log(user.user.multiFactor.enrolledFactors[0].phoneNumber)
+  // console.log(user.user.multiFactor.enrolledFactors[0].phoneNumber)
   const [isLoading, setIsLoading] = useState(false)
   const [loginFields, setLoginFields] = useState({
-    phoneNumber: user.user.multiFactor.enrolledFactors[0].phoneNumber,
+    phoneNumber: user.user.multiFactor?.enrolledFactors[0]?.phoneNumber || '' ,
     verificationCode: '',
     verificationId: ''
   })
-  const [verified, setVerified] = useState(user.user.multiFactor.enrolledFactors[0].factorId === 'phone' ? true : false)
+  const [verified, setVerified] = useState(user.user.multiFactor.enrolledFactors[0]?.factorId === 'phone' ? true : false)
   const [loginError, setLoginError] = useState('')
   const classes = useStyles();
   const [codeSent, setCodeSent] = useState(false)
@@ -77,6 +81,8 @@ const AddPhone = ({location, history, locale}) => {
   const currentUser = appAuth.currentUser
   
   appAuth.languageCode = locale
+
+  console.log(history)
 
 
 
@@ -159,6 +165,7 @@ function confirmVerificationCode(e) {
   return (
     <div className={classes.container}>
       <Paper elevation={3} className={classes.paper}>
+      <Button className={`${classes.button} ${classes.back}`} variant='outlined' onClick={() => history.goBack()}>Back</Button>
               <Typography variant='h4'> Verify Phone Number </Typography>
               <Typography variant='p'> To use Multi Factor Authentication we need to verify your phone below.{<br/>}
               Please enter the phone number you want to use and you will be sent a verification code </Typography>
