@@ -38,7 +38,7 @@ const RouteContainer = (props) => {
         }} />
       <Switch>
 
-        <Route exact path="/success=true" component={ApplicationProcessFlow} />
+        {/* <Route exact path="/success=true" component={ApplicationProcessFlow} /> */}
 
         <AuthRouter exact path="/user/:id"
           locale={locale}
