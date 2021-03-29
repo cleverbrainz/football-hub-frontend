@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom'
 import { authorization, snackbar_messages } from './LanguageSkeleton'
 import {
@@ -46,6 +46,9 @@ const UserAuthForm = ({ locale, history }) => {
   const [verificationId, setVerificationId] = useState(null)
   const [resolver, setResolver] = useState({})
   const [captchad, setCaptchad] = useState(false)
+  const captchaRef = useRef(null);
+  const appAuth = firebaseApp.auth()
+  appAuth.languageCode = locale
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -140,7 +143,7 @@ const UserAuthForm = ({ locale, history }) => {
 
   useEffect(() => {
     console.log('statechange')
-  },[captchad, setCaptchad])
+  },[])
 
 
   function Alert(props) {
@@ -171,6 +174,11 @@ const UserAuthForm = ({ locale, history }) => {
     setIsLoading(false)
   }
 
+  const handleSolved = () => {
+    setCaptchad(true)
+    setIsLoading(false)
+  }
+
   const handleRecaptcha = () => {
     var cred = firebase.auth.PhoneAuthProvider.credential(
       verificationId, verificationCode);
@@ -196,9 +204,7 @@ const UserAuthForm = ({ locale, history }) => {
               history.push('/testercoach')
             }
           })
-      }
-      )
-
+      })
   }
 
   const frontendLogin = () => {
@@ -220,10 +226,6 @@ const UserAuthForm = ({ locale, history }) => {
               history.push('/testercoach')
             }
           })
-        //   } else {
-        //     firebaseApp.auth().signOut()
-        //     setLoginError({ message: 'Email has not yet been verifed. Please check your emails for a verification link.' })
-        //   }
       })
       .catch(error => {
         console.log(error)
@@ -234,42 +236,32 @@ const UserAuthForm = ({ locale, history }) => {
           // Ask user which second factor to use.
           if (error.resolver.hints[selectedIndex].factorId ===
             firebase.auth.PhoneMultiFactorGenerator.FACTOR_ID) {
-            var phoneInfoOptions = {
+            const phoneInfoOptions = {
               multiFactorHint: error.resolver.hints[selectedIndex],
               session: error.resolver.session
             };
-            var appAuth = firebaseApp.auth()
-            appAuth.languageCode = locale
-            var phoneAuthProvider = new firebase.auth.PhoneAuthProvider(appAuth);
-            var recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-              'recaptcha-container',
+            const phoneAuthProvider = new firebase.auth.PhoneAuthProvider(appAuth);
+            const recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+              captchaRef.current,
               {
                 'size': 'normal',
                 'callback': function (response) {
-                  // reCAPTCHA solved, you can proceed with phoneAuthProvider.verifyPhoneNumber(...).
-                  // ...
-                  // handleRecaptcha()
                   console.log('captcha!')
-                  setCaptchad(true)
-                  setIsLoading(false)
+                  handleSolved()
 
                 },
                 'expired-callback': function () {
-                  // Response expired. Ask user to solve reCAPTCHA again.
-                  // ...
-                  // console.log('uh oh')
+                  console.log('captcha expired')
                 },
                 'hl': locale
               },
               firebaseApp);
+
             // Send SMS verification code
             return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
               .then(function (verificationId) {
 
                 setVerificationId(verificationId)
-
-                // // Ask user for the SMS verification code.
-                // console.log('sdfdsg verificationCode2', verificationCode2)
 
               }).catch(err => console.log(err))
           } else {
@@ -579,7 +571,7 @@ const UserAuthForm = ({ locale, history }) => {
           )}
           { phoneVerifyRequired &&
           <div>
-            <div id="recaptcha-container"></div>
+            <div id="recaptcha-container" ref={captchaRef}></div>
             <div class="field" className={classes.inputContainer}>
                     <p
                       style={{ alignSelf: 'flex-end' }}
@@ -661,7 +653,7 @@ const UserAuthForm = ({ locale, history }) => {
               )}
         </Alert>
       </Snackbar>}
-
+      
     </div>
 
 
