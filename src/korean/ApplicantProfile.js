@@ -255,7 +255,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   async function handleRedirect() {
 
     const { stripeId, application_fee_paid } = user
-    const fee_needed = (application_fee_paid === 'unpaid' && moment().isAfter(moment('04/14/2021')))
+    const fee_needed = (application_fee_paid === 'unpaid' && moment().isAfter(moment('03/20/2021')))
 
     handleAfterRequestStates({
       success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['7g'][locale].split('/')[fee_needed ? 0 : 1]}`
