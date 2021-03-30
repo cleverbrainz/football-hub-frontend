@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Typography, Box } from '@material-ui/core'
+import { Link, withRouter, useLocation } from 'react-router-dom';
+import { Typography, Box, Button } from '@material-ui/core'
 import SportsSoccerSharpIcon from '@material-ui/icons/SportsSoccerSharp';
 
 const styles = {
@@ -35,8 +35,9 @@ const styles = {
 
 
 
-function HomeNav() {
+function HomeNav({ history }) {
 
+  const location = useLocation()
   const [scrollPosition, setScrollPosition] = useState()
 
   useEffect(() => {
@@ -106,6 +107,10 @@ function HomeNav() {
                 </button>
               </div>}
 
+             {(localStorage.version === 'South Korea' && location.pathname === '/') && <Button 
+             onClick={() => history.push('/authentication')}
+             variant='contained' color='primary'> Login </Button>} 
+
             </div>
           </div>
         </div>
@@ -115,4 +120,4 @@ function HomeNav() {
 }
 
 
-export default HomeNav
+export default withRouter(HomeNav)
