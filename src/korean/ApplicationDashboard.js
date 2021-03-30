@@ -992,7 +992,7 @@ const ApplicationDashboard = ({ locale }) => {
   // console.log(props)
 
   // const benficaUserIds = ['aBDdhuP8D9abnRD3LxoOKuNu7Wr2', 'vfqmRwEAeXMijj2WUozS8aT034M2', '6KIIPGyFOzLPePWhCeupWCBBjRw1']
-  const benficaUserIds = ['aBDdhuP8D9abnRD3LxoOKuNu7Wr2', 'vfqmRwEAeXMijj2WUozS8aT034M2', 'zAUwes3cC5ZMLHBPV79AKeM9vVK2', 'Tyel8gUXLCNK1o9Cx7DobGAtRPk2', 'rXWw1onbxLcDHIJwBsozumJ6UlG2']
+  const benficaUserIds = ['xBe3mKbMtGg0G33FRnOOgjiWJvu2', 'aBDdhuP8D9abnRD3LxoOKuNu7Wr2', 'vfqmRwEAeXMijj2WUozS8aT034M2', 'zAUwes3cC5ZMLHBPV79AKeM9vVK2', 'Tyel8gUXLCNK1o9Cx7DobGAtRPk2', 'rXWw1onbxLcDHIJwBsozumJ6UlG2']
 
 
   const handleFilterChange = (event) => {
