@@ -469,7 +469,6 @@ const useStyles = makeStyles((theme) => ({
   },
 
 
-
 }))
 
 const CoachModal = ({ modalOpen, setModalOpen, locale, coach }) => {
@@ -553,6 +552,9 @@ const MarketingDelta = ({ locale, history }) => {
 
   return (
     <div id='korean__marketing' className={classes.root}>
+
+   
+
       <main className={classes.jumbotron}>
         <Typography className={classes.jumbotron__textContainer}
           component='div'>

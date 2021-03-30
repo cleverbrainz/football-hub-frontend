@@ -7,6 +7,8 @@ import auth from '../lib/auth'
 import axios from 'axios'
 import AdjustSharpIcon from '@material-ui/icons/AdjustSharp';
 import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
+import CancelSharpIcon from '@material-ui/icons/CancelSharp';
+import PeopleAltSharpIcon from '@material-ui/icons/PeopleAltSharp';
 import moment from 'moment'
 import { useStripe } from "@stripe/react-stripe-js";
 
@@ -218,23 +220,23 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   const [currentScrollSection, setCurrentScrollSection] = useState('about')
   const [open, setOpen] = useState()
   const [message, setMessage] = useState()
-            
+
 
 
   useEffect(() => {
-
     axios.get(`/users/${match.params.id}`)
       .then(res => {
         const { applications } = res.data[0]
         setUser(res.data[0])
-        console.log(res.data[0])
 
         if (applications.benfica_application) {
           setApplication(applications.benfica_application)
         }
-
       })
   }, [])
+
+
+
 
 
   function Alert(props) {
@@ -426,6 +428,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                 e.target.style.display = 'none'
               }}> see more </p>
 
+
             </Paper>
           )}
 
@@ -510,9 +513,18 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                           style={{ opacity: '0.75' }}
                           fontSize={14}
                           fontWeight="fontWeightRegular" mb={1}>
-                          <span className={classes.chip}> {titleCase(el.age_group)} </span> <span className={classes.chip}> {titleCase(el.league)} </span>
+                          <span className={classes.chip}>
+                            <PeopleAltSharpIcon style={{ color: 'orange', fontSize: '15px', transform: 'translateY(3px)', marginRight: '6px' }} />
+                            {titleCase(el.age_group)} </span>
 
-                          {el.k1_affiliated && <span className={classes.chip}> <CheckCircleSharpIcon style={{ color: 'green', fontSize: '15px', transform: 'translateY(3px)' }} />  K1 Affiliated </span>}
+                          <span className={classes.chip}>
+
+                            {el.k1_affiliated ?
+                              <CheckCircleSharpIcon style={{ color: 'green', fontSize: '15px', transform: 'translateY(3px)', marginRight: '6px' }} /> :
+                              <CancelSharpIcon style={{ color: 'red', fontSize: '15px', transform: 'translateY(3px)', marginRight: '6px' }} />}
+
+                            K1 Affiliated
+                          </span>
                         </Box>
                       </Typography>
                     </div>

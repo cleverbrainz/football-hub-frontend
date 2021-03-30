@@ -61,6 +61,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
+  "proxy": "http://localhost:5000/football-hub-4018a/europe-west2/api"
 
 }

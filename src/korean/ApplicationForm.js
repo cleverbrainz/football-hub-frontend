@@ -246,8 +246,7 @@ export default function ApplicationForm({ history, location, locale }) {
       city: '',
       postcode: '',
       contact_number: '',
-      residency_certificate: '',
-      able_provide_passport: false,
+      can_provide_certificates: false,
       nationality: '',
       country: '',
     },
@@ -307,8 +306,8 @@ export default function ApplicationForm({ history, location, locale }) {
     nationality,
     email,
     country,
-    residency_certificate,
-    able_provide_passport } = applicationDetails.personal_details
+    can_provide_certificates
+  } = applicationDetails.personal_details
   const {
     height,
     weight,
@@ -652,39 +651,39 @@ export default function ApplicationForm({ history, location, locale }) {
 
   }
 
-  const handleResidencyDocumentUpload = (e) => {
+  // const handleResidencyDocumentUpload = (e) => {
 
-    const doc = e.target.files
+  //   const doc = e.target.files
 
-    setIsLoading(true)
-    const certificate = new FormData()
-    certificate.append('owner', auth.getUserId())
-    certificate.append('certificate', doc[0], doc[0].name)
+  //   setIsLoading(true)
+  //   const certificate = new FormData()
+  //   certificate.append('owner', auth.getUserId())
+  //   certificate.append('certificate', doc[0], doc[0].name)
 
-    handleApplicationSave()
+  //   handleApplicationSave()
 
-    axios.post(`/korean-residency`, certificate,
-      { headers: { Authorization: `Bearer ${auth.getToken()}` } })
-      .then(res => {
-        console.log('HELLOOO DOCU UPLOADED')
-        getData()
-        setMessage({ success: 'Document successfully uploaded.' })
-        setIsLoading(false)
-      })
-      .catch(async err => {
-        const res = err.response.data.error
+  //   axios.post(`/korean-residency`, certificate,
+  //     { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+  //     .then(res => {
+  //       console.log('HELLOOO DOCU UPLOADED')
+  //       getData()
+  //       setMessage({ success: 'Document successfully uploaded.' })
+  //       setIsLoading(false)
+  //     })
+  //     .catch(async err => {
+  //       const res = err.response.data.error
 
-        await setMessage({
-          error: res === 'Error verifying token' ?
-            snackbar_messages['6a'][locale] : snackbar_messages['6b'][locale]
-        })
-        await setIsLoading(false)
+  //       await setMessage({
+  //         error: res === 'Error verifying token' ?
+  //           snackbar_messages['6a'][locale] : snackbar_messages['6b'][locale]
+  //       })
+  //       await setIsLoading(false)
 
-        setTimeout(() => {
-          history.push('/authentication')
-        }, (3000));
-      })
-  }
+  //       setTimeout(() => {
+  //         history.push('/authentication')
+  //       }, (3000));
+  //     })
+  // }
 
   function getStepContent(step) {
     switch (step) {
@@ -815,7 +814,7 @@ export default function ApplicationForm({ history, location, locale }) {
           fontWeight="fontWeightBold" m={0}>
           Player Details
         </Box>
-      </Typography>      
+      </Typography>
 
       <div class="field" style={{
         borderBottom: '1px #f1f1f1 dotted',
@@ -967,11 +966,7 @@ export default function ApplicationForm({ history, location, locale }) {
             </p>
           </div>
 
-        </div>
-
-        <div class="field-body">
-
-          <div className={classes.field}>
+          <div className={classes.field} style={{ flex: '0.5'}}>
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span> {application['4g'][locale]} </label>
             </div>
@@ -979,6 +974,9 @@ export default function ApplicationForm({ history, location, locale }) {
               <input value={city} name='city' class="input" type="text" placeholder="City" />
             </p>
           </div>
+        </div>
+
+        <div class="field-body">
 
           <div className={classes.field}>
             <div className={classes.label}>
@@ -1002,12 +1000,6 @@ export default function ApplicationForm({ history, location, locale }) {
           </div>
 
 
-
-
-        </div>
-
-        <div class="field-body" >
-
           <div className={classes.field} style={{ flex: 0 }} >
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span> Nationality</label>
@@ -1018,7 +1010,32 @@ export default function ApplicationForm({ history, location, locale }) {
           </div>
 
 
-          <div className={classes.field} >
+
+        </div>
+
+        <div class="field-body" >
+
+
+          <div className="field-body">
+
+            <FormControlLabel
+              style={{ transform: 'translate(5px, 5px)', marginTop: '5px' }}
+              onClick={() => {
+                setApplicationDetails({
+                  ...applicationDetails,
+                  personal_details: {
+                    ...applicationDetails.personal_details,
+                    can_provide_certificates: !can_provide_certificates
+                  }
+                })
+              }}
+              control={<Radio checked={can_provide_certificates} />}
+              label={`Please indicate if you are able to provide evidence of residency${nationality !== 'south korean' ? ' and passport' : ''}, if required.`} />
+          </div>
+
+
+
+          {/* <div className={classes.field} >
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span>   {nationality.toLowerCase() === 'south korean' ?
                 'Resident Registration Certificate' : 'Foreigner Registration Certificate'}
@@ -1058,26 +1075,10 @@ export default function ApplicationForm({ history, location, locale }) {
 
               </label>
             </div>
-          </div>
+          </div> */}
         </div>
 
 
-        {(nationality && nationality.toLowerCase() !== 'south korean') && <div className="field-body">
-          <FormControlLabel
-            style={{ transform: 'translate(5px, 5px)', marginTop: '5px' }}
-            onClick={() => {
-              setApplicationDetails({
-                ...applicationDetails,
-                personal_details: {
-                  ...applicationDetails.personal_details,
-                  able_provide_passport: !able_provide_passport
-                }
-              })
-            }}
-            control={<Radio checked={able_provide_passport} />}
-            label='Please check if you are able to provide a copy of your passport, if required.' />
-
-        </div>}
 
 
 
@@ -1332,7 +1333,6 @@ export default function ApplicationForm({ history, location, locale }) {
                         ...applicationDetails.football_history,
                         previous_clubs: [...previous_clubs, {
                           age_group: '',
-                          league: '',
                           club: '',
                           k1_affiliated: false
                         }]
@@ -1341,8 +1341,8 @@ export default function ApplicationForm({ history, location, locale }) {
                   }}
                   style={{
                     position: 'absolute',
-                    top: '-15px',
-                    right: previous_clubs.length === 0 ? 0 : '45px',
+                    top: '-22px',
+                    left: '17.5rem',
                     width: '36px',
                     height: '10px'
                   }}
@@ -1362,8 +1362,8 @@ export default function ApplicationForm({ history, location, locale }) {
                   }}
                   style={{
                     position: 'absolute',
-                    top: '-15px',
-                    right: 0,
+                    top: '-22px',
+                    left: '20.5rem',
                     width: '36px',
                     height: '10px'
                   }}
@@ -1407,24 +1407,6 @@ export default function ApplicationForm({ history, location, locale }) {
                       placeholder='Club Name' />
                   </p>
                 </div>
-
-                <div className={classes.field} style={{ flex: 'none' }}>
-                  <div className={classes.label}>
-                    <label> <span style={{ color: 'red' }}>*</span> League </label>
-                  </div>
-                  <div class="select">
-                    <select
-                      onChange={(e) => handleApplicationChange(e, i)}
-                      value={el.league} id='league' name='previous_clubs'>
-                      <option disabled={preferred_foot !== ''} value=""> </option>
-                      <option value="league 1"> League 1 </option>
-                      <option value="league 2"> League 2 </option>
-                      <option value="league 3"> League 3</option>
-                    </select>
-                  </div>
-                </div>
-
-
               </div>
 
               <FormControlLabel

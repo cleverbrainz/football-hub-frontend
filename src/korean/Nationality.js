@@ -4,6 +4,7 @@ export const NationalityDropDown = ({ value }) => {
 
   return <select value={value} name="nationality">
     <option value=""> </option>
+    <option value="south korean">South Korean</option>
     <option value="afghan">Afghan</option>
     <option value="albanian">Albanian</option>
     <option value="algerian">Algerian</option>

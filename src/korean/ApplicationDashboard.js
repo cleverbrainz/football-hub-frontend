@@ -204,7 +204,7 @@ const Application = ({ permissions, application, applications, setApplications, 
   const classes = useStyles()
   const [userId, email, applicationInfo] = application
   const { personal_details, player_attributes, challenges, football_history } = applicationInfo
-  const { name, player_first_name, player_last_name, address_line_1, address_line_2, city, country, postcode, nationality, able_provide_passport } = personal_details
+  const { name, player_first_name, player_last_name, address_line_1, address_line_2, city, country, postcode, nationality, can_provide_certificates } = personal_details
   const { position } = player_attributes
   const { current_club, bio_description, previous_clubs, private_coach_name, private_coaching, highlights_footage_link, award_achieved } = football_history
 
@@ -268,7 +268,7 @@ const Application = ({ permissions, application, applications, setApplications, 
         component='div' >
         <Box
           fontSize={35} fontWeight="fontWeightBold" m={0}>
-          {name}
+          {player_first_name} {player_last_name}
         </Box>
 
         <FormControl style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}>
@@ -340,199 +340,22 @@ const Application = ({ permissions, application, applications, setApplications, 
 
       <Typography className={classes.inputContainers} component='div' >
         <Box
-          fontSize={16} fontWeight="fontWeightBold" m={0}>
-          Personal Details
-        </Box>
-      </Typography>
-
-
-      <div class="field-body">
-        {Object.keys(personal_details).map(el => {
-          if (el.includes('address') || el === 'city' || el === 'postcode' || el === 'name') return
-          const label = el === 'dob' ? 'Date of Birth' : el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
-          return (
-            <div class='field'
-              onClick={() => el === 'residency_certificate' ? window.open(personal_details[el], '_blank') : undefined}
-              style={{ flex: el !== 'residency_certificate' ? 0.4 : 1, marginRight: '20px' }}>
-              <label className={classes.label} > {label} </label>
-              <div class="control">
-                <input class="input is-small" type="text" value={personal_details[el]} readonly />
-              </div>
-            </div>
-          )
-        })}
-
-        <div class="field"
-          style={{ marginRight: '10px' }}>
-          <label className={classes.label}> Address </label>
-          <div class="control">
-            <input class="input is-small" type="text"
-              value={[address_line_1, address_line_2, city, postcode].join(', ')} readonly />
-          </div>
-        </div>
-      </div>
-
-
-      <Typography className={classes.inputContainers} component='div'>
-        <Box
-          fontSize={16} fontWeight="fontWeightBold" m={0}>
-          Player Attributes
-        </Box>
-      </Typography>
-
-      <div class="field-body" >
-        {Object.keys(player_attributes).map(el => {
-          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
-          return (
-            <div class='field' style={{ flex: 'none' }}>
-              <label className={classes.label} > {label} </label>
-              <div class="control">
-                <input class="input is-small" type="text" value={player_attributes[el]} readonly />
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      <Typography className={classes.inputContainers} component='div'>
-        <Box
-          fontSize={16} fontWeight="fontWeightBold" m={0}>
-          Challenges
-        </Box>
-      </Typography>
-
-      <div class="field-body" >
-        {Object.keys(challenges).map(el => {
-          const label = capitalise(el)
-          return (
-            <div class='field'
-              onClick={() => window.open(personal_details[el], '_blank')}
-            >
-              <label className={classes.label} > {label} </label>
-              <div class="control">
-                <input class="input is-small" type="text" value={challenges[el]} readonly />
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      <Typography className={classes.inputContainers} component='div'>
-        <Box
-          fontSize={16} fontWeight="fontWeightBold" m={0}>
-          Application Details
-        </Box>
-      </Typography>
-
-      <div class="field-body" >
-        {Object.keys(football_history).map((el, i) => {
-          if (el === 'bio_description' || el === 'highlights_footage_link' || el === 'social_media_link'
-            || el === 'previous_clubs') return
-          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
-          return (
-            <div class='field' style={{ flex: el !== 'previous_trials_attended' ? 0.7 : 1, marginBottom: '10px' }}>
-              <label className={classes.label} > {label} </label>
-              <div class="control">
-                <input class="input is-small" type="text" value={football_history[el]} readonly />
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      <div class="field-body" >
-        {Object.keys(football_history).map((el, i) => {
-          if (el === 'bio_description' || el === 'current_club' || el === 'current_coaching_school'
-            || el === 'previous_trails_attended') return
-          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
-          return (
-            <div class='field' style={{ marginBottom: '10px' }} >
-              <label className={classes.label} > {label} </label>
-              <div class="control">
-                <input class="input is-small" type="text" value={football_history[el]} readonly />
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      <div class="field-body" >
-        <div class='field'>
-          <label className={classes.label} > Description </label>
-          <div class="control">
-            <textarea class="textarea is-small" onfocus="this.blur()" type="text" value={bio_description} readonly />
-          </div>
-        </div>
-
-      </div>
-
-
-      <AlertDialog open={open} setOpen={setOpen} handleSave={handleSave} setEditing={setEditing} />
-    </>
-
-  )
-  if (permissions === 1) return (
-    <>
-      <Typography
-        className={classes.applicationHeader}
-
-        component='div' >
-        <Box
-          fontSize={35} fontWeight="fontWeightBold" m={0}>
-          {player_first_name} {player_last_name} BOO
-        </Box>
-
-        <FormControl style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}>
-
-          <div>
-            <Box
-              style={{ color: 'orange' }}
-              fontSize={12} fontWeight="fontWeightBold" m={0}>
-              {text[locale].SelectRating}
-            </Box>
-
-            <Select
-              value={ratings.application}
-              style={{ fontSize: '14px' }}
-              onChange={(event) => {
-                setEditing(true)
-                setRatings({ ...ratings, application: event.target.value })
-              }}>
-              <MenuItem value={0} disabled>Unrated</MenuItem>
-              <MenuItem value={5}>{text[locale].Poor}</MenuItem>
-              <MenuItem value={4}>{text[locale].BelowAverage}</MenuItem>
-              <MenuItem value={3}>{text[locale].Average}</MenuItem>
-              <MenuItem value={2}>{text[locale].Good}</MenuItem>
-              <MenuItem value={1}>{text[locale].Excellent}</MenuItem>
-            </Select>
-          </div>
-
-          {editing && <Button style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event)}>{text[locale].Save}</Button>}
-        </FormControl>
-      </Typography>
-
-      <Typography className={classes.inputContainers} component='div' >
-        <Box
-          fontSize={16} fontWeight="fontWeightBold" m={0}>
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
           {text[locale].PlayerDetails}
         </Box>
       </Typography>
 
 
       <div class="field-body" style={{ marginBottom: '1rem' }}>
-        {['email', 'residency_certificate'].map((el, index) => {
-          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
-          return (
-            <div class='field'
-              onClick={() => el !== 'email' ? window.open(personal_details[el], '_blank') : undefined}
-              style={{ flex: el === 'email' ? 0.4 : 1, marginRight: '10px' }}>
-              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
-              <div class="control">
-                <input class="input is-small" type="text" value={personal_details[el]} readonly />
-              </div>
-            </div>
-          )
-        })}
+
+        <div class='field'
+          style={{ flex: '0.8', marginRight: '10px' }}>
+          <label className={classes.label} > Email Address </label>
+          <div class="control">
+            <input class="input is-small" type="text" value={email} readonly />
+          </div>
+        </div>
+
 
         <div class="field"
           style={{ marginRight: '10px' }}>
@@ -542,6 +365,19 @@ const Application = ({ permissions, application, applications, setApplications, 
               value={[address_line_1, address_line_2, city, country, postcode].join(', ')} readonly />
           </div>
         </div>
+
+
+        <div class="field"
+          style={{ marginRight: '10px', flex: '0.8' }}>
+          <label className={classes.label}>
+            {`Can Provide Residency${nationality !== 'south korean' ? ' & Passport' : ''} Evidence`}
+          </label>
+          <div class="control">
+            <input class="input is-small" type="text"
+              value={can_provide_certificates} readonly />
+          </div>
+        </div>
+
       </div>
 
       <div className="field-body">
@@ -558,21 +394,12 @@ const Application = ({ permissions, application, applications, setApplications, 
           )
         })}
 
-        {nationality !== 'south korean' && <div class="field"
-          style={{ marginRight: '10px' }}>
-          <label className={classes.label}> Can Provide Passport </label>
-          <div class="control">
-            <input class="input is-small" type="text"
-              value={able_provide_passport} readonly />
-          </div>
-        </div>}
-
       </div>
 
 
       <Typography className={classes.inputContainers} component='div'>
         <Box
-          fontSize={16} fontWeight="fontWeightBold" m={0}>
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
           {text[locale].PlayerAttributes}
         </Box>
       </Typography>
@@ -591,16 +418,9 @@ const Application = ({ permissions, application, applications, setApplications, 
         })}
       </div>
 
-      {/* <Typography className={classes.inputContainers} component='div'>
-        <Box
-          fontSize={16} fontWeight="fontWeightBold" m={0}>
-          {text[locale].ApplicationDetails}
-        </Box>
-      </Typography> */}
-
       <Typography className={classes.inputContainers} component='div'>
         <Box
-          fontSize={16} fontWeight="fontWeightBold" m={0}>
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
           Current Club
         </Box>
       </Typography>
@@ -621,7 +441,7 @@ const Application = ({ permissions, application, applications, setApplications, 
 
       <Typography className={classes.inputContainers} component='div'>
         <Box
-          fontSize={16} fontWeight="fontWeightBold" m={0}>
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
           Previous Clubs
         </Box>
       </Typography>
@@ -655,7 +475,274 @@ const Application = ({ permissions, application, applications, setApplications, 
         <>
           <Typography className={classes.inputContainers} component='div'>
             <Box
-              fontSize={16} fontWeight="fontWeightBold" m={0}>
+              fontSize={14} fontWeight="fontWeightBold" m={0}>
+              Awards Achieved
+            </Box>
+          </Typography>
+
+          <div className="field-body">
+            {['award_name', 'award_date', 'award_reasoning'].map(el => {
+              const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+              return (
+                <div class='field' style={{ flex: el === 'award_reasoning' ? 1 : 'none' }}>
+                  <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+                  <div class="control">
+                    <input class="input is-small" type="text" value={football_history[el]} readonly />
+                  </div>
+                </div>
+              )
+            }
+            )}
+          </div>
+        </>
+      )}
+
+
+      <Typography className={classes.inputContainers} component='div'>
+        <Box
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
+          Challenges
+        </Box>
+      </Typography>
+
+      <div class="field-body" >
+        {Object.keys(challenges).map(el => {
+          const label = capitalise(el)
+          return (
+            <div class='field'
+              onClick={() => window.open(`//${challenges[el]}`, '_blank')}
+            >
+              <label className={classes.label} > {label} </label>
+              <div class="control">
+                <input class="input is-small" type="text" value={challenges[el]} readonly />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <Typography className={classes.inputContainers} component='div'>
+        <Box
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
+          Other Application Details
+            </Box>
+      </Typography>
+
+      <div class="field-body" >
+        {['highlights_footage_link', 'private_coach_name'].map((el, i) => {
+          if (!private_coaching && el === 'private_coach_name') return
+          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+          return (
+            <div class='field' style={{ marginBottom: '10px' }} >
+              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+              <div class="control">
+                <input class="input is-small" type="text" value={football_history[el]} readonly />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <div class="field-body" >
+        <div class='field'>
+          <label className={classes.label} > Description </label>
+          <div class="control">
+            <textarea class="textarea is-small" onfocus="this.blur()" type="text" value={bio_description} readonly />
+          </div>
+        </div>
+
+      </div>
+
+
+      <AlertDialog open={open} setOpen={setOpen} handleSave={handleSave} setEditing={setEditing} />
+    </>
+
+  )
+  if (permissions === 1) return (
+    <>
+      <Typography
+        className={classes.applicationHeader}
+
+        component='div' >
+        <Box
+          fontSize={35} fontWeight="fontWeightBold" m={0}>
+          {player_first_name} {player_last_name}
+        </Box>
+
+        <FormControl style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}>
+
+          <div>
+            <Box
+              style={{ color: 'orange' }}
+              fontSize={12} fontWeight="fontWeightBold" m={0}>
+              {text[locale].SelectRating}
+            </Box>
+
+            <Select
+              value={ratings.application}
+              style={{ fontSize: '14px' }}
+              onChange={(event) => {
+                setEditing(true)
+                setRatings({ ...ratings, application: event.target.value })
+              }}>
+              <MenuItem value={0} disabled>Unrated</MenuItem>
+              <MenuItem value={5}>{text[locale].Poor}</MenuItem>
+              <MenuItem value={4}>{text[locale].BelowAverage}</MenuItem>
+              <MenuItem value={3}>{text[locale].Average}</MenuItem>
+              <MenuItem value={2}>{text[locale].Good}</MenuItem>
+              <MenuItem value={1}>{text[locale].Excellent}</MenuItem>
+            </Select>
+          </div>
+
+          {editing && <Button style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event)}>{text[locale].Save}</Button>}
+        </FormControl>
+      </Typography>
+
+      <Typography className={classes.inputContainers} component='div' >
+        <Box
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
+          {text[locale].PlayerDetails}
+        </Box>
+      </Typography>
+
+
+      <div class="field-body" style={{ marginBottom: '1rem' }}>
+
+        <div class='field'
+          style={{ flex: '0.8', marginRight: '10px' }}>
+          <label className={classes.label} > Email Address </label>
+          <div class="control">
+            <input class="input is-small" type="text" value={email} readonly />
+          </div>
+        </div>
+
+
+        <div class="field"
+          style={{ marginRight: '10px'}}>
+          <label className={classes.label}> {text[locale].Address} </label>
+          <div class="control">
+            <input class="input is-small" type="text"
+              value={[address_line_1, address_line_2, city, country, postcode].join(', ')} readonly />
+          </div>
+        </div>
+
+
+        <div class="field"
+          style={{ marginRight: '10px', flex: 0.8 }}>
+          <label className={classes.label}>
+            {`Can Provide Residency${nationality !== 'south korean' ? ' & Passport' : ''} Evidence`}
+          </label>
+          <div class="control">
+            <input class="input is-small" type="text"
+              value={can_provide_certificates} readonly />
+          </div>
+        </div>
+
+      </div>
+
+      <div className="field-body">
+        {['contact_number', 'dob', 'gender', 'nationality'].map((el, index) => {
+          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+          return (
+            <div class='field'
+              style={{ marginRight: '10px' }}>
+              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+              <div class="control">
+                <input class="input is-small" type="text" value={personal_details[el]} readonly />
+              </div>
+            </div>
+          )
+        })}
+
+      </div>
+
+
+      <Typography className={classes.inputContainers} component='div'>
+        <Box
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
+          {text[locale].PlayerAttributes}
+        </Box>
+      </Typography>
+
+      <div class="field-body" >
+        {Object.keys(player_attributes).map(el => {
+          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+          return (
+            <div class='field'>
+              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+              <div class="control">
+                <input class="input is-small" type="text" value={player_attributes[el]} readonly />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* <Typography className={classes.inputContainers} component='div'>
+        <Box
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
+          {text[locale].ApplicationDetails}
+        </Box>
+      </Typography> */}
+
+      <Typography className={classes.inputContainers} component='div'>
+        <Box
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
+          Current Club
+        </Box>
+      </Typography>
+
+      <div class="field-body" >
+        {Object.keys(current_club).map((el, i) => {
+          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+          return (
+            <div class='field' style={{ flex: 'none' }}>
+              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+              <div class="control">
+                <input class="input is-small" type="text" value={current_club[el]} readonly />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <Typography className={classes.inputContainers} component='div'>
+        <Box
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
+          Previous Clubs
+        </Box>
+      </Typography>
+
+      {previous_clubs.map((club, i) => {
+        return (
+          <div className="field-body" style={{ marginBottom: '1rem' }}>
+            <Box
+              style={{ color: 'orange' }}
+              fontSize={12} fontWeight="fontWeightBold" mr={1}>
+              {i + 1}.
+            </Box>
+            {Object.keys(club).map(field => {
+              const label = field.includes('_') ? capitalise(field) : field.charAt(0).toUpperCase() + field.slice(1)
+              return (
+                <div class='field' style={{ flex: 'none' }}>
+                  <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+                  <div class="control">
+                    <input class="input is-small" type="text" value={club[field]} readonly />
+                  </div>
+                </div>
+              )
+            }
+            )}
+          </div>
+        )
+      })}
+
+
+      {award_achieved && (
+        <>
+          <Typography className={classes.inputContainers} component='div'>
+            <Box
+              fontSize={14} fontWeight="fontWeightBold" m={0}>
               Awards Achieved
             </Box>
           </Typography>
@@ -679,7 +766,7 @@ const Application = ({ permissions, application, applications, setApplications, 
 
       <Typography className={classes.inputContainers} component='div'>
         <Box
-          fontSize={16} fontWeight="fontWeightBold" m={0}>
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
           Other Application Details
             </Box>
       </Typography>
@@ -724,7 +811,7 @@ const Application = ({ permissions, application, applications, setApplications, 
         component='div' >
         <Box
           fontSize={35} fontWeight="fontWeightBold" m={0}>
-          {name}
+          {player_first_name} {player_last_name}
         </Box>
         {editing && <Button style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event)}>Save</Button>}
       </Typography>
@@ -742,56 +829,86 @@ const Application = ({ permissions, application, applications, setApplications, 
         </div>
       </div>
 
+        <Typography className={classes.inputContainers} component='div' >
+          <Box
+            fontSize={14} fontWeight="fontWeightBold" m={0}>
+            {text[locale].PlayerDetails}
+          </Box>
+        </Typography>
+
+
+        <div class="field-body" style={{ marginBottom: '1rem' }}>
+
+          <div class='field'
+            style={{ flex: '0.8', marginRight: '10px' }}>
+            <label className={classes.label} > Email Address </label>
+            <div class="control">
+              <input class="input is-small" type="text" value={email} readonly />
+            </div>
+          </div>
+
+
+          <div class="field"
+            style={{ marginRight: '10px' }}>
+            <label className={classes.label}> {text[locale].Address} </label>
+            <div class="control">
+              <input class="input is-small" type="text"
+                value={[address_line_1, address_line_2, city, country, postcode].join(', ')} readonly />
+            </div>
+          </div>
+
+
+          <div class="field"
+            style={{ marginRight: '10px', flex: '0.8' }}>
+            <label className={classes.label}>
+              {`Can Provide Residency${nationality !== 'south korean' ? ' & Passport' : ''} Evidence`}
+            </label>
+            <div class="control">
+              <input class="input is-small" type="text"
+                value={can_provide_certificates} readonly />
+            </div>
+          </div>
+
+        </div>
+
       <div className="field-body">
-        <div>
-          <Typography className={classes.inputContainers} component='div' >
-            <Box
-              fontSize={16} fontWeight="fontWeightBold" m={0}>
-              Personal Details
-      </Box>
-          </Typography>
+        {['contact_number', 'dob', 'gender', 'nationality'].map((el, index) => {
+          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+          return (
+            <div class='field'
+              style={{ marginRight: '10px' }}>
+              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+              <div class="control">
+                <input class="input is-small" type="text" value={personal_details[el]} readonly />
+              </div>
+            </div>
+          )
+        })}
 
-
-          <div class="field-body">
-            {Object.keys(personal_details).map(el => {
-              if (el.includes('address') || el === 'city' || el === 'postcode' || el === 'name' || el === 'residency_certificate') return
-              const label = el === 'dob' ? 'Date of Birth' : el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
-              return (
-                <div class='field'
-                  style={{ marginRight: '20px' }}>
-                  <label className={classes.label} > {label} </label>
-                  <div class="control">
-                    <input class="input is-small" type="text" value={personal_details[el]} readonly />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        <div>
-          <Typography className={classes.inputContainers} component='div'>
-            <Box
-              fontSize={16} fontWeight="fontWeightBold" m={0}>
-              Player Attributes
-      </Box>
-          </Typography>
-
-          <div class="field-body" >
-            {Object.keys(player_attributes).map(el => {
-              const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
-              return (
-                <div class='field'>
-                  <label className={classes.label} > {label} </label>
-                  <div class="control">
-                    <input class="input is-small" type="text" value={player_attributes[el]} readonly />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
       </div>
+
+
+      <Typography className={classes.inputContainers} component='div'>
+        <Box
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
+          {text[locale].PlayerAttributes}
+        </Box>
+      </Typography>
+
+      <div class="field-body" >
+        {Object.keys(player_attributes).map(el => {
+          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+          return (
+            <div class='field'>
+              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+              <div class="control">
+                <input class="input is-small" type="text" value={player_attributes[el]} readonly />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
 
 
 
@@ -799,7 +916,7 @@ const Application = ({ permissions, application, applications, setApplications, 
 
       <Typography className={classes.inputContainers} component='div'>
         <Box
-          fontSize={16} fontWeight="fontWeightBold" m={0}>
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
           Challenges
         </Box>
       </Typography>
