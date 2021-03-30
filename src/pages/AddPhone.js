@@ -40,7 +40,7 @@ const AddPhone = ({location, history, locale}) => {
       minWidth: '300px',
       display: 'flex',
       flexDirection: 'column',
-      height: '40%',
+      height: '60%',
       justifyContent: 'space-evenly'
     },
     button: {
@@ -54,12 +54,12 @@ const AddPhone = ({location, history, locale}) => {
       flexDirection: 'column',
       justifyContent: 'space-evenly',
       alignItems: 'center',
-      height: '60%',
+      height: '80%',
       width: '90%'
     },
     back: {
       alignSelf: 'end',
-      margin: '0 20px'
+      margin: '20px 20px'
     }
   }));
 
@@ -74,6 +74,7 @@ const AddPhone = ({location, history, locale}) => {
     verificationId: ''
   })
   const [verified, setVerified] = useState(user.user.multiFactor.enrolledFactors[0]?.factorId === 'phone' ? true : false)
+  const [verificationUpdated, setVerificationUpdated] = useState(false)
   const [loginError, setLoginError] = useState('')
   const classes = useStyles();
   const [codeSent, setCodeSent] = useState(false)
@@ -155,6 +156,8 @@ function confirmVerificationCode(e) {
     .then(function() {
       // Second factor enrolled.
       console.log('secondFactorEnrolled')
+      setVerificationUpdated(true)
+      setCodeSent(false)
     });
 }
     
@@ -170,7 +173,7 @@ function confirmVerificationCode(e) {
               <Typography variant='p'> To use Multi Factor Authentication we need to verify your phone below.{<br/>}
               Please enter the phone number you want to use and you will be sent a verification code </Typography>
               
-              <div id="recaptcha-container"></div>
+              
               {/* <Select value={locale} style={{ fontSize: '14px' }} onChange={(event) => {
               // setLang(event.target.value)
             }}>
@@ -183,37 +186,39 @@ function confirmVerificationCode(e) {
                 onChange={(e) => handleFormChange(e)}
                 onSubmit={!codeSent ? (e) => sendVerificationCode(e) : (e) => confirmVerificationCode(e)}
                 className={classes.form}>
-               {!codeSent ? <FormControl variant="outlined">
+<FormControl variant="outlined">
                   <InputLabel htmlFor="component-outlined"> Phone Number </InputLabel>
                   <OutlinedInput
                     // error={emailErrors.some(code => code === loginError.code) ? true : false}
                     type='text'
                     name='phoneNumber' id="component-outlined" label='Email'
                     value={loginFields.phoneNumber}
-                    disabled={verified}
+                    disabled={verified || verificationUpdated}
                   />
                 </FormControl>
-:
-                <FormControl variant="outlined">
-                  <InputLabel htmlFor="outlined-verification-code">Verification Code</InputLabel>
-                  <OutlinedInput
-                    id="outlined-verification-code"
-                    name='verificationCode'
-                    labelWidth={70}
-                    value={loginFields.verificationCode}
-                  />
-                </FormControl>
-}
 
                 {/* {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>} */}
+                <div id="recaptcha-container"></div>
 
-                <Button disabled={isLoading || verified}
+
+{!verified && <FormControl variant="outlined">
+  <InputLabel htmlFor="outlined-verification-code">Verification Code</InputLabel>
+  <OutlinedInput
+    id="outlined-verification-code"
+    name='verificationCode'
+    labelWidth={70}
+    value={verificationUpdated ? 'Verified!' : loginFields.verificationCode}
+    disabled={!codeSent}
+  />
+</FormControl> }
+
+                <Button disabled={isLoading || verified || verificationUpdated}
                   className={classes.button} type='submit'
                   variant='outlined'
               color='primary'>
-                { !verified ?
-                  !codeSent ? 'Send Code' : 'Verify Code' :
-                  'Verified'
+                { verified || verificationUpdated ? 'Verified' :
+                  !codeSent ? 'Send Code' : 'Verify Code' 
+                  
                 }
 
         {isLoading && <CircularProgress size={30} className={classes.progress} />}
