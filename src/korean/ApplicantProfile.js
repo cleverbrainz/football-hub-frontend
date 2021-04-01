@@ -344,7 +344,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
         <ul>
           <li
             onClick={() => history.push(`/user/${auth.getUserId()}/two-factor`)}
-            className={classes.listItems}> Two Factor Authetication </li>
+            className={classes.listItems}> Two Factor Authentication </li>
           <li className={classes.listItems}> Profile Details </li>
           <li
             onClick={() => {
@@ -386,17 +386,20 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                   <Box
                     fontSize={14}
                     fontWeight="fontWeightRegular" mb={0.5}>
-                    {titleCase(application.age_group)}
+                      {/* {titleCase(application.football_history.current_club.club)} */}
+                    <span style={{fontWeight: "bold"}}>Club:</span>{`  ${titleCase(application.football_history.current_club.club)}`}
                   </Box>
                   <Box
                     fontSize={14}
                     fontWeight="fontWeightRegular" mb={0.5}>
-                    {titleCase(application.football_history.current_club.club)}
+                    {/* {titleCase(application.age_group)} */}
+                    <span style={{fontWeight: "bold"}}>Age Group:</span>{`  ${titleCase(application.age_group)}`}
                   </Box>
                   <Box
                     fontSize={14}
                     fontWeight="fontWeightRegular">
-                    {titleCase(application.player_attributes.position)}
+                    {/* {titleCase(application.player_attributes.position)} */}
+                    <span style={{fontWeight: "bold"}}>Position:</span>{`  ${titleCase(application.player_attributes.position)}`}
                   </Box>
 
                 </>
