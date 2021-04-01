@@ -262,11 +262,14 @@ export default function ApplicationForm({ history, location, locale }) {
         age_group: '',
         club: '',
         k1_affiliated: false,
-        middle_school: ''
+        middle_school: '',
+        k1_club: ''
       },
       previous_clubs: [],
       private_coaching: false,
       private_coach_name: '',
+      private_coach_company: '',
+      private_coach_website: '',
       award_name: '',
       award_date: '',
       award_reasoning: '',
@@ -325,6 +328,8 @@ export default function ApplicationForm({ history, location, locale }) {
     highlights_footage_link,
     bio_description,
     private_coach_name,
+    private_coach_website,
+    private_coach_company,
 
   } = applicationDetails.football_history
   const {
@@ -385,15 +390,15 @@ export default function ApplicationForm({ history, location, locale }) {
           setVideoLinks([
             {
               title: application['9a'][locale],
-              src: 'https://www.youtube.com/embed/al41qjS04-Q?rel=0'
+              src: 'https://www.youtube.com/embed/9bNPjGHyO2M?rel=0'
             },
             {
               title: application['9b'][locale],
-              src: 'https://www.youtube.com/embed/3wAQxJeyyXo?rel=0'
+              src: 'https://www.youtube.com/embed/JcIcTsQlROs?rel=0'
             },
             {
               title: application['9c'][locale],
-              src: 'https://www.youtube.com/embed/qUm8TSGtenI?rel=0'
+              src: 'https://www.youtube.com/embed/rFhow4TOoD4?rel=0'
             }
           ])
           setAccountCategory(category)
@@ -405,28 +410,28 @@ export default function ApplicationForm({ history, location, locale }) {
           setVideoLinks(position === 'goalkeeper' ? [
             {
               title: application['9a'][locale],
-              src: 'https://www.youtube.com/embed/HmWpssuh_9A?rel=0'
+              src: 'https://www.youtube.com/embed/JJzwWOiLu1g?rel=0'
             },
             {
               title: application['9b'][locale],
-              src: 'https://www.youtube.com/embed/1OWOrbmvUhc?rel=0'
+              src: 'https://www.youtube.com/embed/DCxK_LIeOfc?rel=0'
             },
             {
               title: application['9c'][locale],
-              src: 'https://www.youtube.com/embed/Q-hR_gNElo0?rel=0'
+              src: 'https://www.youtube.com/embed/eWSKqaATIxE?rel=0'
             }
           ] : [
               {
                 title: application['9a'][locale],
-                src: 'https://www.youtube.com/embed/al41qjS04-Q?rel=0'
+                src: 'https://www.youtube.com/embed/9bNPjGHyO2M?rel=0'
               },
               {
                 title: application['9b'][locale],
-                src: 'https://www.youtube.com/embed/3wAQxJeyyXo?rel=0'
+                src: 'https://www.youtube.com/embed/JcIcTsQlROs?rel=0'
               },
               {
                 title: application['9c'][locale],
-                src: 'https://www.youtube.com/embed/qUm8TSGtenI?rel=0'
+                src: 'https://www.youtube.com/embed/rFhow4TOoD4?rel=0'
               }
             ])
         }
@@ -464,7 +469,7 @@ export default function ApplicationForm({ history, location, locale }) {
   function handleApplicationSave(type) {
     setIsLoading(true)
     const age = moment('2021-12-31').diff(dob, 'years')
-    const group = age < 16 ? 16 : (age !== 18 && age < 19) ? age + 1 : 18
+    const group = age < 13 ? 13 : (age !== 14 && age < 15) ? age + 1 : 15
 
     handleClose()
 
@@ -496,7 +501,7 @@ export default function ApplicationForm({ history, location, locale }) {
             setIsLoading(false)
           })
         } else {
-          setMessage({ success: snackbar_messages['1b'][locale] })
+          setMessage({ success: `${snackbar_messages['1b'][locale]} Redirecting to profile...` })
           setIsLoading(false)
         }
       })
@@ -523,7 +528,57 @@ export default function ApplicationForm({ history, location, locale }) {
 
   const handleNext = async () => {
     if (activeStep === 2) {
-      setOpen(true)
+
+      let all_required = true
+      const checks = ['personal_details', 'player_attributes', 'challenges']
+
+
+      checks.forEach((x, i) => {
+        for (const y in applicationDetails[x]) {
+
+          if (['address_line_2', 'other_positions',
+            'previous_clubs', 'highlights_footage_link'].includes(y)) break
+
+          // if (i === 2) {
+          //   if (y === 'current_club') {
+          //     for (const key in applicationDetails[x][y]) {
+          //       if (key === 'k1_affiliated') {
+          //         if (current_club.k1_affiliated && !current_club.k1_club) {
+          //           all_required = false
+          //           return
+          //         }
+          //       } else if (!applicationDetails[x][y][key]) {
+          //         all_required = false
+          //         return
+          //       }
+          //     }
+          //   } else if (private_coaching) {
+          //     if (!private_coach_website || !private_coach_name || !private_coach_company) {
+          //       all_required = false
+          //       return
+          //     }
+          //   } else if (award_achieved) {
+          //     if (!award_name || !award_date || !award_reasoning) {
+          //       all_required = false
+          //       return
+          //     }
+          //   }
+          // }
+
+          if (!applicationDetails[x][y]) {
+            all_required = false
+          }
+        }
+      })
+
+      if (!all_required) {
+        setMessage({
+          error: 'Please ensure you have filled out all required fields before submitting.'
+        })
+      } else {
+        setOpen(true)
+      }
+
     } else {
       scroll()
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -551,28 +606,28 @@ export default function ApplicationForm({ history, location, locale }) {
       setVideoLinks(value === 'goalkeeper' ? [
         {
           title: application['9a'][locale],
-          src: 'https://www.youtube.com/embed/HmWpssuh_9A?rel=0'
+          src: 'https://www.youtube.com/embed/JJzwWOiLu1g?rel=0'
         },
         {
           title: application['9b'][locale],
-          src: 'https://www.youtube.com/embed/1OWOrbmvUhc?rel=0'
+          src: 'https://www.youtube.com/embed/DCxK_LIeOfc?rel=0'
         },
         {
           title: application['9c'][locale],
-          src: 'https://www.youtube.com/embed/Q-hR_gNElo0?rel=0'
+          src: 'https://www.youtube.com/embed/eWSKqaATIxE?rel=0'
         }
       ] : [
           {
             title: application['9a'][locale],
-            src: 'https://www.youtube.com/embed/al41qjS04-Q?rel=0'
+            src: 'https://www.youtube.com/embed/9bNPjGHyO2M?rel=0'
           },
           {
             title: application['9b'][locale],
-            src: 'https://www.youtube.com/embed/3wAQxJeyyXo?rel=0'
+            src: 'https://www.youtube.com/embed/JcIcTsQlROs?rel=0'
           },
           {
             title: application['9c'][locale],
-            src: 'https://www.youtube.com/embed/qUm8TSGtenI?rel=0'
+            src: 'https://www.youtube.com/embed/rFhow4TOoD4?rel=0'
           }
         ])
     }
@@ -614,15 +669,15 @@ export default function ApplicationForm({ history, location, locale }) {
 
 
       const age = moment('2021-12-31').diff(value, 'years')
-      const group = age < 16 ? 16 : (age !== 18 && age < 19) ? age + 1 : 18
+      const group = age < 13 ? 13 : (age !== 14 && age < 15) ? age + 1 : 15
 
-      setMessage((age > 14 && age < 19) ? {
+      setMessage((age > 11 && age < 15) ? {
         info: snackbar_messages['3'][locale].replace('s', `${group}s`)
       } : {
           error: snackbar_messages['4'][locale]
         })
 
-      if (age > 14 && age < 19) {
+      if (age > 11 && age < 15) {
         setApplicationDetails({
           ...applicationDetails,
           personal_details: {
@@ -711,6 +766,38 @@ export default function ApplicationForm({ history, location, locale }) {
       </components.Menu>
     );
   };
+
+  const ageGroupSelection = (
+    <>
+      <option value="under 6s"> Under 6s </option>
+      <option value="under 7s"> Under 7s </option>
+      <option value="under 8s"> Under 8s </option>
+      <option value="under 9s"> Under 9s </option>
+      <option value="under 10s"> Under 10s </option>
+      <option value="under 11s"> Under 11s </option>
+      <option value="under 12s"> Under 12s </option>
+      <option value="under 13s"> Under 13s </option>
+      <option value="under 14s"> Under 14s </option>
+      <option value="under 15s"> Under 15s </option>
+    </>
+  )
+
+  const k1ClubSelection = (
+    <>
+      <option value="daegu fc"> Daegu FC </option>
+      <option value="gangwon fc"> Gangwon FC </option>
+      <option value="gwangju fc"> Gwangju FC </option>
+      <option value="incheon united"> Incheon United </option>
+      <option value="jeju united">Jeju United </option>
+      <option value="jeonbuk hyudai motors"> Jeonbuk Hyundai Motors</option>
+      <option value="pohang steelers"> Pohang Steelers </option>
+      <option value="seongnam fc"> Seongnam FC </option>
+      <option value="fc seoul"> FC Seoul </option>
+      <option value="suwon samsung bluewings"> Suwon Samsung Bluewings </option>
+      <option value="suwon fc"> Suwon FC </option>
+      <option value="ulsan hyudai"> Ulsan Hyudai </option>
+    </>
+  )
 
   const firstPage = (
     <>
@@ -966,7 +1053,7 @@ export default function ApplicationForm({ history, location, locale }) {
             </p>
           </div>
 
-          <div className={classes.field} style={{ flex: '0.5'}}>
+          <div className={classes.field} style={{ flex: '0.5' }}>
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span> {application['4g'][locale]} </label>
             </div>
@@ -1029,7 +1116,7 @@ export default function ApplicationForm({ history, location, locale }) {
                   }
                 })
               }}
-              control={<Radio checked={can_provide_certificates} />}
+              control={<Radio className='radio-check' checked={can_provide_certificates} />}
               label={`Please indicate if you are able to provide evidence of residency${nationality !== 'south korean' ? ' and passport' : ''}, if required.`} />
           </div>
 
@@ -1153,6 +1240,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
           <Selector
             closeMenuOnSelect={false}
+            menuPlacement='top'
             components={{ Menu }}
             isMulti
             value={playing_positions.filter(x => other_positions.includes(x.value))}
@@ -1214,40 +1302,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
       <div class="field" style={{ paddingBottom: '25px', marginBottom: '20px', borderBottom: '1px dotted #f1f1f1' }}>
 
-        <div className="field-body">
-          <FormControlLabel
-            style={{ transform: 'translateX(5px)' }}
 
-            onClick={() => {
-              setApplicationDetails({
-                ...applicationDetails,
-                football_history: {
-                  ...applicationDetails.football_history,
-                  private_coaching: !private_coaching
-                }
-              })
-            }}
-            control={<Radio checked={private_coaching} />}
-            label='Please check if you are currently attending private coaching sessions' />
-
-        </div>
-
-        {private_coaching && <>
-
-          <div className="field-body">
-            <div className={classes.field}>
-              <div className={classes.label}>
-                <label> <span style={{ color: 'red' }}>*</span> Coach Name</label>
-              </div>
-              <p class="control is-expanded">
-                <input value={private_coach_name}
-                  name='private_coach_name'
-                  class="input" type="text" placeholder='Coach Name' />
-              </p>
-            </div>
-          </div>
-
-        </>}
 
         <div class="field-body">
           <div className={classes.field}>
@@ -1258,7 +1313,7 @@ export default function ApplicationForm({ history, location, locale }) {
         </div>
 
         <div class="field-body">
-          <div className={classes.field} style={{ flex: 'none' }}>
+          <div className={classes.field} style={{ flex: 'none' }} >
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span> Age Group </label>
             </div>
@@ -1267,14 +1322,12 @@ export default function ApplicationForm({ history, location, locale }) {
                 onChange={(e) => handleApplicationChange(e)}
                 value={current_club.age_group} id='age_group' name='current_club'>
                 <option disabled={current_club.age_group !== ''} value=""> </option>
-                <option value="under 16s"> Under 16s </option>
-                <option value="under 10s"> Under 10s </option>
-                <option value="under 14s"> Under 14s </option>
+                {ageGroupSelection}
               </select>
             </div>
           </div>
 
-          <div className={classes.field} style={{ flex: '0.35' }}>
+          <div className={classes.field}>
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span> Club Name </label>
             </div>
@@ -1286,16 +1339,33 @@ export default function ApplicationForm({ history, location, locale }) {
             </p>
           </div>
 
-          <div className={classes.field} style={{ flex: '0.3' }}>
+          <div className={classes.field}>
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span> Middle School </label>
             </div>
             <p class="control is-expanded">
               <input
+                onChange={(e) => handleApplicationChange(e)}
                 value={current_club.middle_school} id='middle_school' name='current_club' class="input" type="text"
                 placeholder='Middle School' />
             </p>
           </div>
+
+          {current_club.k1_affiliated && (
+            <div className={classes.field} >
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> K1 Club </label>
+              </div>
+              <div class="select">
+                <select
+                  onChange={(e) => handleApplicationChange(e)}
+                  value={current_club.k1_club} id='k1_club' name='current_club'>
+                  <option disabled={current_club.k1_club !== ''} value=""> </option>
+                  {k1ClubSelection}
+                </select>
+              </div>
+            </div>
+          )}
 
 
         </div>
@@ -1310,16 +1380,21 @@ export default function ApplicationForm({ history, location, locale }) {
                 ...applicationDetails.football_history,
                 current_club: {
                   ...current_club,
-                  k1_affiliated: !current_club.k1_affiliated
+                  k1_affiliated: !current_club.k1_affiliated,
+                  ...(!current_club.k1_affiliated === false && {
+                    k1_club: ''
+                  })
                 }
               }
             })
           }}
-          control={<Radio checked={current_club.k1_affiliated} />}
+          control={<Radio className='radio-check' checked={current_club.k1_affiliated} />}
           label='This club is affiliated with a K1 club' />
 
 
-        <div class="field-body">
+
+
+        <div class="field-body" style={{ marginTop: '1rem' }}>
           <div className={classes.field}>
             <div className={classes.label}>
               <label >  {application['6c'][locale]} </label>
@@ -1334,7 +1409,8 @@ export default function ApplicationForm({ history, location, locale }) {
                         previous_clubs: [...previous_clubs, {
                           age_group: '',
                           club: '',
-                          k1_affiliated: false
+                          k1_affiliated: false,
+                          k1_club: ''
                         }]
                       }
                     })
@@ -1389,9 +1465,7 @@ export default function ApplicationForm({ history, location, locale }) {
                       onChange={(e) => handleApplicationChange(e, i)}
                       value={el.age_group} id='age_group' name='previous_clubs'>
                       <option disabled={el.age_group !== ''} value=""> </option>
-                      <option value="under 16s"> Under 16s </option>
-                      <option value="under 10s"> Under 10s </option>
-                      <option value="under 14s"> Under 14s </option>
+                      {ageGroupSelection}
                     </select>
                   </div>
                 </div>
@@ -1407,6 +1481,23 @@ export default function ApplicationForm({ history, location, locale }) {
                       placeholder='Club Name' />
                   </p>
                 </div>
+
+
+                {el.k1_affiliated && (
+                  <div className={classes.field} >
+                    <div className={classes.label}>
+                      <label> <span style={{ color: 'red' }}>*</span> K1 Club </label>
+                    </div>
+                    <div class="select">
+                      <select
+                        onChange={(e) => handleApplicationChange(e, i)}
+                        value={el.k1_club} id='k1_club' name='previous_clubs'>
+                        <option disabled={el.k1_club !== ''} value=""> </option>
+                        {k1ClubSelection}
+                      </select>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <FormControlLabel
@@ -1414,7 +1505,13 @@ export default function ApplicationForm({ history, location, locale }) {
 
                 onClick={() => {
                   const arr = previous_clubs
-                  arr[i] = { ...arr[i], k1_affiliated: !el.k1_affiliated }
+                  arr[i] = {
+                    ...arr[i],
+                    k1_affiliated: !el.k1_affiliated,
+                    ...(!el.k1_affiliated === false && {
+                      k1_club: ''
+                    })
+                  }
 
                   setApplicationDetails({
                     ...applicationDetails,
@@ -1424,7 +1521,7 @@ export default function ApplicationForm({ history, location, locale }) {
                     }
                   })
                 }}
-                control={<Radio checked={el.k1_affiliated} />}
+                control={<Radio className='radio-check' checked={el.k1_affiliated} />}
                 label='This club is affiliated with a K1 club' />
 
 
@@ -1432,9 +1529,62 @@ export default function ApplicationForm({ history, location, locale }) {
           )
         })}
 
+        <div className="field-body" style={{ marginTop: '1rem' }}>
+          <FormControlLabel
+            style={{ transform: 'translateX(5px)' }}
 
+            onClick={() => {
+              setApplicationDetails({
+                ...applicationDetails,
+                football_history: {
+                  ...applicationDetails.football_history,
+                  private_coaching: !private_coaching
+                }
+              })
+            }}
+            control={<Radio className='radio-check' checked={private_coaching} />}
+            label='Please check if you are currently attending private coaching sessions' />
 
+        </div>
 
+        {private_coaching && <>
+
+          <div className="field-body">
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> Coach Name</label>
+              </div>
+              <p class="control is-expanded">
+                <input value={private_coach_name}
+                  name='private_coach_name'
+                  class="input" type="text" placeholder='John Doe' />
+              </p>
+            </div>
+
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> Coaching Company</label>
+              </div>
+              <p class="control is-expanded">
+                <input value={private_coach_company}
+                  name='private_coach_company'
+                  class="input" type="text" placeholder='John Doe Company' />
+              </p>
+            </div>
+
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> Coaching Website</label>
+              </div>
+              <p class="control is-expanded">
+                <input value={private_coach_website}
+                  name='private_coach_website'
+                  class="input" type="text" placeholder='www.johndoecoaching.com' />
+              </p>
+            </div>
+          </div>
+
+        </>}
       </div>
 
       <div className="field">
@@ -1459,7 +1609,7 @@ export default function ApplicationForm({ history, location, locale }) {
                 }
               })
             }}
-            control={<Radio checked={award_achieved} />}
+            control={<Radio className='radio-check' checked={award_achieved} />}
             label='Please check if you have achieved any awards (KFA, Regional FA, Foundation)' />
         </div>
 
@@ -1512,7 +1662,7 @@ export default function ApplicationForm({ history, location, locale }) {
 
         <div className={classes.field}>
           <div className={classes.label}>
-            <label >  {application['6e'][locale]} </label>
+            <label > If you have any game footage highlights, list the URL here </label>
           </div>
           <p class="control is-expanded">
             <input value={highlights_footage_link} name='highlights_footage_link' class="input" type="text" placeholder={application['6e'][locale]} />
@@ -1645,13 +1795,19 @@ export default function ApplicationForm({ history, location, locale }) {
 
           <Button
             disabled={isLoading}
-            onClick={() => handleApplicationSave()}
+            onClick={() => {
+              handleApplicationSave()
+              setTimeout(() => {
+                history.push(`/user/${auth.getUserId()}`)
+              }, 3000)
+            }}
             variant="outlined"
             color="primary"
             className={classes.button}
             endIcon={<SaveAltIcon />}>
             {isLoading && <CircularProgress size={30} className={classes.progress} />}
-            {application['10b'][locale]}
+            {/* {application['10b'][locale]} */}
+            Save & Exit
           </Button>
 
           <Button

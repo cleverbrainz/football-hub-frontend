@@ -1,5 +1,5 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom'
+import { withRouter, useLocation } from 'react-router-dom'
 import {
   Typography,
   Grid,
@@ -11,6 +11,9 @@ import { withStyles, makeStyles} from '@material-ui/core/styles';
 
 
 const SwitchLanguageFab = (props) => {
+
+  const location = useLocation()
+
   const useStyles = makeStyles((theme) => ({
     text: {
       fontSize: '12px'
@@ -20,7 +23,8 @@ const SwitchLanguageFab = (props) => {
       position: 'fixed',
       left: '2%',
       bottom: '2%',
-      zIndex: '1000'
+      zIndex: '1000',
+      display: location.pathname === '/application' ? 'none' : 'initial'
     },
   }))
   const classes = useStyles()
@@ -29,7 +33,7 @@ const SwitchLanguageFab = (props) => {
       width: 28,
       height: 16,
       padding: 0,
-      display: 'flex',
+      display: location.pathname === '/application' ? 'none' : 'flex',
     },
     switchBase: {
       padding: 2,
