@@ -599,6 +599,8 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
         </Alert>
       </Snackbar>}
 
+      
+
     </div>
 
 

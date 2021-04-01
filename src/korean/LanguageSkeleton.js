@@ -773,7 +773,7 @@ const arr = [
   {
     "page": "snackbar_messages",
     "section": "1b",
-    "english": "Application successfully saved and updated",
+    "english": "Application successfully saved and updated.",
     "korean": "지원서가 성공적으로 저장되었습니다."
   },
   {
