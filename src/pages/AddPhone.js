@@ -165,6 +165,7 @@ const AddPhone = ({ location, history, locale }) => {
   if (!user.user) return null
   return (
     <div className={classes.container}>
+
       {/* <Paper elevation={3} className={classes.paper}> */}
         <Button className={`${classes.button} ${classes.back}`} variant='outlined' onClick={() => history.goBack()}>Back</Button>
 
