@@ -170,8 +170,11 @@ function confirmVerificationCode(e) {
       <Paper elevation={3} className={classes.paper}>
       <Button className={`${classes.button} ${classes.back}`} variant='outlined' onClick={() => history.goBack()}>Back</Button>
               <Typography variant='h4'> Verify Phone Number </Typography>
-              <Typography variant='p'> To use Multi Factor Authentication we need to verify your phone below.{<br/>}
-              Please enter the phone number you want to use and you will be sent a verification code </Typography>
+              <Typography variant='p'>
+                Multi Factor Authentication is an optional extra layer of security that we recommend our users protect their accounts with.{<br/>}
+                Once enabled, at login after entering your account details you will be sent a verification code to enter also.{<br/>}
+                To use Multi Factor Authentication we need to verify your phone below.{<br/>}
+                Please enter the phone number you want to use and you will be sent a verification code </Typography>
               
               
               {/* <Select value={locale} style={{ fontSize: '14px' }} onChange={(event) => {
