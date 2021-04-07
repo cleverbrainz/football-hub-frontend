@@ -221,45 +221,6 @@ const AddPhone = ({ location, history, locale }) => {
               <MenuItem value={'en'}>English</MenuItem>
               <MenuItem value={'ko'}>Korean</MenuItem>
             </Select> */}
-<<<<<<< HEAD
-      <form
-        autoComplete='off'
-        onChange={(e) => handleFormChange(e)}
-        onSubmit={!codeSent ? (e) => sendVerificationCode(e) : (e) => confirmVerificationCode(e)}
-        className={classes.form}>
-
-        <div class="field">
-          <label className={classes.label}>
-            <span style={{ color: 'red' }}>*</span> Phone Number </label>
-          <div class="control">
-            <input class="input is-small" type="text" name='phoneNumber'
-              disabled={verified || verificationUpdated}
-              value={loginFields.phoneNumber} />
-          </div>
-        </div>
-
-        {/* 
-        <FormControl variant="outlined">
-          <InputLabel htmlFor="component-outlined"> Phone Number </InputLabel>
-          <OutlinedInput
-            // error={emailErrors.some(code => code === loginError.code) ? true : false}
-            type='text'
-            name='phoneNumber' id="component-outlined" label='Email'
-            value={loginFields.phoneNumber}
-            disabled={verified || verificationUpdated}
-          />
-        </FormControl> */}
-
-        {/* {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>} */}
-        <div id="recaptcha-container"></div>
-
-
-        {!verified && <div class="field">
-          <label className={classes.label}>
-            <span style={{ color: 'red' }}>*</span> Verification Code </label>
-          <div class="control">
-            <input class="input is-small" id="outlined-verification-code" type="text" name='verificationCode'
-=======
         <form
           autoComplete='off'
           onChange={(e) => handleFormChange(e)}
@@ -298,12 +259,9 @@ const AddPhone = ({ location, history, locale }) => {
               label='Verification Code'
               name='verificationCode'
               labelWidth={70}
->>>>>>> 8b7275dfedf5abc3aa9935f8d1eb2d48aade49b4
               value={verificationUpdated ? 'Verified!' : loginFields.verificationCode}
               disabled={!codeSent} />
-          </div>
-        </div>
-        }
+          </FormControl>}
 
 
         {/* // <FormControl variant="outlined">
