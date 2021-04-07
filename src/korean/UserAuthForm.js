@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Link } from 'react-router-dom'
 import { authorization, snackbar_messages } from './LanguageSkeleton'
 import {
@@ -21,6 +21,8 @@ import auth from '../lib/auth'
 import moment from 'moment'
 import { firebaseApp } from '../lib/firebase';
 import * as firebase from "firebase";
+import Reaptcha from 'reaptcha';
+import { AuthContext } from '../lib/context';
 
 const UserAuthForm = ({ locale, history }) => {
 
@@ -47,8 +49,34 @@ const UserAuthForm = ({ locale, history }) => {
   const [resolver, setResolver] = useState({})
   const [captchad, setCaptchad] = useState(false)
   const captchaRef = useRef(null);
+  const { recaptchaVerifier, phoneAuthProvider } = useContext(AuthContext)
   const appAuth = firebaseApp.auth()
   appAuth.languageCode = locale
+
+
+  const setupRecaptcha = () => {
+    window.recaptchaVerifier = recaptchaVerifier(
+      'recaptcha-container',
+      {
+        'size': 'invisible',
+        'callback': function (response) {
+          console.log('captcha!')
+          handleSolved()
+  
+        },
+        'expired-callback': function () {
+          console.log('captcha expired')
+        },
+        'hl': locale
+      });
+  
+      window.recaptchaVerifier.render()
+  }
+
+  useEffect(() => { 
+    setupRecaptcha()
+    
+  },[])
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -141,9 +169,6 @@ const UserAuthForm = ({ locale, history }) => {
 
   }));
 
-  useEffect(() => {
-    console.log('statechange')
-  },[])
 
 
   function Alert(props) {
@@ -240,25 +265,10 @@ const UserAuthForm = ({ locale, history }) => {
               multiFactorHint: error.resolver.hints[selectedIndex],
               session: error.resolver.session
             };
-            const phoneAuthProvider = new firebase.auth.PhoneAuthProvider(appAuth);
-            const recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-              captchaRef.current,
-              {
-                'size': 'normal',
-                'callback': function (response) {
-                  console.log('captcha!')
-                  handleSolved()
-
-                },
-                'expired-callback': function () {
-                  console.log('captcha expired')
-                },
-                'hl': locale
-              },
-              firebaseApp);
+            
 
             // Send SMS verification code
-            return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
+            return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, window.recaptchaVerifier)
               .then(function (verificationId) {
 
                 setVerificationId(verificationId)
@@ -375,6 +385,7 @@ const UserAuthForm = ({ locale, history }) => {
   return (
     <div className={classes.root}>
       <main className={classes.main}>
+      
         <Typography component='div' >
           <Box
             className={classes.boldText}
@@ -571,7 +582,7 @@ const UserAuthForm = ({ locale, history }) => {
           )}
           { phoneVerifyRequired &&
           <div>
-            <div id="recaptcha-container" ref={captchaRef}></div>
+            
             <div class="field" className={classes.inputContainer}>
                     <p
                       style={{ alignSelf: 'flex-end' }}
@@ -653,7 +664,7 @@ const UserAuthForm = ({ locale, history }) => {
               )}
         </Alert>
       </Snackbar>}
-      
+      <div id="recaptcha-container"></div>
     </div>
 
 

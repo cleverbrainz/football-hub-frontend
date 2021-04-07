@@ -1,6 +1,7 @@
 import React, { useEffect, useState, createContext, useMemo } from 'react'
 import auth from './auth'
 import { firebaseApp } from './firebase'
+import * as firebase from "firebase";
 
 
 export const AuthContext = createContext()
@@ -11,6 +12,12 @@ export const AuthProvider = ({ children }) => {
     'checked': false
   })
   const [userData, setUserData] = useState({})
+
+  const appAuth = firebaseApp.auth()
+  const phoneAuthProvider = new firebase.auth.PhoneAuthProvider(appAuth);
+  const recaptchaVerifier = (container, params) => {
+    return new firebase.auth.RecaptchaVerifier(container, params, firebaseApp)
+  }
 
   console.log(user)
   
@@ -42,6 +49,6 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{user, userData, setUserData}}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{user, userData, setUserData, appAuth, phoneAuthProvider, recaptchaVerifier}}>{children}</AuthContext.Provider>
   )
 }
