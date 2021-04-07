@@ -43,6 +43,7 @@ import {
   FormControlLabel,
   Radio,
 } from "@material-ui/core";
+import PhoneDropDown from '../pages/admin/PhoneDropdown';
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -244,7 +245,8 @@ export default function ApplicationForm({ history, location, locale }) {
       address_line_2: '',
       city: '',
       postcode: '',
-      contact_number: '',
+      contact_number: ['+', '', ''],
+      alt_contact_number: ['+', '', ''],
       can_provide_certificates: false,
       nationality: '',
       country: '',
@@ -300,6 +302,7 @@ export default function ApplicationForm({ history, location, locale }) {
     guardian_first_name,
     gender,
     contact_number,
+    alt_contact_number,
     dob,
     address_line_1,
     address_line_2,
@@ -478,12 +481,17 @@ export default function ApplicationForm({ history, location, locale }) {
         dob,
         applications: {
           benfica_application: {
-            ...applicationDetails,
             ...(type === 'submit' && {
               age_group: `Under ${group}s`,
               submitted: true,
               submission_date: moment()
-            })
+            }),
+            ...applicationDetails,
+            personal_details: {
+              ...applicationDetails.personal_details,
+              contact_number: contact_number.join(''),
+              alt_contact_number: alt_contact_number.join('')
+            }
           }
         }
       }
@@ -670,6 +678,30 @@ export default function ApplicationForm({ history, location, locale }) {
       }
 
 
+    } else if (name === 'country_code' || name === 'contact_number') {
+      const newNumber = [...personal_details.contact_number]
+      const element = name === 'country_code' ? 1 : 2
+      newNumber[element] = value
+      setApplicationDetails({
+        ...applicationDetails,
+        personal_details: {
+          ...personal_details,
+          contact_number: newNumber
+        }
+      })
+
+    } else if (name === 'alt_country_code' || name === 'alt_contact_number') {
+      const newNumber = [...personal_details.contact_number]
+      const element = name === 'alt_country_code' ? 1 : 2
+      newNumber[element] = value
+      setApplicationDetails({
+        ...applicationDetails,
+        personal_details: {
+          ...personal_details,
+          alt_contact_number: newNumber
+        }
+      })
+
     } else {
 
       Object.keys(applicationDetails).forEach(x => {
@@ -801,8 +833,8 @@ export default function ApplicationForm({ history, location, locale }) {
           <Box
             fontSize={15}
             fontWeight="fontWeightBold" m={0}>
-             {application['2a'][locale]}
-        </Box>
+            {application['2a'][locale]}
+          </Box>
         </Typography>
 
 
@@ -869,14 +901,37 @@ export default function ApplicationForm({ history, location, locale }) {
               </div>
               <div className="field has-addons">
                 <p class="control">
-                  <a class="button is-static">
-                    +44
-              </a>
+                  <a class="button">
+                    <select value={contact_number[1]} class="input-block-level" id="countryCode" name="country_code">
+                      <PhoneDropDown />
+                    </select>
+                  </a>
                 </p>
                 <p class="control is-expanded">
                   <input
                     name='contact_number'
-                    value={contact_number}
+                    value={contact_number[2]}
+                    class="input" type="tel" placeholder='123456789' />
+                </p>
+              </div>
+            </div>
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> Alternate Contact Number
+               </label>
+              </div>
+              <div className="field has-addons">
+                <p class="control">
+                  <a class="button">
+                    <select value={alt_contact_number[1]} class="input-block-level" id="countryCode" name="alt_country_code">
+                      <PhoneDropDown />
+                    </select>
+                  </a>
+                </p>
+                <p class="control is-expanded">
+                  <input
+                    name='alt_contact_number'
+                    value={alt_contact_number[2]}
                     class="input" type="tel" placeholder='123456789' />
                 </p>
               </div>
@@ -891,7 +946,7 @@ export default function ApplicationForm({ history, location, locale }) {
         <Box
           fontSize={15}
           fontWeight="fontWeightBold" m={0}>
-             {application['2b'][locale]}
+          {application['2b'][locale]}
         </Box>
       </Typography>
 
@@ -952,172 +1007,193 @@ export default function ApplicationForm({ history, location, locale }) {
           <div className={classes.field}>
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span> Contact Number
-              </label>
+               </label>
             </div>
             <div className="field has-addons">
               <p class="control">
-                <a class="button is-static">
-                  +44
+                <a class="button">
+                  <select value={contact_number[1]} class="input-block-level" id="countryCode" name="country_code">
+                    <PhoneDropDown />
+                  </select>
                 </a>
               </p>
               <p class="control is-expanded">
                 <input
                   name='contact_number'
-                  value={contact_number}
+                  value={contact_number[2]}
                   class="input" type="tel" placeholder='123456789' />
               </p>
             </div>
           </div>
-
-
-        </div>}
-
-        <div className="field-body">
-
-          <div className={classes.field} style={{ flex: 0.2  }}>
+          <div className={classes.field}>
             <div className={classes.label}>
-              <label > <span style={{ color: 'red' }}>*</span> {application['4b'][locale]}
-              </label>
+              <label> <span style={{ color: 'red' }}>*</span> Alternate Contact Number
+               </label>
             </div>
-            <div class="select" style={{ width: '100%' }}>
-              <select value={gender} name='gender' style={{ width: '100%' }}>
-                <option disabled={gender !== ''} value=""> </option>
-                <option value="male"> {application['4c'][locale].split('/')[1]} </option>
-                <option value="female"> {application['4c'][locale].split('/')[0]}</option>
-              </select>
-            </div>
-          </div>
-
-          <div className={classes.field} style={{ flex: 0.2 }}>
-            <div className={classes.label}>
-              <label > <span style={{ color: 'red' }}>*</span> {`${application['4d'][locale]} ${isSafari ? '(YYYY-MM-DD)' : ''}`}
-              </label>
-            </div>
-            <p class={isSafari ? 'control is-expanded' : 'control'} >
-
-              {isSafari ?
+            <div className="field has-addons">
+              <p class="control">
+                <a class="button">
+                  <select value={alt_contact_number[1]} class="input-block-level" id="countryCode" name="alt_country_code">
+                    <PhoneDropDown />
+                  </select>
+                </a>
+              </p>
+              <p class="control is-expanded">
                 <input
-                  value={dob}
-                  class="input"
-                  type="text"
-                  name='dob'
-                  placeholder="YYYY-MM-DD" />
-                : <input value={dob} name='dob' class="input" type="date" />}
-            </p>
+                  name='alt_contact_number'
+                  value={alt_contact_number[2]}
+                  class="input" type="tel" placeholder='123456789' />
+              </p>
+            </div>
           </div>
-        </div>
+        </div >}
 
+<div className="field-body">
+
+  <div className={classes.field} style={{ flex: 0.2 }}>
+    <div className={classes.label}>
+      <label > <span style={{ color: 'red' }}>*</span> {application['4b'][locale]}
+      </label>
+    </div>
+    <div class="select" style={{ width: '100%' }}>
+      <select value={gender} name='gender' style={{ width: '100%' }}>
+        <option disabled={gender !== ''} value=""> </option>
+        <option value="male"> {application['4c'][locale].split('/')[1]} </option>
+        <option value="female"> {application['4c'][locale].split('/')[0]}</option>
+      </select>
+    </div>
+  </div>
+
+  <div className={classes.field} style={{ flex: 0.2 }}>
+    <div className={classes.label}>
+      <label > <span style={{ color: 'red' }}>*</span> {`${application['4d'][locale]} ${isSafari ? '(YYYY-MM-DD)' : ''}`}
+      </label>
+    </div>
+    <p class={isSafari ? 'control is-expanded' : 'control'} >
+
+      {isSafari ?
+        <input
+          value={dob}
+          class="input"
+          type="text"
+          name='dob'
+          placeholder="YYYY-MM-DD" />
+        : <input value={dob} name='dob' class="input" type="date" />}
+    </p>
+  </div>
+</div>
+
+      </div >
+
+  <div className="field"
+    style={{
+      borderBottom: '1px #f1f1f1 dotted',
+      paddingBottom: '25px',
+      marginBottom: '20px'
+    }}>
+
+    <Typography className={classes.subHeading} component='div' >
+      <Box
+        fontSize={15}
+        fontWeight="fontWeightBold" m={0}>
+        Residency Information
+        </Box>
+    </Typography>
+
+    <div class="field-body">
+      <div className={classes.field}>
+        <div className={classes.label}>
+          <label> <span style={{ color: 'red' }}>*</span> {application['4e'][locale]} </label>
+        </div>
+        <p class="control is-expanded">
+          <input
+            value={address_line_1}
+            name='address_line_1'
+            class="input"
+            type="text"
+            placeholder="Address Line 1" />
+        </p>
       </div>
 
-      <div className="field"
-        style={{
-          borderBottom: '1px #f1f1f1 dotted',
-          paddingBottom: '25px',
-          marginBottom: '20px'
-        }}>
-
-        <Typography className={classes.subHeading} component='div' >
-          <Box
-            fontSize={15}
-            fontWeight="fontWeightBold" m={0}>
-            Residency Information
-        </Box>
-        </Typography>
-
-        <div class="field-body">
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> {application['4e'][locale]} </label>
-            </div>
-            <p class="control is-expanded">
-              <input
-                value={address_line_1}
-                name='address_line_1'
-                class="input"
-                type="text"
-                placeholder="Address Line 1" />
-            </p>
-          </div>
-
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label> {application['4f'][locale]}</label>
-            </div>
-            <p class="control is-expanded">
-              <input value={address_line_2} name='address_line_2' class="input" type="text" placeholder="Address Line 2" />
-            </p>
-          </div>
-
-          <div className={classes.field} style={{ flex: '0.5' }}>
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> {application['4g'][locale]} </label>
-            </div>
-            <p class="control is-expanded">
-              <input value={city} name='city' class="input" type="text" placeholder="City" />
-            </p>
-          </div>
+      <div className={classes.field}>
+        <div className={classes.label}>
+          <label> {application['4f'][locale]}</label>
         </div>
+        <p class="control is-expanded">
+          <input value={address_line_2} name='address_line_2' class="input" type="text" placeholder="Address Line 2" />
+        </p>
+      </div>
 
-        <div class="field-body">
-
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> Country </label>
-            </div>
-            <p class="control is-expanded">
-              <input value={country} name='country' class="input" type="text" placeholder="South Korea" />
-            </p>
-          </div>
-
-
-
-
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> {application['4h'][locale]}</label>
-            </div>
-            <p class="control is-expanded">
-              <input value={postcode} name='postcode' class="input" type="text" placeholder=" Postcode" />
-            </p>
-          </div>
-
-
-          <div className={classes.field} style={{ flex: 0 }} >
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> Nationality</label>
-            </div>
-            <div class="select">
-              <NationalityDropDown value={nationality} />
-            </div>
-          </div>
-
-
-
+      <div className={classes.field} style={{ flex: '0.5' }}>
+        <div className={classes.label}>
+          <label> <span style={{ color: 'red' }}>*</span> {application['4g'][locale]} </label>
         </div>
+        <p class="control is-expanded">
+          <input value={city} name='city' class="input" type="text" placeholder="City" />
+        </p>
+      </div>
+    </div>
 
-        <div class="field-body" >
+    <div class="field-body">
 
-
-          <div className="field-body">
-
-            <FormControlLabel
-              style={{ transform: 'translate(5px, 5px)', marginTop: '5px' }}
-              onClick={() => {
-                setApplicationDetails({
-                  ...applicationDetails,
-                  personal_details: {
-                    ...applicationDetails.personal_details,
-                    can_provide_certificates: !can_provide_certificates
-                  }
-                })
-              }}
-              control={<Radio className='radio-check' checked={can_provide_certificates} />}
-              label={`Please indicate if you are able to provide evidence of residency${nationality !== 'south korean' ? ' and passport' : ''}, if required.`} />
-          </div>
+      <div className={classes.field}>
+        <div className={classes.label}>
+          <label> <span style={{ color: 'red' }}>*</span> Country </label>
+        </div>
+        <p class="control is-expanded">
+          <input value={country} name='country' class="input" type="text" placeholder="South Korea" />
+        </p>
+      </div>
 
 
 
-          {/* <div className={classes.field} >
+
+      <div className={classes.field}>
+        <div className={classes.label}>
+          <label> <span style={{ color: 'red' }}>*</span> {application['4h'][locale]}</label>
+        </div>
+        <p class="control is-expanded">
+          <input value={postcode} name='postcode' class="input" type="text" placeholder=" Postcode" />
+        </p>
+      </div>
+
+
+      <div className={classes.field} style={{ flex: 0 }} >
+        <div className={classes.label}>
+          <label> <span style={{ color: 'red' }}>*</span> Nationality</label>
+        </div>
+        <div class="select">
+          <NationalityDropDown value={nationality} />
+        </div>
+      </div>
+
+
+
+    </div>
+
+    <div class="field-body" >
+
+
+      <div className="field-body">
+
+        <FormControlLabel
+          style={{ transform: 'translate(5px, 5px)', marginTop: '5px' }}
+          onClick={() => {
+            setApplicationDetails({
+              ...applicationDetails,
+              personal_details: {
+                ...applicationDetails.personal_details,
+                can_provide_certificates: !can_provide_certificates
+              }
+            })
+          }}
+          control={<Radio className='radio-check' checked={can_provide_certificates} />}
+          label={`Please indicate if you are able to provide evidence of residency${nationality !== 'south korean' ? ' and passport' : ''}, if required.`} />
+      </div>
+
+
+
+      {/* <div className={classes.field} >
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span>   {nationality.toLowerCase() === 'south korean' ?
                 'Resident Registration Certificate' : 'Foreigner Registration Certificate'}
@@ -1158,122 +1234,122 @@ export default function ApplicationForm({ history, location, locale }) {
               </label>
             </div>
           </div> */}
-        </div>
+    </div>
 
 
 
 
 
 
+  </div>
+
+
+  <Typography component='div'
+    className={classes.subHeading} >
+    <Box
+      fontSize={15}
+      fontWeight="fontWeightBold" m={0}>
+      {application['5a'][locale]}
+    </Box>
+  </Typography>
+
+  <div class="field-body">
+    <div className={classes.field} style={{ flex: 'none' }}>
+      <div className={classes.label}>
+        <label> <span style={{ color: 'red' }}>*</span> {application['5b'][locale]} (cm) </label>
+      </div>
+      <p class="control is-expanded">
+        <input value={height} name='height' class="input" type="number" min={150} placeholder={application['4e'][locale]} />
+      </p>
+    </div>
+
+    <div className={classes.field} style={{ flex: 'none' }}>
+      <div className={classes.label}>
+        <label> <span style={{ color: 'red' }}>*</span> {application['5c'][locale]} (kg) </label>
+      </div>
+      <p class="control is-expanded">
+        <input value={weight} name='weight' class="input" type="number" min={50} placeholder={application['4e'][locale]} />
+      </p>
+    </div>
+
+
+    <div className={classes.field} style={{ flex: 'none' }}>
+      <div className={classes.label}>
+        <label> <span style={{ color: 'red' }}>*</span> {application['5e'][locale]} </label>
+      </div>
+      <div class="select" style={{ width: '100%' }} >
+        <select style={{ width: '100%' }} value={preferred_foot} name='preferred_foot'>
+          <option disabled={preferred_foot !== ''} value=""> </option>
+          <option value="left"> Left </option>
+          <option value="right"> Right </option>
+          <option value="both"> Both </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div className="field-body">
+    <div className={classes.field} style={{ flex: 'none' }}>
+
+      <div className={classes.label}>
+        <label> <span style={{ color: 'red' }}>*</span> {application['5d'][locale]} </label>
       </div>
 
-
-      <Typography component='div'
-        className={classes.subHeading} >
-        <Box
-          fontSize={15}
-          fontWeight="fontWeightBold" m={0}>
-          {application['5a'][locale]}
-        </Box>
-      </Typography>
-
-      <div class="field-body">
-        <div className={classes.field} style={{ flex: 'none' }}>
-          <div className={classes.label}>
-            <label> <span style={{ color: 'red' }}>*</span> {application['5b'][locale]} (cm) </label>
-          </div>
-          <p class="control is-expanded">
-            <input value={height} name='height' class="input" type="number" min={150} placeholder={application['4e'][locale]} />
-          </p>
-        </div>
-
-        <div className={classes.field} style={{ flex: 'none' }}>
-          <div className={classes.label}>
-            <label> <span style={{ color: 'red' }}>*</span> {application['5c'][locale]} (kg) </label>
-          </div>
-          <p class="control is-expanded">
-            <input value={weight} name='weight' class="input" type="number" min={50} placeholder={application['4e'][locale]} />
-          </p>
-        </div>
-
-
-        <div className={classes.field} style={{ flex: 'none' }}>
-          <div className={classes.label}>
-            <label> <span style={{ color: 'red' }}>*</span> {application['5e'][locale]} </label>
-          </div>
-          <div class="select" style={{ width: '100%' }} >
-            <select style={{ width: '100%' }} value={preferred_foot} name='preferred_foot'>
-              <option disabled={preferred_foot !== ''} value=""> </option>
-              <option value="left"> Left </option>
-              <option value="right"> Right </option>
-              <option value="both"> Both </option>
-            </select>
-          </div>
-        </div>
+      <div class="select" style={{ width: '100%' }} >
+        <select style={{ width: '100%' }} value={position} name='position'>
+          <option disabled={position !== ''} value=""> </option>
+          {playing_positions.map(x => <option value={x.value.toLowerCase()}> {x.label} </option>)}
+        </select>
       </div>
 
-      <div className="field-body">
-        <div className={classes.field} style={{ flex: 'none' }}>
+    </div>
 
-          <div className={classes.label}>
-            <label> <span style={{ color: 'red' }}>*</span> {application['5d'][locale]} </label>
-          </div>
-
-          <div class="select" style={{ width: '100%' }} >
-            <select style={{ width: '100%' }} value={position} name='position'>
-              <option disabled={position !== ''} value=""> </option>
-              {playing_positions.map(x => <option value={x.value.toLowerCase()}> {x.label} </option>)}
-            </select>
-          </div>
-
-        </div>
-
-        <div className={classes.field} style={{ flex: 0.45 }}>
-          <div className={classes.label}>
-            <label> Other Positions </label>
-          </div>
-
-          <Selector
-            closeMenuOnSelect={false}
-            menuPlacement='top'
-            components={{ Menu }}
-            isMulti
-            value={playing_positions.filter(x => other_positions.includes(x.value))}
-            name='other_positions'
-            onChange={(x, y) => {
-              const { option, action, removedValue } = y
-              const { player_attributes } = applicationDetails
-
-              let arr
-
-              if (action === 'clear') {
-                arr = []
-              } else if (action === 'remove-value') {
-                const { value } = removedValue
-                arr = other_positions
-                arr.splice(other_positions.indexOf(value), 1)
-              } else {
-                const { value } = option
-                arr = other_positions.concat(value)
-              }
-
-              setApplicationDetails({
-                ...applicationDetails,
-                player_attributes: {
-                  ...player_attributes,
-                  other_positions: arr
-                }
-              })
-            }}
-            isValidNewOption={isValidNewOption}
-            isSearchable={false}
-            options={playing_positions}
-          />
-
-        </div>
-
-
+    <div className={classes.field} style={{ flex: 0.45 }}>
+      <div className={classes.label}>
+        <label> Other Positions </label>
       </div>
+
+      <Selector
+        closeMenuOnSelect={false}
+        menuPlacement='top'
+        components={{ Menu }}
+        isMulti
+        value={playing_positions.filter(x => other_positions.includes(x.value))}
+        name='other_positions'
+        onChange={(x, y) => {
+          const { option, action, removedValue } = y
+          const { player_attributes } = applicationDetails
+
+          let arr
+
+          if (action === 'clear') {
+            arr = []
+          } else if (action === 'remove-value') {
+            const { value } = removedValue
+            arr = other_positions
+            arr.splice(other_positions.indexOf(value), 1)
+          } else {
+            const { value } = option
+            arr = other_positions.concat(value)
+          }
+
+          setApplicationDetails({
+            ...applicationDetails,
+            player_attributes: {
+              ...player_attributes,
+              other_positions: arr
+            }
+          })
+        }}
+        isValidNewOption={isValidNewOption}
+        isSearchable={false}
+        options={playing_positions}
+      />
+
+    </div>
+
+
+  </div>
 
 
 
@@ -1283,88 +1359,248 @@ export default function ApplicationForm({ history, location, locale }) {
     </>
   )
 
-  const secondPage = (
-    <>
+const secondPage = (
+  <>
 
-      <Typography className={classes.subHeading} component='div' >
-        <Box
-          fontSize={15}
-          fontWeight="fontWeightBold" m={0}>
-          Club & Coaching Information
+    <Typography className={classes.subHeading} component='div' >
+      <Box
+        fontSize={15}
+        fontWeight="fontWeightBold" m={0}>
+        Club & Coaching Information
         </Box>
-      </Typography>
+    </Typography>
 
 
-      <div class="field" style={{ paddingBottom: '25px', marginBottom: '20px', borderBottom: '1px dotted #f1f1f1' }}>
+    <div class="field" style={{ paddingBottom: '25px', marginBottom: '20px', borderBottom: '1px dotted #f1f1f1' }}>
 
 
 
-        <div class="field-body">
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label> Current Club Details  </label>
-            </div>
+      <div class="field-body">
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> Current Club Details  </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-body">
+        <div className={classes.field} style={{ flex: 'none' }} >
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> Age Group </label>
+          </div>
+          <div class="select">
+            <select
+              onChange={(e) => handleApplicationChange(e)}
+              value={current_club.age_group} id='age_group' name='current_club'>
+              <option disabled={current_club.age_group !== ''} value=""> </option>
+              {ageGroupSelection}
+            </select>
           </div>
         </div>
 
-        <div class="field-body">
-          <div className={classes.field} style={{ flex: 'none' }} >
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> Club Name </label>
+          </div>
+          <p class="control is-expanded">
+            <input
+              onChange={(e) => handleApplicationChange(e)}
+              value={current_club.club} id='club' name='current_club' class="input" type="text"
+              placeholder='Club Name' />
+          </p>
+        </div>
+
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span> Middle School </label>
+          </div>
+          <p class="control is-expanded">
+            <input
+              onChange={(e) => handleApplicationChange(e)}
+              value={current_club.middle_school} id='middle_school' name='current_club' class="input" type="text"
+              placeholder='Middle School' />
+          </p>
+        </div>
+
+        {current_club.k1_affiliated && (
+          <div className={classes.field} >
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> Age Group </label>
+              <label> <span style={{ color: 'red' }}>*</span> K1/K2 Club </label>
             </div>
             <div class="select">
               <select
                 onChange={(e) => handleApplicationChange(e)}
-                value={current_club.age_group} id='age_group' name='current_club'>
-                <option disabled={current_club.age_group !== ''} value=""> </option>
-                {ageGroupSelection}
+                value={current_club.k1_club} id='k1_club' name='current_club'>
+                <option disabled={current_club.k1_club !== ''} value=""> </option>
+                {k1ClubSelection}
               </select>
             </div>
           </div>
+        )}
 
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> Club Name </label>
-            </div>
-            <p class="control is-expanded">
-              <input
-                onChange={(e) => handleApplicationChange(e)}
-                value={current_club.club} id='club' name='current_club' class="input" type="text"
-                placeholder='Club Name' />
+
+      </div>
+
+      <FormControlLabel
+        style={{ transform: 'translateX(5px)' }}
+
+        onClick={() => {
+          setApplicationDetails({
+            ...applicationDetails,
+            football_history: {
+              ...applicationDetails.football_history,
+              current_club: {
+                ...current_club,
+                k1_affiliated: !current_club.k1_affiliated,
+                ...(!current_club.k1_affiliated === false && {
+                  k1_club: ''
+                })
+              }
+            }
+          })
+        }}
+        control={<Radio className='radio-check' checked={current_club.k1_affiliated} />}
+        label='This club is affiliated with a K1 or K2 club' />
+
+
+
+
+      <div class="field-body" style={{ marginTop: '1rem' }}>
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label >  {application['6c'][locale]} </label>
+            <p style={{ fontWeight: 'initial', position: 'relative' }} class="help"> Add a maximum of 3 previous clubs
+
+             {previous_clubs.length !== 3 && <Fab
+                onClick={() => {
+                  setApplicationDetails({
+                    ...applicationDetails,
+                    football_history: {
+                      ...applicationDetails.football_history,
+                      previous_clubs: [...previous_clubs, {
+                        age_group: '',
+                        club: '',
+                        k1_affiliated: false,
+                        k1_club: ''
+                      }]
+                    }
+                  })
+                }}
+                style={{
+                  position: 'absolute',
+                  top: '-22px',
+                  left: '17.5rem',
+                  width: '36px',
+                  height: '10px'
+                }}
+                size="small" color="primary" aria-label="add">
+                <AddIcon />
+              </Fab>}
+
+              {previous_clubs.length !== 0 && <Fab
+                onClick={() => {
+                  setApplicationDetails({
+                    ...applicationDetails,
+                    football_history: {
+                      ...applicationDetails.football_history,
+                      previous_clubs: previous_clubs.filter((x, i) => i !== previous_clubs.length - 1)
+                    }
+                  })
+                }}
+                style={{
+                  position: 'absolute',
+                  top: '-22px',
+                  left: '20.5rem',
+                  width: '36px',
+                  height: '10px'
+                }}
+                size="small" color="secondary" aria-label="add">
+                <ClearSharpIcon />
+              </Fab>}
             </p>
           </div>
-
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> Middle School </label>
-            </div>
-            <p class="control is-expanded">
-              <input
-                onChange={(e) => handleApplicationChange(e)}
-                value={current_club.middle_school} id='middle_school' name='current_club' class="input" type="text"
-                placeholder='Middle School' />
-            </p>
-          </div>
-
-          {current_club.k1_affiliated && (
-            <div className={classes.field} >
-              <div className={classes.label}>
-                <label> <span style={{ color: 'red' }}>*</span> K1/K2 Club </label>
-              </div>
-              <div class="select">
-                <select
-                  onChange={(e) => handleApplicationChange(e)}
-                  value={current_club.k1_club} id='k1_club' name='current_club'>
-                  <option disabled={current_club.k1_club !== ''} value=""> </option>
-                  {k1ClubSelection}
-                </select>
-              </div>
-            </div>
-          )}
-
-
         </div>
+      </div>
 
+
+      {previous_clubs.map((el, i) => {
+        return (
+          <>
+            <div class="field-body">
+              <div className={classes.field} style={{ flex: 'none' }}>
+                <div className={classes.label}>
+                  <label> <span style={{ color: 'red' }}>*</span> Age Group </label>
+                </div>
+                <div class="select">
+                  <select
+                    onChange={(e) => handleApplicationChange(e, i)}
+                    value={el.age_group} id='age_group' name='previous_clubs'>
+                    <option disabled={el.age_group !== ''} value=""> </option>
+                    {ageGroupSelection}
+                  </select>
+                </div>
+              </div>
+
+              <div className={classes.field} style={{ flex: '0.4' }}>
+                <div className={classes.label}>
+                  <label> <span style={{ color: 'red' }}>*</span> Club Name </label>
+                </div>
+                <p class="control is-expanded">
+                  <input
+                    onChange={(e) => handleApplicationChange(e, i)}
+                    value={el.club} id='club' name='previous_clubs' class="input" type="text"
+                    placeholder='Club Name' />
+                </p>
+              </div>
+
+
+              {el.k1_affiliated && (
+                <div className={classes.field} >
+                  <div className={classes.label}>
+                    <label> <span style={{ color: 'red' }}>*</span> K1/K2 Club </label>
+                  </div>
+                  <div class="select">
+                    <select
+                      onChange={(e) => handleApplicationChange(e, i)}
+                      value={el.k1_club} id='k1_club' name='previous_clubs'>
+                      <option disabled={el.k1_club !== ''} value=""> </option>
+                      {k1ClubSelection}
+                    </select>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <FormControlLabel
+              style={{ transform: 'translateX(5px)' }}
+
+              onClick={() => {
+                const arr = previous_clubs
+                arr[i] = {
+                  ...arr[i],
+                  k1_affiliated: !el.k1_affiliated,
+                  ...(!el.k1_affiliated === false && {
+                    k1_club: ''
+                  })
+                }
+
+                setApplicationDetails({
+                  ...applicationDetails,
+                  football_history: {
+                    ...applicationDetails.football_history,
+                    previous_clubs: arr
+                  }
+                })
+              }}
+              control={<Radio className='radio-check' checked={el.k1_affiliated} />}
+              label='This club is affiliated with a K1 or K2 club' />
+
+
+          </>
+        )
+      })}
+
+      <div className="field-body" style={{ marginTop: '1rem' }}>
         <FormControlLabel
           style={{ transform: 'translateX(5px)' }}
 
@@ -1373,495 +1609,335 @@ export default function ApplicationForm({ history, location, locale }) {
               ...applicationDetails,
               football_history: {
                 ...applicationDetails.football_history,
-                current_club: {
-                  ...current_club,
-                  k1_affiliated: !current_club.k1_affiliated,
-                  ...(!current_club.k1_affiliated === false && {
-                    k1_club: ''
-                  })
-                }
+                private_coaching: !private_coaching
               }
             })
           }}
-          control={<Radio className='radio-check' checked={current_club.k1_affiliated} />}
-          label='This club is affiliated with a K1 or K2 club' />
+          control={<Radio className='radio-check' checked={private_coaching} />}
+          label='Please check if you are currently attending private coaching sessions' />
 
-
-
-
-        <div class="field-body" style={{ marginTop: '1rem' }}>
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label >  {application['6c'][locale]} </label>
-              <p style={{ fontWeight: 'initial', position: 'relative' }} class="help"> Add a maximum of 3 previous clubs
-
-             {previous_clubs.length !== 3 && <Fab
-                  onClick={() => {
-                    setApplicationDetails({
-                      ...applicationDetails,
-                      football_history: {
-                        ...applicationDetails.football_history,
-                        previous_clubs: [...previous_clubs, {
-                          age_group: '',
-                          club: '',
-                          k1_affiliated: false,
-                          k1_club: ''
-                        }]
-                      }
-                    })
-                  }}
-                  style={{
-                    position: 'absolute',
-                    top: '-22px',
-                    left: '17.5rem',
-                    width: '36px',
-                    height: '10px'
-                  }}
-                  size="small" color="primary" aria-label="add">
-                  <AddIcon />
-                </Fab>}
-
-                {previous_clubs.length !== 0 && <Fab
-                  onClick={() => {
-                    setApplicationDetails({
-                      ...applicationDetails,
-                      football_history: {
-                        ...applicationDetails.football_history,
-                        previous_clubs: previous_clubs.filter((x, i) => i !== previous_clubs.length - 1)
-                      }
-                    })
-                  }}
-                  style={{
-                    position: 'absolute',
-                    top: '-22px',
-                    left: '20.5rem',
-                    width: '36px',
-                    height: '10px'
-                  }}
-                  size="small" color="secondary" aria-label="add">
-                  <ClearSharpIcon />
-                </Fab>}
-              </p>
-            </div>
-          </div>
-        </div>
-
-
-        {previous_clubs.map((el, i) => {
-          return (
-            <>
-              <div class="field-body">
-                <div className={classes.field} style={{ flex: 'none' }}>
-                  <div className={classes.label}>
-                    <label> <span style={{ color: 'red' }}>*</span> Age Group </label>
-                  </div>
-                  <div class="select">
-                    <select
-                      onChange={(e) => handleApplicationChange(e, i)}
-                      value={el.age_group} id='age_group' name='previous_clubs'>
-                      <option disabled={el.age_group !== ''} value=""> </option>
-                      {ageGroupSelection}
-                    </select>
-                  </div>
-                </div>
-
-                <div className={classes.field} style={{ flex: '0.4' }}>
-                  <div className={classes.label}>
-                    <label> <span style={{ color: 'red' }}>*</span> Club Name </label>
-                  </div>
-                  <p class="control is-expanded">
-                    <input
-                      onChange={(e) => handleApplicationChange(e, i)}
-                      value={el.club} id='club' name='previous_clubs' class="input" type="text"
-                      placeholder='Club Name' />
-                  </p>
-                </div>
-
-
-                {el.k1_affiliated && (
-                  <div className={classes.field} >
-                    <div className={classes.label}>
-                      <label> <span style={{ color: 'red' }}>*</span> K1/K2 Club </label>
-                    </div>
-                    <div class="select">
-                      <select
-                        onChange={(e) => handleApplicationChange(e, i)}
-                        value={el.k1_club} id='k1_club' name='previous_clubs'>
-                        <option disabled={el.k1_club !== ''} value=""> </option>
-                        {k1ClubSelection}
-                      </select>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <FormControlLabel
-                style={{ transform: 'translateX(5px)' }}
-
-                onClick={() => {
-                  const arr = previous_clubs
-                  arr[i] = {
-                    ...arr[i],
-                    k1_affiliated: !el.k1_affiliated,
-                    ...(!el.k1_affiliated === false && {
-                      k1_club: ''
-                    })
-                  }
-
-                  setApplicationDetails({
-                    ...applicationDetails,
-                    football_history: {
-                      ...applicationDetails.football_history,
-                      previous_clubs: arr
-                    }
-                  })
-                }}
-                control={<Radio className='radio-check' checked={el.k1_affiliated} />}
-                label='This club is affiliated with a K1 or K2 club' />
-
-
-            </>
-          )
-        })}
-
-        <div className="field-body" style={{ marginTop: '1rem' }}>
-          <FormControlLabel
-            style={{ transform: 'translateX(5px)' }}
-
-            onClick={() => {
-              setApplicationDetails({
-                ...applicationDetails,
-                football_history: {
-                  ...applicationDetails.football_history,
-                  private_coaching: !private_coaching
-                }
-              })
-            }}
-            control={<Radio className='radio-check' checked={private_coaching} />}
-            label='Please check if you are currently attending private coaching sessions' />
-
-        </div>
-
-        {private_coaching && <>
-
-          <div className="field-body">
-            <div className={classes.field}>
-              <div className={classes.label}>
-                <label> <span style={{ color: 'red' }}>*</span> Coach Name</label>
-              </div>
-              <p class="control is-expanded">
-                <input value={private_coach_name}
-                  name='private_coach_name'
-                  class="input" type="text" placeholder='John Doe' />
-              </p>
-            </div>
-
-            <div className={classes.field}>
-              <div className={classes.label}>
-                <label> <span style={{ color: 'red' }}>*</span> Coaching Company</label>
-              </div>
-              <p class="control is-expanded">
-                <input value={private_coach_company}
-                  name='private_coach_company'
-                  class="input" type="text" placeholder='John Doe Company' />
-              </p>
-            </div>
-
-            <div className={classes.field}>
-              <div className={classes.label}>
-                <label> <span style={{ color: 'red' }}>*</span> Coaching Website</label>
-              </div>
-              <p class="control is-expanded">
-                <input value={private_coach_website}
-                  name='private_coach_website'
-                  class="input" type="text" placeholder='www.johndoecoaching.com' />
-              </p>
-            </div>
-          </div>
-
-        </>}
       </div>
 
-      <div className="field">
+      {private_coaching && <>
 
-        <Typography className={classes.subHeading} component='div' >
-          <Box
-            fontSize={15}
-            fontWeight="fontWeightBold" m={0}>
-            Other Playing Details
-        </Box>
-        </Typography>
-
-        <div class="field-body">
-          <FormControlLabel
-            style={{ transform: 'translateX(5px)' }}
-            onClick={() => {
-              setApplicationDetails({
-                ...applicationDetails,
-                football_history: {
-                  ...applicationDetails.football_history,
-                  award_achieved: !award_achieved
-                }
-              })
-            }}
-            control={<Radio className='radio-check' checked={award_achieved} />}
-            label='Please check if you have achieved any awards (KFA, Regional FA, Foundation)' />
-        </div>
-
-        {award_achieved && <div className="field-body">
-          <div className={classes.field} style={{ flex: 'none' }}>
-            <div className={classes.label}>
-              <label> Award Received </label>
-            </div>
-            <div class="select">
-              <select
-                value={award_name}
-                name='award_name'>
-                <option value=""> </option>
-                <option value="kfa"> KFA Award </option>
-                <option value="regional"> Regional FA Award </option>
-                <option value="foundation"> Foundation Award </option>
-              </select>
-            </div>
-          </div>
-          <div className={classes.field} style={{ flex: 'none' }}>
-            <div className={classes.label}>
-              <label> Date of Award </label>
-            </div>
-            <div class="select">
-              <select
-                name='award_date'
-                value={award_date}>
-                <option value=""> </option>
-                <option value="2015"> 2015</option>
-                <option value="2016"> 2016</option>
-                <option value="2017"> 2017 </option>
-                <option value="2018"> 2018</option>
-                <option value="2019"> 2019 </option>
-                <option value="2020"> 2020 </option>
-              </select>
-            </div>
-          </div>
+        <div className="field-body">
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> Reason for Award </label>
+              <label> <span style={{ color: 'red' }}>*</span> Coach Name</label>
             </div>
             <p class="control is-expanded">
-              <input
-                value={award_reasoning}
-                name='award_reasoning'
-                class="input" type="text" />
+              <input value={private_coach_name}
+                name='private_coach_name'
+                class="input" type="text" placeholder='John Doe' />
             </p>
           </div>
-        </div>}
 
-        <div className={classes.field}>
-          <div className={classes.label}>
-            <label > If you have any game footage highlights, list the URL here </label>
-          </div>
-          <p class="control is-expanded">
-            <input value={highlights_footage_link} name='highlights_footage_link' class="input" type="text" placeholder={application['6e'][locale]} />
-          </p>
-        </div>
-
-
-
-      </div >
-
-      <div class="field">
-        <div class="field-body">
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span>  Personal Statement </label>
-              <p style={{ fontWeight: 'initial' }} class="help">  {application['6h'][locale]} </p>
+              <label> <span style={{ color: 'red' }}>*</span> Coaching Company</label>
             </div>
+            <p class="control is-expanded">
+              <input value={private_coach_company}
+                name='private_coach_company'
+                class="input" type="text" placeholder='John Doe Company' />
+            </p>
+          </div>
 
-            <div class="control">
-
-              <textarea value={bio_description} name='bio_description' style={{ minHeight: '15rem' }} class="textarea" placeholder={application['6g'][locale]}></textarea>
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span> Coaching Website</label>
             </div>
+            <p class="control is-expanded">
+              <input value={private_coach_website}
+                name='private_coach_website'
+                class="input" type="text" placeholder='www.johndoecoaching.com' />
+            </p>
           </div>
         </div>
-      </div>
-    </>
-  )
 
-  const thirdPage = (
-    <>
+      </>}
+    </div>
 
-      {videoLinks && videoLinks.map((x, i) => {
-        const value = i === 0 ? link_1 : i === 1 ? link_2 : link_3
-        const name = `link_${i + 1}`
+    <div className="field">
 
-        return (
-
-          <section className={i !== 1 ? classes.challengeRowContainer : classes.challengeRowReversed}>
-            <div className={classes.videoContainer}>
-              <iframe title='video' width='100%' height='100%' src={x.src} frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen> </iframe>
-            </div>
-
-            <div className={classes.challengeDescription}>
-
-              <Typography component='div' style={{ position: 'relative' }}>
-                <Box
-                  className={classes.challengeNumber}
-                  fontSize={75}
-                  fontWeight="fontWeightBold" m={0}>
-                  0{i + 1}
-                </Box>
-
-                <Box
-                  style={{ fontFamily: 'Roboto Condensed' }}
-                  fontSize={25}
-                  fontWeight="fontWeightBold" m={0}>
-                  {locale === 'en' ? x.title.slice(0, x.title.length - 4).toUpperCase() : x.title.substring(4)}
-                </Box>
-
-                <Box
-                  fontSize={14}
-                  fontWeight="fontWeightRegular" mb={5}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non neque aliquet leo suscipit ultricies.
-               Sed cursus eros at ex vulputate pulvinar vel et nulla. In hac habitasse platea dictumst.
-                </Box>
-              </Typography>
-
-              <div className={classes.field}>
-                <div className={classes.label}>
-                  <label> <span style={{ color: 'red' }}>*</span> {x.title}
-                  </label>
-                </div>
-                <p class="control is-expanded">
-                  <input
-                    value={value}
-                    class="input" type="text"
-                    name={name} />
-                </p>
-              </div>
-
-            </div>
-          </section>
-        )
-      })}
-
-
-
-
-    </>
-  )
-
-  return (
-    <div className={classes.root}>
-      <Typography component='div' >
+      <Typography className={classes.subHeading} component='div' >
         <Box
-          className={classes.title}
-          align='center'
-          fontWeight="fontWeightRegular" pb={3} pt={3}>
-          {application['1'][locale]}
+          fontSize={15}
+          fontWeight="fontWeightBold" m={0}>
+          Other Playing Details
         </Box>
       </Typography>
 
-      <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-
-      <div id='scrollable' className={classes.formContainer}>
-        <Typography className={classes.instructions}>
-          <form onChange={(e) => handleApplicationChange(e)} action="">
-            {getStepContent(activeStep)}
-          </form>
-
-        </Typography>
-        <div style={{ textAlign: 'end' }}>
-
-
-          <Button
-            style={{ display: activeStep === 0 ? 'none' : 'initial' }}
-            disabled={activeStep === 0 || isLoading}
-            onClick={handleBack}
-            className={classes.button}>
-
-            {application['10a'][locale]}
-          </Button>
-
-          <Button
-            disabled={isLoading}
-            onClick={() => {
-              handleApplicationSave()
-              setTimeout(() => {
-                history.push(`/user/${auth.getUserId()}`)
-              }, 3000)
-            }}
-            variant="outlined"
-            color="primary"
-            className={classes.button}
-            endIcon={<SaveAltIcon />}>
-            {isLoading && <CircularProgress size={30} className={classes.progress} />}
-            {/* {application['10b'][locale]} */}
-            Save & Exit
-          </Button>
-
-          <Button
-            disabled={isLoading}
-            variant="outlined"
-            color="primary"
-            onClick={handleNext}
-            className={classes.button}
-            endIcon={<ArrowForwardIcon />}>
-            {isLoading && <CircularProgress size={30} className={classes.progress} />}
-            {activeStep === steps.length - 1 ? application['10c'][locale] : application['10d'][locale]}
-          </Button>
-        </div>
+      <div class="field-body">
+        <FormControlLabel
+          style={{ transform: 'translateX(5px)' }}
+          onClick={() => {
+            setApplicationDetails({
+              ...applicationDetails,
+              football_history: {
+                ...applicationDetails.football_history,
+                award_achieved: !award_achieved
+              }
+            })
+          }}
+          control={<Radio className='radio-check' checked={award_achieved} />}
+          label='Please check if you have achieved any awards (KFA, Regional FA, Foundation)' />
       </div>
 
-      {message && <Snackbar
-        open={message}
-        autoHideDuration={5000}
-        onClose={closeSnackBar}>
-        <Alert onClose={closeSnackBar} severity={Object.keys(message)[0]}>
-          {message[Object.keys(message)[0]]}
-        </Alert>
-      </Snackbar>}
+      {award_achieved && <div className="field-body">
+        <div className={classes.field} style={{ flex: 'none' }}>
+          <div className={classes.label}>
+            <label> Award Received </label>
+          </div>
+          <div class="select">
+            <select
+              value={award_name}
+              name='award_name'>
+              <option value=""> </option>
+              <option value="kfa"> KFA Award </option>
+              <option value="regional"> Regional FA Award </option>
+              <option value="foundation"> Foundation Award </option>
+            </select>
+          </div>
+        </div>
+        <div className={classes.field} style={{ flex: 'none' }}>
+          <div className={classes.label}>
+            <label> Date of Award </label>
+          </div>
+          <div class="select">
+            <select
+              name='award_date'
+              value={award_date}>
+              <option value=""> </option>
+              <option value="2015"> 2015</option>
+              <option value="2016"> 2016</option>
+              <option value="2017"> 2017 </option>
+              <option value="2018"> 2018</option>
+              <option value="2019"> 2019 </option>
+              <option value="2020"> 2020 </option>
+            </select>
+          </div>
+        </div>
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> Reason for Award </label>
+          </div>
+          <p class="control is-expanded">
+            <input
+              value={award_reasoning}
+              name='award_reasoning'
+              class="input" type="text" />
+          </p>
+        </div>
+      </div>}
 
-      {open && <Dialog
-        open={open}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-slide-title"
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle id="alert-dialog-slide-title">
-          Application Submission
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            Once you submit your application, you will not be able to amend it further.
-            If you would like to review or make changes to your application, please click back
-            otherwise, please confirm that you would like to submit your application.
-          </DialogContentText>
-        </DialogContent>
+      <div className={classes.field}>
+        <div className={classes.label}>
+          <label > If you have any game footage highlights, list the URL here </label>
+        </div>
+        <p class="control is-expanded">
+          <input value={highlights_footage_link} name='highlights_footage_link' class="input" type="text" placeholder={application['6e'][locale]} />
+        </p>
+      </div>
 
-        <DialogActions>
-          <Button onClick={handleClose}>
-            Back
-          </Button>
-          <Button variant='outlined' onClick={() => {
-            handleApplicationSave('submit')
+
+
+    </div >
+
+    <div class="field">
+      <div class="field-body">
+        <div className={classes.field}>
+          <div className={classes.label}>
+            <label> <span style={{ color: 'red' }}>*</span>  Personal Statement </label>
+            <p style={{ fontWeight: 'initial' }} class="help">  {application['6h'][locale]} </p>
+          </div>
+
+          <div class="control">
+
+            <textarea value={bio_description} name='bio_description' style={{ minHeight: '15rem' }} class="textarea" placeholder={application['6g'][locale]}></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </>
+)
+
+const thirdPage = (
+  <>
+
+    {videoLinks && videoLinks.map((x, i) => {
+      const value = i === 0 ? link_1 : i === 1 ? link_2 : link_3
+      const name = `link_${i + 1}`
+
+      return (
+
+        <section className={i !== 1 ? classes.challengeRowContainer : classes.challengeRowReversed}>
+          <div className={classes.videoContainer}>
+            <iframe title='video' width='100%' height='100%' src={x.src} frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen> </iframe>
+          </div>
+
+          <div className={classes.challengeDescription}>
+
+            <Typography component='div' style={{ position: 'relative' }}>
+              <Box
+                className={classes.challengeNumber}
+                fontSize={75}
+                fontWeight="fontWeightBold" m={0}>
+                0{i + 1}
+              </Box>
+
+              <Box
+                style={{ fontFamily: 'Roboto Condensed' }}
+                fontSize={25}
+                fontWeight="fontWeightBold" m={0}>
+                {locale === 'en' ? x.title.slice(0, x.title.length - 4).toUpperCase() : x.title.substring(4)}
+              </Box>
+
+              <Box
+                fontSize={14}
+                fontWeight="fontWeightRegular" mb={5}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non neque aliquet leo suscipit ultricies.
+             Sed cursus eros at ex vulputate pulvinar vel et nulla. In hac habitasse platea dictumst.
+                </Box>
+            </Typography>
+
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> {x.title}
+                </label>
+              </div>
+              <p class="control is-expanded">
+                <input
+                  value={value}
+                  class="input" type="text"
+                  name={name} />
+              </p>
+            </div>
+
+          </div>
+        </section>
+      )
+    })}
+
+
+
+
+  </>
+)
+
+return (
+  <div className={classes.root}>
+    <Typography component='div' >
+      <Box
+        className={classes.title}
+        align='center'
+        fontWeight="fontWeightRegular" pb={3} pt={3}>
+        {application['1'][locale]}
+      </Box>
+    </Typography>
+
+    <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
+      {steps.map((label) => (
+        <Step key={label}>
+          <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+        </Step>
+      ))}
+    </Stepper>
+
+    <div id='scrollable' className={classes.formContainer}>
+      <Typography className={classes.instructions}>
+        <form onChange={(e) => handleApplicationChange(e)} action="">
+          {getStepContent(activeStep)}
+        </form>
+
+      </Typography>
+      <div style={{ textAlign: 'end' }}>
+
+
+        <Button
+          style={{ display: activeStep === 0 ? 'none' : 'initial' }}
+          disabled={activeStep === 0 || isLoading}
+          onClick={handleBack}
+          className={classes.button}>
+
+          {application['10a'][locale]}
+        </Button>
+
+        <Button
+          disabled={isLoading}
+          onClick={() => {
+            handleApplicationSave()
             setTimeout(() => {
               history.push(`/user/${auth.getUserId()}`)
-            }, (3000));
-          }} color="primary" autoFocus>
-            Submit
+            }, 3000)
+          }}
+          variant="outlined"
+          color="primary"
+          className={classes.button}
+          endIcon={<SaveAltIcon />}>
+          {isLoading && <CircularProgress size={30} className={classes.progress} />}
+          {/* {application['10b'][locale]} */}
+          Save & Exit
           </Button>
-        </DialogActions>
-      </Dialog>}
 
+        <Button
+          disabled={isLoading}
+          variant="outlined"
+          color="primary"
+          onClick={handleNext}
+          className={classes.button}
+          endIcon={<ArrowForwardIcon />}>
+          {isLoading && <CircularProgress size={30} className={classes.progress} />}
+          {activeStep === steps.length - 1 ? application['10c'][locale] : application['10d'][locale]}
+        </Button>
+      </div>
     </div>
-  );
+
+    {message && <Snackbar
+      open={message}
+      autoHideDuration={5000}
+      onClose={closeSnackBar}>
+      <Alert onClose={closeSnackBar} severity={Object.keys(message)[0]}>
+        {message[Object.keys(message)[0]]}
+      </Alert>
+    </Snackbar>}
+
+    {open && <Dialog
+      open={open}
+      TransitionComponent={Transition}
+      keepMounted
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-slide-title"
+      aria-describedby="alert-dialog-slide-description"
+    >
+      <DialogTitle id="alert-dialog-slide-title">
+        Application Submission
+        </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-slide-description">
+          Once you submit your application, you will not be able to amend it further.
+          If you would like to review or make changes to your application, please click back
+          otherwise, please confirm that you would like to submit your application.
+          </DialogContentText>
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={handleClose}>
+          Back
+          </Button>
+        <Button variant='outlined' onClick={() => {
+          handleApplicationSave('submit')
+          setTimeout(() => {
+            history.push(`/user/${auth.getUserId()}`)
+          }, (3000));
+        }} color="primary" autoFocus>
+          Submit
+          </Button>
+      </DialogActions>
+    </Dialog>}
+
+  </div>
+);
 }
