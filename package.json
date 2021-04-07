@@ -38,6 +38,7 @@
     "react-scripts": "3.4.1",
     "react-select": "^4.1.0",
     "react-swipeable-views": "^0.13.9",
+    "reaptcha": "^1.7.2",
     "shape-json": "^1.2.4"
   },
   "scripts": {
@@ -62,5 +63,4 @@
     ]
   },
   "proxy": "http://localhost:5000/football-hub-4018a/europe-west2/api"
-
 }
