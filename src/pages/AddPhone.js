@@ -34,7 +34,7 @@ const AddPhone = ({ location, history, locale }) => {
     },
     form: {
       margin: '0 auto',
-      width: '30%',
+      width: '26%',
       minWidth: '300px',
       display: 'flex',
       flexDirection: 'column',
@@ -58,7 +58,11 @@ const AddPhone = ({ location, history, locale }) => {
     back: {
       alignSelf: 'end',
       margin: '20px 20px'
-    }
+    },
+    label: {
+      fontSize: '14px',
+      fontWeight: 'bold'
+    },
   }));
 
 
@@ -167,78 +171,104 @@ const AddPhone = ({ location, history, locale }) => {
     <div className={classes.container}>
 
       {/* <Paper elevation={3} className={classes.paper}> */}
-        <Button className={`${classes.button} ${classes.back}`} variant='outlined' onClick={() => history.goBack()}>Back</Button>
+      <Button className={`${classes.button} ${classes.back}`} variant='outlined' onClick={() => history.goBack()}>Back</Button>
 
-        <Typography component='div' >
-          <Box
-            fontSize={20}
-            fontWeight="fontWeightBold" mb={2}>
-            Phone Number Verification
+      <Typography component='div' >
+        <Box
+          fontSize={20}
+          align='center'
+          fontWeight="fontWeightBold" mb={2}>
+          Phone Number Verification
            </Box>
 
-          <Box
-            fontSize={14}
-            fontWeight="fontWeightRegular" mb={3}>
-            To use Multi Factor Authentication we need to verify your phone below.{<br />}
-            Please enter the phone number you want to use and you will be sent a verification code
+        <Box
+          fontSize={14}
+          align='center'
+          fontWeight="fontWeightRegular" mb={3}>
+          To use Multi Factor Authentication we need to verify your phone below.{<br />}
+          Please enter the phone number you want to use and you will be sent a verification code
            </Box>
-        </Typography>
+      </Typography>
 
-        {/* <Select value={locale} style={{ fontSize: '14px' }} onChange={(event) => {
+      {/* <Select value={locale} style={{ fontSize: '14px' }} onChange={(event) => {
               // setLang(event.target.value)
             }}>
               
               <MenuItem value={'en'}>English</MenuItem>
               <MenuItem value={'ko'}>Korean</MenuItem>
             </Select> */}
-        <form
-          autoComplete='off'
-          onChange={(e) => handleFormChange(e)}
-          onSubmit={!codeSent ? (e) => sendVerificationCode(e) : (e) => confirmVerificationCode(e)}
-          className={classes.form}>
-          <FormControl variant="outlined">
-            <InputLabel htmlFor="component-outlined"> Phone Number </InputLabel>
-            <OutlinedInput
-              // error={emailErrors.some(code => code === loginError.code) ? true : false}
-              type='text'
-              name='phoneNumber' id="component-outlined" label='Email'
-              value={loginFields.phoneNumber}
+      <form
+        autoComplete='off'
+        onChange={(e) => handleFormChange(e)}
+        onSubmit={!codeSent ? (e) => sendVerificationCode(e) : (e) => confirmVerificationCode(e)}
+        className={classes.form}>
+
+        <div class="field">
+          <label className={classes.label}>
+            <span style={{ color: 'red' }}>*</span> Phone Number </label>
+          <div class="control">
+            <input class="input is-small" type="text" name='phoneNumber'
               disabled={verified || verificationUpdated}
-            />
-          </FormControl>
+              value={loginFields.phoneNumber} />
+          </div>
+        </div>
 
-          {/* {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>} */}
-          <div id="recaptcha-container"></div>
+        {/* 
+        <FormControl variant="outlined">
+          <InputLabel htmlFor="component-outlined"> Phone Number </InputLabel>
+          <OutlinedInput
+            // error={emailErrors.some(code => code === loginError.code) ? true : false}
+            type='text'
+            name='phoneNumber' id="component-outlined" label='Email'
+            value={loginFields.phoneNumber}
+            disabled={verified || verificationUpdated}
+          />
+        </FormControl> */}
+
+        {/* {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>} */}
+        <div id="recaptcha-container"></div>
 
 
-          {!verified && <FormControl variant="outlined">
-            <InputLabel htmlFor="outlined-verification-code">Verification Code</InputLabel>
-            <OutlinedInput
-              id="outlined-verification-code"
-              label='Verification Code'
-              name='verificationCode'
-              labelWidth={70}
+        {!verified && <div class="field">
+          <label className={classes.label}>
+            <span style={{ color: 'red' }}>*</span> Verification Code </label>
+          <div class="control">
+            <input class="input is-small" id="outlined-verification-code" type="text" name='verificationCode'
               value={verificationUpdated ? 'Verified!' : loginFields.verificationCode}
-              disabled={!codeSent}
-            />
-          </FormControl>}
+              disabled={!codeSent} />
+          </div>
+        </div>
+        }
 
-          <Button disabled={isLoading || verified || verificationUpdated}
-            className={classes.button} type='submit'
-            variant='outlined'
-            color='primary'>
-            {verified || verificationUpdated ? 'Verified' :
-              !codeSent ? 'Send Code' : 'Verify Code'}
 
-            {isLoading && <CircularProgress size={30} className={classes.progress} />}
-          </Button>
-          {/* {loginError && <Typography>{loginError}</Typography>} */}
-          {/* {location.pathname !== '/admin/login' && */}
-          {/* <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>} */}
+        {/* // <FormControl variant="outlined">
+        //   <InputLabel htmlFor="outlined-verification-code">Verification Code</InputLabel>
+        //   <OutlinedInput
+        //     id="outlined-verification-code"
+        //     label='Verification Code'
+        //     name='verificationCode'
+        //     labelWidth={70}
+        //     value={verificationUpdated ? 'Verified!' : loginFields.verificationCode}
+        //     disabled={!codeSent}
+        //   />
+        // </FormControl> */}
 
-        </form>
+        <Button disabled={isLoading || verified || verificationUpdated}
+          className={classes.button} type='submit'
+          variant='outlined'
+          color='primary'>
+          {verified || verificationUpdated ? 'Verified' :
+            !codeSent ? 'Send Code' : 'Verify Code'}
 
-        {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
+          {isLoading && <CircularProgress size={30} className={classes.progress} />}
+        </Button>
+        {/* {loginError && <Typography>{loginError}</Typography>} */}
+        {/* {location.pathname !== '/admin/login' && */}
+        {/* <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>} */}
+
+      </form>
+
+      {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
       {/* </Paper> */}
     </div>
   )

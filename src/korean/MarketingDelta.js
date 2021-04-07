@@ -155,7 +155,6 @@ const useStyles = makeStyles((theme) => ({
       "&:not(:last-child)": {
         borderRight: '1px solid grey',
         fontSize: '0.875rem',
-        marginBottom: '0rem',
       }
     },
 
@@ -498,36 +497,22 @@ const CoachModal = ({ modalOpen, setModalOpen, locale, coach }) => {
               align='left'
               className={classes.modalCard__title}
               fontSize={35} fontWeight="fontWeightBold" mb={0}>
-              {coach.split(' / ')[0]}
+              {coach.split('/')[0]}
             </Box>
 
             <Box
-              fontSize={12} align='left' fontWeight="fontWeightRegular" mb={2}>
-              Currently: {coach.split(' / ')[1]}
+              fontSize={14} align='left' fontWeight="fontWeightRegular" mb={2}>
+              {coach.split('/')[1]}
             </Box>
 
             <Box
-              pr={8}
-              fontSize={14} fontWeight="fontWeightRegular" mb={2}>
-              {coach.split(' / ')[2].split('% ').map(item => {
-                return (
-                  <>
-                    <p>{item}</p>
-                    <br />
-                  </>
-                )
-              })}
-              {coach.split(' / ')[3] &&
-                <ul>
-                  {coach.split(' / ')[3].split('%').map(item => {
-                    return (
-                      <li className={classes.modalCard__list}>
-                        {item}
-                      </li>
-                    )
-                  })}
-                </ul>
-              }
+              fontSize={16} align='left' fontWeight="fontWeightRegular" mb={2}>
+              {coach.split('/')[2]}
+            </Box>
+
+            <Box
+              fontSize={16} align='left' fontWeight="fontWeightRegular" mb={2}>
+              {coach.split('/')[3]}
             </Box>
 
           </Typography>
@@ -542,7 +527,7 @@ const MarketingDelta = ({ locale, history }) => {
   const classes = useStyles()
   const [tabValue, setTabValue] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
-  const [activeCoach, setActiveCoach] = useState(marketing['9d'][locale])
+  const [activeCoach, setActiveCoach] = useState(marketing['11a'][locale])
 
   function scrollTo(id) {
     document.querySelector(`#${id}`).scrollIntoView({
@@ -553,25 +538,17 @@ const MarketingDelta = ({ locale, history }) => {
   return (
     <div id='korean__marketing' className={classes.root}>
 
-   
-
       <main className={classes.jumbotron}>
         <Typography className={classes.jumbotron__textContainer}
           component='div'>
           <Box
             className={classes.typography__size__1}
-            fontWeight="fontWeightRegular" mb={.5}>
-            Pathway Development Programme Residential Training Camp South Korea
-          </Box>
-          <Box
-            fontWeight="fontWeightRegular" fontSize={15} mb={2.5}>
-             From 20th May to 20th June 2021
+            fontWeight="fontWeightRegular" mb={2}>
+            {marketing['1a'][locale]}
           </Box>
           <Box className={classes.typography__size__2}
             fontWeight="fontWeightRegular" pr={10} mb={4}>
-            Indulge Football have partned with xxxxx to deliver the first 5 day residential training
-            camp from our football Pathway Development Programme, open to 13 to 15 year olds
-            looking to advance their football development.
+            {marketing['1b'][locale]}
           </Box>
 
           <div>
@@ -586,10 +563,6 @@ const MarketingDelta = ({ locale, history }) => {
               color='primary'
               variant='contained'> Apply </Button>
           </div>
-
-
-
-
         </Typography>
 
         <SoccerLogo />
@@ -601,18 +574,16 @@ const MarketingDelta = ({ locale, history }) => {
           What we guarantee
         </Box>
         <div className={classes.iconsSection}>
-          <p className={classes.iconsSection__desc}>
-            <PeopleSharpIcon className={classes.iconsSection__icons} />
-            Professional coaching by xxxxxxx <br /> from xxxxx academy based in xxxxx
-        </p>
-          <p className={classes.iconsSection__desc}>
-            <AssignmentSharpIcon className={classes.iconsSection__icons} />
-            Individual player assessment from <br />  experts in physical & mental development
-        </p>
-          <p className={classes.iconsSection__desc}>
-            <FlightTakeoffSharpIcon className={classes.iconsSection__icons} />
-            An opportunity to be selected for <br />  an all expenses paid trial abroad
-        </p>
+
+          {marketing['2'][locale].split('.').map((x, i) => {
+            const Icon = i === 0 ? PeopleSharpIcon : i === 1 ? AssignmentSharpIcon : FlightTakeoffSharpIcon
+            return (
+              <p className={classes.iconsSection__desc}>
+                <Icon className={classes.iconsSection__icons} />
+                {x.split('/')[0]} <br /> {x.split('/')[1]}
+              </p>
+            )
+          })}
         </div>
 
       </section>
@@ -621,14 +592,16 @@ const MarketingDelta = ({ locale, history }) => {
         <Typography className={classes.secondarySections__textContainer}
           component='div'>
           <Box fontSize={25}
+            fontWeight="fontWeightRegular" mb={3}>
+            {marketing['3a'][locale]}
+          </Box>
+          <Box className={classes.typography__size__2}
             fontWeight="fontWeightRegular" mb={2}>
-            Personal player tracking based on <br /> perfomance metrics
+            {marketing['3b'][locale]}
           </Box>
           <Box className={classes.typography__size__2}
             fontWeight="fontWeightRegular" mb={4}>
-            Applicants will complete an online assessment inclusive of 3 key football challenges.
-            There will be a £15 fee for the initial assesement which will be reviewed by Indulge Football
-            alongside professional UEFA licensed coaches.
+            {marketing['3c'][locale]}
           </Box>
           <Button color='primary' className={classes.button} onClick={() => scrollTo('steps')} variant='contained'> Get started </Button>
         </Typography>
@@ -638,22 +611,21 @@ const MarketingDelta = ({ locale, history }) => {
 
       <Box fontSize={25} align='center' mt={8} mb={7} >
         How it Works
-        </Box>
+      </Box>
 
       <div id='steps' className={classes.stepsContainer}>
-        {['Create your account and pay the £15 assessment fee', 'Tess us about you and complete the challenges', 'Your application will be reviewed for suitability', 'If successful, you will be invited to join and pay for the camp'].map((step, index) => {
+        {marketing['4'][locale].split('/').map((step, index) => {
+          const Icon = index === 0 ? ContactlessRoundedIcon : index === 1 ? CreateRoundedIcon : index === 2 ? RateReviewRoundedIcon : SportsSoccerRoundedIcon
           return (
             index === 0 ?
               <div className={classes.steps}>
-                <ContactlessRoundedIcon className={classes.steps__icons} />
+                <Icon className={classes.steps__icons} />
                 {step}
               </div> :
               <>
                 <ArrowForwardSharpIcon />
                 <div className={classes.steps}>
-                  {index === 1 ? <CreateRoundedIcon className={classes.steps__icons} /> :
-                    index === 2 ? <RateReviewRoundedIcon className={classes.steps__icons} /> :
-                      <SportsSoccerRoundedIcon className={classes.steps__icons} />}
+                  {<Icon className={classes.steps__icons} />}
                   {step}
                 </div>
               </>
@@ -663,12 +635,8 @@ const MarketingDelta = ({ locale, history }) => {
 
 
       <div id='camp-cards' className={classes.campCardContainer}>
-
-
-
-
-        {[{ ...marketing['7d'] }, { ...marketing['7e'] },
-        { ...marketing['7f'] }].map(el => {
+        {[{ ...marketing['5a'] }, { ...marketing['5b'] },
+        { ...marketing['5c'] }, { ...marketing['5d'] }].map(el => {
           return (
             <Paper elevation={2} className={classes.campCard}>
               <CardActionArea>
@@ -677,15 +645,15 @@ const MarketingDelta = ({ locale, history }) => {
                     {el[locale].split('.')[0]}
                   </Box>
 
-                  {locale === 'en' &&
+                  {/* {locale === 'en' &&
                     <Chip
                       className={classes.campCard__chip}
                       icon={<ScheduleSharpIcon className={classes.campCard__icons} />}
                       label={el[locale].split('.')[2]}
                       variant="outlined"
-                    />}
+                    />} */}
 
-                  <br />
+                  {/* <br /> */}
 
                   <Chip
                     className={classes.campCard__chip}
@@ -696,7 +664,7 @@ const MarketingDelta = ({ locale, history }) => {
                   <Chip
                     className={classes.campCard__chip}
                     icon={<RoomSharpIcon className={classes.campCard__icons} />}
-                    label={el[locale].split('.')[locale === 'en' ? 3 : 2]}
+                    label={el[locale].split('.')[2]}
                     variant="outlined"
                   />
 
@@ -717,8 +685,8 @@ const MarketingDelta = ({ locale, history }) => {
                   onClick={() => history.push('/authentication')}
                   className={classes.campCard__button}
                   size="small" variant='contained' color="#71959E">
-                  Apply
-              </Button>
+                  {el[locale].split('.')[3]}
+                </Button>
               </CardActions>
             </Paper>
           )
@@ -729,30 +697,16 @@ const MarketingDelta = ({ locale, history }) => {
 
       <Paper className={classes.tabContainer} elevation={3}>
         <Tabs value={tabValue} onChange={(event, newValue) => setTabValue(newValue)}>
-          <Tab className={classes.tabs} style={{
-            ...(tabValue === 0 && {
-              backgroundColor: '#f8f8f8',
-              textTransform: 'uppercase'
-            })
-          }} label="Camp" />
-          <Tab className={classes.tabs} style={{
-            ...(tabValue === 1 && {
-              backgroundColor: '#f8f8f8',
-              textTransform: 'uppercase'
-            })
-          }} label="Club" />
-          <Tab className={classes.tabs} style={{
-            ...(tabValue === 2 && {
-              backgroundColor: '#f8f8f8',
-              textTransform: 'uppercase'
-            })
-          }} label="Assessment" />
-          <Tab className={classes.tabs} style={{
-            ...(tabValue === 3 && {
-              backgroundColor: '#f8f8f8',
-              textTransform: 'uppercase'
-            })
-          }} label="Programme" />
+          {['Camp', 'Club', 'Assessment', 'Programme'].map((x, i) => {
+            return (
+              <Tab className={classes.tabs} style={{
+                ...(tabValue === i && {
+                  backgroundColor: '#f8f8f8',
+                  textTransform: 'uppercase'
+                })
+              }} label={x} />
+            )
+          })}
         </Tabs>
       </Paper>
 
@@ -763,23 +717,20 @@ const MarketingDelta = ({ locale, history }) => {
         <Box
           align='center'
           fontSize={25} fontWeight="fontWeightRegular" mt={5} mb={8}>
-          {marketing['5a'][locale]}
+          The Residential Training Camp
         </Box>
 
         <div className={classes.tabTwo__container} >
-
-
           <Typography component='div' style={{ marginBottom: '2rem' }}>
 
             <Box
               fontSize={18} fontWeight="fontWeightBold" mb={2}>
-              Included in the programme
+              {marketing['6a'][locale]}
             </Box>
 
             <ul>
-              {marketing['5c'][locale].split('/ ').map(sentence => <li className={classes.tabOne__listItems}> {sentence} </li>)}
+              {marketing['6b'][locale].split('/').map(sentence => <li className={classes.tabOne__listItems}> {sentence} </li>)}
             </ul>
-
           </Typography>
 
           <img
@@ -797,13 +748,13 @@ const MarketingDelta = ({ locale, history }) => {
           </Box>
 
           <div className={classes.tabOne__applyCardContainer}>
-            {[{ ...marketing['4a'] }, { ...marketing['4b'] }, { ...marketing['4c'] },
-            { ...marketing['4d'] }, { ...marketing['4e'] }, { ...marketing['4f'] }].map(el => {
+            {[{ ...marketing['7a'] }, { ...marketing['7b'] }, { ...marketing['7c'] },
+            { ...marketing['7d'] }, { ...marketing['7e'] }, { ...marketing['7f'] }].map(el => {
               return (
                 <Card className={classes.tabOne__applyCard}>
                   <CardContent>
                     <Box className={classes.typography__size__2} fontWeight="fontWeightBold" mb={3}>
-                      {el[locale].split('/')[0].replace('.', '')}
+                      {el[locale].split('/')[0]}
                     </Box>
                     <Typography variant="body2" component="p">
                       {el[locale].split('/')[1]}
@@ -818,7 +769,7 @@ const MarketingDelta = ({ locale, history }) => {
         <div className={classes.tabOne__cta}>
           <Box
             fontSize={18} fontWeight="fontWeightBold" mr={5}>
-            Only £1,250
+            {marketing['8'][locale]}
           </Box>
 
           <Button color='primary'
@@ -838,10 +789,10 @@ const MarketingDelta = ({ locale, history }) => {
         <Box
           align='center'
           fontSize={25} fontWeight="fontWeightRegular" mt={5} mb={8}>
-          Benfica FC
+          {marketing['9a'][locale]}
         </Box>
 
-        <div className={classes.tabTwo__container}>
+        {/* <div className={classes.tabTwo__container}>
 
           <img
             className={classes.tabTwo__images}
@@ -864,7 +815,7 @@ const MarketingDelta = ({ locale, history }) => {
 
 
 
-        </div>
+        </div> */}
 
 
 
@@ -878,14 +829,13 @@ const MarketingDelta = ({ locale, history }) => {
             </Box>
             <Box
               className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
-              {marketing['6f'][locale]}
+              {marketing['9b'][locale]}
             </Box>
 
-            <ul>
-              {marketing['6g'][locale].split('.').map(sentence => {
-                return <li className={classes.tabTwo__list}> {sentence} </li>
-              })}
-            </ul>
+            <Box
+              className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
+              {marketing['9c'][locale]}
+            </Box>
           </Typography>
 
           <img
@@ -906,7 +856,7 @@ const MarketingDelta = ({ locale, history }) => {
         <Typography component='div'>
           <Box align='center'
             fontSize={25} fontWeight="fontWeightRegular" mt={5} mb={8}>
-            {marketing['9a'][locale].split(' / ')[0]}
+            {marketing['10a'][locale]}
           </Box>
         </Typography>
 
@@ -917,9 +867,10 @@ const MarketingDelta = ({ locale, history }) => {
               fontSize={18} fontWeight="fontWeightBold" mb={1}>
               What Is It
             </Box>
+
             <Box
               className={classes.typography__size__2} fontWeight="fontWeightRegular" >
-              {marketing['9b'][locale].split(' / ')[0]}
+              {marketing['10b'][locale].split('/')[1]}
             </Box>
 
           </Typography>
@@ -928,6 +879,7 @@ const MarketingDelta = ({ locale, history }) => {
 
         </section>
 
+        
         <section className={classes.tabThree__container}>
           <FormLogo />
           <Typography component='div' className={classes.tabTwo__text}>
@@ -936,8 +888,8 @@ const MarketingDelta = ({ locale, history }) => {
               Fee
             </Box>
             <Box
-              className={classes.typography__size__2} fontWeight="fontWeightRegular" >
-              {marketing['9b'][locale].split(' / ')[1]}
+              className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
+              {marketing['10b'][locale].split('/')[0]}
             </Box>
           </Typography>
         </section>
@@ -952,7 +904,8 @@ const MarketingDelta = ({ locale, history }) => {
         <div className={classes.tabThree__coachContainer}>
 
           {
-            [marketing['9d'][locale], marketing['9e'][locale], marketing['9f'][locale]].map((coach, i) => {
+            [marketing['11a'][locale], marketing['11b'][locale],
+            marketing['11c'][locale]].map((coach, i) => {
               return (
 
                 <Paper elevation={0} className={classes.tabThree_coachCard}>
@@ -995,7 +948,7 @@ const MarketingDelta = ({ locale, history }) => {
         <Box
           align='center'
           fontSize={25} fontWeight="fontWeightRegular" mt={5} mb={8}>
-          {marketing['8a'][locale].split('/')[0]}
+            The Programme
         </Box>
 
 
@@ -1007,21 +960,17 @@ const MarketingDelta = ({ locale, history }) => {
           <Typography component='div' className={classes.tabTwo__text}>
             <Box
               fontSize={18} fontWeight="fontWeightBold" mb={2}>
-              Indulge Football
-            </Box>
-            <Box
-              className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
-              {marketing['8d'][locale].split('/')[0]}
+              {marketing['12a'][locale]}
             </Box>
 
-            <Box
-              className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
-              {marketing['8d'][locale].split('/')[1]}
-            </Box>
-            <Box
-              className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
-              {marketing['8d'][locale].split('/')[2]}
-            </Box>
+            {marketing['12b'][locale].split('/').map(x => {
+              return (
+                <Box
+                  className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
+                  {x}
+                </Box>
+              )
+            })}
           </Typography>
         </div>
 
@@ -1030,16 +979,15 @@ const MarketingDelta = ({ locale, history }) => {
           <Typography component='div' className={classes.tabTwo__text}>
             <Box
               fontSize={18} fontWeight="fontWeightBold" mb={2}>
-              The Pathway Development Programme
+              {marketing['13a'][locale]}
             </Box>
             <Box
               className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
-              {marketing['8b'][locale].split('/')[0]}
+              {marketing['13b'][locale].split('/')[0]}
             </Box>
-
             <Box
               className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
-              {marketing['8b'][locale].split('/')[1]}
+              {marketing['13b'][locale].split('/')[1]}
             </Box>
           </Typography>
 

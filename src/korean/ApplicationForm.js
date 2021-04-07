@@ -135,7 +135,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: 22,
-    textAlign: 'center',
     margin: '10px 0',
     [theme.breakpoints.up('md')]: {
       fontSize: 27
@@ -479,12 +478,12 @@ export default function ApplicationForm({ history, location, locale }) {
         dob,
         applications: {
           benfica_application: {
+            ...applicationDetails,
             ...(type === 'submit' && {
               age_group: `Under ${group}s`,
               submitted: true,
               submission_date: moment()
-            }),
-            ...applicationDetails
+            })
           }
         }
       }
@@ -529,49 +528,32 @@ export default function ApplicationForm({ history, location, locale }) {
   const handleNext = async () => {
     if (activeStep === 2) {
 
-      let all_required = true
-      const checks = ['personal_details', 'player_attributes', 'challenges']
+      const required = [link_1, link_2, link_3, height, weight, position,
+        preferred_foot, country, email, nationality, postcode, city, address_line_1,
+        dob, contact_number, gender, player_first_name, player_last_name, bio_description,
+        current_club.age_group, current_club.club, current_club.middle_school]
 
+      if (current_club.k1_affiliated) required.push(current_club.k1_club)
 
-      checks.forEach((x, i) => {
-        for (const y in applicationDetails[x]) {
+      if (award_achieved) {
+        [award_reasoning, award_name, award_date].forEach(x => required.push(x))
+      }
 
-          if (['address_line_2', 'other_positions',
-            'previous_clubs', 'highlights_footage_link'].includes(y)) break
+      if (private_coaching) {
+        [private_coach_website, private_coach_company, private_coach_name].forEach(x => required.push(x))
+      }
 
-          // if (i === 2) {
-          //   if (y === 'current_club') {
-          //     for (const key in applicationDetails[x][y]) {
-          //       if (key === 'k1_affiliated') {
-          //         if (current_club.k1_affiliated && !current_club.k1_club) {
-          //           all_required = false
-          //           return
-          //         }
-          //       } else if (!applicationDetails[x][y][key]) {
-          //         all_required = false
-          //         return
-          //       }
-          //     }
-          //   } else if (private_coaching) {
-          //     if (!private_coach_website || !private_coach_name || !private_coach_company) {
-          //       all_required = false
-          //       return
-          //     }
-          //   } else if (award_achieved) {
-          //     if (!award_name || !award_date || !award_reasoning) {
-          //       all_required = false
-          //       return
-          //     }
-          //   }
-          // }
+      if (previous_clubs.length > 0 && previous_clubs !== []) {
+        previous_clubs.forEach((x, i) => {
+          const arr = [previous_clubs[i].club, previous_clubs[i].age_group]
+          if (x.k1_affiliated) arr.push(previous_clubs[i].k1_club)
+          arr.forEach(x => required.push(x))
+        })
+      }
 
-          if (!applicationDetails[x][y]) {
-            all_required = false
-          }
-        }
-      })
+      const check = required.filter(x => !x && x === '')
 
-      if (!all_required) {
+      if (check !== [] && check.length > 0) {
         setMessage({
           error: 'Please ensure you have filled out all required fields before submitting.'
         })
@@ -796,6 +778,16 @@ export default function ApplicationForm({ history, location, locale }) {
       <option value="suwon samsung bluewings"> Suwon Samsung Bluewings </option>
       <option value="suwon fc"> Suwon FC </option>
       <option value="ulsan hyudai"> Ulsan Hyudai </option>
+      <option value="ansan greeners">  Ansan Greeners	 </option>
+      <option value="fc anyang">  FC Anyang		 </option>
+      <option value="bucheon fc 1995">  Bucheon FC 1995	 </option>
+      <option value="busan ipark">  Busan IPark	 </option>
+      <option value="chungnam asan"> Chungnam Asan		 </option>
+      <option value="daejeon hana citizen">  Daejeon Hana Citizen	</option>
+      <option value="gimcheon sangmu fc">  Gimcheon Sangmu FC		 </option>
+      <option value="gyeongnam fc">  Gyeongnam FC		 </option>
+      <option value="jeonnam dragons">  Jeonnam Dragons		 </option>
+      <option value="seoul e-land">  Seoul E-Land		 </option>
     </>
   )
 
@@ -809,7 +801,7 @@ export default function ApplicationForm({ history, location, locale }) {
           <Box
             fontSize={15}
             fontWeight="fontWeightBold" m={0}>
-            Guardian Details
+             {application['2a'][locale]}
         </Box>
         </Typography>
 
@@ -899,7 +891,7 @@ export default function ApplicationForm({ history, location, locale }) {
         <Box
           fontSize={15}
           fontWeight="fontWeightBold" m={0}>
-          Player Details
+             {application['2b'][locale]}
         </Box>
       </Typography>
 
@@ -976,10 +968,13 @@ export default function ApplicationForm({ history, location, locale }) {
               </p>
             </div>
           </div>
+
+
         </div>}
 
         <div className="field-body">
-          <div className={classes.field} style={{ flex: 0.2 }}>
+
+          <div className={classes.field} style={{ flex: 0.2  }}>
             <div className={classes.label}>
               <label > <span style={{ color: 'red' }}>*</span> {application['4b'][locale]}
               </label>
@@ -1354,7 +1349,7 @@ export default function ApplicationForm({ history, location, locale }) {
           {current_club.k1_affiliated && (
             <div className={classes.field} >
               <div className={classes.label}>
-                <label> <span style={{ color: 'red' }}>*</span> K1 Club </label>
+                <label> <span style={{ color: 'red' }}>*</span> K1/K2 Club </label>
               </div>
               <div class="select">
                 <select
@@ -1389,7 +1384,7 @@ export default function ApplicationForm({ history, location, locale }) {
             })
           }}
           control={<Radio className='radio-check' checked={current_club.k1_affiliated} />}
-          label='This club is affiliated with a K1 club' />
+          label='This club is affiliated with a K1 or K2 club' />
 
 
 
@@ -1486,7 +1481,7 @@ export default function ApplicationForm({ history, location, locale }) {
                 {el.k1_affiliated && (
                   <div className={classes.field} >
                     <div className={classes.label}>
-                      <label> <span style={{ color: 'red' }}>*</span> K1 Club </label>
+                      <label> <span style={{ color: 'red' }}>*</span> K1/K2 Club </label>
                     </div>
                     <div class="select">
                       <select
@@ -1522,7 +1517,7 @@ export default function ApplicationForm({ history, location, locale }) {
                   })
                 }}
                 control={<Radio className='radio-check' checked={el.k1_affiliated} />}
-                label='This club is affiliated with a K1 club' />
+                label='This club is affiliated with a K1 or K2 club' />
 
 
             </>
@@ -1761,6 +1756,7 @@ export default function ApplicationForm({ history, location, locale }) {
       <Typography component='div' >
         <Box
           className={classes.title}
+          align='center'
           fontWeight="fontWeightRegular" pb={3} pt={3}>
           {application['1'][locale]}
         </Box>

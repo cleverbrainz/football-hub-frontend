@@ -1,365 +1,196 @@
-export const languages = {
-  en: {
-
-    marketingPage: {
-      mainTitle: 'Project Football Korea',
-      headerMain: 'What is Project Football Korea?',
-      headerParagraph: `This is the first time Benfica FC will be in South Korea and we wanted to bring their award-winning academy to train and identify the new football superstar!  
-      Project Football Korea is a football talent identification experience like no other.  This is the ultimate football camp for players aged between 15-18 to train and learn from the world-famous Benfica FC. `,
-      headerList: 'Reason to apply goes in this bullet point',
-      subSectionHeaders: ['FEATURES', 'All you need to know about our features', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'],
-      subSectionCards: [
-        {
-          title: 'Be One of the First',
-          paragraph: `This is the first footballing experience in Korea which guarantees the opportunity for a professional
-          trial in Portugal with Benfica FC following a successful camp`
-        },
-        {
-          title: 'Development Experience ',
-          paragraph: ` All players will be taught using the same model which has produced Bernardo Silva, Ruben Dias, Ederson, Joao Cancelo, Victor Lindelof, Joao Felix!`
-        },
-        {
-          title: 'Player Representation ',
-          paragraph: `All players will have the opportunity to be signed and individually represented by Indulge Football player agency who are KFA (Korean Football Association) registered.`
-        },
-        {
-          title: 'Individual Assessment',
-          paragraph: `All players will be assessed and given a personalized report to aid further development.`
-        },
-        {
-          title: 'Football Technology ',
-          paragraph: `Everyone player will be asked to wear ISDA technology, and every kick will be filmed for individual analysis from UEFA A accredited coaches.`
-        },
-        {
-          title: 'Football Education',
-          paragraph: `Becoming professional requires dedication off the pitch and in our camp you will have 3 seminars on sports psychology, nutrition, and football pathways. `
-        }
-      ],
-      subSectionCampsTitle: 'Camp Dates',
-      subSectionCampsCards: [
-        {
-          age: 'Under 16s',
-          date: '4th April 2021',
-          days: 'Monday - Thursday',
-          location: 'Seoul'
-        },
-        {
-          age: 'Under 17s',
-          date: '9th April 2021',
-          days: 'Friday - Monday',
-          location: 'Seoul'
-        },
-        {
-          age: 'Under 18s',
-          date: '14th April 2021',
-          days: 'Tuesday - Friday',
-          location: 'Seoul'
-        }],
-      subSectionCampsCardButton: 'Apply Now'
-    },
-
-  },
-
-  ko: {
-    marketingPage: {
-      mainTitle: '안녕하세요',
-      headerMain: '안녕하세요',
-      headerParagraph: `안녕하세요`,
-      headerList: '안녕하세요',
-      subSectionHeaders: ['안녕하세요', '안녕하세요', '안녕하세요'],
-      subSectionCards: [
-        {
-          title: '안녕하세요',
-          paragraph: '안녕하세요'
-        },
-        {
-          title: '안녕하세요',
-          paragraph: '안녕하세요'
-        },
-        {
-          title: '안녕하세요',
-          paragraph: '안녕하세요'
-        },
-        {
-          title: '안녕하세요',
-          paragraph: '안녕하세요'
-        },
-        {
-          title: '안녕하세요',
-          paragraph: '안녕하세요'
-        },
-        {
-          title: '안녕하세요',
-          paragraph: '안녕하세요'
-        }
-      ],
-      subSectionCampsTitle: '안녕하세요',
-      subSectionCampsCards: [
-        {
-          age: '안녕하세요',
-          date: '안녕하세요',
-          days: '안녕하세요',
-          location: '안녕하세요'
-        },
-        {
-          age: '안녕하세요',
-          date: '안녕하세요',
-          days: '안녕하세요',
-          location: '안녕하세요'
-        },
-        {
-          age: '안녕하세요',
-          date: '안녕하세요',
-          days: '안녕하세요',
-          location: '안녕하세요'
-        }],
-      subSectionCampsCardButton: '안녕하세요'
-    }
-
-  }
-}
-
-
 const arr = [
   {
     "page": "marketing",
-    "section": "1",
-    "english": "Pathway Development Programme / Residential Training Camp",
-    "korean": ""
+    "section": "1a",
+    "english": "Indulge Football's Pathway Development Programme with Ajax",
+    "korean": "인덜지풋볼이 네덜란드 최고의 명문 구단 AFC아약스와 함께 글로벌 유망주 육성 프로젝트를 실시합니다"
   },
   {
     "page": "marketing",
-    "section": "2a",
-    "english": "South Korea 20th May to 20th June 2021",
-    "korean": ""
+    "section": "1b",
+    "english": "Indulge Football have partnered with Ajax to deliver the first of our residential training camps as part of our football Pathway Development Programme, open to 12- to 15-year-old boys looking to advance their football development.",
+    "korean": "인덜지풋이 국내 최초 글로벌 유망주 육성 프로젝트의 일환으로 AFC아약스와 함께 합숙 트레이닝 캠프를 개최합니다. 만 12세(초6)부터 만 15세(중3) 사이의 축구 꿈나무라면 누구나 참여 신청이 가능합니다"
   },
-  // {
-  //   "page": "marketing",
-  //   "section": "2b",
-  //   "english": "This is the first time Benfica FC will be in South Korea and we wanted to bring their award-winning academy to train and identify the new football superstar! Project Football Korea is a football talent identification experience like no other. This is the ultimate football camp for players aged between 15-18 to train and learn from the world-famous Benfica FC. / Our residential camp will provide for the best environment for you to perform and demonstrate your footballing ability, and 3 players per age group will be selected for a two-week, expenses paid professional trial with Benfica FC in Portugal.",
-  //   "korean": "2019년 세계 베스트 아카데미 어워즈를 수상한 포르투갈의 명문 구단 SL 벤피카가 차기 월드스타를 발굴하기 위해 사상 최초로 한국에 직접 방문합니다! 프로젝트 풋볼 코리아는 타의 추종을 불허하는 경험과 기회를 제공합니다. / 15-18세의 축구 꿈나무들이 벤피카 코칭 스태프로부터 직접 교육과 트레이닝을 받고, 최고의 기량을 발휘하는 선수들은 연령 그룹별로 두 명씩 선발되어 추가 비용 없이 포르투갈 현지에서 2주간의 최종 입단 평가를 받게 됩니다."
-  // },
   {
     "page": "marketing",
-    "section": "2b",
-    "english": "Indulge Football have partnered with xxxxxx to deliver the first camp from our football Pathway Development Programme in South Korea. This 5 day, 4 night Residential Training Camp is open to 13-15 year olds looking to advance their personal football development, You will be coached by XXXX and get personalised advice and assessment from leading experts in physical and mental development. On top of this 2 players from each age group will be awarded with an all-expenses paid experience at xxxxxx. / Each player will need to complete an initial assessment including 3 key football challenges, the fee for this is £15 and will be reviewed by Indulge Football using professional UEFA licensed coaches. Find out more below.",
-    "korean": ""
+    "section": "2",
+    "english": "Official Ajax Academy Coaches delivering their / award-winning methodology and philosophy. Personalised player assessment and / plan for further development. The best and most realistic European / Academy football experience",
+    "korean": "2019 세계 베스트 아카데미 어워즈를 수상한 아약스 공식 아카데미의 독보적 선수 훈련 방식과 철학을 코치들로부터 직접 배울 수 있습니다. 개별 선수 리포트를 통해 향후 발전 방향에 대한 / 서포트를 받을 수 있습니다. 독보적인 탑 티어 유러피안 축구 아카데미 / 경험을 누릴 수 있습니다 "
   },
   {
     "page": "marketing",
     "section": "3a",
-    "english": "Why Apply to the Project?",
-    "korean": "왜 프로젝트 풋볼 코리아여만 할까요?"
+    "english": "Training Camp Application Process",
+    "korean": "참가 지원 절차 "
   },
   {
     "page": "marketing",
     "section": "3b",
-    "english": "lorem ipsum",
-    "korean": ""
+    "english": "To secure your place all players must apply and complete a player profile and 3 football challenges designed by Professional UEFA Licensed coaches. All applicants will be assessed by professional coaches, and the best players within each age group will be invited.",
+    "korean": "캠프 참여 자격은 제한된 인원에게 주어집니다. 참가를 위해 모든 선수들은 지원서와 프로파일을 작성하고, 프로 UEFA 코치들이 디자인한 챌린지들을 완수해야 합니다. 이를 바탕으로 코치들의 평가를 거친 후 지원자 중 가장 뛰어난 선수들이 프로그램에 초대됩니다."
   },
   {
     "page": "marketing",
-    "section": "4a",
-    "english": "Be One of the First. / This is the first footballing experience in Korea which guarantees the opportunity for a professional trial in Portugal with Benfica FC following a successful camp",
-    "korean": "「최초」가 될 수 있는 절호의 기회. / 우수한 기량으로 캠프를 마무리한 참가자들에게는 지금까지 국내에서 누구도 경험하지 못한, 포르투갈 벤피카 프로 입단 테스트 기회가 주어집니다."
+    "section": "3c",
+    "english": "£25 application fee per person however it is FREE if you apply before 19th April!",
+    "korean": "4월 19일 이전에 접수한 참가자들에게는 지원료(£25)가 면제"
   },
   {
     "page": "marketing",
-    "section": "4b",
-    "english": "Development Experience. / All players will be taught using the same model which has produced Bernardo Silva, Ruben Dias, Ederson, Joao Cancelo, Victor Lindelof, Joao Felix!",
-    "korean": "독보적인 재능 개발 프로그램 체험. / 모든 참가 선수들은 베르나르두 실바, 루벤 디아스, 에데르손, 주앙 칸셀루, 빅토르 린델로프, 그리고 주앙 펠릭스를 키워낸 트레이닝 방식으로 교육 받게 됩니다."
-  },
-  {
-    "page": "marketing",
-    "section": "4c",
-    "english": "Player Representation. / All players will have the opportunity to be signed and individually represented by Indulge Football player agency who are KFA (Korean Football Association) registered.",
-    "korean": "전문적 선수 매니지먼트. / 모든 참가 선수들은 대한축구협회의 공식적인 승인을 받아 등록된 에이전시 인덜지풋볼의 전담 관리를 받을 수 있는 기회를 갖습니다."
-  },
-  {
-    "page": "marketing",
-    "section": "4d",
-    "english": "Individual Assessment. / All players will be assessed and given a personalized report to aid further development.",
-    "korean": "선수 개개인을 위한 맞춤 평가. / 모든 참가자들에게는 앞으로의 실력 개발과 트레이닝에 도움을 줄 개별 평가지가 부여됩니다."
-  },
-  {
-    "page": "marketing",
-    "section": "4e",
-    "english": "Football Technology. / Everyone player will be asked to wear ISDA technology, and every kick will be filmed for individual analysis from UEFA A accredited coaches.",
-    "korean": "최첨단 축구 테크놀로지 체험. / 모든 참가자들은 세계 최초의 유소녕 역량 지표 기술 ISDA 장비를 착용하여 모든 움직임과 슈팅을 기록, 유럽축구연맹(UEFA) A등급 승인을 받은 코치들로부터 개인화된 분석을 받습니다."
-  },
-  {
-    "page": "marketing",
-    "section": "4f",
-    "english": "Football Education. / Becoming professional requires dedication off the pitch and in our camp you will have 3 seminars on sports psychology, nutrition, and football pathways.",
-    "korean": "차별화된 축구 교육. / 프로 선수가 되기 위해서는 경기장 밖에서도 부단한 노력을 필요로 합니다. 캠프 기간 동안 참가자들은 스포츠 심리학, 영양학, 그리고 축구 진로에 대한 세미나를 통해 유럽 탑 티어 수준에 맞춘 축구 선수로서의 지식과 통찰력을 획득합니다."
+    "section": "4",
+    "english": "Create your own player profile account on ftballer.com. / Complete and submit your own football challenges. / Your profile will be assessed by professional UEFA coaches. / Successful players will be selected to-join the residential training camp.",
+    "korean": "ftballer.com에서 선수 프로파일을 작성하세요. / 축구 챌린지를 완수하여 영상 URL을 제출하세요. / 모든 지원서와 챌린지 영상은 프로 UEFA 코치들이 평가합니다. / 뛰어난 선수들에게는 합숙 트레이닝 캠프에 참가할 자격이 주어집니다 "
   },
   {
     "page": "marketing",
     "section": "5a",
-    "english": "The Residential Training Camp",
-    "korean": "인덜지 벤피카 캠프"
+    "english": "Under 12s. 16th June 2021. Yang Yang. Apply",
+    "korean": "U12 (초6). 2021년 6월 16일 ~ 19일. 강원도 양양. Apply"
   },
   {
     "page": "marketing",
     "section": "5b",
-    "english": "What's included?",
-    "korean": "캠프 세부 사항"
+    "english": "Under 13s. 31st May 2021. Yang Yang. Apply",
+    "korean": "U13 (중1). 2021년 5월 31일 ~ 6월 3일. 강원도 양양. Apply"
   },
   {
     "page": "marketing",
     "section": "5c",
-    "english": "4 nights' accommodation in a 4* hotel. Choice of single or twin room / Full board - breakfast, lunch and dinner - menu designed for professional athletes. / 4 hours of football coaching a day / 3 football education seminars across the camp / Indulge Football training kit including tracksuit, wet top and 2x shirt, shorts and socks / Official Benfica FC Training kit, shirt shorts and socks / Individual player feedback reports / Benfica certificate / Individual player performance tracking technology / Transfers between hotel and training ground / COVID-19 testing / Sports insurance",
-    "korean": "4성급 호텔에서 4박 5일간의 합숙. 싱글 또는 트윈 룸 선택. 프로 스포츠 선수 식단에 맞춘 식사 제공. 매일 최소 4시간의 축구 코칭. 3회의 축구 교육 세미나 개최. SL 벤피카 & 인덜지풋볼 공식 트레이닝 키트 제공. 개별 선수 평가 리포트 제공. 최첨단 선수 퍼포먼스 측정 기술 적용. 코비드-19 테스트"
+    "english": "Under 14s. 5th June 2021. Venue TBC. Apply",
+    "korean": "U14 (중2). 2021년 6월 5일 ~ 6월 8일. 장소 추후 공지. Apply "
   },
   {
     "page": "marketing",
     "section": "5d",
-    "english": "£1250 per person",
-    "korean": "!Korean £1250 per person Korean!"
+    "english": "Under 15s. 11th June 2021. Venue TBC. Apply",
+    "korean": "U15 (중3). 2021년 6월 11일 ~ 6월 14일. 장소 추후 공지. Apply"
   },
   {
     "page": "marketing",
     "section": "6a",
-    "english": "About Benfica FC",
-    "korean": "SL 벤피카"
+    "english": "The Camp - What's Included",
+    "korean": "캠프 제공 내용 "
   },
   {
     "page": "marketing",
     "section": "6b",
-    "english": "The mission of Benfica’s academy is to guarantee the quality of technical training and educational enrichment of its players, of all age groups, with a focus on the integration into the clubs first team, promoting human values such as respect, responsibility, solidarity, justice and tolerance.”",
-    "korean": "벤피카 아카데미의 미션은 모든 연령대의 선수들에게 구단 1군 팀으로 진출하기 위한 양질의 기술적 트레이닝과 풍부한 교육을 제공하고, 그에 걸맞는 존중, 책임, 연대, 공정, 관용의 가치관을 고취하는 것입니다."
-  },
-  {
-    "page": "marketing",
-    "section": "6c",
-    "english": "Camp Methodology",
-    "korean": "캠프 프로그램 진행 방식"
-  },
-  {
-    "page": "marketing",
-    "section": "6d",
-    "english": "The Methodology applied in Project Football will be the same that Sport Lisboa e Benfica uses in the training of its athletes, and which guarantees the sustainability of its professional squads. Through specific training that Sport Lisboa e Benfica will provide, you will be able to develop your technical, tactical, physical and psychological skills. Aspects like, running technique, relationship with the ball, tactical circulation and attacking and defensive game principles will be worked daily in both individual and collective contexts. / The training schedules will be developed by SL Benfica’s coaches, accredited by the Federação Portuguesa de Futebol (FPF) and UEFA. There will be 3 categories (U16 to U18), each having specific technical-tactical training. In addition you will also be observed and evaluated by Sport Lisboa e Benfica’s Technical and Scouting Departments.",
-    "korean": "모든 트레이닝 스케줄은 유럽축구연맹(UEFA)과 포르투갈 축구 협회(FPF)의 승인을 받은 벤피카 코치들에 의해 짜여져 있으며, 이는 SL 벤피카가 프로 선수들을 훈련하는 방식과 같은 형태입니다. / 오직 벤피카만이 제공할 수 있는 특별한 트레이닝을 통해 참가 선수들은 기술적, 전략적, 신체적 그리고 정신적 기량을 발달시키게 됩니다. 특히 러닝 테크닉, 볼과의 관계, 전술적 흐름과 공격, 그리고 방어적 경기 원리와 같은 핵심 요소들은 개인적 & 협동적 맥락을 적용하여 매일 다루어집니다."
-  },
-  {
-    "page": "marketing",
-    "section": "6e",
-    "english": "The Coaches",
-    "korean": "참여 코치"
-  },
-  {
-    "page": "marketing",
-    "section": "6f",
-    "english": "Accredited by the Portuguese Football Federation (FPF) and UEFA, the SL Benfica coaches are decisive elements in the development of the Club’s young athletes. It will be them following your evolution during Project Football, overseen by their Technical Director, Pedro Marques:",
-    "korean": "유럽축구연맹(UEFA)과 포르투갈 축구 협회(FPF)로부터 승인된 벤피카 코치들은 구단 소속 선수들의 기량 발달에 결정적인 역할을 하고 있습니다. 이들은 벤피카 축구 테크닉 디렉터 Pedro Marques의 총괄적 감독 아래 프로젝트 풋볼 코리아 캠프 기간 동안 참가 선수들의 퍼포먼스를 관찰하고 코칭합니다."
-  },
-  {
-    "page": "marketing",
-    "section": "6g",
-    "english": "UEFA A License. Graduated in Physical Education and Sports Science and Post-Graduation in High-Performance Training at the Faculty of Human Kinetics in Lisbon. Technical Director of Sport Lisboa e Benfica's Youth Football",
-    "korean": "유럽축구연맹(UEFA) A 등급 자격 보유. 리스본 운동학부 체육 & 스포츠 과학 학사, 하이 퍼포먼스 트레이닝 석사 이수. SL 벤피카 유소년 축구 테크닉 디렉터"
+    "english": "4 days football training with professional coaches from the Ajax Academy. / 3 nights accommodation in a 4* hotel based on twin share (single supplement available). / Full board – breakfast, lunch and dinner – menu designed for professional athletes. / 3 education seminars delivered by Ajax Academy staff. / Indulge Football Training Kit & tracksuit. / Personalised player pathway report. / Ajax training certificate. / Digital player profile on ftballer.com / COVID 19 testing. / Sports Insurance. / Transfers between hotel & training complex",
+    "korean": "아약스 아카데미 코치들과 함께 하는 4일간의 축구 트레이닝 / 4성급 호텔에서 3박 4일간의 합숙 (2인실) / 영양을 고려한 식사 / 아약스 아카데미 코치들이 직접 진행하는 교육 세미나 / 인덜지풋볼이 제공하는 트레이닝 키트 및 운동복 / 아약스 인증 개별 선수 평가 리포트 / 아약스 트레이닝 프로그램 이수 증명서 / 글로벌 축구 플랫폼 Ftballer.com에 디지털 선수 프로파일 등록 / 코비드-19 테스팅 / 프로그램 기간 동안 선수 상해 보험 / 호텔-트레이닝 필드 간 안전 이동"
   },
   {
     "page": "marketing",
     "section": "7a",
-    "english": "How to Apply?",
-    "korean": "지원 방법"
+    "english": "Learn the Ajax FC Way / You will be coached by one of the world’s most famous clubs Who have developed such as Dennis Berkamp, Patrick Kluivert, Marco Van Basten and the legend Johann Cruyff.",
+    "korean": "AFC 아약스의 방식 / 데니스 베르캄프, 파트릭 클라위버르트, 마르코 판 바스턴, 그리고 전설인 요한 크루이프를 탄생시킨 아약스의 선수 육성 방식을 직접 체험할 수 있습니다. "
   },
   {
     "page": "marketing",
     "section": "7b",
-    "english": "All players will be asked to apply and undertake football challenges designed by “UEFA A” qualified coaches who work in English Premier League Academies. And have years of experiences assessing youth talent. Upon completing this assessment, we will invite the best 70 players at U16/U17 and U18 for a 4 night/5day residential camp conducted by the award-winning Benfica FC academy staff",
-    "korean": "지원자 전원은 잉글리시 프리미어 리그 아카데미에서 다년간의 유소년 선수 평가 경험을 쌓은 UEFA A 등급 코치들이 고안한 축구 챌린지를 완수해야 합니다. 이를 통해 각 연령 그룹별로(16세 이하/17세/18세) 70명의 선수들이 선발되어 세계 최고의 아카데미 자격을 수상한 벤피카 코치들이 직접 참여하는 4박 5일간의 캠프에 초대됩니다."
+    "english": "Goalkeeping Programme / We have goalkeeper specific training included within the programme.",
+    "korean": "골키퍼 프로그램 / 필드 플레이어와 별도로 골키퍼들을 위한 특별 훈련 프로그램이 마련되어 있습니다. "
   },
   {
     "page": "marketing",
     "section": "7c",
-    "english": "Select your age group and apply",
-    "korean": "연령 그룹 선택 & 참가 지원"
+    "english": "360 Football Education / There will be seminars every day focusing on the core areas of individual development such as nutrition, strength, and conditional and football performance psychology.",
+    "korean": "전면적 축구 교육 / 월드 클래스 선수가 되기 위해 반드시 필요한 스트렝스 & 컨디셔닝, 멘탈리티를 다루는 세미나들이 마련되어 있습니다. "
   },
   {
     "page": "marketing",
     "section": "7d",
-    "english": "Under 16s. 4th April 2021. Monday - Thursday. Seoul. Apply now",
-    "korean": "16세 이하. 2021년 4월 4일 월요일 ~ 목요일. 서울. 참가 지원"
+    "english": "Player Analysis / Every player will be assessed by AFC Ajax Academy coaching staff and given their own report.",
+    "korean": "선수 퍼포먼스 분석 / 모든 참가자들은 AFC 아약스 아카데미 코치들로부터 개별 평가와 리포트를 받게 됩니다. "
   },
   {
     "page": "marketing",
     "section": "7e",
-    "english": "Under 17s. 9th April 2021. Friday - Monday. Seoul. Apply now",
-    "korean": "17세. 2021년 4월 9일 금요일 ~ 월요일. 서울. 참가 지원"
+    "english": "Performance / learn how to become a better player, athlete and improve game confidence + creativity.",
+    "korean": "퍼포먼스 개발 / 최고의 선수로 거듭나기 위해 경기에서 자신감과 창의성을 발휘할 수 있는 방법을 배웁니다. "
   },
   {
     "page": "marketing",
     "section": "7f",
-    "english": "Under 18s. 14th April 2021. Tuesday - Friday. Seoul. Apply now",
-    "korean": "18세. 2021년 4월 14일 화요일 ~ 금요일. 서울. 참가 지원"
+    "english": "Football Fun / This is the ultimate camp experience set in professional conditions to enable maximum performance in a fun environment.",
+    "korean": "즐거운 환경 / 글로벌 유망주 육성 프로젝트는 프로 수준의 트레이닝을 추구함과 동시에 선수들에게 즐거운 경험을 선사합니다. "
   },
   {
     "page": "marketing",
-    "section": "8a",
-    "english": "The Programme / What is the Pathway Development Programme?",
-    "korean": ""
-  },
-  {
-    "page": "marketing",
-    "section": "8b",
-    "english": "Indulge Football are proud to host **Benfica FC** and to welcome them for the very first time to South Korea. We have partnered with Benfica to create Korea's first elite football talent identification camp experience. / Indulge Football has created the perfect experience for football players aged between 15-18 to experience a great methodology from the world famous and award-winning Benfica FC Academy. Benfica will be selecting players from each age group for an all-expenses paid 2 week professional trial at the Benfica Campus in Portugal.",
-    "korean": ""
-  },
-  {
-    "page": "marketing",
-    "section": "8c",
-    "english": "About Indulge Football / Who are Indulge Football?",
-    "korean": ""
-  },
-  {
-    "page": "marketing",
-    "section": "8d",
-    "english": "Indulge Football specialise in Player Pathways, Sponsorship and Consultancy, Fan Relationship Management and Digital Solutions. / We have been trading since 2008 and during that time have managed tours and events for thousands of customers including fan packages for the FIFA World Cup, been official ticket agency of elite professional clubs such as FC Barcelona and provided professional services to Premier League players including Harry Kane, Michail Antonio and Andros Townsend. / We have recently expanded our services into Asia, starting with South Korea where we have created partnerships with top companies and organisations. The pathway Development Programme will be the first of its kind in South Korea and we are very excited to be able to help develop youth pathways there and provide connections into European football.",
-    "korean": ""
+    "section": "8",
+    "english": "Price is £900",
+    "korean": "참가비: 140만 원"
   },
   {
     "page": "marketing",
     "section": "9a",
-    "english": "The Assessment / What is the assessment? / Assessment Fee",
-    "korean": ""
+    "english": "Ajax FC",
+    "korean": "Ajax FC"
   },
   {
     "page": "marketing",
     "section": "9b",
-    "english": "To be selected for the Reidential Training camp in South Korea as part of our Pathway Development Programme you will need to complete an application detailing your football experiences so far, a personal statement and to upload three football challenges set by us. The challenges have been created by Indulge Football along with an expert team of UEFA Licenses Profesional Coaches, to identify key aspects of a players ability, Your written application will also be reviewed by our partner NYSES in South Korea. / The assessment costs £15 per player and will allow us to do a thorough assessment of each player and decide who will be invited to the camp. If selected, you will have 72 hours to complete and confirm your place on the camp and pay the camp fee. For the unfortunate players who are not selected you will be able to aplly again for future camps.",
-    "korean": ""
+    "english": "Amsterdamsche Football Club Ajax, also known as AFC Ajax, Ajax Amsterdam, or simply Ajax, is a Dutch professional football club based in Amsterdam, that plays in the Eredivisie, the top tier in Dutch football. Historically, Ajax (named after the legendary Greek hero) has been the most successful club in the Netherlands, with 34 Eredivisie titles and 19 KNVB Cups.",
+    "korean": "AFC 아약스는 암스테르담을 연고로 하는 네덜란드 프로 축구 클럽입니다. 34번의 에레디비시 (네덜란드 프로 축구 1부 리그) 우승과 19번의 KNVB컵 (네덜란드 FA컵) 우승을 자랑하며 현재까지도 가장 뛰어난 구단으로 손꼽힙니다. "
   },
   {
     "page": "marketing",
     "section": "9c",
-    "english": "The Assessment Coaches",
-    "korean": ""
+    "english": "Central within the club is the style of play (4-3-3), training, behaviour, and house rules. Ajax strives to keep the way of playing football recognisable; attractive, offensive-minded, creative, fast, and fair. The youth academy is world famous and known as Europe’s best. During this camp, every aspect of the unique Ajax training method will be part of the program. This experience will give you the opportunity to train like a real Ajax player.",
+    "korean": "아약스는 특유의 경기 스타일 (4-3-3), 훈련 방식과 태도 그리고 원칙으로 뚜렷한 중심 가치를 지닌 구단입니다. 경기에서는 매력적인 동시에 공격적이며, 창의적인 한편 빠르고 공정한 플레이를 추구합니다. 아약스의 유스 아카데미는 세계적으로 유명하며 유럽 최고로 널리 알려져 있으며, 본 트레이닝 캠프는 그 특별한 유소년 육성 방식의 모든 측면을 프로그램에 포함하고 있습니다. 실제 아약스 선수들과 같은 훈련을 받을 수 있는 기회를 누리세요."
   },
-  {
-    "page": "marketing",
-    "section": "9d",
-    "english": "Gwynne Berry / Tec4Tekkers Founder / In the early days of his career, Gwynne was a youth player with Crystal Palace F.C. Subce then he has built an impressive repertoire built on years of dedication to the sport. Having been a Professional player with 1000+ senior appearances over 23 years a few of his career achievements include: / F.A. Trophy Winner 1994 % 30 years as a professional football coach % Coached in 40 countries over 5 continents % Academy Technical Coach Crystal Palace F.C. % Academy Technical Coach West Ham United F.C. % Academy Technical Consultant Reading F.C. % Technical Coach Educator F.A. of Wales % Technical Coach Educator Latvian F.A. % Technical Coach Educator Estonian F.A. ",
-    "korean": ""
-  },
-  {
-    "page": "marketing",
-    "section": "9e",
-    "english": "Jack Johnson / Fulham U14 Academy Coach / Jack Johnson is a UEFA A licence coach and holds his FA Level 3 Youth Award. Jack has worked in Academy Football for over 12 years and is currently under 14 coach at Fulham FC. % Jack was also an academy player at Fulham FC for 7 years prior to flying out to the USA on a scholarship in Florida. Returning from Florida alongside working at Fulham Jack owns his own Coaching Company which includes a full time football Academy for 16-19 year olds at Nescot College in the UK. ",
-    "korean": ""
-  },
-  {
-  "page": "marketing",
-  "section": "9f",
-  "english": "Stuart Searle / Chelsea Ladies Head of Technical and Goalkeeper Coach / Stuart started evolving as a coach from the age of 18 when helping out with the then Wimbledon centre of excellence, leading the younger goalkeepers. The UEFA-A licenced coach joined Chelsea as an Academy goalkeeping coach in 2004 while playing for numerous high profile non-league clubs before signing on as a player. % In 2012, and back at Chelsea working in the Academy and our international department, Stuart joined Chelsea Women manager Emma Hayes in the becoming the goalkeeping coach on a part-time basis. He soon moved into a full-time role, successfully helping them win the WSL and FA Cup Double in 2015, the Spring Series in 2017, and the Double again in 2018. % As of the 2019/20 season, Stuart's role has evolved and he is now head of technical as well as goalkeeping coach.",
-  "korean": ""
-},
   {
     "page": "marketing",
     "section": "10a",
-    "english": "Ready to Apply?",
-    "korean": ""
+    "english": "The Assessment",
+    "korean": "사전 테스트"
+  },
+  {
+    "page": "marketing",
+    "section": "10b",
+    "english": "To be selected for the residential training camp as part of our pathway development programme you will need to complete an application. The application fee is £25 per person however it is FREE if you apply before 19th April! Your assessment will be reviewed by NYSES and a Team of UEFA Qualified Coaches. / You will be asked to complete a player profile to show your football preferences and experiences so far in your career, a personal statement and finally you will complete 3 football challenges. We have challenges designed specifically for goalkeepers and outfield players. In these challenges you will demonstrating your ball mastery, travelling with a ball, receiving and ball striking.",
+    "korean": "글로벌 유망주 육성 프로젝트의 일환인 합숙 트레이닝 캠프 참여 자격을 얻기 위해서는 지원서를 제출하여야 하며, 4월 19일 이전에 접수한 참가자들에게는 지원료(£25)가 면제됩니다. 제출된 지원서들은 한국유소년축구교육원과 UEFA 공인 코치 팀이 평가와 검토를 실시합니다. / 지원서는 선수 프로필과 지금까지의 축구 경험 및 포부를 담은 자기 소개서, 그리고 세 가지 축구 챌린지로 구성되어 있습니다. 챌린지는 필드 플레이어와 골키퍼 각각 별도로 마련되어 있으며, 이를 통해 선수들의 공 숙련도와 드리블, 리시빙 및 스트라이킹 스킬 등을 보여주게 됩니다. "
+  },
+  {
+    "page": "marketing",
+    "section": "11a",
+    "english": "Gwynne Berry / Tec4Tekkers Founder / Gwynne is widely recognised by his peers as one of the best technical coaches in world football. His career spans more than 30 years working within football and developing players. Gwynne has worked at the highest levels of the game with professional clubs in the English Premier League, The English League Championship, coached in 40 countries over 5 continents and he has developed some of the best players in professional football. / Gwynne is Technical Coach Educator for Football Association of Wales and the Latvian FA and currently hold a UEFA B License. Gwynne has a passion for developing players and has his own successful technical skills programme called Tek4Tekkers.",
+    "korean": "Gwynne Berry / Tec4Tekkers Founder / Gwynne은 세계 최고의 축구 기술 감독 중 한 명으로 널리 알려져 있습니다. 30년 이상의 선수 육성 경험을 통틀어 잉글랜드 프리미어리그 구단들과 5개 대륙에 걸쳐 40개국에서 코치직을 맡아 왔으며, 수준급의 프로 축구 선수들을 길러낸 경력이 있습니다. 현재 웨일스 축구 협회와 라트비아 축구 협회의 기술 감독이며, UEFA B 공인 자격증을 보유하고 있습니다. / Gwynne은 재능 있는 선수 육성에 특별한 열정을 갖고 있으며, Tek4Tekkers라는 뛰어난 축구 기술 프로그램을 운영하고 있습니다. "
+  },
+  {
+    "page": "marketing",
+    "section": "11b",
+    "english": "Jack Johnson / Fulham U14 Academy Coach / Jack Johnson was one of the youngest ever coaches to gain his UEFA A licence and achieved his FA Level 3 Youth Award. He has worked in professional Academy Football for over 12 years and is currently under 14 coach at Fulham FC from the English Premier League. / Jack was also an academy player at Fulham FC for 7 years prior to flying out to the USA on a soccer scholarship in Florida. Jack founded his own coaching company which includes a full-time football Academy for 16–19-year-olds at Nescot College, England",
+    "korean": "Jack Johnson / Fulham U14 Academy Coach / Jack Johnson은 역대 최연소 UEFA A 공인 자격을 획득한 코치 중 한 명으로, FA 레벨 3 유스 어워드를 수상한 경력이 있습니다. 12년 이상 프로 아카데미 축구에 몸담아 왔으며 현재 잉글랜드 프리미어리그 풀럼FC 아카데미의 코치입니다. / Jack은 플로리다에서 축구 장학금을 받아 미국으로 가기 전, 7년 간 풀럼FC에서 아카데미 선수로도 활약했습니다. 이후 영국 Nescot 대학에서 16-19세 선수들을 위한 풀타임 축구 아카데미를 포함하여 독자적인 코칭 회사를 설립하였습니다.  "
+  },
+  {
+    "page": "marketing",
+    "section": "11c",
+    "english": "Stuart Searle / Chelsea Ladies Head of Technical and Goalkeeper Coach / Stuart is an UEFA-A licenced coach currently working at Chelsea Football Club. He joined Chelsea as an Academy goalkeeping coach in 2004 while playing for numerous high profile non-league clubs before signing on as a player. In 2012, and back at Chelsea working in the Academy and our international department, Stuart joined Chelsea Women manager Emma Hayes in the becoming the goalkeeping coach on a part-time basis. / He soon moved into a full-time role, successfully helping them win the WSL and FA Cup Double in 2015, the Spring Series in 2017, and the Double again in 2018. As of the 2019/20 season, Stuart's role has evolved, and he is now head of technical as well as goalkeeping coach.",
+    "korean": "Stuart Searle / Chelsea Ladies Head of Technical and Goalkeeper Coach / Stuart는 2012년 첼시FC 아카데미에서 일하면서 첼시 위민 감독 Emma Hayes와 함께 파트타임 골키퍼 코치가 되었습니다. 이후 곧 풀타임 코치로 전환하여 2015년 WSL과 FA컵 더블, 2017년 스프링 시리즈, 2018년 또다시 더블 우승을 성공적으로 도왔습니다. / 2019-20 시즌을 기점으로 첼시에서 Stuart의 역할은 더욱 커졌고, 현재는 기술 코칭 책임자이자 골키퍼 코치직을 맡고 있습니다. "
+  },
+  {
+    "page": "marketing",
+    "section": "12a",
+    "english": "Indulge Football",
+    "korean": "Indulge Football"
+  },
+
+  {
+    "page": "marketing",
+    "section": "12b",
+    "english": "Inulge Football specialise in Player Pathways, Sponsorship and Consultancy, Fan Relationship Management and Digital Solutions. / We have been trading since 2008 and during that time have managed tours and events for thousands of customers including fan packages for the FIFA World Cup, been official ticket agency of elite professional clubs such as FC Barcelona and provided professional services to Premier League players including Harry Kane, Michail Antonio and Andros Townsend. / We have recently expanded our services into Asia, starting with South Korea where we have created partnerships with top companies and organisations. The pathway Development Programme will be the first of its kind in South Korea and we are very excited to be able to help develop youth pathways there and provide connections into European football.",
+    "korean": "Inulge Football specialise in Player Pathways, Sponsorship and Consultancy, Fan Relationship Management and Digital Solutions. / We have been trading since 2008 and during that time have managed tours and events for thousands of customers including fan packages for the FIFA World Cup, been official ticket agency of elite professional clubs such as FC Barcelona and provided professional services to Premier League players including Harry Kane, Michail Antonio and Andros Townsend. / We have recently expanded our services into Asia, starting with South Korea where we have created partnerships with top companies and organisations. The pathway Development Programme will be the first of its kind in South Korea and we are very excited to be able to help develop youth pathways there and provide connections into European football."
+  },
+  {
+    "page": "marketing",
+    "section": "13a",
+    "english": "The Pathway Development Programme",
+    "korean": "The Pathway Development Programme"
+  },
+  {
+    "page": "marketing",
+    "section": "13b",
+    "english": "The PDP is a solution we have created to help all footballers have the best football education and opportunities specifically to their abilities and needs. Through our extensive professional network, partners, and own expertise we have created the best programme for players to develop in the key areas of the game. / We believe those areas of football are technical, tactical, mental, and physical. We create football events and experiences partnering with the leading professional clubs, brands, and experts to deliver personalised development plans for all players. Our residential training camp with the world-famous Ajax Academy will kickstart the Pathway Development Program in South Korea.",
+    "korean": "글로벌 유망주 육성 프로젝트는 모든 축구 선수들이 각자의 능력과 필요에 맞게 최상의 교육과 선수로서의 기회를 누릴 수 있도록 하기 위해 인덜지풋볼이 고안한 해결책입니다. 저희는 축구에 특화된 광범위한 네트워크와 협력 구단들의 인풋, 그리고 인덜지풋볼만의 전문 지식을 바탕으로 선수들이 경기력 향상을 위한 핵심 영역들을 발달시킬 수 있도록 최고의 프로그램을 개발하였습니다. / 이를 통해 기술적, 전술적, 정신적 그리고 육체적 자질을 모두 케어하며 참가 선수들에게 개인별 퍼포먼스 개발 플랜을 제공하기 위해 차별화된 축구 이벤트와 경험을 만들어 나갈 것입니다. 세계 최고 아약스 아카데미와 함께하는 본 합숙 트레이닝 캠프는 그러한 글로벌 유망주 육성 프로젝트의 시작입니다.  "
   },
 
   {
@@ -497,31 +328,37 @@ const arr = [
   {
     "page": "application",
     "section": "2a",
-    "english": "Player Information",
-    "korean": "선수 정보"
+    "english": "Guardian Details",
+    "korean": ""
   },
   {
     "page": "application",
     "section": "2b",
+    "english": "Player Details",
+    "korean": ""
+  },
+  {
+    "page": "application",
+    "section": "2c",
     "english": "Football History",
     "korean": "축구 이력"
   },
   {
     "page": "application",
-    "section": "2c",
+    "section": "2d",
     "english": "Challenges",
     "korean": "챌린지"
   },
   {
     "page": "application",
-    "section": "3",
-    "english": "Personal Details",
-    "korean": "기본 사항"
+    "section": "3a",
+    "english": "First Name",
+    "korean": "선수 이름"
   },
   {
     "page": "application",
-    "section": "4a",
-    "english": "Player Full Name",
+    "section": "3b",
+    "english": "Last Name",
     "korean": "선수 이름"
   },
   {
