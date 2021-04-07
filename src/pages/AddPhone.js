@@ -22,6 +22,7 @@ import {
   Paper
 } from '@material-ui/core'
 import * as firebase from "firebase";
+import PhoneDropDown from './admin/PhoneDropdown';
 
 const AddPhone = ({ location, history, locale }) => {
 
@@ -66,12 +67,13 @@ const AddPhone = ({ location, history, locale }) => {
   }));
 
 
-  const { user, setUserData, userData } = useContext(AuthContext);
+  const { user, setUserData, userData, phoneAuthProvider, recaptchaVerifier } = useContext(AuthContext);
 
   // console.log(user.user.multiFactor.enrolledFactors[0].phoneNumber)
   const [isLoading, setIsLoading] = useState(false)
   const [loginFields, setLoginFields] = useState({
-    phoneNumber: user.user.multiFactor?.enrolledFactors[0]?.phoneNumber || '',
+    phoneNumber: user.user.multiFactor?.enrolledFactors[0]?.phoneNumber ? user.user.multiFactor?.enrolledFactors[0]?.phoneNumber.slice(3) : '',
+    countryCode: user.user.multiFactor?.enrolledFactors[0]?.phoneNumber ? user.user.multiFactor?.enrolledFactors[0]?.phoneNumber.slice(1, 3) : '',
     verificationCode: '',
     verificationId: ''
   })
@@ -85,7 +87,29 @@ const AddPhone = ({ location, history, locale }) => {
 
   appAuth.languageCode = locale
 
-  console.log(history)
+  const setupRecaptcha = () => {
+    window.recaptchaVerifier = recaptchaVerifier(
+      'recaptcha-container',
+      {
+        'size': 'invisible',
+        'callback': function (response) {
+          console.log('captcha!')
+          // handleRecaptch()
+  
+        },
+        'expired-callback': function () {
+          console.log('captcha expired')
+        },
+        'hl': locale
+      });
+  
+      window.recaptchaVerifier.render()
+  }
+
+  useEffect(() => { 
+    setupRecaptcha()
+    
+  },[])
 
 
 
@@ -104,31 +128,31 @@ const AddPhone = ({ location, history, locale }) => {
     currentUser.multiFactor.getSession()
       .then(multiFactorSession => {
 
-        const phoneAuthProvider = new firebase.auth.PhoneAuthProvider(appAuth);
-        const recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-          'recaptcha-container',
-          {
-            'size': 'normal',
-            'callback': function (response) {
-              // reCAPTCHA solved, you can proceed with phoneAuthProvider.verifyPhoneNumber(...).
-              // ...
-              // handleRecaptcha()
-              console.log('captchadddd')
+        
+        // window.recaptchaVerifier = recaptchaVerifier(
+        //   'recaptcha-container',
+        //   {
+        //     'size': 'invisible',
+        //     'callback': function (response) {
+        //       // reCAPTCHA solved, you can proceed with phoneAuthProvider.verifyPhoneNumber(...).
+        //       // ...
+        //       // handleRecaptcha()
+        //       console.log('captchadddd')
 
-            },
-            'expired-callback': function () {
-              // Response expired. Ask user to solve reCAPTCHA again.
-              // ...
-              // console.log('uh oh')
-            },
-            'hl': locale
-          },
-          firebaseApp);
+        //     },
+        //     'expired-callback': function () {
+        //       // Response expired. Ask user to solve reCAPTCHA again.
+        //       // ...
+        //       // console.log('uh oh')
+        //     },
+        //     'hl': locale
+        //   },
+        //   firebaseApp);
         const phoneInfoOptions = {
-          phoneNumber: loginFields.phoneNumber,
+          phoneNumber: ['+', loginFields.countryCode, loginFields.phoneNumber].join(''),
           session: multiFactorSession
         };
-        return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier);
+        return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, window.recaptchaVerifier);
       }).then(function (verificationId) {
         setLoginFields({ ...loginFields, verificationId })
         setCodeSent(true)
@@ -197,6 +221,7 @@ const AddPhone = ({ location, history, locale }) => {
               <MenuItem value={'en'}>English</MenuItem>
               <MenuItem value={'ko'}>Korean</MenuItem>
             </Select> */}
+<<<<<<< HEAD
       <form
         autoComplete='off'
         onChange={(e) => handleFormChange(e)}
@@ -234,6 +259,46 @@ const AddPhone = ({ location, history, locale }) => {
             <span style={{ color: 'red' }}>*</span> Verification Code </label>
           <div class="control">
             <input class="input is-small" id="outlined-verification-code" type="text" name='verificationCode'
+=======
+        <form
+          autoComplete='off'
+          onChange={(e) => handleFormChange(e)}
+          onSubmit={!codeSent ? (e) => sendVerificationCode(e) : (e) => confirmVerificationCode(e)}
+          className={classes.form}>
+                    <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> Contact Number
+               </label>
+              </div>
+              <div className="field has-addons">
+                <p class="control">
+                <a class="button">
+                  <select value={loginFields.countryCode} id="countryCode" name="countryCode"> 
+                    <PhoneDropDown />
+                  </select>
+                </a>
+                </p>
+                <p class="control is-expanded">
+                  <input
+                    name='phoneNumber'
+                    value={loginFields.phoneNumber}
+                    class="input" type="tel" placeholder='123456789' />
+                </p>
+              </div>
+            </div>
+
+          {/* {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>} */}
+          
+
+
+          {!verified && <FormControl variant="outlined">
+            <InputLabel htmlFor="outlined-verification-code">Verification Code</InputLabel>
+            <OutlinedInput
+              id="outlined-verification-code"
+              label='Verification Code'
+              name='verificationCode'
+              labelWidth={70}
+>>>>>>> 8b7275dfedf5abc3aa9935f8d1eb2d48aade49b4
               value={verificationUpdated ? 'Verified!' : loginFields.verificationCode}
               disabled={!codeSent} />
           </div>
@@ -270,6 +335,7 @@ const AddPhone = ({ location, history, locale }) => {
 
       {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
       {/* </Paper> */}
+      <div id="recaptcha-container"></div>
     </div>
   )
 }
