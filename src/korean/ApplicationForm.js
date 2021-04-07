@@ -43,6 +43,7 @@ import {
   FormControlLabel,
   Radio,
 } from "@material-ui/core";
+import PhoneDropDown from '../pages/admin/PhoneDropdown';
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -245,7 +246,8 @@ export default function ApplicationForm({ history, location, locale }) {
       address_line_2: '',
       city: '',
       postcode: '',
-      contact_number: '',
+      contact_number: ['+','',''],
+      alt_contact_number: ['+', '', ''],
       can_provide_certificates: false,
       nationality: '',
       country: '',
@@ -301,6 +303,7 @@ export default function ApplicationForm({ history, location, locale }) {
     guardian_first_name,
     gender,
     contact_number,
+    alt_contact_number,
     dob,
     address_line_1,
     address_line_2,
@@ -484,7 +487,7 @@ export default function ApplicationForm({ history, location, locale }) {
               submitted: true,
               submission_date: moment()
             }),
-            ...applicationDetails
+            ...applicationDetails, personal_details: { ...applicationDetails.personal_details, contact_number: contact_number.join(''), alt_contact_number: alt_contact_number.join('') }
           }
         }
       }
@@ -688,6 +691,30 @@ export default function ApplicationForm({ history, location, locale }) {
       }
 
 
+    } else if (name === 'country_code' || name === 'contact_number') {
+      const newNumber = [...personal_details.contact_number]
+      const element = name === 'country_code' ? 1 : 2
+      newNumber[element] = value
+      setApplicationDetails({
+        ...applicationDetails,
+        personal_details: {
+          ...personal_details,
+          contact_number: newNumber
+        }
+      })
+
+    } else if (name === 'alt_country_code' || name === 'alt_contact_number') {
+      const newNumber = [...personal_details.contact_number]
+      const element = name === 'alt_country_code' ? 1 : 2
+      newNumber[element] = value
+      setApplicationDetails({
+        ...applicationDetails,
+        personal_details: {
+          ...personal_details,
+          alt_contact_number: newNumber
+        }
+      })
+
     } else {
 
       Object.keys(applicationDetails).forEach(x => {
@@ -877,14 +904,37 @@ export default function ApplicationForm({ history, location, locale }) {
               </div>
               <div className="field has-addons">
                 <p class="control">
-                  <a class="button is-static">
-                    +44
-              </a>
+                <a class="button">
+                  <select value={contact_number[1]} class="input-block-level" id="countryCode" name="country_code"> 
+                    <PhoneDropDown />
+                  </select>
+                </a>
                 </p>
                 <p class="control is-expanded">
                   <input
                     name='contact_number'
-                    value={contact_number}
+                    value={contact_number[2]}
+                    class="input" type="tel" placeholder='123456789' />
+                </p>
+              </div>
+            </div>
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> Alternate Contact Number
+               </label>
+              </div>
+              <div className="field has-addons">
+                <p class="control">
+                <a class="button">
+                  <select value={alt_contact_number[1]} class="input-block-level" id="countryCode" name="alt_country_code"> 
+                    <PhoneDropDown />
+                  </select>
+                </a>
+                </p>
+                <p class="control is-expanded">
+                  <input
+                    name='alt_contact_number'
+                    value={alt_contact_number[2]}
                     class="input" type="tel" placeholder='123456789' />
                 </p>
               </div>
@@ -958,24 +1008,47 @@ export default function ApplicationForm({ history, location, locale }) {
           </div>
 
           <div className={classes.field}>
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> Contact Number
-              </label>
-            </div>
-            <div className="field has-addons">
-              <p class="control">
-                <a class="button is-static">
-                  +44
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> Contact Number
+               </label>
+              </div>
+              <div className="field has-addons">
+                <p class="control">
+                <a class="button">
+                  <select value={contact_number[1]} class="input-block-level" id="countryCode" name="country_code"> 
+                    <PhoneDropDown />
+                  </select>
                 </a>
-              </p>
-              <p class="control is-expanded">
-                <input
-                  name='contact_number'
-                  value={contact_number}
-                  class="input" type="tel" placeholder='123456789' />
-              </p>
+                </p>
+                <p class="control is-expanded">
+                  <input
+                    name='contact_number'
+                    value={contact_number[2]}
+                    class="input" type="tel" placeholder='123456789' />
+                </p>
+              </div>
             </div>
-          </div>
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> Alternate Contact Number
+               </label>
+              </div>
+              <div className="field has-addons">
+                <p class="control">
+                <a class="button">
+                  <select value={alt_contact_number[1]} class="input-block-level" id="countryCode" name="alt_country_code"> 
+                    <PhoneDropDown />
+                  </select>
+                </a>
+                </p>
+                <p class="control is-expanded">
+                  <input
+                    name='alt_contact_number'
+                    value={alt_contact_number[2]}
+                    class="input" type="tel" placeholder='123456789' />
+                </p>
+              </div>
+            </div>
         </div>}
 
         <div className="field-body">
