@@ -74,7 +74,7 @@ const arr = [
   {
     "page": "marketing",
     "section": "6b",
-    "english": "4 days football training with professional coaches from the Ajax Academy. / 3 nights accommodation in a 4* hotel based on twin share (single supplement available). / Full board – breakfast, lunch and dinner – menu designed for professional athletes. / 3 education seminars delivered by Ajax Academy staff. / Indulge Football Training Kit & tracksuit. / Personalised player pathway report. / Ajax training certificate. / Digital player profile on ftballer.com / COVID 19 testing. / Sports Insurance. / Transfers between hotel & training complex",
+    "english": "4 days football training with professional coaches from the Ajax Academy. / 3 nights accommodation in a 4* hotel based on twin share (single supplement available). / Full board – breakfast, lunch and dinner – menu designed for professional athletes. / 3 education seminars delivered by Ajax Academy staff. / Indulge Football Training Kit & tracksuit. / Personalised player pathway report. / Ajax training certificate. / Digital player profile on ftballer.com / Sports Insurance. / Transfers between hotel & training complex",
     "korean": "아약스 아카데미 코치들과 함께 하는 4일간의 축구 트레이닝 / 4성급 호텔에서 3박 4일간의 합숙 (2인실) / 영양을 고려한 식사 / 아약스 아카데미 코치들이 직접 진행하는 교육 세미나 / 인덜지풋볼이 제공하는 트레이닝 키트 및 운동복 / 아약스 인증 개별 선수 평가 리포트 / 아약스 트레이닝 프로그램 이수 증명서 / 글로벌 축구 플랫폼 Ftballer.com에 디지털 선수 프로파일 등록 / 코비드-19 테스팅 / 프로그램 기간 동안 선수 상해 보험 / 호텔-트레이닝 필드 간 안전 이동"
   },
   {
@@ -353,13 +353,25 @@ const arr = [
     "page": "application",
     "section": "3a",
     "english": "First Name",
-    "korean": "선수 이름"
+    "korean": ""
   },
   {
     "page": "application",
     "section": "3b",
     "english": "Last Name",
-    "korean": "선수 이름"
+    "korean": ""
+  },
+  {
+    "page": "application",
+    "section": "4",
+    "english": "Contact Number",
+    "korean": ""
+  },
+  {
+    "page": "application",
+    "section": "4a",
+    "english": "Alternative Contact Number",
+    "korean": ""
   },
   {
     "page": "application",
@@ -400,20 +412,20 @@ const arr = [
   {
     "page": "application",
     "section": "4h",
-    "english": "Postcode",
-    "korean": "우편번호"
+    "english": "Country",
+    "korean": ""
   },
   {
     "page": "application",
     "section": "4i",
-    "english": "Resident Registration / Family Relation Certificate",
-    "korean": "주민등록등본/가족관계증명서"
+    "english": "Nationality",
+    "korean": ""
   },
   {
     "page": "application",
     "section": "4j",
-    "english": "Upload a file",
-    "korean": "파일 업로드"
+    "english": "Postcode",
+    "korean": "우편번호"
   },
   {
     "page": "application",
@@ -447,27 +459,27 @@ const arr = [
   },
   {
     "page": "application",
+    "section": "5f",
+    "english": "Left / Right / Both",
+    "korean": "Left / Right / Both"
+  },
+  {
+    "page": "application",
+    "section": "5g",
+    "english": "Other Positions",
+    "korean": "Other Positions"
+  },
+  {
+    "page": "application",
+    "section": "6",
+    "english": "Club & Coaching Information",
+    "korean": ""
+  },
+  {
+    "page": "application",
     "section": "6a",
-    "english": "Current Club",
-    "korean": "현재 소속 구단"
-  },
-  {
-    "page": "application",
-    "section": "6b",
-    "english": "Current Coaching School",
-    "korean": "현재 소속 아카데미"
-  },
-  {
-    "page": "application",
-    "section": "6c",
-    "english": "Previous Clubs",
-    "korean": "과거 소속 구단"
-  },
-  {
-    "page": "application",
-    "section": "6d",
-    "english": "Previous Trials Attended",
-    "korean": "선수 선발 테스트/대회 참가 이력"
+    "english": "Current Club Details",
+    "korean": ""
   },
   {
     "page": "application",
@@ -478,26 +490,44 @@ const arr = [
   {
     "page": "application",
     "section": "6f",
-    "english": "Social Media Link",
-    "korean": "소셜 미디어 링크"
+    "english": "",
+    "korean": ""
   },
   {
     "page": "application",
     "section": "6g",
-    "english": "Write About Yourself",
-    "korean": "자기 소개"
+    "english": "Personal Statement",
+    "korean": ""
   },
   {
     "page": "application",
     "section": "6h",
-    "english": "Tell us more about your experiences, incuding achievements and goals",
-    "korean": "축구 선수로서의 목표와 성취를 포함하여 본인의 경험을 작성해 주세요."
+    "english": "Please tell us more about yourself and your football experiences, achievements, and ambitions.",
+    "korean": "본인의 축구 경험, 성취 그리고 포부에 대해 서술해 주세요."
   },
   {
     "page": "application",
-    "section": "",
-    "english": "",
+    "section": "6i",
+    "english": "Age Group",
     "korean": ""
+  },
+  {
+    "page": "application",
+    "section": "6j",
+    "english": "Club Name",
+    "korean": ""
+  },
+  {
+    "page": "application",
+    "section": "6k",
+    "english": "Middle School",
+    "korean": ""
+  },
+  {
+    "page": "application",
+    "section": "6l",
+    "english": "Is your club affiliated with a K League Club? If yes, please select the club.",
+    "korean": "K리그 연계 구단에 소속되어 있습니까? 그렇다면, 구단명을 선택해 주세요."
   },
   {
     "page": "application",
@@ -513,52 +543,204 @@ const arr = [
   },
   {
     "page": "application",
-    "section": "8",
-    "english": "Demo 1. Demo 2. Demo 3",
-    "korean": "시범 1. 시범 2. 시범 3"
-  },
-  {
-    "page": "application",
     "section": "9a",
-    "english": "Challenge One Link",
-    "korean": "챌린지 하나 링크"
+    "english": "Challenge 1 – Coordination",
+    "korean": "첫 번째 챌린지 – 코디네이션"
   },
   {
     "page": "application",
     "section": "9b",
-    "english": "Challenge Two Link",
-    "korean": "챌린지 둘 링크"
+    "english": "Challenge 2 – Shot Stopping",
+    "korean": "두 번째 챌린지 – 공 막기"
   },
   {
     "page": "application",
     "section": "9c",
-    "english": "Challenge Three Link",
-    "korean": "챌린지 셋 링크"
+    "english": "Challenge 3 – Catching and Distribution",
+    "korean": "첫 번째 챌린지 – 캐치 및 패스"
   },
   {
     "page": "application",
+    "section": "9d",
+    "english": "Challenge 1 – Ball Manipulation",
+    "korean": "첫 번째 챌린지 – 공 다루기"
+  },
+  {
+    "page": "application",
+    "section": "9e",
+    "english": "Challenge 2 – Travelling with the Ball",
+    "korean": "두 번째 챌린지 – 드리블"
+  },
+  {
+    "page": "application",
+    "section": "9f",
+    "english": "Challenge 3 – Ball Striking",
+    "korean": "세 번째 챌린지 – 공 차기"
+  },  
+  {
+    "page": "application",
+    "section": "9g",
+    "english": "This challenge has three different exercises to test your hand/eye coordination, dexterity, and handling. Please film and complete as per the video instructions.",
+    "korean": "이 챌린지는 눈-손 코디네이션, 손재주와 핸들링을 테스트합니다. 예시와 같이 완수하는 모습을 촬영하세요."
+  },
+  {
+    "page": "application",
+    "section": "9h",
+    "english": "This challenge will test your handling skills, shot stopping techniques and decision making. Please film 4 shots from three different angles. Each shot should have a verbal trigger for GK to move into position. If you do not have a goal, please recreate a goal however best you can.",
+    "korean": "이번 챌린지는 핸들링 스킬, 공을 막는 테크닉과 결정력을 테스트합니다. 예시와 같이 각기 다른 세 각도에서 오는 슛을 4회씩 막으세요. 매 슛마다 구두로 신호를 주어 골키퍼가 해당 위치로 움직일 수 있도록 합니다. 이용할 수 있는 골이 없다면 가능한 다른 물건으로 대신해 주세요."
+  },
+  {
+    "page": "application",
+    "section": "9i",
+    "english": "This challenge will test your handling skills, decision making and distribution skills. Please film 3 crosses from two different angles and then distributing the ball to different targets. If you do not have the equipment available, please recreate however best you can.",
+    "korean": "이번 챌린지는 핸들링, 결정력 그리고 공 패스 기술을 테스트합니다. 예시와 같이 세 가지 크로스들을 각기 다른 두 앵글에서 촬영하며, 이를 막은 후 다른 지점으로 정확하게 패스하는 모습까지 담아 주세요. 예시와 같은 장비가 없다면 다른 물건을 이용해도 좋습니다."
+  },
+
+
+
+  {
+    "page": "application",
+    "section": "9j",
+    "english": "There are three ball manipulation skills you will need to complete. These skills will challenge your technique with both feet, coordination, and balance with the ball. Please film and complete each skill twice.",
+    "korean": "세 가지 공 다루기 챌린지들을 완수하세요. 해당 기술들은 양 발의 테크닉, 코디네이션, 균형감을 모두 테스트합니다. 각각의 챌린지들을 두 번씩 완수하는 모습을 촬영하세요."
+  },
+  {
+    "page": "application",
+    "section": "9k",
+    "english": "This is a dynamic challenge focused on travelling at speed with the ball. This will challenge your technique controlling the ball, ability to turn and 1v1 skills. Please film and complete twice going left first and then twice right. If you do not have any markers, please use whatever you need to recreate the challenge.",
+    "korean": "이번 챌린지는 스피드를 낸 드리블을 중점으로 합니다. 해당 기술은 공을 다루는 테크닉, 방향 전환과 1:1 돌파 능력을 테스트합니다. 왼쪽 돌파와 오른쪽 돌파 각각 두 번씩 완수하는 모습을 촬영하세요. 예시와 같은 장비(마커)가 없다면, 다른 물건을 이용해도 좋습니다."
+  },
+  {
+    "page": "application",
+    "section": "9l",
+    "english": "This challenge has three different exercises to test your receiving, passing and ball striking skills. Please film and complete 5 passes with each foot for each of the 3 exercises",
+    "korean": "이번 챌린지는 패스, 리시빙, 스트라이킹 기술을 테스트합니다. 세 가지 예시대로 각각 왼발 다섯 번, 오른발 다섯 번씩 완수하는 모습을 촬영하세요."
+  },
+
+
+
+
+
+
+
+
+
+
+  {
+    "page": "application",
     "section": "10a",
-    "english": "back",
+    "english": "Back",
     "korean": "뒤로가기"
   },
   {
     "page": "application",
     "section": "10b",
-    "english": "save draft",
-    "korean": "저장"
+    "english": "Save & Exit",
+    "korean": ""
   },
   {
     "page": "application",
     "section": "10c",
-    "english": "submit application",
+    "english": "Submit Application",
     "korean": "참가 지원서 제출"
   },
   {
     "page": "application",
     "section": "10d",
-    "english": "next",
+    "english": "Next",
     "korean": "다음으로"
   },
+  {
+    "page": "application",
+    "section": "11",
+    "english": "Previous Clubs",
+    "korean": ""
+  },
+  {
+    "page": "application",
+    "section": "11a",
+    "english": "Add a maximum of 3 previous clubs",
+    "korean": ""
+  },
+  {
+    "page": "application",
+    "section": "12",
+    "english": "Do you attend any additional coaching sessions? If yes, please provide the details below.",
+    "korean": "타 기관 및 코치로부터 별도로 코칭을 받고 있습니까? 그렇다면, 상세 내용을 기술해 주세요."
+  },
+  {
+    "page": "application",
+    "section": "12a",
+    "english": "Coach Name",
+    "korean": ""
+  },
+  {
+    "page": "application",
+    "section": "12b",
+    "english": "Coaching Company",
+    "korean": ""
+  },
+  {
+    "page": "application",
+    "section": "12c",
+    "english": "Coaching Website",
+    "korean": ""
+  },
+  {
+    "page": "application",
+    "section": "13",
+    "english": "Other Playing Details",
+    "korean": ""
+  },
+  {
+    "page": "application",
+    "section": "14",
+    "english": "Have you achieved any football awards? If yes, please provide the details below.",
+    "korean": "축구 수상 이력이 있습니까? 그렇다면, 상세 내용을 기술해 주세요."
+  },
+  {
+    "page": "application",
+    "section": "14a",
+    "english": "Award Received",
+    "korean": "축구 수상 이력이 있습니까? 그렇다면, 상세 내용을 기술해 주세요."
+  },
+  {
+    "page": "application",
+    "section": "14b",
+    "english": "Date of Award",
+    "korean": "축구 수상 이력이 있습니까? 그렇다면, 상세 내용을 기술해 주세요."
+  },
+  {
+    "page": "application",
+    "section": "14c",
+    "english": "Reason for Award",
+    "korean": "축구 수상 이력이 있습니까? 그렇다면, 상세 내용을 기술해 주세요."
+  },
+  {
+    "page": "application",
+    "section": "14d",
+    "english": "KFA Award / Regional FA Award . Foundation Award",
+    "korean": "축구 수상 이력이 있습니까? 그렇다면, 상세 내용을 기술해 주세요."
+  },
+  {
+    "page": "application",
+    "section": "14d",
+    "english": "KFA Award / Regional FA Award . Foundation Award",
+    "korean": "축구 수상 이력이 있습니까? 그렇다면, 상세 내용을 기술해 주세요."
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
   {
     "page": "process_flow",
     "section": "1a",
