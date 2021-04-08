@@ -224,7 +224,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function ApplicationForm({ history, location, locale }) {
+export default function ApplicationForm({ history, location, locale, match, setLocale }) {
+  console.log(match)
+  
+  console.log(history, location)
   const classes = useStyles();
   const [message, setMessage] = useState()
   const [isLoading, setIsLoading] = useState(false)
@@ -233,6 +236,10 @@ export default function ApplicationForm({ history, location, locale }) {
   const [open, setOpen] = useState(false);
   const [accountCategory, setAccountCategory] = useState()
 
+  if (match.params.locale && locale !== match.params.locale) {
+    console.log(match.params.locale, locale)
+    setLocale(match.params.locale)
+  }
 
 
   const [applicationDetails, setApplicationDetails] = useState({
