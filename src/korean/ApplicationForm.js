@@ -934,7 +934,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 <p class="control">
                   <a class="button">
                     <select value={contact_number[1]} class="input-block-level" id="countryCode" name="country_code">
-                      <PhoneDropDown />
+                      <PhoneDropDown locale={locale} />
                     </select>
                   </a>
                 </p>
@@ -955,7 +955,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 <p class="control">
                   <a class="button">
                     <select value={alt_contact_number[1]} class="input-block-level" id="countryCode" name="alt_country_code">
-                      <PhoneDropDown />
+                      <PhoneDropDown locale={locale} />
                     </select>
                   </a>
                 </p>
@@ -1044,7 +1044,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <p class="control">
                 <a class="button">
                   <select value={contact_number[1]} class="input-block-level" id="countryCode" name="country_code">
-                    <PhoneDropDown />
+                    <PhoneDropDown locale={locale}/>
                   </select>
                 </a>
               </p>
@@ -1065,7 +1065,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <p class="control">
                 <a class="button">
                   <select value={alt_contact_number[1]} class="input-block-level" id="countryCode" name="alt_country_code">
-                    <PhoneDropDown />
+                    <PhoneDropDown locale={locale}/>
                   </select>
                 </a>
               </p>

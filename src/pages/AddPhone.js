@@ -28,21 +28,34 @@ const AddPhone = ({ location, history, locale }) => {
 
   const useStyles = makeStyles((theme) => ({
     container: {
-      width: '100%',
-      height: '100%',
+      boxSizing: 'border-box',
+      width: '80%',
+      margin: '0 auto',
+      height: '70vh',
+      minHeight: '600px',
       paddingTop: '110px',
       position: 'relative',
-    },
-    form: {
-      margin: '0 auto',
-      width: '26%',
-      minWidth: '300px',
       display: 'flex',
       flexDirection: 'column',
-      height: '60%',
-      justifyContent: 'space-evenly'
+      justifyContent: 'space-between',
+      border: '1px rgb(0 0 0 / 20%)',
+      borderRadius: '5px',
+      boxShadow: 'rgb(0 0 0 / 20%) 0px 2px 4px -1px, rgb(0 0 0 / 10%) 0px 4px 5px 0px, rgb(0 0 0 / 12%) 0px 1px 10px 0px;'
+
+    },
+    form: {
+      margin: '10px auto',
+      width: '60%',
+      minWidth: '300px',
+      maxWidth: '600px',
+      display: 'flex',
+      flexDirection: 'column',
+      maxHeight: '600px',
+      justifyContent: 'center',
+      
     },
     button: {
+      marginTop: '10px',
       position: 'relative'
     },
     progress: {
@@ -197,6 +210,7 @@ const AddPhone = ({ location, history, locale }) => {
       {/* <Paper elevation={3} className={classes.paper}> */}
       <Button className={`${classes.button} ${classes.back}`} variant='outlined' onClick={() => history.goBack()}>Back</Button>
 
+      <div style={{width:'90%', margin: '0 auto'}}>
       <Typography component='div' >
         <Box
           fontSize={20}
@@ -209,8 +223,10 @@ const AddPhone = ({ location, history, locale }) => {
           fontSize={14}
           align='center'
           fontWeight="fontWeightRegular" mb={3}>
-          To use Multi Factor Authentication we need to verify your phone below.{<br />}
-          Please enter the phone number you want to use and you will be sent a verification code
+          Multi Factor Authentication is an optional extra layer of security that we recommend our users protect their accounts.{<br/>}
+                Once enabled, at login after entering your account details you will be sent a verification code to enter also.{<br/>}
+                To use Multi Factor Authentication we need to verify your phone below.{<br/>}
+                Please enter the phone number you want to use and you will be sent a verification code 
            </Box>
       </Typography>
 
@@ -232,10 +248,20 @@ const AddPhone = ({ location, history, locale }) => {
                </label>
               </div>
               <div className="field has-addons">
+              {verified ? 
+              <p class="control is-expanded">
+              <input
+                name='phoneNumber'
+                value={['+', loginFields.countryCode, loginFields.phoneNumber].join('')}
+                disabled={verified}
+                class="input" type="tel" placeholder='123456789' />
+            </p>         
+               :
+               <>
                 <p class="control">
-                <a class="button">
-                  <select value={loginFields.countryCode} id="countryCode" name="countryCode"> 
-                    <PhoneDropDown />
+                <a class="button" disabled={verified}  >
+                  <select disabled={verified} value={loginFields.countryCode} id="countryCode" name="countryCode"> 
+                    <PhoneDropDown locale={locale} />
                   </select>
                 </a>
                 </p>
@@ -243,8 +269,11 @@ const AddPhone = ({ location, history, locale }) => {
                   <input
                     name='phoneNumber'
                     value={loginFields.phoneNumber}
+                    disabled={verified}
                     class="input" type="tel" placeholder='123456789' />
-                </p>
+                    </p>              
+                    </>
+                  }
               </div>
             </div>
 
@@ -293,7 +322,9 @@ const AddPhone = ({ location, history, locale }) => {
 
       {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
       {/* </Paper> */}
-      <div id="recaptcha-container"></div>
+      
+    </div>
+    <div id="recaptcha-container"></div>
     </div>
   )
 }
