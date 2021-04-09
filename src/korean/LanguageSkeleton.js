@@ -351,6 +351,12 @@ const arr = [
   },
   {
     "page": "application",
+    "section": "2e",
+    "english": "Player Information",
+    "korean": ""
+  },
+  {
+    "page": "application",
     "section": "3a",
     "english": "First Name",
     "korean": ""
@@ -702,31 +708,25 @@ const arr = [
     "page": "application",
     "section": "14a",
     "english": "Award Received",
-    "korean": "축구 수상 이력이 있습니까? 그렇다면, 상세 내용을 기술해 주세요."
+    "korean": ""
   },
   {
     "page": "application",
     "section": "14b",
     "english": "Date of Award",
-    "korean": "축구 수상 이력이 있습니까? 그렇다면, 상세 내용을 기술해 주세요."
+    "korean": ""
   },
   {
     "page": "application",
     "section": "14c",
     "english": "Reason for Award",
-    "korean": "축구 수상 이력이 있습니까? 그렇다면, 상세 내용을 기술해 주세요."
+    "korean": ""
   },
   {
     "page": "application",
     "section": "14d",
-    "english": "KFA Award / Regional FA Award . Foundation Award",
-    "korean": "축구 수상 이력이 있습니까? 그렇다면, 상세 내용을 기술해 주세요."
-  },
-  {
-    "page": "application",
-    "section": "14d",
-    "english": "KFA Award / Regional FA Award . Foundation Award",
-    "korean": "축구 수상 이력이 있습니까? 그렇다면, 상세 내용을 기술해 주세요."
+    "english": "KFA Award / Regional FA Award / Foundation Award",
+    "korean": ""
   },
 
 

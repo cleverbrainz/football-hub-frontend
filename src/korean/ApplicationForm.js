@@ -262,12 +262,12 @@ export default function ApplicationForm({ history, location, locale }) {
       current_club: {
         age_group: '',
         club: '',
-        k1_affiliated: false,
+        // k1_affiliated: false,
         middle_school: '',
         k1_club: ''
       },
       previous_clubs: [],
-      private_coaching: false,
+      // private_coaching: false,
       private_coach_name: '',
       private_coach_company: '',
       private_coach_website: '',
@@ -321,8 +321,8 @@ export default function ApplicationForm({ history, location, locale }) {
     preferred_foot } = applicationDetails.player_attributes
   const {
     current_club,
-    private_coaching,
-    award_achieved,
+    // private_coaching,
+    // award_achieved,
     award_name,
     award_date,
     award_reasoning,
@@ -543,46 +543,53 @@ export default function ApplicationForm({ history, location, locale }) {
   }
 
   const handleNext = async () => {
-    if (activeStep === 2) {
 
-      const required = [link_1, link_2, link_3, height, weight, position,
+    function checkRequiredFields(arr) {
+      const check = arr.filter(x => !x && x === '')
+
+      if (check !== [] && check.length > 0) {
+        setMessage({
+          error: `Please ensure you have filled out all required fields before ${activeStep === 2 ? 'submitting' : 'moving on'}.`
+        })
+      } else {
+
+        if (activeStep === 2) {
+          setOpen(true)
+        } else {
+          scroll()
+          setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        }
+      }
+    }
+
+    if (activeStep === 0) {
+
+      const required = [height, weight, position,
         preferred_foot, country, email, nationality, postcode, city, address_line_1,
-        dob, contact_number, gender, player_first_name, player_last_name, bio_description,
+        dob, contact_number, gender, player_first_name, player_last_name]
+
+      checkRequiredFields(required)
+
+
+    } else if (activeStep === 1) {
+
+      const required = [bio_description,
         current_club.age_group, current_club.club, current_club.middle_school]
-
-      if (current_club.k1_affiliated) required.push(current_club.k1_club)
-
-      if (award_achieved) {
-        [award_reasoning, award_name, award_date].forEach(x => required.push(x))
-      }
-
-      if (private_coaching) {
-        [private_coach_website, private_coach_company, private_coach_name].forEach(x => required.push(x))
-      }
 
       if (previous_clubs.length > 0 && previous_clubs !== []) {
         previous_clubs.forEach((x, i) => {
           const arr = [previous_clubs[i].club, previous_clubs[i].age_group]
-          if (x.k1_affiliated) arr.push(previous_clubs[i].k1_club)
           arr.forEach(x => required.push(x))
         })
       }
 
-      const check = required.filter(x => !x && x === '')
+      checkRequiredFields(required)
 
-      if (check !== [] && check.length > 0) {
-        setMessage({
-          error: 'Please ensure you have filled out all required fields before submitting.'
-        })
-      } else {
-        setOpen(true)
-      }
+    } else if (activeStep === 2) {
 
-    } else {
-      scroll()
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      const required = [link_1, link_2, link_3]
+      checkRequiredFields(required)
     }
-
   };
 
   const handleBack = () => {
@@ -591,7 +598,7 @@ export default function ApplicationForm({ history, location, locale }) {
   };
 
   function getSteps() {
-    return [application['2a'][locale], application['2b'][locale], application['2c'][locale]];
+    return [application['2e'][locale], application['2c'][locale], application['2d'][locale]];
   }
 
   function handleApplicationChange(e, i) {
@@ -807,12 +814,6 @@ export default function ApplicationForm({ history, location, locale }) {
 
   const ageGroupSelection = (
     <>
-      <option value="under 6s"> Under 6s </option>
-      <option value="under 7s"> Under 7s </option>
-      <option value="under 8s"> Under 8s </option>
-      <option value="under 9s"> Under 9s </option>
-      <option value="under 10s"> Under 10s </option>
-      <option value="under 11s"> Under 11s </option>
       <option value="under 12s"> Under 12s </option>
       <option value="under 13s"> Under 13s </option>
       <option value="under 14s"> Under 14s </option>
@@ -941,7 +942,7 @@ export default function ApplicationForm({ history, location, locale }) {
             </div>
             <div className={classes.field}>
               <div className={classes.label}>
-                <label> <span style={{ color: 'red' }}>*</span> {application['4a'][locale]}
+                <label> {application['4a'][locale]}
                 </label>
               </div>
               <div className="field has-addons">
@@ -1051,8 +1052,7 @@ export default function ApplicationForm({ history, location, locale }) {
           </div>
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> {application['4a'][locale]}
-              </label>
+              <label> {application['4a'][locale]} </label>
             </div>
             <div className="field has-addons">
               <p class="control">
@@ -1508,7 +1508,7 @@ export default function ApplicationForm({ history, location, locale }) {
                         previous_clubs: [...previous_clubs, {
                           age_group: '',
                           club: '',
-                          k1_affiliated: false,
+                          // k1_affiliated: false,
                           k1_club: ''
                         }]
                       }
@@ -1741,9 +1741,9 @@ export default function ApplicationForm({ history, location, locale }) {
                 value={award_name}
                 name='award_name'>
                 <option value=""> </option>
-                <option value="kfa"> {application['14a'][locale].split('/')[0]} </option>
-                <option value="regional"> {application['14a'][locale].split('/')[1]} </option>
-                <option value="foundation">{application['14a'][locale].split('/')[2]} </option>
+                <option value="kfa"> {application['14d'][locale].split('/')[0]} </option>
+                <option value="regional"> {application['14d'][locale].split('/')[1]} </option>
+                <option value="foundation">{application['14d'][locale].split('/')[2]} </option>
               </select>
             </div>
           </div>
@@ -1860,7 +1860,7 @@ export default function ApplicationForm({ history, location, locale }) {
                 <p class="control is-expanded">
                   <input
                     onChange={(e) => handleApplicationChange(e, i)}
-                    value={el.club} name='highlights_footage_link' class="input" type="text"
+                    value={el} name='highlights_footage_link' class="input" type="text"
                     placeholder='Footage Link' />
                 </p>
               </div>

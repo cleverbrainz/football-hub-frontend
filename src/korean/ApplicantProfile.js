@@ -459,10 +459,12 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                 <TableBody>
                   <TableRow>
                     <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
-                    <TableCell align="right"> Indulge Benfica Camp </TableCell>
+                    <TableCell align="right"> PDP </TableCell>
                     {(application && application.hasOwnProperty('submitted')) &&
                       <TableCell align="right"> {moment(application.submission_date).format('MMMM Do YYYY')} </TableCell>}
-                    <TableCell align="right" style={{ color: 'orange' }}> Pending </TableCell>
+                    <TableCell align="right" style={{ color: 'orange' }}> 
+                      {(application && application.hasOwnProperty('submitted')) ? 'In Review' : 'Incomplete'}
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
