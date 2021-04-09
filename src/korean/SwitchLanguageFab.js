@@ -24,7 +24,7 @@ const SwitchLanguageFab = (props) => {
       left: '2%',
       bottom: '2%',
       zIndex: '1000',
-      display: location.pathname === '/application' ? 'none' : 'initial'
+      display: location.pathname.slice(0,12) === '/application' ? 'none' : 'initial'
     },
   }))
   const classes = useStyles()
@@ -33,7 +33,7 @@ const SwitchLanguageFab = (props) => {
       width: 28,
       height: 16,
       padding: 0,
-      display: location.pathname === '/application' ? 'none' : 'flex',
+      display: location.pathname.slice(0,12) === '/application' ? 'none' : 'flex',
     },
     switchBase: {
       padding: 2,
