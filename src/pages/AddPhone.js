@@ -21,6 +21,7 @@ import {
   Select,
   Paper
 } from '@material-ui/core'
+import { verification } from '../korean/LanguageSkeleton'
 import * as firebase from "firebase";
 import PhoneDropDown from './admin/PhoneDropdown';
 
@@ -208,7 +209,7 @@ const AddPhone = ({ location, history, locale }) => {
     <div className={classes.container}>
 
       {/* <Paper elevation={3} className={classes.paper}> */}
-      <Button className={`${classes.button} ${classes.back}`} variant='outlined' onClick={() => history.goBack()}>Back</Button>
+      <Button className={`${classes.button} ${classes.back}`} variant='outlined' onClick={() => history.goBack()}>{verification['1e'][locale]}</Button>
 
       <div style={{width:'90%', margin: '0 auto'}}>
       <Typography component='div' >
@@ -216,17 +217,14 @@ const AddPhone = ({ location, history, locale }) => {
           fontSize={20}
           align='center'
           fontWeight="fontWeightBold" mb={2}>
-          Phone Number Verification
+          {verification['1a'][locale]}
            </Box>
 
         <Box
           fontSize={14}
           align='center'
           fontWeight="fontWeightRegular" mb={3}>
-          Multi Factor Authentication is an optional extra layer of security that we recommend our users protect their accounts.{<br/>}
-                Once enabled, at login after entering your account details you will be sent a verification code to enter also.{<br/>}
-                To use Multi Factor Authentication we need to verify your phone below.{<br/>}
-                Please enter the phone number you want to use and you will be sent a verification code 
+          {verification['1b'][locale].split(' / ').join('`n')}
            </Box>
       </Typography>
 
@@ -244,7 +242,7 @@ const AddPhone = ({ location, history, locale }) => {
           className={classes.form}>
                     <div className={classes.field}>
               <div className={classes.label}>
-                <label> <span style={{ color: 'red' }}>*</span> Contact Number
+                <label> <span style={{ color: 'red' }}>*</span> {verification['1f'][locale]}
                </label>
               </div>
               <div className="field has-addons">
@@ -282,13 +280,13 @@ const AddPhone = ({ location, history, locale }) => {
 
 
           {!verified && <FormControl variant="outlined">
-            <InputLabel htmlFor="outlined-verification-code">Verification Code</InputLabel>
+            <InputLabel htmlFor="outlined-verification-code">{verification['1c'][locale]}</InputLabel>
             <OutlinedInput
               id="outlined-verification-code"
               label='Verification Code'
               name='verificationCode'
               labelWidth={70}
-              value={verificationUpdated ? 'Verified!' : loginFields.verificationCode}
+              value={verificationUpdated ? verification['1d'][locale].split(' / ')[2] : loginFields.verificationCode}
               disabled={!codeSent} />
           </FormControl>}
 
@@ -309,8 +307,8 @@ const AddPhone = ({ location, history, locale }) => {
           className={classes.button} type='submit'
           variant='outlined'
           color='primary'>
-          {verified || verificationUpdated ? 'Verified' :
-            !codeSent ? 'Send Code' : 'Verify Code'}
+          {verified || verificationUpdated ? verification['1d'][locale].split(' / ')[2] :
+            !codeSent ? verification['1d'][locale].split(' / ')[0] : verification['1d'][locale].split(' / ')[1] }
 
           {isLoading && <CircularProgress size={30} className={classes.progress} />}
         </Button>
