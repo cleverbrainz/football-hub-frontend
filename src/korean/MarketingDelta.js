@@ -405,8 +405,6 @@ const useStyles = makeStyles((theme) => ({
   },
   tabThree__coachCard__subtitle: {
     padding: '1.2rem 0',
-    borderTop: '1px solid #71959E',
-    borderBottom: '1px solid #71959E'
   },
   modal: {
     display: 'flex',
@@ -831,8 +829,9 @@ const MarketingDelta = ({ locale, history }) => {
           </Typography>
 
           <img
+            style={{ objectFit: 'contain'}}
             className={classes.tabTwo__images}
-            src="https://i.imgur.com/YkNQ80A.jpg" alt="" />
+            src="https://uksouth1-mediap.svc.ms/transform/thumbnail?provider=spo&inputFormat=png&cs=fFNQTw&docid=https%3A%2F%2Findulgefootballltd.sharepoint.com%3A443%2F_api%2Fv2.0%2Fdrives%2Fb!TU8k-aDdhk23zj9aEI-r1adyiQ8NHXZEkLVhu7ukhjMU7bchdFchTYVLakTP-hD2%2Fitems%2F01QFKVWRYVKZPKBA2YPRDYU7EYREOEFZ2X%3Fversion%3DPublished&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvaW5kdWxnZWZvb3RiYWxsbHRkLnNoYXJlcG9pbnQuY29tQGVmMzMwMjlmLTE0NWUtNDdkNi1iNDA2LWMyMmZiNmE0Y2MxZSIsImlzcyI6IjAwMDAwMDAzLTAwMDAtMGZmMS1jZTAwLTAwMDAwMDAwMDAwMCIsIm5iZiI6IjE2MTc5ODA0MDAiLCJleHAiOiIxNjE4MDAyMDAwIiwiZW5kcG9pbnR1cmwiOiIxcy96TjdidE5RYW5iWmJuU2VQa1JzYlZxNWdpSlJiV1NMdHhxYUNMclE0PSIsImVuZHBvaW50dXJsTGVuZ3RoIjoiMTI1IiwiaXNsb29wYmFjayI6IlRydWUiLCJ2ZXIiOiJoYXNoZWRwcm9vZnRva2VuIiwic2l0ZWlkIjoiWmpreU5EUm1OR1F0WkdSaE1DMDBaRGcyTFdJM1kyVXRNMlkxWVRFd09HWmhZbVExIiwic2lnbmluX3N0YXRlIjoiW1wia21zaVwiXSIsIm5hbWVpZCI6IjAjLmZ8bWVtYmVyc2hpcHxrZW5uQGluZHVsZ2Vmb290YmFsbC5jb20iLCJuaWkiOiJtaWNyb3NvZnQuc2hhcmVwb2ludCIsImlzdXNlciI6InRydWUiLCJjYWNoZWtleSI6IjBoLmZ8bWVtYmVyc2hpcHwxMDAzMjAwMGU3OWEzM2Q1QGxpdmUuY29tIiwidHQiOiIwIiwidXNlUGVyc2lzdGVudENvb2tpZSI6IjMifQ.ckdGbzdYUTEvUEp6TExVaWhWU3dJR01jbzFRbXluYnhObWRGZmJCM25GRT0&encodeFailures=1&width=2878&height=1376&srcWidth=&srcHeight=" alt="" />
 
 
 
@@ -907,20 +906,23 @@ const MarketingDelta = ({ locale, history }) => {
                   }}>
 
                     <img
+                      style={{ ...(i === 1 && {
+                        filter: 'brightness(1.2)'
+                      })}}
                       className={classes.tabThree__coachCard__image}
                       src={i === 0 ? "https://i.imgur.com/uPTpZzi.jpg" :
-                        i === 1 ? 'https://o.remove.bg/downloads/93481dee-b0b0-4403-9e36-66fa1783d61e/Jack_Johnson-removebg-preview.png' :
+                        i === 1 ? 'https://i.imgur.com/8deioVX.png' :
                           'https://i.imgur.com/IYUoAXL.jpg'} alt="" />
 
                     <Box align='center'
                       className={classes.tabThree__coachCard__title}
-                      fontSize={20} fontWeight="fontWeightRegular" mt={2} mb={2}>
+                      fontSize={20} fontWeight="fontWeightRegular" mt={2} pb={0}>
                       {coach.split(' / ')[0]}
                     </Box>
 
                     <Box align='center'
                       className={classes.tabThree__coachCard__subtitle}
-                      fontSize={14} fontWeight="fontWeightRegular" mt={2} mb={2}>
+                      fontSize={13} fontWeight="fontWeightRegular">
                       {coach.split(' / ')[1]} {i !== 2 && <> <br /> <br /> </>}
                     </Box>
 
@@ -984,7 +986,8 @@ const MarketingDelta = ({ locale, history }) => {
           </Typography>
 
           <img className={classes.tabTwo__images}
-            src="https://i.imgur.com/PEGKYzd.jpg" alt="" />
+            style={{ objectPosition: '30% 50%'}}
+            src="https://i.imgur.com/wlHiOb0.jpg" alt="" />
         </div>
 
 
