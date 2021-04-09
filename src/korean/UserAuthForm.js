@@ -220,7 +220,11 @@ const UserAuthForm = ({ locale, history }) => {
           .then(res => {
             // console.log(res.data)
             const { category } = res.data[0]
-            localStorage.setItem('category', category)
+            handleAfterRequestStates({
+              success: `${snackbar_messages['7a'][locale]} Redirecting to profile...`
+            })
+    
+            setTimeout(async () => {
             if (category === 'player' || category === 'parent') {
               history.push(`/user/${auth.getUserId()}`)
             } else if (category === 'company') {
@@ -228,6 +232,7 @@ const UserAuthForm = ({ locale, history }) => {
             } else {
               history.push('/testercoach')
             }
+          } ,1000)
           })
       })
   }
@@ -243,6 +248,12 @@ const UserAuthForm = ({ locale, history }) => {
             console.log(res.data)
             const { category } = res.data[0]
             localStorage.setItem('category', category)
+
+            handleAfterRequestStates({
+              success: `${snackbar_messages['7a'][locale]} Redirecting to profile...`
+            })
+    
+            setTimeout(async () => {
             if (category === 'player' || category === 'parent') {
               history.push(`/user/${auth.getUserId()}`)
             } else if (category === 'company') {
@@ -250,6 +261,7 @@ const UserAuthForm = ({ locale, history }) => {
             } else {
               history.push('/testercoach')
             }
+          } ,1000)
           })
       })
       .catch(error => {
@@ -279,6 +291,9 @@ const UserAuthForm = ({ locale, history }) => {
           }
         } else {
           console.log(error)
+        handleAfterRequestStates({
+          error: snackbar_messages['7c'][locale]
+        })
         }
       })
   }

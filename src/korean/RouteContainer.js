@@ -57,12 +57,13 @@ const RouteContainer = (props) => {
           )} />
 
 
-        <AuthRouter exact path="/application"
+        <AuthRouter exact path="/application/:locale?"
           locale={locale}
           component={(props) => (
             <ApplicationForm
               {...props}
-              locale={locale} />
+              locale={locale}
+              setLocale={setLocale} />
           )} />
 
         <Route exact path="/authentication"
