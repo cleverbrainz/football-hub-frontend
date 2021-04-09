@@ -371,7 +371,7 @@ const arr = [
     "page": "application",
     "section": "4",
     "english": "Contact Number",
-    "korean": ""
+ "korean": "전화번호"
   },
   {
     "page": "application",
@@ -728,6 +728,42 @@ const arr = [
     "english": "KFA Award / Regional FA Award / Foundation Award",
     "korean": ""
   },
+  {
+    "page": "verification",
+    "section": "1a",
+    "english": "Phone Number Verification",
+    "korean": "휴대폰 번호 인증"
+  },
+  {
+    "page": "verification",
+    "section": "1b",
+    "english": "Multi Factor Authentication is an optional extra layer of security that we recommend our users protect their accounts. / Once enabled, at login after entering your account details you will be sent a verification code to enter also. / To use Multi Factor Authentication we need to verify your phone below. / Please enter the phone number you want to use and you will be sent a verification code.",
+    "korean": "다중 인증은 계정 보호를 위한 추가 보안 수단입니다. (선택 사항) / 로그인 시 아이디, 비밀번호와 함께 인증 코드를 입력해야 합니다. / 다중 인증 활성화를 위해 휴대폰 인증이 필요합니다. / 인증에 사용할 휴대폰 번호를 입력해 주세요."
+  },
+  {
+    "page": "verification",
+    "section": "1c",
+    "english": "Verification Code",
+    "korean": "인증 코드"
+  },
+  {
+    "page": "verification",
+    "section": "1d",
+    "english": "Send Code / Verify Code / Verified",
+    "korean": "코드 보내기 / 코드 인증 / 인증됨"
+  },
+  {
+    "page": "verification",
+    "section": "1e",
+    "english": "Back",
+    "korean": "뒤로가기"
+  },
+  {
+    "page": "application",
+    "section": "1f",
+    "english": "Contact Number",
+    "korean": "전화번호"
+  },
 
 
 
@@ -905,5 +941,6 @@ export const {
   marketing,
   authorization,
   application,
+  verification,
   process_flow,
   snackbar_messages } = convert(arr)
