@@ -877,7 +877,7 @@ const arr = [
     "korean": "뒤로가기"
   },
   {
-    "page": "application",
+    "page": "verification",
     "section": "1f",
     "english": "Contact Number",
     "korean": "전화번호"
