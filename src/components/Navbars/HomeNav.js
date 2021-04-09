@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, withRouter, useLocation } from 'react-router-dom';
+import { buttons } from '../../korean/LanguageSkeleton'
 import { Typography, Box, Button } from '@material-ui/core'
 import SportsSoccerSharpIcon from '@material-ui/icons/SportsSoccerSharp';
 
@@ -35,7 +36,7 @@ const styles = {
 
 
 
-function HomeNav({ history }) {
+function HomeNav({ history, locale }) {
 
   const location = useLocation()
   const [scrollPosition, setScrollPosition] = useState()
@@ -109,7 +110,7 @@ function HomeNav({ history }) {
 
              {(localStorage.version === 'South Korea' && location.pathname === '/') && <Button 
              onClick={() => history.push('/authentication')}
-             variant='contained' color='primary'> Login </Button>} 
+             variant='contained' color='primary'> {buttons['4'][locale]} </Button>} 
 
             </div>
           </div>

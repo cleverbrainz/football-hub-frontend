@@ -7,7 +7,7 @@ import { ReactComponent as FormLogo } from './form.svg';
 import PeopleSharpIcon from '@material-ui/icons/PeopleSharp';
 import FlightTakeoffSharpIcon from '@material-ui/icons/FlightTakeoffSharp';
 import AssignmentSharpIcon from '@material-ui/icons/AssignmentSharp';
-import { languages, marketing } from './LanguageSkeleton'
+import { tabs, buttons, marketing,  } from './LanguageSkeleton'
 import StarsSharpIcon from '@material-ui/icons/StarsSharp';
 import EventSharpIcon from '@material-ui/icons/EventSharp';
 import ScheduleSharpIcon from '@material-ui/icons/ScheduleSharp';
@@ -535,6 +535,8 @@ const MarketingDelta = ({ locale, history }) => {
     })
   }
 
+  const camp_card_images = ['https://i.imgur.com/HDBxtvO.jpg', 'https://i.imgur.com/aY9A52u.jpg', 'https://i.imgur.com/CnCfNJp.jpg', 'https://i.imgur.com/jBCtavy.jpg']
+
   return (
     <div id='korean__marketing' className={classes.root}>
 
@@ -555,13 +557,13 @@ const MarketingDelta = ({ locale, history }) => {
             <Button className={classes.button}
               onClick={() => scrollTo('guarantee')}
               color='primary'
-              variant='outlined'> Explore </Button>
+              variant='outlined'>  {buttons['1'][locale]} </Button>
 
             <Button className={classes.button}
               style={{ marginLeft: '1rem' }}
               onClick={() => scrollTo('camp-cards')}
               color='primary'
-              variant='contained'> Apply </Button>
+              variant='contained'> {buttons['2'][locale]} </Button>
           </div>
         </Typography>
 
@@ -571,7 +573,7 @@ const MarketingDelta = ({ locale, history }) => {
       <section id='guarantee' className={classes.iconsSectionContainer}>
         <Box fontSize={25} align='center'
           fontWeight="fontWeightRegular" mb={5}>
-          What we guarantee
+          {marketing['18'][locale]}
         </Box>
         <div className={classes.iconsSection}>
 
@@ -603,14 +605,14 @@ const MarketingDelta = ({ locale, history }) => {
             fontWeight="fontWeightRegular" mb={4}>
             {marketing['3c'][locale]}
           </Box>
-          <Button color='primary' className={classes.button} onClick={() => scrollTo('steps')} variant='contained'> Get started </Button>
+          <Button color='primary' className={classes.button} onClick={() => scrollTo('steps')} variant='contained'> {buttons['5'][locale]} </Button>
         </Typography>
 
         <FitnessLogo />
       </section>
 
       <Box fontSize={25} align='center' mt={8} mb={7} >
-        How it Works
+        {marketing['19'][locale]}
       </Box>
 
       <div id='steps' className={classes.stepsContainer}>
@@ -636,7 +638,7 @@ const MarketingDelta = ({ locale, history }) => {
 
       <div id='camp-cards' className={classes.campCardContainer}>
         {[{ ...marketing['5a'] }, { ...marketing['5b'] },
-        { ...marketing['5c'] }, { ...marketing['5d'] }].map(el => {
+        { ...marketing['5c'] }, { ...marketing['5d'] }].map((el, i) => {
           return (
             <Paper elevation={2} className={classes.campCard}>
               <CardActionArea>
@@ -644,16 +646,6 @@ const MarketingDelta = ({ locale, history }) => {
                   <Box fontSize={18} fontWeight="fontWeightRegular" mb={2}>
                     {el[locale].split('.')[0]}
                   </Box>
-
-                  {/* {locale === 'en' &&
-                    <Chip
-                      className={classes.campCard__chip}
-                      icon={<ScheduleSharpIcon className={classes.campCard__icons} />}
-                      label={el[locale].split('.')[2]}
-                      variant="outlined"
-                    />} */}
-
-                  {/* <br /> */}
 
                   <Chip
                     className={classes.campCard__chip}
@@ -675,7 +667,7 @@ const MarketingDelta = ({ locale, history }) => {
                   component="img"
                   alt="Kids playing football"
                   height="140"
-                  src='https://images.unsplash.com/photo-1604651684573-05470013b3b9?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80'
+                  src={camp_card_images[i]}
                   title="Contemplative Reptile"
                 />
               </CardActionArea>
@@ -697,7 +689,7 @@ const MarketingDelta = ({ locale, history }) => {
 
       <Paper className={classes.tabContainer} elevation={3}>
         <Tabs value={tabValue} onChange={(event, newValue) => setTabValue(newValue)}>
-          {['Camp', 'Club', 'Assessment', 'Programme'].map((x, i) => {
+          {[tabs['1a'][locale], tabs['1b'][locale], tabs['1c'][locale], tabs['1d'][locale]].map((x, i) => {
             return (
               <Tab className={classes.tabs} style={{
                 ...(tabValue === i && {
@@ -717,7 +709,7 @@ const MarketingDelta = ({ locale, history }) => {
         <Box
           align='center'
           fontSize={25} fontWeight="fontWeightRegular" mt={5} mb={8}>
-          The Residential Training Camp
+           {marketing['14'][locale]}
         </Box>
 
         <div className={classes.tabTwo__container} >
@@ -735,7 +727,7 @@ const MarketingDelta = ({ locale, history }) => {
 
           <img
             className={classes.tabTwo__images}
-            src="https://images.unsplash.com/photo-1487811566627-ecd6321dfd2b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2892&q=80" alt="" />
+            src="https://i.imgur.com/1CCki8y.jpg" alt="" />
         </div>
 
 
@@ -775,7 +767,7 @@ const MarketingDelta = ({ locale, history }) => {
           <Button color='primary'
             className={classes.button}
             onClick={() => scrollTo('camp-cards')} variant='contained'>
-            Apply Now
+              {buttons['3'][locale]}
         </Button>
         </div>
 
@@ -825,7 +817,7 @@ const MarketingDelta = ({ locale, history }) => {
           <Typography component='div' className={classes.tabTwo__text}>
             <Box
               fontSize={18} fontWeight="fontWeightBold" mb={2}>
-              Who They Are
+               {marketing['16'][locale]}
             </Box>
             <Box
               className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
@@ -840,7 +832,7 @@ const MarketingDelta = ({ locale, history }) => {
 
           <img
             className={classes.tabTwo__images}
-            src="https://images.unsplash.com/photo-1595169420819-c09fa1ceb704?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2908&q=80" alt="" />
+            src="https://i.imgur.com/YkNQ80A.jpg" alt="" />
 
 
 
@@ -865,7 +857,7 @@ const MarketingDelta = ({ locale, history }) => {
           <Typography component='div' className={classes.tabTwo__text}>
             <Box
               fontSize={18} fontWeight="fontWeightBold" mb={1}>
-              What Is It
+                {marketing['15a'][locale]}
             </Box>
 
             <Box
@@ -885,7 +877,7 @@ const MarketingDelta = ({ locale, history }) => {
           <Typography component='div' className={classes.tabTwo__text}>
             <Box
               fontSize={18} fontWeight="fontWeightBold" mt={2} mb={2}>
-              Fee
+                {marketing['15b'][locale]}
             </Box>
             <Box
               className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
@@ -898,7 +890,7 @@ const MarketingDelta = ({ locale, history }) => {
 
         <Box align='center'
           fontSize={18} fontWeight="fontWeightBold" mt={6} mb={6}>
-          Assessment Coaches
+          {marketing['15c'][locale]}
         </Box>
 
         <div className={classes.tabThree__coachContainer}>
@@ -948,7 +940,7 @@ const MarketingDelta = ({ locale, history }) => {
         <Box
           align='center'
           fontSize={25} fontWeight="fontWeightRegular" mt={5} mb={8}>
-            The Programme
+             {marketing['17'][locale]}
         </Box>
 
 
@@ -992,7 +984,7 @@ const MarketingDelta = ({ locale, history }) => {
           </Typography>
 
           <img className={classes.tabTwo__images}
-            src="https://images.unsplash.com/photo-1596247865408-cb5107b24afc?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2829&q=80" alt="" />
+            src="https://i.imgur.com/PEGKYzd.jpg" alt="" />
         </div>
 
 
