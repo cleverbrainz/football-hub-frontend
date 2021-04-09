@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import { application, snackbar_messages } from './LanguageSkeleton'
+import { profile, snackbar_messages } from './LanguageSkeleton'
 import auth from '../lib/auth'
 import axios from 'axios'
 import AdjustSharpIcon from '@material-ui/icons/AdjustSharp';
@@ -305,7 +305,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
     setCurrentScrollSection(item)
   }
 
-  const nav = ['about', 'applications', 'football-history', 'skills-awards']
+  const nav = [profile['1b'][locale], profile['1c'][locale], profile['1d'][locale], profile['1e'][locale]]
 
   return (
 
@@ -317,7 +317,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
             <Box
               fontSize={17}
               fontWeight="fontWeightBold" mb={3}>
-              Sections
+              {profile['1a'][locale]}
           </Box>
           </Typography>
 
@@ -327,7 +327,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
               return <li
                 className={classes.listItems}
                 style={{ fontWeight: currentScrollSection === item ? 'bold' : 'initial' }}
-                onClick={() => scrollView(item)}> {titleCase(item.replace(/-/g, i === 2 ? ' ' : ' & '))} </li>
+                onClick={() => scrollView(item)}> {locale === 'en' ? titleCase(item.replace(/-/g, i === 2 ? ' ' : ' & ')) : item} </li>
             })}
           </ul>
         </Paper>
@@ -338,21 +338,21 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
           <Box
             fontSize={17}
             fontWeight="fontWeightBold" mb={3}>
-            Account Settings
+            {profile['2a'][locale]}
           </Box>
         </Typography>
 
         <ul>
           <li
             onClick={() => history.push(`/user/${auth.getUserId()}/two-factor`)}
-            className={classes.listItems}> Two Factor Authentication </li>
-          <li className={classes.listItems}> Profile Details </li>
+            className={classes.listItems}> {profile['2b'][locale]} </li>
+          <li className={classes.listItems}> {profile['2c'][locale]} </li>
           <li
             onClick={() => {
               auth.logOut()
               history.push('/')
             }}
-            className={classes.logout}> Log Out</li>
+            className={classes.logout}> {profile['2d'][locale]}</li>
         </ul>
       </Paper>
 
@@ -388,19 +388,19 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                     fontSize={14}
                     fontWeight="fontWeightRegular" mb={0.5}>
                       {/* {titleCase(application.football_history.current_club.club)} */}
-                    <span style={{fontWeight: "bold"}}>Club:</span>{`  ${titleCase(application.football_history.current_club.club)}`}
+                    <span style={{fontWeight: "bold"}}>{profile['3b'][locale]}:</span>{`  ${titleCase(application.football_history.current_club.club)}`}
                   </Box>
                   <Box
                     fontSize={14}
                     fontWeight="fontWeightRegular" mb={0.5}>
                     {/* {titleCase(application.age_group)} */}
-                    <span style={{fontWeight: "bold"}}>Age Group:</span>{`  ${titleCase(application.age_group)}`}
+                    <span style={{fontWeight: "bold"}}>{profile['3c'][locale]}</span>{`  ${titleCase(application.age_group)}`}
                   </Box>
                   <Box
                     fontSize={14}
                     fontWeight="fontWeightRegular">
                     {/* {titleCase(application.player_attributes.position)} */}
-                    <span style={{fontWeight: "bold"}}>Position:</span>{`  ${titleCase(application.player_attributes.position)}`}
+                    <span style={{fontWeight: "bold"}}>{profile['3d'][locale]}</span>{`  ${titleCase(application.player_attributes.position)}`}
                   </Box>
 
                 </>
@@ -410,12 +410,12 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
           </Paper>
 
           {(application && application.hasOwnProperty('submitted')) && (
-            <Paper id='about' elevation={3} className={`${classes.otherSections} nav-sections`} >
+            <Paper id={profile['1b'][locale]} elevation={3} className={`${classes.otherSections} nav-sections`} >
               <Typography component='div' >
                 <Box
                   fontSize={20}
                   fontWeight="fontWeightBold" mb={3}>
-                  About
+                  {locale === 'en' ? titleCase(profile['1b'][locale]) : profile['1b'][locale]}
               </Box>
 
                 <Box
@@ -430,19 +430,19 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
               <p className={classes.seeMore} onClick={(e) => {
                 document.querySelector('#truncate-text').classList.remove('line-clamp')
                 e.target.style.display = 'none'
-              }}> see more </p>
+              }}> {profile['4'][locale]} </p>
 
 
             </Paper>
           )}
 
 
-          <Paper id='applications' elevation={3} className={`${classes.otherSections} nav-sections`}>
+          <Paper id={profile['1c'][locale]} elevation={3} className={`${classes.otherSections} nav-sections`}>
             <Typography component='div' >
               <Box
                 fontSize={20}
                 fontWeight="fontWeightBold" mb={3}>
-                Applications
+                {locale === 'en' ?  titleCase(profile['1c'][locale]) : profile['1c'][locale]}
               </Box>
             </Typography>
 
@@ -451,10 +451,10 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                 <TableHead>
                   <TableRow>
                     <TableCell>ID </TableCell>
-                    <TableCell align="right"> Name</TableCell>
+                    <TableCell align="right"> {profile['5b'][locale]}</TableCell>
                     {(application && application.hasOwnProperty('submitted')) &&
-                      <TableCell align="right"> Submitted </TableCell>}
-                    <TableCell align="right">Status</TableCell>
+                      <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
+                    <TableCell align="right"> {profile['5d'][locale]}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -464,7 +464,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                     {(application && application.hasOwnProperty('submitted')) &&
                       <TableCell align="right"> {moment(application.submission_date).format('MMMM Do YYYY')} </TableCell>}
                     <TableCell align="right" style={{ color: 'orange' }}> 
-                      {(application && application.hasOwnProperty('submitted')) ? 'In Review' : 'Incomplete'}
+                      {(application && application.hasOwnProperty('submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -478,18 +478,18 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
               variant='outlined'
               color='primary'
               onClick={() => handleRedirect()}>
-              {application ? 'Continue application' : 'Start application'}
+              {application ? profile['8a'][locale] : profile['8b'][locale]}
             </Button>
           )}
 
           {(application && application.hasOwnProperty('submitted')) && (
             <>
-              <Paper id='football-history' elevation={3} className={`${classes.otherSections} nav-sections`}>
+              <Paper id={profile['1d'][locale]} elevation={3} className={`${classes.otherSections} nav-sections`}>
                 <Typography component='div' >
                   <Box
                     fontSize={20}
                     fontWeight="fontWeightBold" mb={3}>
-                    Football History
+                    {locale === 'en' ? titleCase(profile['1d'][locale]) : profile['1d'][locale]}
               </Box>
                 </Typography>
 
@@ -521,15 +521,16 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                           fontWeight="fontWeightRegular" mb={1}>
                           <span className={classes.chip}>
                             <PeopleAltSharpIcon style={{ color: 'orange', fontSize: '15px', transform: 'translateY(3px)', marginRight: '6px' }} />
-                            {titleCase(el.age_group)} </span>
+                            {locale === 'en' ? titleCase(el.age_group) : el.age_group.replace('under ', 'U')} </span>
 
                           <span className={classes.chip}>
 
-                            {el.k1_affiliated ?
+                            {el.k1_club ?
                               <CheckCircleSharpIcon style={{ color: 'green', fontSize: '15px', transform: 'translateY(3px)', marginRight: '6px' }} /> :
                               <CancelSharpIcon style={{ color: 'red', fontSize: '15px', transform: 'translateY(3px)', marginRight: '6px' }} />}
 
-                            K1 Affiliated
+                              {profile['6'][locale]}
+                              
                           </span>
                         </Box>
                       </Typography>
@@ -540,24 +541,24 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
               </Paper>
 
-              <div id='skills-awards' className={`${classes.awardsSectionContainer} nav-sections`}>
+              <div id={profile['1e'][locale]} className={`${classes.awardsSectionContainer} nav-sections`}>
                 <Paper className={classes.awardSections} elevation={3}>
                   <Typography component='div' >
                     <Box
                       fontSize={20}
                       fontWeight="fontWeightBold" mb={3}>
-                      Skills
+                      Attributes
               </Box>
                   </Typography>
 
-                  <ul>
+                  {/* <ul>
                     <li className={classes.skillItems}>Dribbling in tight spaces</li>
                     <li className={classes.skillItems}>Shooting with accuracy</li>
                     <li className={classes.skillItems}>Close ball control </li>
                     <li className={classes.skillItems}>Passing to open up defence</li>
                     <li className={classes.skillItems}>Speed to get up and down the wing</li>
                     <li className={classes.skillItems}>Overall finesse. Match winner</li>
-                  </ul>
+                  </ul> */}
                 </Paper>
 
                 {application.football_history.award_achieved && (

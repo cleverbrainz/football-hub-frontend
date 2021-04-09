@@ -30,7 +30,7 @@ const RouteContainer = (props) => {
   return (
 
     <Router>
-      <HomeNav />
+      <HomeNav locale={locale}/>
       <SwitchLanguageFab
         locale={locale}
         handleLocaleChange={(e) => {

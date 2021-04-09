@@ -45,25 +45,25 @@ const arr = [
     "page": "marketing",
     "section": "5a",
     "english": "Under 12s. 16th June 2021. Yang Yang. Apply",
-    "korean": "U12 (초6). 2021년 6월 16일 ~ 19일. 강원도 양양. Apply"
+    "korean": "U12 (초6). 2021년 6월 16일 ~ 19일. 강원도 양양. 지원하기"
   },
   {
     "page": "marketing",
     "section": "5b",
     "english": "Under 13s. 31st May 2021. Yang Yang. Apply",
-    "korean": "U13 (중1). 2021년 5월 31일 ~ 6월 3일. 강원도 양양. Apply"
+    "korean": "U13 (중1). 2021년 5월 31일 ~ 6월 3일. 강원도 양양. 지원하기"
   },
   {
     "page": "marketing",
     "section": "5c",
     "english": "Under 14s. 5th June 2021. Venue TBC. Apply",
-    "korean": "U14 (중2). 2021년 6월 5일 ~ 6월 8일. 장소 추후 공지. Apply "
+    "korean": "U14 (중2). 2021년 6월 5일 ~ 6월 8일. 장소 추후 공지. 지원하기 "
   },
   {
     "page": "marketing",
     "section": "5d",
     "english": "Under 15s. 11th June 2021. Venue TBC. Apply",
-    "korean": "U15 (중3). 2021년 6월 11일 ~ 6월 14일. 장소 추후 공지. Apply"
+    "korean": "U15 (중3). 2021년 6월 11일 ~ 6월 14일. 장소 추후 공지. 지원하기"
   },
   {
     "page": "marketing",
@@ -123,7 +123,7 @@ const arr = [
     "page": "marketing",
     "section": "9a",
     "english": "Ajax FC",
-    "korean": "Ajax FC"
+    "korean": "아약스 FC"
   },
   {
     "page": "marketing",
@@ -153,44 +153,156 @@ const arr = [
     "page": "marketing",
     "section": "11a",
     "english": "Gwynne Berry / Tec4Tekkers Founder / Gwynne is widely recognised by his peers as one of the best technical coaches in world football. His career spans more than 30 years working within football and developing players. Gwynne has worked at the highest levels of the game with professional clubs in the English Premier League, The English League Championship, coached in 40 countries over 5 continents and he has developed some of the best players in professional football. / Gwynne is Technical Coach Educator for Football Association of Wales and the Latvian FA and currently hold a UEFA B License. Gwynne has a passion for developing players and has his own successful technical skills programme called Tek4Tekkers.",
-    "korean": "Gwynne Berry / Tec4Tekkers Founder / Gwynne은 세계 최고의 축구 기술 감독 중 한 명으로 널리 알려져 있습니다. 30년 이상의 선수 육성 경험을 통틀어 잉글랜드 프리미어리그 구단들과 5개 대륙에 걸쳐 40개국에서 코치직을 맡아 왔으며, 수준급의 프로 축구 선수들을 길러낸 경력이 있습니다. 현재 웨일스 축구 협회와 라트비아 축구 협회의 기술 감독이며, UEFA B 공인 자격증을 보유하고 있습니다. / Gwynne은 재능 있는 선수 육성에 특별한 열정을 갖고 있으며, Tek4Tekkers라는 뛰어난 축구 기술 프로그램을 운영하고 있습니다. "
+    "korean": "Gwynne Berry / Tec4Tekkers 설립자 / Gwynne은 세계 최고의 축구 기술 감독 중 한 명으로 널리 알려져 있습니다. 30년 이상의 선수 육성 경험을 통틀어 잉글랜드 프리미어리그 구단들과 5개 대륙에 걸쳐 40개국에서 코치직을 맡아 왔으며, 수준급의 프로 축구 선수들을 길러낸 경력이 있습니다. 현재 웨일스 축구 협회와 라트비아 축구 협회의 기술 감독이며, UEFA B 공인 자격증을 보유하고 있습니다. / Gwynne은 재능 있는 선수 육성에 특별한 열정을 갖고 있으며, Tek4Tekkers라는 뛰어난 축구 기술 프로그램을 운영하고 있습니다. "
   },
   {
     "page": "marketing",
     "section": "11b",
     "english": "Jack Johnson / Fulham U14 Academy Coach / Jack Johnson was one of the youngest ever coaches to gain his UEFA A licence and achieved his FA Level 3 Youth Award. He has worked in professional Academy Football for over 12 years and is currently under 14 coach at Fulham FC from the English Premier League. / Jack was also an academy player at Fulham FC for 7 years prior to flying out to the USA on a soccer scholarship in Florida. Jack founded his own coaching company which includes a full-time football Academy for 16–19-year-olds at Nescot College, England",
-    "korean": "Jack Johnson / Fulham U14 Academy Coach / Jack Johnson은 역대 최연소 UEFA A 공인 자격을 획득한 코치 중 한 명으로, FA 레벨 3 유스 어워드를 수상한 경력이 있습니다. 12년 이상 프로 아카데미 축구에 몸담아 왔으며 현재 잉글랜드 프리미어리그 풀럼FC 아카데미의 코치입니다. / Jack은 플로리다에서 축구 장학금을 받아 미국으로 가기 전, 7년 간 풀럼FC에서 아카데미 선수로도 활약했습니다. 이후 영국 Nescot 대학에서 16-19세 선수들을 위한 풀타임 축구 아카데미를 포함하여 독자적인 코칭 회사를 설립하였습니다.  "
+    "korean": "Jack Johnson / 풀럼 U14 아카데미 코치 / Jack Johnson은 역대 최연소 UEFA A 공인 자격을 획득한 코치 중 한 명으로, FA 레벨 3 유스 어워드를 수상한 경력이 있습니다. 12년 이상 프로 아카데미 축구에 몸담아 왔으며 현재 잉글랜드 프리미어리그 풀럼FC 아카데미의 코치입니다. / Jack은 플로리다에서 축구 장학금을 받아 미국으로 가기 전, 7년 간 풀럼FC에서 아카데미 선수로도 활약했습니다. 이후 영국 Nescot 대학에서 16-19세 선수들을 위한 풀타임 축구 아카데미를 포함하여 독자적인 코칭 회사를 설립하였습니다.  "
   },
   {
     "page": "marketing",
     "section": "11c",
     "english": "Stuart Searle / Chelsea Ladies Head of Technical and Goalkeeper Coach / Stuart is an UEFA-A licenced coach currently working at Chelsea Football Club. He joined Chelsea as an Academy goalkeeping coach in 2004 while playing for numerous high profile non-league clubs before signing on as a player. In 2012, and back at Chelsea working in the Academy and our international department, Stuart joined Chelsea Women manager Emma Hayes in the becoming the goalkeeping coach on a part-time basis. / He soon moved into a full-time role, successfully helping them win the WSL and FA Cup Double in 2015, the Spring Series in 2017, and the Double again in 2018. As of the 2019/20 season, Stuart's role has evolved, and he is now head of technical as well as goalkeeping coach.",
-    "korean": "Stuart Searle / Chelsea Ladies Head of Technical and Goalkeeper Coach / Stuart는 2012년 첼시FC 아카데미에서 일하면서 첼시 위민 감독 Emma Hayes와 함께 파트타임 골키퍼 코치가 되었습니다. 이후 곧 풀타임 코치로 전환하여 2015년 WSL과 FA컵 더블, 2017년 스프링 시리즈, 2018년 또다시 더블 우승을 성공적으로 도왔습니다. / 2019-20 시즌을 기점으로 첼시에서 Stuart의 역할은 더욱 커졌고, 현재는 기술 코칭 책임자이자 골키퍼 코치직을 맡고 있습니다. "
+    "korean": "Stuart Searle / 첼시 레이디스 골키퍼 & 기술 헤드코치 / Stuart는 2012년 첼시FC 아카데미에서 일하면서 첼시 위민 감독 Emma Hayes와 함께 파트타임 골키퍼 코치가 되었습니다. 이후 곧 풀타임 코치로 전환하여 2015년 WSL과 FA컵 더블, 2017년 스프링 시리즈, 2018년 또다시 더블 우승을 성공적으로 도왔습니다. / 2019-20 시즌을 기점으로 첼시에서 Stuart의 역할은 더욱 커졌고, 현재는 기술 코칭 책임자이자 골키퍼 코치직을 맡고 있습니다. "
   },
   {
     "page": "marketing",
     "section": "12a",
     "english": "Indulge Football",
-    "korean": "Indulge Football"
+    "korean": "인덜지풋볼"
   },
 
   {
     "page": "marketing",
     "section": "12b",
     "english": "Inulge Football specialise in Player Pathways, Sponsorship and Consultancy, Fan Relationship Management and Digital Solutions. / We have been trading since 2008 and during that time have managed tours and events for thousands of customers including fan packages for the FIFA World Cup, been official ticket agency of elite professional clubs such as FC Barcelona and provided professional services to Premier League players including Harry Kane, Michail Antonio and Andros Townsend. / We have recently expanded our services into Asia, starting with South Korea where we have created partnerships with top companies and organisations. The pathway Development Programme will be the first of its kind in South Korea and we are very excited to be able to help develop youth pathways there and provide connections into European football.",
-    "korean": "Inulge Football specialise in Player Pathways, Sponsorship and Consultancy, Fan Relationship Management and Digital Solutions. / We have been trading since 2008 and during that time have managed tours and events for thousands of customers including fan packages for the FIFA World Cup, been official ticket agency of elite professional clubs such as FC Barcelona and provided professional services to Premier League players including Harry Kane, Michail Antonio and Andros Townsend. / We have recently expanded our services into Asia, starting with South Korea where we have created partnerships with top companies and organisations. The pathway Development Programme will be the first of its kind in South Korea and we are very excited to be able to help develop youth pathways there and provide connections into European football."
+    "korean": "인덜지풋볼은 선수 진로 개발, 스폰서쉽, 컨설팅, 팬 매니지먼트 그리고 디지털 솔루션에 대한 전문성을 바탕으로 클라이언트를 서포트합니다. / 2008년 설립 이후 FIFA 월드컵 팬 패키지를 포함하여 수천 명의 고객들을 위해 투어와 이벤트를 매니지먼트해 왔으며, FC바르셀로나와 같은 프로 엘리트 클럽들의 공식 티켓 에이전시로 활동하는 동시에 해리 케인, 미첼리 안토니오, 앤드로스 타운센트와 같은 프리미어리그 선수들에게도 전문 서비스를 제공해 왔습니다. / 현재 인덜지풋볼은 한국을 시작으로 여러 기업 및 기관들과 파트너쉽을 맺으며 아시아 전역으로 사업 영역을 확장하고 있습니다. / 본 글로벌 유망주 육성 프로젝트는 한국 최초이며, 우리는 유소년 선수들의 발전을 위해 유럽 축구와의 지속적인 연계를 제공한다는 점을 매우 자랑스럽게 여기고 있습니다."
   },
   {
     "page": "marketing",
     "section": "13a",
     "english": "The Pathway Development Programme",
-    "korean": "The Pathway Development Programme"
+    "korean": "글로벌 유망주 육성 프로젝트"
   },
   {
     "page": "marketing",
     "section": "13b",
     "english": "The PDP is a solution we have created to help all footballers have the best football education and opportunities specifically to their abilities and needs. Through our extensive professional network, partners, and own expertise we have created the best programme for players to develop in the key areas of the game. / We believe those areas of football are technical, tactical, mental, and physical. We create football events and experiences partnering with the leading professional clubs, brands, and experts to deliver personalised development plans for all players. Our residential training camp with the world-famous Ajax Academy will kickstart the Pathway Development Program in South Korea.",
     "korean": "글로벌 유망주 육성 프로젝트는 모든 축구 선수들이 각자의 능력과 필요에 맞게 최상의 교육과 선수로서의 기회를 누릴 수 있도록 하기 위해 인덜지풋볼이 고안한 해결책입니다. 저희는 축구에 특화된 광범위한 네트워크와 협력 구단들의 인풋, 그리고 인덜지풋볼만의 전문 지식을 바탕으로 선수들이 경기력 향상을 위한 핵심 영역들을 발달시킬 수 있도록 최고의 프로그램을 개발하였습니다. / 이를 통해 기술적, 전술적, 정신적 그리고 육체적 자질을 모두 케어하며 참가 선수들에게 개인별 퍼포먼스 개발 플랜을 제공하기 위해 차별화된 축구 이벤트와 경험을 만들어 나갈 것입니다. 세계 최고 아약스 아카데미와 함께하는 본 합숙 트레이닝 캠프는 그러한 글로벌 유망주 육성 프로젝트의 시작입니다.  "
+  },
+
+  {
+    "page": "marketing",
+    "section": "14",
+    "english": "The Residential Training Camp",
+    "korean": "합숙 트레이닝 캠프"
+  },
+  {
+    "page": "marketing",
+    "section": "15a",
+    "english": "What Is It",
+    "korean": "어떤 테스트인가요?"
+  },
+  {
+    "page": "marketing",
+    "section": "15b",
+    "english": "Fee",
+    "korean": "비용"
+  },
+  {
+    "page": "marketing",
+    "section": "15c",
+    "english": "Assessment Coaches",
+    "korean": "평가 코치"
+  },
+  {
+    "page": "marketing",
+    "section": "16",
+    "english": "Who They Are",
+    "korean": "평가 코치 소개"
+  },
+  {
+    "page": "marketing",
+    "section": "17",
+    "english": "The Programme",
+    "korean": "프로그램"
+  },
+  {
+    "page": "marketing",
+    "section": "18",
+    "english": "What we Guarantee",
+    "korean": "캠프 제공 내용"
+  },
+  {
+    "page": "marketing",
+    "section": "19",
+    "english": "How it Works",
+    "korean": "절차"
+  },
+
+  {
+    "page": "buttons",
+    "section": "1",
+    "english": "Explore",
+    "korean": "둘러보기"
+  },
+
+  {
+    "page": "buttons",
+    "section": "2",
+    "english": "Apply",
+    "korean": "지원하기"
+  },
+  {
+    "page": "buttons",
+    "section": "3",
+    "english": "Apply Now",
+    "korean": "지금 지원하세요!"
+  },
+  {
+    "page": "buttons",
+    "section": "4",
+    "english": "login",
+    "korean": "로그인"
+  },
+  {
+    "page": "buttons",
+    "section": "5",
+    "english": "get started",
+    "korean": "시작하기"
+  },
+  {
+    "page": "buttons",
+    "section": "6",
+    "english": "submit",
+    "korean": "제출하기"
+  },
+
+  {
+    "page": "tabs",
+    "section": "1a",
+    "english": "Camp",
+    "korean": "캠프"
+  },
+  {
+    "page": "tabs",
+    "section": "1b",
+    "english": "Club",
+    "korean": "구단"
+  },
+  {
+    "page": "tabs",
+    "section": "1c",
+    "english": "Assessment",
+    "korean": "평가"
+  },
+  {
+    "page": "tabs",
+    "section": "1d",
+    "english": "Programme",
+    "korean": "프로그램"
   },
 
   {
@@ -329,13 +441,13 @@ const arr = [
     "page": "application",
     "section": "2a",
     "english": "Guardian Details",
-    "korean": ""
+    "korean": "법정대리인(보호자) 정보"
   },
   {
     "page": "application",
     "section": "2b",
     "english": "Player Details",
-    "korean": ""
+    "korean": "선수 세부 정보"
   },
   {
     "page": "application",
@@ -353,19 +465,25 @@ const arr = [
     "page": "application",
     "section": "2e",
     "english": "Player Information",
-    "korean": ""
+    "korean": "선수 정보"
+  },
+  {
+    "page": "application",
+    "section": "3",
+    "english": "Player Details",
+    "korean": "선수 세부 정보"
   },
   {
     "page": "application",
     "section": "3a",
     "english": "First Name",
-    "korean": ""
+    "korean": "이름"
   },
   {
     "page": "application",
     "section": "3b",
     "english": "Last Name",
-    "korean": ""
+    "korean": "성"
   },
   {
     "page": "application",
@@ -377,7 +495,7 @@ const arr = [
     "page": "application",
     "section": "4a",
     "english": "Alternative Contact Number",
-    "korean": ""
+    "korean": "전화번호2"
   },
   {
     "page": "application",
@@ -419,13 +537,13 @@ const arr = [
     "page": "application",
     "section": "4h",
     "english": "Country",
-    "korean": ""
+    "korean": "국가"
   },
   {
     "page": "application",
     "section": "4i",
     "english": "Nationality",
-    "korean": ""
+    "korean": "국적"
   },
   {
     "page": "application",
@@ -433,6 +551,25 @@ const arr = [
     "english": "Postcode",
     "korean": "우편번호"
   },
+  {
+    "page": "application",
+    "section": "4k",
+    "english": "Residency Information",
+    "korean": "거주지 정보"
+  },
+  {
+    "page": "application",
+    "section": "4l",
+    "english": "Please indicate if you are able to provide evidence of residency, if required.",
+    "korean": "주민등록등본과 여권 사본 제출 가능 여부를 답해주세요."
+  },
+  {
+    "page": "application",
+    "section": "4m",
+    "english": "and passport",
+    "korean": "요청 시"
+  },
+
   {
     "page": "application",
     "section": "5a",
@@ -467,25 +604,31 @@ const arr = [
     "page": "application",
     "section": "5f",
     "english": "Left / Right / Both",
-    "korean": "Left / Right / Both"
+    "korean": "왼발 / 오른발 / 양발"
   },
   {
     "page": "application",
     "section": "5g",
     "english": "Other Positions",
-    "korean": "Other Positions"
+    "korean": "선호 포지션 2"
+  },
+  {
+    "page": "application",
+    "section": "5h",
+    "english": "Max Limit Achieved",
+    "korean": "더 이상 추가할 수 없습니다."
   },
   {
     "page": "application",
     "section": "6",
     "english": "Club & Coaching Information",
-    "korean": ""
+    "korean": "구단 & 코칭 정보"
   },
   {
     "page": "application",
     "section": "6a",
     "english": "Current Club Details",
-    "korean": ""
+    "korean": "소속 구단"
   },
   {
     "page": "application",
@@ -495,15 +638,9 @@ const arr = [
   },
   {
     "page": "application",
-    "section": "6f",
-    "english": "",
-    "korean": ""
-  },
-  {
-    "page": "application",
     "section": "6g",
     "english": "Personal Statement",
-    "korean": ""
+    "korean": "자기 소개"
   },
   {
     "page": "application",
@@ -515,19 +652,19 @@ const arr = [
     "page": "application",
     "section": "6i",
     "english": "Age Group",
-    "korean": ""
+    "korean": "연령 그룹"
   },
   {
     "page": "application",
     "section": "6j",
     "english": "Club Name",
-    "korean": ""
+    "korean": "구단명"
   },
   {
     "page": "application",
     "section": "6k",
     "english": "Middle School",
-    "korean": ""
+    "korean": "학교명"
   },
   {
     "page": "application",
@@ -540,12 +677,6 @@ const arr = [
     "section": "7a",
     "english": "Complete the following challenges",
     "korean": "다음의 챌린지들을 완수하세요."
-  },
-  {
-    "page": "application",
-    "section": "7b",
-    "english": "",
-    "korean": ""
   },
   {
     "page": "application",
@@ -601,9 +732,6 @@ const arr = [
     "english": "This challenge will test your handling skills, decision making and distribution skills. Please film 3 crosses from two different angles and then distributing the ball to different targets. If you do not have the equipment available, please recreate however best you can.",
     "korean": "이번 챌린지는 핸들링, 결정력 그리고 공 패스 기술을 테스트합니다. 예시와 같이 세 가지 크로스들을 각기 다른 두 앵글에서 촬영하며, 이를 막은 후 다른 지점으로 정확하게 패스하는 모습까지 담아 주세요. 예시와 같은 장비가 없다면 다른 물건을 이용해도 좋습니다."
   },
-
-
-
   {
     "page": "application",
     "section": "9j",
@@ -622,16 +750,6 @@ const arr = [
     "english": "This challenge has three different exercises to test your receiving, passing and ball striking skills. Please film and complete 5 passes with each foot for each of the 3 exercises",
     "korean": "이번 챌린지는 패스, 리시빙, 스트라이킹 기술을 테스트합니다. 세 가지 예시대로 각각 왼발 다섯 번, 오른발 다섯 번씩 완수하는 모습을 촬영하세요."
   },
-
-
-
-
-
-
-
-
-
-
   {
     "page": "application",
     "section": "10a",
@@ -642,7 +760,7 @@ const arr = [
     "page": "application",
     "section": "10b",
     "english": "Save & Exit",
-    "korean": ""
+    "korean": "저장 & 나가기"
   },
   {
     "page": "application",
@@ -660,13 +778,13 @@ const arr = [
     "page": "application",
     "section": "11",
     "english": "Previous Clubs",
-    "korean": ""
+    "korean": "이전 소속 구단"
   },
   {
     "page": "application",
     "section": "11a",
     "english": "Add a maximum of 3 previous clubs",
-    "korean": ""
+    "korean": "최대 3개까지 추가"
   },
   {
     "page": "application",
@@ -678,25 +796,25 @@ const arr = [
     "page": "application",
     "section": "12a",
     "english": "Coach Name",
-    "korean": ""
+    "korean": "코치명"
   },
   {
     "page": "application",
     "section": "12b",
     "english": "Coaching Company",
-    "korean": ""
+    "korean": "아카데미"
   },
   {
     "page": "application",
     "section": "12c",
     "english": "Coaching Website",
-    "korean": ""
+    "korean": "코치 (아카데미) 웹사이트"
   },
   {
     "page": "application",
     "section": "13",
     "english": "Other Playing Details",
-    "korean": ""
+    "korean": "기타"
   },
   {
     "page": "application",
@@ -708,25 +826,25 @@ const arr = [
     "page": "application",
     "section": "14a",
     "english": "Award Received",
-    "korean": ""
+    "korean": "수상 타이틀"
   },
   {
     "page": "application",
     "section": "14b",
     "english": "Date of Award",
-    "korean": ""
+    "korean": "수상 일자"
   },
   {
     "page": "application",
     "section": "14c",
     "english": "Reason for Award",
-    "korean": ""
+    "korean": "수상 내용"
   },
   {
     "page": "application",
     "section": "14d",
     "english": "KFA Award / Regional FA Award / Foundation Award",
-    "korean": ""
+    "korean": "KFA 상 / 지역 축구협회 상 / 재단 상"
   },
   {
     "page": "verification",
@@ -766,59 +884,58 @@ const arr = [
   },
 
 
-
-
-
-
-
-
-
-
-
-
+  {
+    "page": "application",
+    "section": "15a",
+    "english": "Match Highlights Footage",
+    "korean": "경기 활약 영상"
+  },
 
   {
-    "page": "process_flow",
-    "section": "1a",
-    "english": "thank you for applying",
-    "korean": "지원 완료: 감사합니다."
+    "page": "application",
+    "section": "15b",
+    "english": "Add a maximum of 3 footage links",
+    "korean": "최대 3개까지 추가"
+  },
+
+  {
+    "page": "application",
+    "section": "15c",
+    "english": "Match Footage Link",
+    "korean": "경기 활약 영상"
   },
   {
-    "page": "process_flow",
-    "section": "1b",
-    "english": "",
-    "korean": ""
+    "page": "application",
+    "section": "16a",
+    "english": "Application Submission",
+    "korean": "지원서 제출"
   },
   {
-    "page": "process_flow",
-    "section": "2",
-    "english": "what's next?",
-    "korean": "다음 단계"
+    "page": "application",
+    "section": "16b",
+    "english": "Once you submit your application, you will not be able to amend it further. If you would like to review or make changes to your application, please click back.",
+    "korean": "제출 후에는 지원서를 수정할 수 없습니다. 지원서 내용을 확인/수정하려면 뒤로가기를 눌러주세요."
   },
   {
-    "page": "process_flow",
-    "section": "3a",
-    "english": "the challenges. Completion of three challenges and an opportunity to tell us more about your skills and experience.",
-    "korean": "챌린지. 제시된 세 가지 챌린지를 통해 지원자의 기량 확인."
+    "page": "application",
+    "section": "16c",
+    "english": "Otherwise, please confirm that you would like to submit your application.",
+    "korean": "입력한 내용을 모두 확인하였다면 지원서를 제출해주세요."
   },
   {
-    "page": "process_flow",
-    "section": "3b",
-    "english": "review & result. Review of your application and completed challenges submitted. We'll inform you via email of the outcome, whether you've been successful or not.",
-    "korean": "지원서 확인 & 결과 통지. 제출된 지원서와 챌린지 동영상을 바탕으로 지원자의 캠프 참가 자격 획득 여부 결정."
+    "page": "application",
+    "section": "17",
+    "english": "Goalkeeper / Right Back / Right Wing Back / Right Wing / Right Midfield / Centre Back / Sweeper / Left Back / Left Wing Back / Left Wing / Left Midfield / Central Midfield / Defensive Midfield / Attacking Midfield / Striker",
+    "korean": "골키퍼 / 라이트백 / 라이트윙 백 / 라이트윙 / 라이트 미드필더 / 센터백 / 스위퍼 / 레프트백 / 레프트윙 백 / 레프트윙 / 레프트 미드필더 / 중앙 미드필더 / 디펜시브 미드필더 / 공격형 미드필더 / 스트라이커"
   },
   {
-    "page": "process_flow",
-    "section": "3c",
-    "english": "camp onboarding. Upon a successful application, we'll have you registered for the camp and send out further information regarding itinerary and payment details.",
-    "korean": "캠프 등록. 지원 절차를 통과한 선수들에게 본격적인 캠프 참가 등록과 일정표 및 참가비 납입에 대한 세부 정보 안내."
+    "page": "application",
+    "section": "18",
+    "english": "Daegu FC / Gangwon FC / Gwangju FC / Incheon United / Jeju United / Jeonbuk Hyudai Motors / Pohang Steelers / Seongnam FC / FC Seoul / Suwon Samsung Bluewings / Suwon FC / Ulsan Hyudai / Ansan Greenders / FC Anyang / Bucheon FC 1995 / Busan IPark / Chungnam Asan / Daejeon Hana Citizen / Gimcheon Sangmu FC / Gyeongnam FC / Jeonnam Dragons / Seoul E-Land",
+    "korean": "대구 FC / 강원 FC / 광주 FC / 인천유나이티드 FC / 제주유나이티드 FC / 전북현대모터스 / 포항스틸러스 / 성남 FC / FC 서울 / 수원삼성블루윙즈 / 수원 FC / 울산현대축구단 / 안산 그리너스 FC / FC 안양 / 부천 FC 1995 / 부산아이파크 FC / 충남 아산 / 충남아산프로축구단 / 김천상무프로축구단 / 경남 FC / 전남드래곤즈 / 서울이랜드 FC"
   },
-  {
-    "page": "process_flow",
-    "section": "3d",
-    "english": "Attend Camp. Attend the camp for your age group and learn from the best with the chance to get scouted by Ajax AFC",
-    "korean": "캠프 시작. 연령별 캠프 프로그램에서 참가 선수들에게 최고 수준의 트레이닝과 교육, SL 벤피카 입단 기회를 제공."
-  },
+
+
   {
     "page": "snackbar_messages",
     "section": "1a",
@@ -908,6 +1025,174 @@ const arr = [
     "section": "7f",
     "english": "An email has been sent to your inbox to validate your email address.",
     "korean": "계정 인증을 위한 이메일이 발송되었습니다."
+  },
+  {
+    "page": "snackbar_messages",
+    "section": "8a",
+    "english": "Please ensure you have filled out all required fields before",
+    "korean": "필수 항목이 모두 입력되었는지 확인해 주세요"
+  },
+  {
+    "page": "snackbar_messages",
+    "section": "8b",
+    "english": "submitting",
+    "korean": "제출"
+  },
+  {
+    "page": "snackbar_messages",
+    "section": "8c",
+    "english": "moving on",
+    "korean": "다음으로"
+  },
+  {
+    "page": "snackbar_messages",
+    "section": "9",
+    "english": "Redirecting to profile...",
+    "korean": "프로필 페이지로 이동합니다…"
+  },
+  {
+    "page": "profile",
+    "section": "1a",
+    "english": "Sections",
+    "korean": "메뉴"
+  },
+  {
+    "page": "profile",
+    "section": "1b",
+    "english": "about",
+    "korean": "소개"
+  },
+  {
+    "page": "profile",
+    "section": "1c",
+    "english": "applications",
+    "korean": "지원서"
+  },
+  {
+    "page": "profile",
+    "section": "1d",
+    "english": "football-history",
+    "korean": "축구 이력"
+  },
+  {
+    "page": "profile",
+    "section": "1e",
+    "english": "attributes-awards",
+    "korean": "자질 & 수상 이력"
+  },
+  {
+    "page": "profile",
+    "section": "1f",
+    "english": "achievements",
+    "korean": "성취"
+  },
+  {
+    "page": "profile",
+    "section": "2a",
+    "english": "Account Settings",
+    "korean": "계정 설정"
+  },
+  {
+    "page": "profile",
+    "section": "2b",
+    "english": "Two Factor Authentication",
+    "korean": "이중 인증"
+  },
+  {
+    "page": "profile",
+    "section": "2c",
+    "english": "Profile Details",
+    "korean": "세부 프로필"
+  },
+  {
+    "page": "profile",
+    "section": "2d",
+    "english": "Log Out",
+    "korean": "로그아웃"
+  },
+  {
+    "page": "profile",
+    "section": "3a",
+    "english": "Currently",
+    "korean": "Currently"
+  },
+  {
+    "page": "profile",
+    "section": "3b",
+    "english": "Club",
+    "korean": "구단"
+  },
+  {
+    "page": "profile",
+    "section": "3c",
+    "english": "Age Group",
+    "korean": "연령 그룹"
+  },
+  {
+    "page": "profile",
+    "section": "3d",
+    "english": "Position",
+    "korean": "포지션"
+  },
+  {
+    "page": "profile",
+    "section": "4",
+    "english": "see more",
+    "korean": "더 보기"
+  },
+  {
+    "page": "profile",
+    "section": "5b",
+    "english": "Name",
+    "korean": "이름"
+  },
+  {
+    "page": "profile",
+    "section": "5c",
+    "english": "Submitted",
+    "korean": "제출됨"
+  },
+  {
+    "page": "profile",
+    "section": "5d",
+    "english": "Status",
+    "korean": "상태"
+  },
+  {
+    "page": "profile",
+    "section": "5e",
+    "english": "Incomplete",
+    "korean": "미제출"
+  },
+  {
+    "page": "profile",
+    "section": "5f",
+    "english": "In Review",
+    "korean": "검토중"
+  },
+  {
+    "page": "profile",
+    "section": "6",
+    "english": "K1/K2 Affiliated",
+    "korean": "K리그 1/2 연계"
+  },
+  {
+    "page": "profile",
+    "section": "7",
+    "english": "Awards",
+    "korean": "수상 이력"
+  },
+  {
+    "page": "profile",
+    "section": "8a",
+    "english": "Continue Application",
+    "korean": "지원서 계속 작성"
+  },
+  {
+    "page": "profile",
+    "section": "8b",
+    "english": "Start Application",
+    "korean": "지원하기"
   }
 ]
 
@@ -939,8 +1224,10 @@ function convert(arr) {
 
 export const {
   marketing,
+  buttons,
+  tabs,
   authorization,
   application,
   verification,
-  process_flow,
+  profile,
   snackbar_messages } = convert(arr)

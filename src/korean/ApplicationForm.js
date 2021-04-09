@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { application, snackbar_messages, authorization } from './LanguageSkeleton'
+import { application, buttons, snackbar_messages, authorization } from './LanguageSkeleton'
 import { NationalityDropDown } from './Nationality'
 import PropTypes from 'prop-types';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
@@ -226,7 +226,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ApplicationForm({ history, location, locale, match, setLocale }) {
   console.log(match)
-  
+
   console.log(history, location)
   const classes = useStyles();
   const [message, setMessage] = useState()
@@ -353,24 +353,12 @@ export default function ApplicationForm({ history, location, locale, match, setL
     return inputValue.length > 0 && selectValue.length < 2;
   }
 
-
-  const playing_positions = [
-
-    { value: 'goalkeeper', label: 'Goalkeeper' },
-    { value: 'right back', label: 'Right Back' },
-    { value: 'right wing back', label: 'Right Wing Back' },
-    { value: 'right wing', label: 'Right Wing' },
-    { value: 'right midfield', label: 'Right Midfield' },
-    { value: 'centre back', label: 'Centre Back' },
-    { value: 'sweeper', label: 'Sweeper' },
-    { value: 'left back', label: 'Left Back' },
-    { value: 'left wing back', label: 'Left Wing Back' },
-    { value: 'left wing', label: 'Left Wing' },
-    { value: 'left midfield', label: 'Left Midfield' },
-    { value: 'central midfield', label: 'Central Midfield' },
-    { value: 'defensive midfield', label: 'Defensive Midfield' },
-    { value: 'attacking midfield', label: 'Attacking Midfield' },
-    { value: 'striker', label: 'Striker' }]
+  const playing_positions = application['17']['en'].split('/').map((x, i) => {
+    return {
+      value: x.toLowerCase(),
+      label: application['17'][locale].split('/')[i]
+    }
+  })
 
   function getData() {
     axios.get(`/users/${auth.getUserId()}`)
@@ -556,7 +544,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
       if (check !== [] && check.length > 0) {
         setMessage({
-          error: `Please ensure you have filled out all required fields before ${activeStep === 2 ? 'submitting' : 'moving on'}.`
+          error: `${snackbar_messages['8a'][locale]} ${activeStep === 2 ? snackbar_messages['8b'][locale] : snackbar_messages['8c'][locale]}.`
         })
       } else {
 
@@ -813,7 +801,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
         {optionSelectedLength < 2 ? (
           props.children
         ) : (
-            <div>Max limit achieved</div>
+            <div>{application['5h'][locale]}</div>
           )}
       </components.Menu>
     );
@@ -829,30 +817,10 @@ export default function ApplicationForm({ history, location, locale, match, setL
   )
 
   const k1ClubSelection = (
-    <>
-      <option value="daegu fc"> Daegu FC </option>
-      <option value="gangwon fc"> Gangwon FC </option>
-      <option value="gwangju fc"> Gwangju FC </option>
-      <option value="incheon united"> Incheon United </option>
-      <option value="jeju united">Jeju United </option>
-      <option value="jeonbuk hyudai motors"> Jeonbuk Hyundai Motors</option>
-      <option value="pohang steelers"> Pohang Steelers </option>
-      <option value="seongnam fc"> Seongnam FC </option>
-      <option value="fc seoul"> FC Seoul </option>
-      <option value="suwon samsung bluewings"> Suwon Samsung Bluewings </option>
-      <option value="suwon fc"> Suwon FC </option>
-      <option value="ulsan hyudai"> Ulsan Hyudai </option>
-      <option value="ansan greeners">  Ansan Greeners	 </option>
-      <option value="fc anyang">  FC Anyang		 </option>
-      <option value="bucheon fc 1995">  Bucheon FC 1995	 </option>
-      <option value="busan ipark">  Busan IPark	 </option>
-      <option value="chungnam asan"> Chungnam Asan		 </option>
-      <option value="daejeon hana citizen">  Daejeon Hana Citizen	</option>
-      <option value="gimcheon sangmu fc">  Gimcheon Sangmu FC		 </option>
-      <option value="gyeongnam fc">  Gyeongnam FC		 </option>
-      <option value="jeonnam dragons">  Jeonnam Dragons		 </option>
-      <option value="seoul e-land">  Seoul E-Land		 </option>
-    </>
+
+    application['18']['en'].split('/').map((x, i) => {
+      return <option value={x.toLowerCase()}> {application['18'][locale].split('/')[i]} </option>
+    })
   )
 
   const firstPage = (
@@ -914,27 +882,13 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
             <div className={classes.field}>
               <div className={classes.label}>
-                <label> <span style={{ color: 'red' }}>*</span>  {authorization['4d'][locale]}
-                </label>
-              </div>
-              <p class="control is-expanded">
-                <input
-                  value={email}
-                  class="input" type="email"
-                  name='email'
-                  placeholder='john_doe@hotmail.com' />
-              </p>
-            </div>
-
-            <div className={classes.field}>
-              <div className={classes.label}>
                 <label> <span style={{ color: 'red' }}>*</span>  {application['4'][locale]}
                 </label>
               </div>
               <div className="field has-addons">
                 <p class="control">
                   <a class="button">
-                    <select value={contact_number[1]} class="input-block-level" id="countryCode" name="country_code">
+                    <select style={{ border: 'none' }} value={contact_number[1]} class="input-block-level" id="countryCode" name="country_code">
                       <PhoneDropDown locale={locale} />
                     </select>
                   </a>
@@ -955,7 +909,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <div className="field has-addons">
                 <p class="control">
                   <a class="button">
-                    <select value={alt_contact_number[1]} class="input-block-level" id="countryCode" name="alt_country_code">
+                    <select style={{ border: 'none' }} value={alt_contact_number[1]} class="input-block-level" id="countryCode" name="alt_country_code">
                       <PhoneDropDown locale={locale} />
                     </select>
                   </a>
@@ -969,7 +923,25 @@ export default function ApplicationForm({ history, location, locale, match, setL
               </div>
             </div>
           </div>
+
+          <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span>  {authorization['4d'][locale]}
+                </label>
+              </div>
+              <p class="control is-expanded">
+                <input
+                  value={email}
+                  class="input" type="email"
+                  name='email'
+                  placeholder='john_doe@hotmail.com' />
+              </p>
+            </div>
         </div>
+
+
+       
+
 
       </>}
 
@@ -1020,68 +992,71 @@ export default function ApplicationForm({ history, location, locale, match, setL
           </div>
         </div>
 
-        {accountCategory === 'player' && <div className="field-body">
+        {accountCategory === 'player' && (
+          <div className="field-body">
 
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> {authorization['4d'][locale]}
-              </label>
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> {application['4'][locale]}
+                </label>
+              </div>
+              <div className="field has-addons">
+                <p class="control">
+                  <a class="button">
+                    <select style={{ border: 'none' }} value={contact_number[1]} class="input-block-level" id="countryCode" name="country_code">
+                      <PhoneDropDown locale={locale} />
+                    </select>
+                  </a>
+                </p>
+                <p class="control is-expanded">
+                  <input
+                    name='contact_number'
+                    value={contact_number[2]}
+                    class="input" type="tel" placeholder='123456789' />
+                </p>
+              </div>
             </div>
-            <p class="control is-expanded">
-              <input
-                value={email}
-                class="input" type="email"
-                name='email'
-                placeholder='john_doe@hotmail.com' />
-            </p>
-          </div>
-
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> {application['4'][locale]}
-              </label>
-            </div>
-            <div className="field has-addons">
-              <p class="control">
-                <a class="button">
-                  <select value={contact_number[1]} class="input-block-level" id="countryCode" name="country_code">
-                    <PhoneDropDown locale={locale}/>
-                  </select>
-                </a>
-              </p>
-              <p class="control is-expanded">
-                <input
-                  name='contact_number'
-                  value={contact_number[2]}
-                  class="input" type="tel" placeholder='123456789' />
-              </p>
-            </div>
-          </div>
-          <div className={classes.field}>
-            <div className={classes.label}>
-              <label> {application['4a'][locale]} </label>
-            </div>
-            <div className="field has-addons">
-              <p class="control">
-                <a class="button">
-                  <select value={alt_contact_number[1]} class="input-block-level" id="countryCode" name="alt_country_code">
-                    <PhoneDropDown locale={locale}/>
-                  </select>
-                </a>
-              </p>
-              <p class="control is-expanded">
-                <input
-                  name='alt_contact_number'
-                  value={alt_contact_number[2]}
-                  class="input" type="tel" placeholder='123456789' />
-              </p>
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> {application['4a'][locale]} </label>
+              </div>
+              <div className="field has-addons">
+                <p class="control">
+                  <a class="button">
+                    <select style={{ border: 'none' }} value={alt_contact_number[1]} class="input-block-level" id="countryCode" name="alt_country_code">
+                      <PhoneDropDown locale={locale} />
+                    </select>
+                  </a>
+                </p>
+                <p class="control is-expanded">
+                  <input
+                    name='alt_contact_number'
+                    value={alt_contact_number[2]}
+                    class="input" type="tel" placeholder='123456789' />
+                </p>
+              </div>
             </div>
           </div>
-        </div >}
+        )}
 
         <div className="field-body">
 
-          <div className={classes.field} style={{ flex: 0.2 }}>
+          {accountCategory === 'player' &&
+            <div className={classes.field}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span> {authorization['4d'][locale]}
+                </label>
+              </div>
+              <p class="control is-expanded">
+                <input
+                  value={email}
+                  class="input" type="email"
+                  name='email'
+                  placeholder='john_doe@hotmail.com' />
+              </p>
+            </div>}
+
+          <div className={classes.field} style={{ flex: 0.5 }}>
             <div className={classes.label}>
               <label > <span style={{ color: 'red' }}>*</span> {application['4b'][locale]}
               </label>
@@ -1095,7 +1070,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             </div>
           </div>
 
-          <div className={classes.field} style={{ flex: 0.2 }}>
+          <div className={classes.field} style={{ flex: 0.5 }}>
             <div className={classes.label}>
               <label > <span style={{ color: 'red' }}>*</span> {`${application['4d'][locale]} ${isSafari ? '(YYYY-MM-DD)' : ''}`}
               </label>
@@ -1112,7 +1087,11 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 : <input value={dob} name='dob' class="input" type="date" />}
             </p>
           </div>
+
         </div>
+
+
+
 
       </div >
 
@@ -1127,7 +1106,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
           <Box
             fontSize={15}
             fontWeight="fontWeightBold" m={0}>
-            Residency Information
+            {application['4k'][locale]} 
         </Box>
         </Typography>
 
@@ -1219,7 +1198,9 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 })
               }}
               control={<Radio className='radio-check' checked={can_provide_certificates} />}
-              label={`Please indicate if you are able to provide evidence of residency${nationality !== 'south korean' ? ' and passport' : ''}, if required.`} />
+              label={`${(nationality !== 'south korean' && locale !== 'en') ? application['4m'][locale] : ''} 
+              ${locale === 'ko' ? application['4l'][locale] : nationality === 'south korean' ? 
+              application['4l'][locale] : application['4l'][locale].replace('residency', `residency ${application['4m'][locale]}`)}`} />
           </div>
 
 
@@ -1803,8 +1784,8 @@ export default function ApplicationForm({ history, location, locale, match, setL
           }}>
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> Match Highlights Footage </label>
-              <p style={{ fontWeight: 'initial', position: 'relative' }} class="help"> Add a maximum of 3 footage links
+              <label>  {application['15a'][locale]}</label>
+              <p style={{ fontWeight: 'initial', position: 'relative' }} class="help"> {application['15b'][locale]}
 
                 {highlights_footage_link.length !== 3 && <Fab
                   onClick={() => {
@@ -1862,7 +1843,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               }}>
               <div className={classes.field}>
                 <div className={classes.label}>
-                  <label> <span style={{ color: 'red' }}>*</span> Match Footage Link {i + 1} </label>
+                  <label> <span style={{ color: 'red' }}>*</span> {application['15c'][locale]} {i + 1} </label>
                 </div>
                 <p class="control is-expanded">
                   <input
@@ -2012,8 +1993,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             className={classes.button}
             endIcon={<SaveAltIcon />}>
             {isLoading && <CircularProgress size={30} className={classes.progress} />}
-            {/* {application['10b'][locale]} */}
-            Save & Exit
+            {application['10b'][locale]}
           </Button>
 
           <Button
@@ -2047,19 +2027,19 @@ export default function ApplicationForm({ history, location, locale, match, setL
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle id="alert-dialog-slide-title">
-          Application Submission
+          {application['16a'][locale]}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Once you submit your application, you will not be able to amend it further.
-            If you would like to review or make changes to your application, please click back
-            otherwise, please confirm that you would like to submit your application.
+            {application['16b'][locale]}
+            <br /> <br />
+            {application['16c'][locale]}
           </DialogContentText>
         </DialogContent>
 
         <DialogActions>
           <Button onClick={handleClose}>
-            Back
+            {application['10a'][locale]}
           </Button>
           <Button variant='outlined' onClick={() => {
             handleApplicationSave('submit')
@@ -2067,7 +2047,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               history.push(`/user/${auth.getUserId()}`)
             }, (3000));
           }} color="primary" autoFocus>
-            Submit
+             {buttons['6'][locale]}
           </Button>
         </DialogActions>
       </Dialog>}
