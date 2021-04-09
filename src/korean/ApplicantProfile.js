@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -218,22 +218,51 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   const [user, setUser] = useState({})
   const [application, setApplication] = useState()
   const [currentScrollSection, setCurrentScrollSection] = useState('about')
+  const [hasLoaded, setHasLoaded] = useState(false)
   const [open, setOpen] = useState()
   const [message, setMessage] = useState()
+  const [imageUpload, setImageUpload] = useState(false)
+  const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === match.params.id)
+  const input = useRef()
+  const defaultPic = 'https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80'
 
+  console.log({isOwnProfile, egg: auth.getUserId(), match})
 
+  const getData = async () => {
+    axios.get(`/users/${match.params.id}`)
+    .then(res => {
+      const { applications } = res.data[0]
+      setUser(res.data[0])
+      console.log(res.data)
+
+      if (applications.benfica_application) {
+        setApplication(applications.benfica_application)
+      }
+      setHasLoaded(true)
+    })
+  }
 
   useEffect(() => {
-    axios.get(`/users/${match.params.id}`)
-      .then(res => {
-        const { applications } = res.data[0]
-        setUser(res.data[0])
-
-        if (applications.benfica_application) {
-          setApplication(applications.benfica_application)
-        }
-      })
+    getData()
   }, [])
+
+  const handleMediaChange = (e) => {
+    if (!isOwnProfile) return
+    setImageUpload(true)
+    const image = e.target.files
+    const picture = new FormData()
+    picture.append('owner', auth.getUserId())
+    picture.append('picture', image[0], image[0].name)
+
+    axios.post(`/user/${auth.getUserId()}/image`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+      .then(res => {
+        console.log(res.data)
+        getData()
+        setImageUpload(false)
+        
+      })
+      .catch(err => console.error(err))
+  }
 
 
 
@@ -306,7 +335,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   }
 
   const nav = [profile['1b'][locale], profile['1c'][locale], profile['1d'][locale], profile['1e'][locale]]
-
+  if (!hasLoaded) return null
   return (
 
     <div className={classes.root}>
@@ -362,9 +391,11 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
           <Paper elevation={3} className={classes.profileHeader}>
 
             {/* image avatar */}
-            <figure className={classes.imageContainer}>
+            <figure className={classes.imageContainer} onClick={(e) => input.current.click(e)}>
+            <input ref={input}
+              style={{ display: 'none' }} onChange={(e) => handleMediaChange(e)} type="file" />
               <img className={classes.image} alt='profile'
-                src='https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80' />
+                src={user.imageURL ? user.imageURL : defaultPic} />
             </figure>
             {/* user title */}
 
