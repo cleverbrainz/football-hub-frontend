@@ -219,7 +219,7 @@ const Application = ({ permissions, application, applications, setApplications, 
     const newApps = [...applications]
     const newApplication = { ...applicationInfo, ratings: { ...ratings } }
     newApps[index] = [userId, email, newApplication]
-    axios.patch(`/users/${userId}`, { userId, updates: { applications: { benfica: newApplication } } }, { headers: { authorization: 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjBlYmMyZmI5N2QyNWE1MmQ5MjJhOGRkNTRiZmQ4MzhhOTk4MjE2MmIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZm9vdGJhbGwtaHViLTQwMThhIiwiYXVkIjoiZm9vdGJhbGwtaHViLTQwMThhIiwiYXV0aF90aW1lIjoxNjE0MTc4MjAwLCJ1c2VyX2lkIjoiYUJEZGh1UDhEOWFiblJEM0x4b09LdU51N1dyMiIsInN1YiI6ImFCRGRodVA4RDlhYm5SRDNMeG9PS3VOdTdXcjIiLCJpYXQiOjE2MTQxNzgyMDAsImV4cCI6MTYxNDE4MTgwMCwiZW1haWwiOiJhcHBsaWNhdGlvbnBsYXllcjJAbWFpbGRyb3AuY2MiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiYXBwbGljYXRpb25wbGF5ZXIyQG1haWxkcm9wLmNjIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.hMClettXXaYczzQoAYy5eoVBxUxRrVrigQMDXzbOff1wgshSWUSPFT7JzIXtzSawh3kRAcMrg1TErnLghEVRje_0pFthqXWGVQp17RTfy5_JmCUgGRuAbQhFgLcyU6O0dl1yhprzYsOCsLpg1fvzzW0sbv5But8X-QmhvhxdvXTuKQ0BF6epsPOE3-sc7wPRymBfnr7ii6R-rWoOjU5dzx8cHY_-_eOI-MPp4euZ2gD2iLOeoqJLT-nRV1A3of3N3ThjQ2wYBPe58bSbsKOF4u_6N-hQUm0EPkNdzvuplcw-xwu6IxbowDMrI5vXJ5pkAB17WPQArZY16gyRq-eWGA' } }).then(res => {
+    axios.patch(`/users/${userId}`, { userId, updates: { applications: { benfica: newApplication } } }, { headers: { authorization: `Bearer ${auth.getToken()}` } }).then(res => {
       console.log(res)
       if (approval && ratings.indulge === 'Yes') {
         axios.post('/contactPlayer', {
@@ -1053,14 +1053,13 @@ const ApplicationDashboard = ({ locale }) => {
   const [tabValue, setTabValue] = useState(0)
   const [coursesModerating, setCoursesModerating] = useState(['Benfica'])
   const [selectedCourse, setSelectedCourse] = useState('select')
-  const [ageRange, setAgeRange] = useState('All')
   const [applications, setApplications] = useState([])
   const [filteredApplications, setFilteredApplications] = useState([])
   const [applicantIndex, setApplicantIndex] = useState(0)
   const [editing, setEditing] = useState(false)
   const [open, setOpen] = useState(false)
   const [filters, setFilters] = useState({
-    ageRange: '0-100',
+    ageRange: 'All',
     positionCategory: 'All',
     position: 'All'
   })
@@ -1078,7 +1077,7 @@ const ApplicationDashboard = ({ locale }) => {
     let playerCategory = cat
     if (cat !== 'All') {
       for (const cat of Object.keys(positions)) {
-        if (positions[cat].some(x => x === position)) {
+        if (positions[cat].map(item => item.toLowerCase()).some(x => x === position)) {
           playerCategory = cat
         }
       }
@@ -1117,22 +1116,19 @@ const ApplicationDashboard = ({ locale }) => {
     const name = event.target.name
     const newFilters = name === 'positionCategory' ? { ...filters, [name]: event.target.value, position: 'All' } : { ...filters, [name]: event.target.value }
     console.log(newFilters)
-    const [lowAge, highAge] = newFilters.ageRange.split('-')
     const filteredPlayers = []
     for (const application of applications) {
       const [id, email, player] = application
-      // if (
-      //   Number(auth.dobToAge(player.personal_details.dob)) >= lowAge &&
-      //   Number(auth.dobToAge(player.personal_details.dob)) <= highAge
-      // ) {
+      console.log(newFilters.ageRange, player.age_group)
+      if (newFilters.ageRange === player.age_group || newFilters.ageRange === 'All') {
       if (newFilters.positionCategory === 'All') {
         filteredPlayers.push(application)
-      } else if (positions[newFilters.positionCategory].includes(player.player_attributes.position)) {
-        if (newFilters.position === 'All' || newFilters.position === player.player_attributes.position) {
+      } else if (positions[newFilters.positionCategory].map(item => item.toLowerCase()).includes(player.player_attributes.position)) {
+        if (newFilters.position === 'All' || newFilters.position.toLowerCase() === player.player_attributes.position) {
           filteredPlayers.push(application)
         }
       }
-      // }
+      }
     }
 
     console.log({ filteredPlayers })
@@ -1157,7 +1153,8 @@ const ApplicationDashboard = ({ locale }) => {
         // return (Number(a[2].ratings.application) + Number(Object.values(a[2].ratings.challengesMap).reduce((x,y) => x + y, 0))) - (Number(b[2].ratings.application) + Number(Object.values(b[2].ratings.challengesMap).reduce((x,y) => x + y, 0)))
       })
     } else {
-      sorted.sort((a, b) => a[2][parent][key].localeCompare(b[2][parent][key]))
+      
+      sorted.sort((a, b) => a[2][parent][a[2][parent][key] ? key : 'player_first_name'].localeCompare(a[2][parent][b[2][parent][key] ? key : 'player_first_name']))
     }
 
     if (sorted[0][0] === filteredApplications[0][0] && newSort.type === sort.type) {
@@ -1165,14 +1162,14 @@ const ApplicationDashboard = ({ locale }) => {
     }
 
     //  === filteredApplications ? filteredApplications.sort((a, b) => b[2][parent][key] > a[2][parent][key]) : filteredApplications.sort((a, b) => a[2][parent][key] > b[2][parent][key])
-    console.log(sorted)
+    // console.log(sorted)
     setSort({ ...newSort })
     setFilteredApplications(sorted)
 
   }
 
 
-  console.log(permissions)
+  // console.log(permissions)
 
   const getData = async function () {
     // let userData = await axios.get(`/users/${auth.getUserId()}`)
@@ -1183,15 +1180,17 @@ const ApplicationDashboard = ({ locale }) => {
     let arr = await axios.get('/getApplicationIds')
     arr = await arr.data
     console.log({ arr })
-    for (const benficaUser of benficaUserIds) {
+    for (const benficaUser of arr) {
       let userData = await axios.get(`/users/${benficaUser}`)
       userData = await userData.data[0]
       const app = [userData.userId, userData.email]
       userData.applications.benfica ? app.push(userData.applications.benfica) : userData.applications.benfica_application ? app.push(userData.applications.benfica_application) : console.log('')
-      if (app.length === 3) applicantArray.push(app)
+      // if (app.length === 3) applicantArray.push(app)
+      if (app.length === 3 && app[2].ratings.challengesMap && auth.dobToAge(app[2].personal_details.dob) <= 15) applicantArray.push(app)
     }
     setApplications(applicantArray)
     setFilteredApplications(applicantArray)
+    console.log(applicantArray)
     // for (const course of courses) {
     //   let courseData = await axios.get(`/courses/${course}`)
     //   courseData = await courseData.data[0]
@@ -1304,8 +1303,10 @@ const ApplicationDashboard = ({ locale }) => {
     }
   }
 
+  const { ageRange } = filters
 
-  console.log({ applications })
+
+  // console.log({ applications })
   if (applications.length === 0 || !locale) return null
   return (
     <Container>
@@ -1347,14 +1348,16 @@ const ApplicationDashboard = ({ locale }) => {
       {selectedCourse === 'Benfica' &&
         <FormControl>
           <InputLabel>Select Age Range</InputLabel>
-          <Select value={ageRange} onChange={(event) => setAgeRange(event.target.value)}>
-            <MenuItem value={'All'} disabled>
+          <Select value={ageRange} inputProps={{
+                        name: 'ageRange',
+                      }} onChange={handleFilterChange}>
+            <MenuItem value={'All'}>
               All age ranges
             </MenuItem>
-            <MenuItem value="U16">Under 16</MenuItem>
-            <MenuItem value="U17">Under 17</MenuItem>
-            <MenuItem value="U18">Under 18</MenuItem>
-
+            <MenuItem value="Under 12s">Under 12</MenuItem>
+            <MenuItem value="Under 13s">Under 13</MenuItem>
+            <MenuItem value="Under 14s">Under 14</MenuItem>
+            <MenuItem value="Under 15s">Under 15</MenuItem>
           </Select>
         </FormControl>
       }
