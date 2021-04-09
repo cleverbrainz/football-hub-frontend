@@ -4,7 +4,7 @@ export const NationalityDropDown = ({ value }) => {
 
   return <select value={value} name="nationality">
     <option value=""> </option>
-    <option value="south korean">South Korean</option>
+    <option value="south korean">대한민국, South Korean</option>
     <option value="afghan">Afghan</option>
     <option value="albanian">Albanian</option>
     <option value="algerian">Algerian</option>
@@ -168,7 +168,7 @@ export const NationalityDropDown = ({ value }) => {
     <option value="solomon islander">Solomon Islander</option>
     <option value="somali">Somali</option>
     <option value="south african">South African</option>
-    <option value="south korean">South Korean</option>
+    <option value="south korean">대한민국, South Korean</option>
     <option value="spanish">Spanish</option>
     <option value="sri lankan">Sri Lankan</option>
     <option value="sudanese">Sudanese</option>

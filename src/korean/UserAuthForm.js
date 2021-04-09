@@ -221,7 +221,7 @@ const UserAuthForm = ({ locale, history }) => {
             // console.log(res.data)
             const { category } = res.data[0]
             handleAfterRequestStates({
-              success: `${snackbar_messages['7a'][locale]} Redirecting to profile...`
+              success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['9'][locale]}`
             })
     
             setTimeout(async () => {
@@ -250,7 +250,7 @@ const UserAuthForm = ({ locale, history }) => {
             localStorage.setItem('category', category)
 
             handleAfterRequestStates({
-              success: `${snackbar_messages['7a'][locale]} Redirecting to profile...`
+              success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['9'][locale]}`
             })
     
             setTimeout(async () => {
@@ -309,7 +309,7 @@ const UserAuthForm = ({ locale, history }) => {
 
 
         handleAfterRequestStates({
-          success: `${snackbar_messages['7a'][locale]} Redirecting to profile...`
+          success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['9'][locale]}`
         })
 
         setTimeout(async () => {
