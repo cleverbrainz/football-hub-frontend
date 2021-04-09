@@ -196,13 +196,13 @@ const arr = [
   {
     "page": "authorization",
     "section": "1a",
-    "english": "Indulge Benfica Camp",
+    "english": "Indulge Player Pathway",
     "korean": "인덜지 벤피카 캠프"
   },
   {
     "page": "authorization",
     "section": "1b",
-    "english": "Indulge Benfica Camp: Create an Account",
+    "english": "Player Pathway: Create an Account",
     "korean": "인덜지 벤피카 캠프: 계정 등록"
   },
   {
@@ -310,13 +310,13 @@ const arr = [
   {
     "page": "authorization",
     "section": "8a",
-    "english": "to continue your application for the Indulge Benfica Camp",
+    "english": "to continue your application for the Indulge Ajax AFC Camp",
     "korean": "인덜지 벤피카 캠프 참가 지원을 위해"
   },
   {
     "page": "authorization",
     "section": "8b",
-    "english": "to start your application for the Indulge Benfica Camp.",
+    "english": "to start your application for the Indulge Ajax AFC Camp.",
     "korean": "인덜지 벤피카 캠프 참가 스타트 위해"
   },
   {
@@ -780,7 +780,7 @@ const arr = [
   {
     "page": "process_flow",
     "section": "3d",
-    "english": "Attend Camp. Attend the camp for your age group and learn from the best with the chance to get scouted by Benfica F.C.",
+    "english": "Attend Camp. Attend the camp for your age group and learn from the best with the chance to get scouted by Ajax AFC",
     "korean": "캠프 시작. 연령별 캠프 프로그램에서 참가 선수들에게 최고 수준의 트레이닝과 교육, SL 벤피카 입단 기회를 제공."
   },
   {
