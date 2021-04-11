@@ -107,7 +107,7 @@ const UserAuthForm = ({ locale, history }) => {
 
     },
     boldText: {
-      color: 'orange',
+      color: '#3100F7',
 
       [theme.breakpoints.up('sm')]: {
         '&:nth-of-type(1)': {
@@ -647,7 +647,7 @@ const UserAuthForm = ({ locale, history }) => {
           className={classes.formFooter}
           component='div'>
           <Box
-            style={{ color: 'orange' }}
+            style={{ color: '#3100F7' }}
             fontSize={16} fontWeight="fontWeightBold" m={0}>
             {registrationOrLogin === 'login' ? authorization['7b'][locale] : authorization['7a'][locale]}
           </Box>
