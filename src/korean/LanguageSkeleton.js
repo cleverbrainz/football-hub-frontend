@@ -2,14 +2,14 @@ const arr = [
   {
     "page": "marketing",
     "section": "1a",
-    "english": "Indulge Football's Pathway Development Programme with Ajax",
-    "korean": "인덜지풋볼이 네덜란드 최고의 명문 구단 AFC아약스와 함께 글로벌 유망주 육성 프로젝트를 실시합니다"
+    "english": "Welcome to the Pathway Development Programme!",
+    "korean": "글로벌 유망주 육성 프로젝트에 오신 것을 환영합니다!"
   },
   {
     "page": "marketing",
     "section": "1b",
-    "english": "Indulge Football have partnered with Ajax to deliver the first of our residential training camps as part of our football Pathway Development Programme, open to 12- to 15-year-old boys looking to advance their football development.",
-    "korean": "인덜지풋이 국내 최초 글로벌 유망주 육성 프로젝트의 일환으로 AFC아약스와 함께 합숙 트레이닝 캠프를 개최합니다. 만 12세(초6)부터 만 15세(중3) 사이의 축구 꿈나무라면 누구나 참여 신청이 가능합니다"
+    "english": "Indulge Football has proudly partnered with the world famous Ajax to deliver the ultimate football training experience! This camp is the first of our residential training projects as part of our football Pathway Development Programme.",
+    "korean": "인덜지 풋볼이 네덜란드 최고의 명문 구단 AFC아약스와 함께 최상의 축구 훈련 경험을 제공합니다! 본 합숙 트레이닝 캠프는 한국 최초 글로벌 유망주 육성 프로그램의 일환으로 축구 꿈나무들에게 전례 없는 기회를 선사할 것입니다."
   },
   {
     "page": "marketing",
@@ -38,8 +38,8 @@ const arr = [
   {
     "page": "marketing",
     "section": "4",
-    "english": "Create your own player profile account on ftballer.com. / Complete and submit your own football challenges. / Your profile will be assessed by professional UEFA coaches. / Successful players will be selected to-join the residential training camp.",
-    "korean": "ftballer.com에서 선수 프로파일을 작성하세요. / 축구 챌린지를 완수하여 영상 URL을 제출하세요. / 모든 지원서와 챌린지 영상은 프로 UEFA 코치들이 평가합니다. / 뛰어난 선수들에게는 합숙 트레이닝 캠프에 참가할 자격이 주어집니다 "
+    "english": "Create your own player profile account on ftballer.com. / Complete and submit your football challenges. / Your profile will be assessed by professional UEFA coaches. / Successful players will be selected to-join the residential training camp.",
+    "korean": "ftballer.com에서 선수 프로파일을 작성하세요. / 지원서를 작성하고 축구 챌린지를 완수하세요 / 모든 지원서와 챌린지 영상은 프로 UEFA 코치들이 평가합니다. / 뛰어난 선수들에게는 합숙 트레이닝 캠프에 참가할 자격이 주어집니다 "
   },
   {
     "page": "marketing",
@@ -68,14 +68,20 @@ const arr = [
   {
     "page": "marketing",
     "section": "6a",
-    "english": "The Camp - What's Included",
-    "korean": "캠프 제공 내용 "
+    "english": "What is Included?",
+    "korean": "캠프 제공 내용"
   },
   {
     "page": "marketing",
     "section": "6b",
     "english": "4 days football training with professional coaches from the Ajax Academy. / 3 nights accommodation in a 4* hotel based on twin share (single supplement available). / Full board – breakfast, lunch and dinner – menu designed for professional athletes. / 3 education seminars delivered by Ajax Academy staff. / Indulge Football Training Kit & tracksuit. / Personalised player pathway report. / Ajax training certificate. / Digital player profile on ftballer.com / Sports Insurance. / Transfers between hotel & training complex",
     "korean": "아약스 아카데미 코치들과 함께 하는 4일간의 축구 트레이닝 / 4성급 호텔에서 3박 4일간의 합숙 (2인실) / 영양을 고려한 식사 / 아약스 아카데미 코치들이 직접 진행하는 교육 세미나 / 인덜지풋볼이 제공하는 트레이닝 키트 및 운동복 / 아약스 인증 개별 선수 평가 리포트 / 아약스 트레이닝 프로그램 이수 증명서 / 글로벌 축구 플랫폼 Ftballer.com에 디지털 선수 프로파일 등록 / 코비드-19 테스팅 / 프로그램 기간 동안 선수 상해 보험 / 호텔-트레이닝 필드 간 안전 이동"
+  },
+  {
+    "page": "marketing",
+    "section": "7",
+    "english": "Why Apply?",
+    "korean": ""
   },
   {
     "page": "marketing",
@@ -115,8 +121,14 @@ const arr = [
   },
   {
     "page": "marketing",
+    "section": "7g",
+    "english": "The ultimate opportunity to improve your football ability and learn from the very best Coaching Academy in World football.  ",
+    "korean": ""
+  },
+  {
+    "page": "marketing",
     "section": "8",
-    "english": "Price is £900",
+    "english": "Total price is £900 per person",
     "korean": "참가비: 140만 원"
   },
   {
@@ -196,14 +208,14 @@ const arr = [
   {
     "page": "marketing",
     "section": "14",
-    "english": "The Residential Training Camp",
+    "english": "Residential Training Project",
     "korean": "합숙 트레이닝 캠프"
   },
   {
     "page": "marketing",
     "section": "15a",
-    "english": "What Is It",
-    "korean": "어떤 테스트인가요?"
+    "english": "What Do I Need to Do?",
+    "korean": ""
   },
   {
     "page": "marketing",
@@ -220,8 +232,8 @@ const arr = [
   {
     "page": "marketing",
     "section": "16",
-    "english": "Who They Are",
-    "korean": "평가 코치 소개"
+    "english": "The History of Ajax",
+    "korean": "AFC아약스의 역사"
   },
   {
     "page": "marketing",
@@ -232,14 +244,14 @@ const arr = [
   {
     "page": "marketing",
     "section": "18",
-    "english": "What we Guarantee",
-    "korean": "캠프 제공 내용"
+    "english": "What to Expect?",
+    "korean": "캠프 내용"
   },
   {
     "page": "marketing",
     "section": "19",
-    "english": "How it Works",
-    "korean": "절차"
+    "english": "How Does it Work?",
+    "korean": "지원 절차"
   },
 
   {
