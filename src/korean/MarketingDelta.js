@@ -7,7 +7,7 @@ import { ReactComponent as FormLogo } from './form.svg';
 import PeopleSharpIcon from '@material-ui/icons/PeopleSharp';
 import FlightTakeoffSharpIcon from '@material-ui/icons/FlightTakeoffSharp';
 import AssignmentSharpIcon from '@material-ui/icons/AssignmentSharp';
-import { tabs, buttons, marketing,  } from './LanguageSkeleton'
+import { tabs, buttons, marketing, } from './LanguageSkeleton'
 import StarsSharpIcon from '@material-ui/icons/StarsSharp';
 import EventSharpIcon from '@material-ui/icons/EventSharp';
 import ScheduleSharpIcon from '@material-ui/icons/ScheduleSharp';
@@ -299,9 +299,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   tabOne__cta: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontStyle: 'italic',
+    marginTop: '3rem'
   },
   tabTwo__container: {
     display: 'flex',
@@ -707,7 +706,7 @@ const MarketingDelta = ({ locale, history }) => {
         <Box
           align='center'
           fontSize={25} fontWeight="fontWeightRegular" mt={5} mb={8}>
-           {marketing['14'][locale]}
+          {marketing['14'][locale]}
         </Box>
 
         <div className={classes.tabTwo__container} >
@@ -721,11 +720,27 @@ const MarketingDelta = ({ locale, history }) => {
             <ul>
               {marketing['6b'][locale].split('/').map(sentence => <li className={classes.tabOne__listItems}> {sentence} </li>)}
             </ul>
+
+            <div className={classes.tabOne__cta}>
+            
+              <Button color='primary'
+                className={classes.button}
+                onClick={() => scrollTo('camp-cards')} variant='contained'>
+                {buttons['3'][locale]}
+              </Button>
+              <Box
+                fontSize={14} fontWeight="fontWeightRegular" mt={2} mr={5}>
+                {marketing['8'][locale]}
+              </Box>
+            </div>
+
           </Typography>
 
           <img
             className={classes.tabTwo__images}
             src="https://i.imgur.com/1CCki8y.jpg" alt="" />
+
+
         </div>
 
 
@@ -734,7 +749,12 @@ const MarketingDelta = ({ locale, history }) => {
 
           <Box
             fontSize={18} fontWeight="fontWeightBold" mt={3} mb={2}>
-            {marketing['3a'][locale]}
+            {marketing['7'][locale]}
+          </Box>
+
+          <Box
+            fontSize={16} fontWeight="fontWeightRegular" mb={2}>
+            {marketing['7g'][locale]}
           </Box>
 
           <div className={classes.tabOne__applyCardContainer}>
@@ -756,18 +776,7 @@ const MarketingDelta = ({ locale, history }) => {
           </div>
         </div>
 
-        <div className={classes.tabOne__cta}>
-          <Box
-            fontSize={18} fontWeight="fontWeightBold" mr={5}>
-            {marketing['8'][locale]}
-          </Box>
 
-          <Button color='primary'
-            className={classes.button}
-            onClick={() => scrollTo('camp-cards')} variant='contained'>
-              {buttons['3'][locale]}
-        </Button>
-        </div>
 
 
       </TabPanel>
@@ -815,7 +824,7 @@ const MarketingDelta = ({ locale, history }) => {
           <Typography component='div' className={classes.tabTwo__text}>
             <Box
               fontSize={18} fontWeight="fontWeightBold" mb={2}>
-               {marketing['16'][locale]}
+              {marketing['16'][locale]}
             </Box>
             <Box
               className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
@@ -829,7 +838,7 @@ const MarketingDelta = ({ locale, history }) => {
           </Typography>
 
           <img
-            style={{ objectFit: 'contain'}}
+            style={{ objectFit: 'contain' }}
             className={classes.tabTwo__images}
             src="https://uksouth1-mediap.svc.ms/transform/thumbnail?provider=spo&inputFormat=png&cs=fFNQTw&docid=https%3A%2F%2Findulgefootballltd.sharepoint.com%3A443%2F_api%2Fv2.0%2Fdrives%2Fb!TU8k-aDdhk23zj9aEI-r1adyiQ8NHXZEkLVhu7ukhjMU7bchdFchTYVLakTP-hD2%2Fitems%2F01QFKVWRYVKZPKBA2YPRDYU7EYREOEFZ2X%3Fversion%3DPublished&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvaW5kdWxnZWZvb3RiYWxsbHRkLnNoYXJlcG9pbnQuY29tQGVmMzMwMjlmLTE0NWUtNDdkNi1iNDA2LWMyMmZiNmE0Y2MxZSIsImlzcyI6IjAwMDAwMDAzLTAwMDAtMGZmMS1jZTAwLTAwMDAwMDAwMDAwMCIsIm5iZiI6IjE2MTc5ODA0MDAiLCJleHAiOiIxNjE4MDAyMDAwIiwiZW5kcG9pbnR1cmwiOiIxcy96TjdidE5RYW5iWmJuU2VQa1JzYlZxNWdpSlJiV1NMdHhxYUNMclE0PSIsImVuZHBvaW50dXJsTGVuZ3RoIjoiMTI1IiwiaXNsb29wYmFjayI6IlRydWUiLCJ2ZXIiOiJoYXNoZWRwcm9vZnRva2VuIiwic2l0ZWlkIjoiWmpreU5EUm1OR1F0WkdSaE1DMDBaRGcyTFdJM1kyVXRNMlkxWVRFd09HWmhZbVExIiwic2lnbmluX3N0YXRlIjoiW1wia21zaVwiXSIsIm5hbWVpZCI6IjAjLmZ8bWVtYmVyc2hpcHxrZW5uQGluZHVsZ2Vmb290YmFsbC5jb20iLCJuaWkiOiJtaWNyb3NvZnQuc2hhcmVwb2ludCIsImlzdXNlciI6InRydWUiLCJjYWNoZWtleSI6IjBoLmZ8bWVtYmVyc2hpcHwxMDAzMjAwMGU3OWEzM2Q1QGxpdmUuY29tIiwidHQiOiIwIiwidXNlUGVyc2lzdGVudENvb2tpZSI6IjMifQ.ckdGbzdYUTEvUEp6TExVaWhWU3dJR01jbzFRbXluYnhObWRGZmJCM25GRT0&encodeFailures=1&width=2878&height=1376&srcWidth=&srcHeight=" alt="" />
 
@@ -856,7 +865,7 @@ const MarketingDelta = ({ locale, history }) => {
           <Typography component='div' className={classes.tabTwo__text}>
             <Box
               fontSize={18} fontWeight="fontWeightBold" mb={1}>
-                {marketing['15a'][locale]}
+              {marketing['15a'][locale]}
             </Box>
 
             <Box
@@ -870,13 +879,13 @@ const MarketingDelta = ({ locale, history }) => {
 
         </section>
 
-        
+
         <section className={classes.tabThree__container}>
           <FormLogo />
           <Typography component='div' className={classes.tabTwo__text}>
             <Box
               fontSize={18} fontWeight="fontWeightBold" mt={2} mb={2}>
-                {marketing['15b'][locale]}
+              {marketing['15b'][locale]}
             </Box>
             <Box
               className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
@@ -906,9 +915,11 @@ const MarketingDelta = ({ locale, history }) => {
                   }}>
 
                     <img
-                      style={{ ...(i === 1 && {
-                        filter: 'brightness(1.2)'
-                      })}}
+                      style={{
+                        ...(i === 1 && {
+                          filter: 'brightness(1.2)'
+                        })
+                      }}
                       className={classes.tabThree__coachCard__image}
                       src={i === 0 ? "https://i.imgur.com/uPTpZzi.jpg" :
                         i === 1 ? 'https://i.imgur.com/8deioVX.png' :
@@ -942,16 +953,15 @@ const MarketingDelta = ({ locale, history }) => {
         <Box
           align='center'
           fontSize={25} fontWeight="fontWeightRegular" mt={5} mb={8}>
-             {marketing['17'][locale]}
+          {marketing['17'][locale]}
         </Box>
 
 
         <div className={classes.tabTwo__container}>
 
-          <img className={classes.tabTwo__images}
-            src="https://images.unsplash.com/photo-1604410730133-edb636ec02c2?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2734&q=80" alt="" />
-
-          <Typography component='div' className={classes.tabTwo__text}>
+          <Typography component='div' 
+          style={{ width: '88%' }}
+          className={classes.tabTwo__text}>
             <Box
               fontSize={18} fontWeight="fontWeightBold" mb={2}>
               {marketing['12a'][locale]}
@@ -986,7 +996,7 @@ const MarketingDelta = ({ locale, history }) => {
           </Typography>
 
           <img className={classes.tabTwo__images}
-            style={{ objectPosition: '30% 50%'}}
+            style={{ objectPosition: '30% 50%' }}
             src="https://i.imgur.com/wlHiOb0.jpg" alt="" />
         </div>
 
