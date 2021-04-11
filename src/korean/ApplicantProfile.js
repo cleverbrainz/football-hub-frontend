@@ -237,6 +237,8 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
       if (applications.benfica_application) {
         setApplication(applications.benfica_application)
+      } else if (applications.ajax_application) {
+        setApplication(applications.ajax_application)
       }
       setHasLoaded(true)
     })
