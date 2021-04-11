@@ -51,12 +51,12 @@ const ColorlibConnector = withStyles({
   },
   active: {
     '& $line': {
-      backgroundColor: 'orange',
+      backgroundColor: '#3100F7',
     },
   },
   completed: {
     '& $line': {
-      backgroundColor: 'orange',
+      backgroundColor: '#3100F7',
     },
   },
   line: {
@@ -80,11 +80,11 @@ const useColorlibStepIconStyles = makeStyles({
     alignItems: 'center',
   },
   active: {
-    backgroundColor: 'orange',
+    backgroundColor: '#3100F7',
     boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
   },
   completed: {
-    backgroundColor: 'orange',
+    backgroundColor: '#3100F7',
   },
   icon: {
     fontSize: '20px'
@@ -123,6 +123,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
     position: 'relative',
     fontSize: '12px',
+    margin: '1rem 0',
     [theme.breakpoints.up('md')]: {
       fontSize: '14px'
     },
@@ -144,7 +145,6 @@ const useStyles = makeStyles((theme) => ({
   formContainer: {
     width: '85%',
     margin: '0 auto',
-    overflow: 'scroll',
     height: '60vh',
     paddingBottom: '25px',
     [theme.breakpoints.up('md')]: {
@@ -166,7 +166,7 @@ const useStyles = makeStyles((theme) => ({
   },
   subHeading: {
     margin: 0,
-    color: 'orange',
+    color: '#3100F7',
     [theme.breakpoints.up('md')]: {
       marginBottom: '10px',
 
@@ -355,8 +355,8 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
   const playing_positions = application['17']['en'].split('/').map((x, i) => {
     return {
-      value: x.toLowerCase(),
-      label: application['17'][locale].split('/')[i]
+      value: x.toLowerCase().trim(),
+      label: application['17'][locale].split('/')[i].trim()
     }
   })
 
@@ -495,7 +495,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             personal_details: {
               ...applicationDetails.personal_details,
               contact_number: type === 'submit' ? contact_number.join('') : contact_number,
-              alt_contact_number:  type === 'submit' ? (alt_contact_number[1] && alt_contact_number[2]) ? alt_contact_number.join('') : contact_number.join('') : alt_contact_number
+              alt_contact_number: type === 'submit' ? (alt_contact_number[1] && alt_contact_number[2]) ? alt_contact_number.join('') : contact_number.join('') : alt_contact_number
             }
           }
         }
@@ -534,8 +534,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
   });
 
   const scroll = () => {
-    const div = document.querySelector('#scrollable')
-    div.scrollTop = 0
+    document.querySelector('#scrollable').scrollIntoView({ block: 'start' })
   }
 
   const handleNext = async () => {
@@ -590,8 +589,8 @@ export default function ApplicationForm({ history, location, locale, match, setL
   };
 
   const handleBack = () => {
-    scroll()
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    scroll()
   };
 
   function getSteps() {
@@ -815,6 +814,17 @@ export default function ApplicationForm({ history, location, locale, match, setL
       <option value="under 13s"> Under 13s </option>
       <option value="under 14s"> Under 14s </option>
       <option value="under 15s"> Under 15s </option>
+    </>
+  )
+
+  const previousAgeGroupSelection = (
+    <>
+      <option value="under 12s"> Under 6s </option>
+      <option value="under 13s"> Under 7s </option>
+      <option value="under 14s"> Under 8s </option>
+      <option value="under 15s"> Under 9s </option>
+      <option value="under 15s"> Under 10s </option>
+      <option value="under 15s"> Under 11s </option>
     </>
   )
 
@@ -1123,7 +1133,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 name='address_line_1'
                 class="input"
                 type="text"
-                placeholder="Address Line 1" />
+                placeholder={application['4e'][locale]} />
             </p>
           </div>
 
@@ -1132,7 +1142,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <label> {application['4f'][locale]}</label>
             </div>
             <p class="control is-expanded">
-              <input value={address_line_2} name='address_line_2' class="input" type="text" placeholder="Address Line 2" />
+              <input value={address_line_2} name='address_line_2' class="input" type="text" placeholder={application['4f'][locale]} />
             </p>
           </div>
 
@@ -1141,7 +1151,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <label> <span style={{ color: 'red' }}>*</span> {application['4g'][locale]} </label>
             </div>
             <p class="control is-expanded">
-              <input value={city} name='city' class="input" type="text" placeholder="City" />
+              <input value={city} name='city' class="input" type="text" placeholder={application['4g'][locale]} />
             </p>
           </div>
         </div>
@@ -1162,10 +1172,10 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
           <div className={classes.field}>
             <div className={classes.label}>
-              <label> <span style={{ color: 'red' }}>*</span> {application['4h'][locale]} </label>
+              <label> <span style={{ color: 'red' }}>*</span> {application['4j'][locale]} </label>
             </div>
             <p class="control is-expanded">
-              <input value={postcode} name='postcode' class="input" type="text" placeholder=" Postcode" />
+              <input value={postcode} name='postcode' class="input" type="text" placeholder={application['4j'][locale]} />
             </p>
           </div>
 
@@ -1200,9 +1210,9 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 })
               }}
               control={<Radio className='radio-check' checked={can_provide_certificates} />}
-              label={`${(nationality !== 'south korean' && locale !== 'en') ? application['4m'][locale] : ''} 
-              ${locale === 'ko' ? application['4l'][locale] : nationality === 'south korean' ?
-                  application['4l'][locale] : application['4l'][locale].replace('residency', `residency ${application['4m'][locale]}`)}`} />
+              label={<> <span style={{ color: 'red' }}>*</span> {(nationality !== 'south korean' && locale !== 'en') ? application['4m'][locale] : ''}
+                {locale === 'ko' ? application['4l'][locale] : nationality === 'south korean' ?
+                  application['4l'][locale] : application['4l'][locale].replace('residency', `residency ${application['4m'][locale]}`)} </>} />
           </div>
 
 
@@ -1558,7 +1568,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                       onChange={(e) => handleApplicationChange(e, i)}
                       value={el.age_group} id='age_group' name='previous_clubs'>
                       <option disabled={el.age_group !== ''} value=""> </option>
-                      {ageGroupSelection}
+                      {previousAgeGroupSelection}
                     </select>
                   </div>
                 </div>
@@ -1884,6 +1894,23 @@ export default function ApplicationForm({ history, location, locale, match, setL
   const thirdPage = (
     <>
 
+      <Typography component='div' style={{ position: 'relative' }}>
+        <Box
+          className={classes.subHeading}
+          fontSize={15}
+          fontWeight="fontWeightBold" mb={1}>
+          {application['2d'][locale]}
+        </Box>
+        <p className="help">
+          <ul>
+            {application['9'][locale].split('/').map(x => <li style={{ listStyleType: 'circle' }}> {x} </li>)}
+          </ul>
+        </p>
+
+
+      </Typography>
+
+
       {videoLinks && videoLinks.map((x, i) => {
         const value = i === 0 ? link_1 : i === 1 ? link_2 : link_3
         const name = `link_${i + 1}`
@@ -1945,7 +1972,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
   )
 
   return (
-    <div className={classes.root}>
+    <div id='scrollable' className={classes.root}>
       <Typography component='div' >
         <Box
           className={classes.title}
@@ -1963,7 +1990,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
         ))}
       </Stepper>
 
-      <div id='scrollable' className={classes.formContainer}>
+      <div className={classes.formContainer}>
         <Typography className={classes.instructions}>
           <form onChange={(e) => handleApplicationChange(e)} action="">
             {getStepContent(activeStep)}

@@ -106,7 +106,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '14px',
     "&:hover": {
       cursor: 'pointer',
-      color: 'orange',
+      color: '#3100F7',
       opacity: 1
     }
 
@@ -138,7 +138,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '5px 0',
     "&:hover": {
       cursor: 'pointer',
-      color: 'orange',
+      color: '#3100F7',
       transform: 'translateX(3px)'
     }
   },
@@ -162,7 +162,7 @@ const useStyles = makeStyles((theme) => ({
     width: '1px',
     height: '90px',
     position: 'absolute',
-    backgroundColor: 'orange',
+    backgroundColor: '#3100F7',
     top: '57%',
     left: '11.1px'
   },
@@ -414,7 +414,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                   <Box
                     fontSize={13}
                     fontWeight="fontWeightRegular" mb={1}
-                    style={{ color: 'orange', letterSpacing: '5px' }}>
+                    style={{ color: '#3100F7', letterSpacing: '5px' }}>
                     CURRENTLY
                   </Box>
                   <Box
@@ -496,7 +496,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                     <TableCell align="right"> PDP </TableCell>
                     {(application && application.hasOwnProperty('submitted')) &&
                       <TableCell align="right"> {moment(application.submission_date).format('MMMM Do YYYY')} </TableCell>}
-                    <TableCell align="right" style={{ color: 'orange' }}> 
+                    <TableCell align="right" style={{ color: '#3100F7' }}> 
                       {(application && application.hasOwnProperty('submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
                     </TableCell>
                   </TableRow>
@@ -531,7 +531,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
                     <div className={classes.clubRow}>
 
-                      <AdjustSharpIcon style={{ zIndex: 100, color: 'orange', }} />
+                      <AdjustSharpIcon style={{ zIndex: 100, color: '#3100F7', }} />
                       {i !== application.football_history.previous_clubs.length - 1 && <div className={classes.connectorLine}></div>}
 
                       <Typography
@@ -553,7 +553,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                           fontSize={14}
                           fontWeight="fontWeightRegular" mb={1}>
                           <span className={classes.chip}>
-                            <PeopleAltSharpIcon style={{ color: 'orange', fontSize: '15px', transform: 'translateY(3px)', marginRight: '6px' }} />
+                            <PeopleAltSharpIcon style={{ color: '#3100F7', fontSize: '15px', transform: 'translateY(3px)', marginRight: '6px' }} />
                             {locale === 'en' ? titleCase(el.age_group) : el.age_group.replace('under ', 'U')} </span>
 
                           <span className={classes.chip}>
