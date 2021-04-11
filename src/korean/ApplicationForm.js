@@ -927,22 +927,22 @@ export default function ApplicationForm({ history, location, locale, match, setL
           </div>
 
           <div className={classes.field}>
-              <div className={classes.label}>
-                <label> <span style={{ color: 'red' }}>*</span>  {authorization['4d'][locale]}
-                </label>
-              </div>
-              <p class="control is-expanded">
-                <input
-                  value={email}
-                  class="input" type="email"
-                  name='email'
-                  placeholder='john_doe@hotmail.com' />
-              </p>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span>  {authorization['4d'][locale]}
+              </label>
             </div>
+            <p class="control is-expanded">
+              <input
+                value={email}
+                class="input" type="email"
+                name='email'
+                placeholder='john_doe@hotmail.com' />
+            </p>
+          </div>
         </div>
 
 
-       
+
 
 
       </>}
@@ -1108,8 +1108,8 @@ export default function ApplicationForm({ history, location, locale, match, setL
           <Box
             fontSize={15}
             fontWeight="fontWeightBold" m={0}>
-            {application['4k'][locale]} 
-        </Box>
+            {application['4k'][locale]}
+          </Box>
         </Typography>
 
         <div class="field-body">
@@ -1201,8 +1201,8 @@ export default function ApplicationForm({ history, location, locale, match, setL
               }}
               control={<Radio className='radio-check' checked={can_provide_certificates} />}
               label={`${(nationality !== 'south korean' && locale !== 'en') ? application['4m'][locale] : ''} 
-              ${locale === 'ko' ? application['4l'][locale] : nationality === 'south korean' ? 
-              application['4l'][locale] : application['4l'][locale].replace('residency', `residency ${application['4m'][locale]}`)}`} />
+              ${locale === 'ko' ? application['4l'][locale] : nationality === 'south korean' ?
+                  application['4l'][locale] : application['4l'][locale].replace('residency', `residency ${application['4m'][locale]}`)}`} />
           </div>
 
 
@@ -2049,7 +2049,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               history.push(`/user/${auth.getUserId()}`)
             }, (3000));
           }} color="primary" autoFocus>
-             {buttons['6'][locale]}
+            {buttons['6'][locale]}
           </Button>
         </DialogActions>
       </Dialog>}
