@@ -224,7 +224,7 @@ const AddPhone = ({ location, history, locale }) => {
           fontSize={14}
           align='center'
           fontWeight="fontWeightRegular" mb={3}>
-          {verification['1b'][locale].split(' / ').join('`n')}
+          {verification['1b'][locale].split(' / ').join("\n")}
            </Box>
       </Typography>
 

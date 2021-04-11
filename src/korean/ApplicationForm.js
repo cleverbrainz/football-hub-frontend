@@ -225,9 +225,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function ApplicationForm({ history, location, locale, match, setLocale }) {
-  console.log(match)
+  // console.log(match)
 
-  console.log(history, location)
+  // console.log(history, location)
   const classes = useStyles();
   const [message, setMessage] = useState()
   const [isLoading, setIsLoading] = useState(false)
@@ -237,7 +237,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
   const [accountCategory, setAccountCategory] = useState()
 
   if (match.params.locale && locale !== match.params.locale) {
-    console.log(match.params.locale, locale)
+    // console.log(match.params.locale, locale)
     setLocale(match.params.locale)
   }
 
@@ -476,8 +476,9 @@ export default function ApplicationForm({ history, location, locale, match, setL
     setIsLoading(true)
     const age = moment('2021-12-31').diff(dob, 'years')
     const group = age < 13 ? 13 : (age !== 14 && age < 15) ? age + 1 : 15
-
+    console.log(applicationDetails.personal_details)
     handleClose()
+
 
     axios.patch(`/users/${auth.getUserId()}`, {
       userId: auth.getUserId(),
@@ -493,9 +494,8 @@ export default function ApplicationForm({ history, location, locale, match, setL
             ...applicationDetails,
             personal_details: {
               ...applicationDetails.personal_details,
-              contact_number: contact_number.join(''),
-              alt_contact_number: alt_contact_number.join('')
-
+              contact_number: type === 'submit' ? contact_number.join('') : contact_number,
+              alt_contact_number:  type === 'submit' ? (alt_contact_number[1] && alt_contact_number[2]) ? alt_contact_number.join('') : contact_number.join('') : alt_contact_number
             }
           }
         }
@@ -542,6 +542,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
     function checkRequiredFields(arr) {
       const check = arr.filter(x => !x && x === '')
+      console.log(check)
 
       if (check !== [] && check.length > 0) {
         setMessage({
@@ -910,7 +911,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <div className="field has-addons">
                 <p class="control">
                   <a class="button">
-                    <select style={{ border: 'none' }} value={alt_contact_number[1]} class="input-block-level" id="countryCode" name="alt_country_code">
+                    <select style={{ border: 'none' }} value={alt_contact_number[1]} class="input-block-level" id="altCountryCode" name="alt_country_code">
                       <PhoneDropDown locale={locale} />
                     </select>
                   </a>
@@ -1024,7 +1025,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <div className="field has-addons">
                 <p class="control">
                   <a class="button">
-                    <select style={{ border: 'none' }} value={alt_contact_number[1]} class="input-block-level" id="countryCode" name="alt_country_code">
+                    <select style={{ border: 'none' }} value={alt_contact_number[1]} class="input-block-level" id="altCountryCode" name="alt_country_code">
                       <PhoneDropDown locale={locale} />
                     </select>
                   </a>
