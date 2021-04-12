@@ -1212,6 +1212,12 @@ const arr = [
     "section": "8b",
     "english": "Start Application",
     "korean": "지원하기"
+  },
+  {
+    "page": "profile",
+    "section": "8c",
+    "english": "Add Your Photo",
+    "korean": "지원하기"
   }
 ]
 
