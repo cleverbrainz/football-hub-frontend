@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, withRouter, useLocation } from 'react-router-dom';
 import { buttons } from '../../korean/LanguageSkeleton'
 import { Typography, Box, Button } from '@material-ui/core'
+import auth from '../../lib/auth';
 
 const styles = {
   navBar: {
@@ -36,10 +37,11 @@ const styles = {
 
 
 
-function HomeNav({ history, locale }) {
+function HomeNav({ history, locale, user }) {
 
   const location = useLocation()
   const [scrollPosition, setScrollPosition] = useState()
+  console.log(user)
   
 
   useEffect(() => {
@@ -60,13 +62,25 @@ function HomeNav({ history, locale }) {
     }
   })
 
-  const handleBurgerMenu = () => {
+  const handleBurgerMenu = ({ user }) => {
+
 
     const burger = document.querySelector('.burger')
     const navItems = document.querySelector(`#${burger.dataset.target}`)
 
     burger.classList.toggle('is-active')
     navItems.classList.toggle('is-active')
+  }
+
+  const mobileLogOut = () => {
+
+    const burger = document.querySelector('.burger')
+    const navItems = document.querySelector(`#${burger.dataset.target}`)
+
+    burger.classList.toggle('is-active')
+    navItems.classList.toggle('is-active')
+
+    auth.logOut()
   }
 
 
@@ -94,11 +108,14 @@ function HomeNav({ history, locale }) {
             </Box>
           </Typography>
 
+          { (localStorage.version === 'South Korea' && location.pathname !== '/authentication') &&
+
           <a onClick={handleBurgerMenu} role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
             <span style={{ backgroundColor: 'black' }} aria-hidden="true"></span>
             <span style={{ backgroundColor: 'black' }} aria-hidden="true"></span>
             <span style={{ backgroundColor: 'black' }} aria-hidden="true"></span>
           </a>
+        }
         </div>
 
         <div id="navbarBasicExample" className="navbar-menu">
@@ -122,9 +139,20 @@ function HomeNav({ history, locale }) {
                 </button>
               </div>}
 
-              {(localStorage.version === 'South Korea' && location.pathname === '/') && <Button
+              {localStorage.version === 'South Korea' && 
+              
+              location.pathname === '/' ?  <Button
                 onClick={() => history.push('/authentication')}
-                variant='contained' color='primary'> {buttons['4'][locale]} </Button>}
+                variant='contained' color='primary'> {buttons['4'][locale]} </Button> :
+
+                location.pathname !== '/authentication' ?
+                <>
+                <Button onClick={() => mobileLogOut()}>Log Out</Button>
+                <Button>Other Details</Button>
+                </>
+                :
+                null
+                }
 
             </div>
           </div>
