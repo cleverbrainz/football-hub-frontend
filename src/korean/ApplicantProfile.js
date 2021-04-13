@@ -78,6 +78,34 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: '0px',
     },
   },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '100%',
+    width: '100%',
+    borderRadius: '50%',
+    opacity: 0,
+    transition: '.5s ease',
+    backgroundColor: 'rgb(49, 0, 247)',
+    '&:hover': {
+      opacity: 0.8
+    }
+  },
+  overlayText: {
+    color: 'white',
+    fontSize: '16px',
+    letterSpacing: '5px',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    '-webkit-transform': 'translate(-50%, -50%)',
+    '-ms-transform': 'translate(-50%, -50%)',
+    transform: 'translate(-50%, -50%)',
+    textAlign: 'center'
+  },
   image: {
     borderRadius: '50%',
     display: 'block',
@@ -422,6 +450,9 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                 style={{ display: 'none' }} onChange={(e) => handleMediaChange(e)} type="file" />
               <img className={classes.image} alt='profile'
                 src={user.imageURL ? user.imageURL : defaultPic} />
+                <div className={classes.overlay}>
+                  <p className={classes.overlayText}>{profile['8c'][locale]}</p>
+                </div>
             </figure>
             {/* user title */}
 
