@@ -469,6 +469,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CoachModal = ({ modalOpen, setModalOpen, locale, coach }) => {
   const classes = useStyles()
+  const name =  coach.split('/')[0]
   // const coach = marketing['9d']['en']
   return (
     <Modal
@@ -487,14 +488,16 @@ const CoachModal = ({ modalOpen, setModalOpen, locale, coach }) => {
         <div className={`${classes.modalCard}`}>
 
           <img className={classes.modalCard__image}
-            src="https://images.unsplash.com/photo-1586287011575-a23134f797f9?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1100&q=80" alt="" />
+            src={name === 'Gwynne Berry' ? "https://i.imgur.com/uPTpZzi.jpg" :
+            name === 'Jack Johnson' ? 'https://i.imgur.com/8deioVX.png' :
+              'https://i.imgur.com/IYUoAXL.jpg'} alt="" />
 
           <Typography component='div' className={classes.modalCard__text}>
             <Box
               align='left'
               className={classes.modalCard__title}
               fontSize={35} fontWeight="fontWeightBold" mb={0}>
-              {coach.split('/')[0]}
+              {name}
             </Box>
 
             <Box
@@ -564,7 +567,9 @@ const MarketingDelta = ({ locale, history }) => {
           </div>
         </Typography>
 
-        <SoccerLogo />
+        {/* <SoccerLogo /> */}
+
+        <img src="https://i.imgur.com/iwepljK.png" alt=""/>
       </main>
 
       <section id='guarantee' className={classes.iconsSectionContainer}>

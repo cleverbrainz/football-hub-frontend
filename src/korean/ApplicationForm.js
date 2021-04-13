@@ -545,7 +545,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
       if (check !== [] && check.length > 0) {
         setMessage({
-          error: `${snackbar_messages['8a'][locale]} ${activeStep === 2 ? snackbar_messages['8b'][locale] : snackbar_messages['8c'][locale]}.`
+          error: `${activeStep === 2 ? snackbar_messages['8a'][locale] : snackbar_messages['8b'][locale]}.`
         })
       } else {
 
@@ -809,23 +809,16 @@ export default function ApplicationForm({ history, location, locale, match, setL
   };
 
   const ageGroupSelection = (
-    <>
-      <option value="under 12s"> Under 12s </option>
-      <option value="under 13s"> Under 13s </option>
-      <option value="under 14s"> Under 14s </option>
-      <option value="under 15s"> Under 15s </option>
-    </>
+    application['19']['en'].split('/').map((x,i) => {
+      if (i < 6) return
+      return <option value={x.toLowerCase()}> {application['19'][locale].split('/')[i]} </option>
+    })
   )
 
   const previousAgeGroupSelection = (
-    <>
-      <option value="under 12s"> Under 6s </option>
-      <option value="under 13s"> Under 7s </option>
-      <option value="under 14s"> Under 8s </option>
-      <option value="under 15s"> Under 9s </option>
-      <option value="under 15s"> Under 10s </option>
-      <option value="under 15s"> Under 11s </option>
-    </>
+    application['19']['en'].split('/').map((x,i) => {
+      return <option value={x.toLowerCase()}> {application['19'][locale].split('/')[i]} </option>
+    })
   )
 
   const k1ClubSelection = (
@@ -866,8 +859,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 <input
                   value={guardian_first_name}
                   class="input" type="text"
-                  name='guardian_first_name'
-                  placeholder='John' />
+                  name='guardian_first_name' />
               </p>
             </div>
 
@@ -881,8 +873,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 <input
                   value={guardian_last_name}
                   class="input" type="text"
-                  name='guardian_last_name'
-                  placeholder='Doe' />
+                  name='guardian_last_name' />
               </p>
             </div>
 
@@ -909,7 +900,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                   <input
                     name='contact_number'
                     value={contact_number[2]}
-                    class="input" type="tel" placeholder='123456789' />
+                    class="input" type="tel" />
                 </p>
               </div>
             </div>
@@ -930,7 +921,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                   <input
                     name='alt_contact_number'
                     value={alt_contact_number[2]}
-                    class="input" type="tel" placeholder='123456789' />
+                    class="input" type="tel" />
                 </p>
               </div>
             </div>
@@ -946,7 +937,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 value={email}
                 class="input" type="email"
                 name='email'
-                placeholder='john_doe@hotmail.com' />
+              />
             </p>
           </div>
         </div>
@@ -984,7 +975,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 value={player_first_name}
                 class="input" type="text"
                 name='player_first_name'
-                placeholder='John' />
+              />
             </p>
           </div>
 
@@ -999,7 +990,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 value={player_last_name}
                 class="input" type="text"
                 name='player_last_name'
-                placeholder='Doe' />
+              />
             </p>
           </div>
         </div>
@@ -1024,7 +1015,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                   <input
                     name='contact_number'
                     value={contact_number[2]}
-                    class="input" type="tel" placeholder='123456789' />
+                    class="input" type="tel" />
                 </p>
               </div>
             </div>
@@ -1044,7 +1035,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                   <input
                     name='alt_contact_number'
                     value={alt_contact_number[2]}
-                    class="input" type="tel" placeholder='123456789' />
+                    class="input" type="tel" />
                 </p>
               </div>
             </div>
@@ -1064,7 +1055,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                   value={email}
                   class="input" type="email"
                   name='email'
-                  placeholder='john_doe@hotmail.com' />
+                />
               </p>
             </div>}
 
@@ -1095,7 +1086,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                   class="input"
                   type="text"
                   name='dob'
-                  placeholder="YYYY-MM-DD" />
+                />
                 : <input value={dob} name='dob' class="input" type="date" />}
             </p>
           </div>
@@ -1133,7 +1124,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 name='address_line_1'
                 class="input"
                 type="text"
-                placeholder={application['4e'][locale]} />
+              />
             </p>
           </div>
 
@@ -1142,7 +1133,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <label> {application['4f'][locale]}</label>
             </div>
             <p class="control is-expanded">
-              <input value={address_line_2} name='address_line_2' class="input" type="text" placeholder={application['4f'][locale]} />
+              <input value={address_line_2} name='address_line_2' class="input" type="text" />
             </p>
           </div>
 
@@ -1151,7 +1142,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <label> <span style={{ color: 'red' }}>*</span> {application['4g'][locale]} </label>
             </div>
             <p class="control is-expanded">
-              <input value={city} name='city' class="input" type="text" placeholder={application['4g'][locale]} />
+              <input value={city} name='city' class="input" type="text" />
             </p>
           </div>
         </div>
@@ -1163,7 +1154,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <label> <span style={{ color: 'red' }}>*</span> {application['4h'][locale]}</label>
             </div>
             <p class="control is-expanded">
-              <input value={country} name='country' class="input" type="text" placeholder="South Korea" />
+              <input value={country} name='country' class="input" type="text" />
             </p>
           </div>
 
@@ -1175,7 +1166,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <label> <span style={{ color: 'red' }}>*</span> {application['4j'][locale]} </label>
             </div>
             <p class="control is-expanded">
-              <input value={postcode} name='postcode' class="input" type="text" placeholder={application['4j'][locale]} />
+              <input value={postcode} name='postcode' class="input" type="text" />
             </p>
           </div>
 
@@ -1210,9 +1201,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                 })
               }}
               control={<Radio className='radio-check' checked={can_provide_certificates} />}
-              label={<> <span style={{ color: 'red' }}>*</span> {(nationality !== 'south korean' && locale !== 'en') ? application['4m'][locale] : ''}
-                {locale === 'ko' ? application['4l'][locale] : nationality === 'south korean' ?
-                  application['4l'][locale] : application['4l'][locale].replace('residency', `residency ${application['4m'][locale]}`)} </>} />
+              label={<> <span style={{ color: 'red' }}>*</span> {nationality === 'south korean' ? application['4l'][locale] : application['4m'][locale]} </>} />
           </div>
 
 
@@ -1283,7 +1272,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             <label> <span style={{ color: 'red' }}>*</span> {application['5b'][locale]} (cm) </label>
           </div>
           <p class="control is-expanded">
-            <input value={height} name='height' class="input" type="number" min={150} placeholder={application['5b'][locale]} />
+            <input value={height} name='height' class="input" type="number" min={150} />
           </p>
         </div>
 
@@ -1292,7 +1281,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             <label> <span style={{ color: 'red' }}>*</span> {application['5c'][locale]} (kg) </label>
           </div>
           <p class="control is-expanded">
-            <input value={weight} name='weight' class="input" type="number" min={50} placeholder={application['5c'][locale]} />
+            <input value={weight} name='weight' class="input" type="number" min={50} />
           </p>
         </div>
 
@@ -1430,7 +1419,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <input
                 onChange={(e) => handleApplicationChange(e)}
                 value={current_club.club} id='club' name='current_club' class="input" type="text"
-                placeholder='Club Name' />
+              />
             </p>
           </div>
 
@@ -1442,7 +1431,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <input
                 onChange={(e) => handleApplicationChange(e)}
                 value={current_club.middle_school} id='middle_school' name='current_club' class="input" type="text"
-                placeholder='Middle School' />
+              />
             </p>
           </div>
 
@@ -1581,7 +1570,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                     <input
                       onChange={(e) => handleApplicationChange(e, i)}
                       value={el.club} id='club' name='previous_clubs' class="input" type="text"
-                      placeholder='Club Name' />
+                    />
                   </p>
                 </div>
 
@@ -1667,7 +1656,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             <p class="control is-expanded">
               <input value={private_coach_name}
                 name='private_coach_name'
-                class="input" type="text" placeholder='John Doe' />
+                class="input" type="text" />
             </p>
           </div>
 
@@ -1678,7 +1667,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             <p class="control is-expanded">
               <input value={private_coach_company}
                 name='private_coach_company'
-                class="input" type="text" placeholder='John Doe Company' />
+                class="input" type="text" />
             </p>
           </div>
 
@@ -1689,7 +1678,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             <p class="control is-expanded">
               <input value={private_coach_website}
                 name='private_coach_website'
-                class="input" type="text" placeholder='www.johndoecoaching.com' />
+                class="input" type="text" />
             </p>
           </div>
         </div>
@@ -1861,7 +1850,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
                   <input
                     onChange={(e) => handleApplicationChange(e, i)}
                     value={el} name='highlights_footage_link' class="input" type="text"
-                    placeholder='Footage Link' />
+                  />
                 </p>
               </div>
             </div>
@@ -1883,7 +1872,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
             <div class="control">
 
-              <textarea value={bio_description} name='bio_description' style={{ minHeight: '15rem' }} class="textarea" placeholder={application['6g'][locale]}></textarea>
+              <textarea value={bio_description} name='bio_description' style={{ minHeight: '15rem' }} class="textarea" ></textarea>
             </div>
           </div>
         </div>
@@ -1901,11 +1890,9 @@ export default function ApplicationForm({ history, location, locale, match, setL
           fontWeight="fontWeightBold" mb={1}>
           {application['2d'][locale]}
         </Box>
-        <p className="help">
-          <ul>
-            {application['9'][locale].split('/').map(x => <li style={{ listStyleType: 'circle' }}> {x} </li>)}
-          </ul>
-        </p>
+        <ul>
+          {application['9'][locale].split('/').map(x => <li style={{ listStyleType: 'circle', fontSize: '14px' }}> {x} </li>)}
+        </ul>
 
 
       </Typography>
