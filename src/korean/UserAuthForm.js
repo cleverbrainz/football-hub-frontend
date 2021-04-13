@@ -653,13 +653,14 @@ const UserAuthForm = ({ locale, history }) => {
           </Box>
           <Box
             fontSize={14} fontWeight="fontWeightRegular" m={0}>
+               {(locale === 'ko') && registrationOrLogin === 'login' ? authorization['8b'][locale] : authorization['8a'][locale]}
             <Link className={classes.link}
               onClick={() => {
                 setRegistrationOrLogin(registrationOrLogin === 'registration' ? 'login' : 'registration')
                 registrationOrLogin === 'login' && setForgottenPassword(false)
               }}>
               {registrationOrLogin === 'login' ? authorization['1b'][locale].split(':')[1].trim()
-                : authorization['5b'][locale]}</Link> {registrationOrLogin === 'login' ? authorization['8b'][locale] : authorization['8a'][locale]}
+                : authorization['5b'][locale]}</Link> {(locale === 'en') && registrationOrLogin === 'login' ? authorization['8b'][locale] : authorization['8a'][locale]}
           </Box>
         </Typography>
 
