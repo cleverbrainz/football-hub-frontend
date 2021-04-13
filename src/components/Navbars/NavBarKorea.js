@@ -159,9 +159,10 @@ function NavBarKorea({ history, locale, user }) {
 
               {
                 location.pathname === '/' ?  
-                <div style={styles.buttonContainer}><Button
+                <div style={styles.buttonContainer} className='buttonContainer'><Button
                 onClick={() => mobileRedirect('/authentication')} variant="outlined" style={styles.button} 
                 > {buttons['4'][locale]} </Button></div> :
+                
 
                 location.pathname !== '/authentication' ?
                 <div style={styles.buttonContainer} className='buttonContainer'>
