@@ -277,7 +277,9 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
       })
   }
 
-  useEffect(() => {getData()}, [])
+  useEffect(() => { 
+    getData()
+  }, [])
 
   const handleMediaChange = (e) => {
     if (!isOwnProfile) return
