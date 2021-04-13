@@ -102,6 +102,15 @@ const useStyles = makeStyles((theme) => ({
       width: '50vw',
     },
   },
+  jumbotron__image: {
+    maxWidth: "95%",
+    transform: 'translateY(100%)',
+    [theme.breakpoints.up('md')]: {
+      maxWidth: '45%',
+      transform: 'translateY(0)',
+
+    },
+  },
   secondarySections: {
     display: 'flex',
     flexDirection: 'column',
@@ -212,6 +221,8 @@ const useStyles = makeStyles((theme) => ({
     bottom: '1.75rem',
     padding: '0.5rem 1.75rem',
     fontSize: '12px',
+    color: 'white',
+    opacity: 0.96
   },
   button: {
     fontSize: '0.75rem',
@@ -249,10 +260,10 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 auto',
     height: '4rem',
     [theme.breakpoints.up('sm')]: {
-      width: '40em',
+      width: '30em',
     },
     [theme.breakpoints.up('md')]: {
-      width: '40em',
+      width: '30em',
     },
   },
   tabs: {
@@ -265,7 +276,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   tabPanel: {
-    width: '80%',
+    width: '90%',
     margin: '0 auto'
   },
   tabOne__listItems: {
@@ -332,6 +343,14 @@ const useStyles = makeStyles((theme) => ({
     height: '70vh',
     [theme.breakpoints.up('md')]: {
       width: '30%',
+    },
+  },
+  ajax__images: {
+    width: '70%',
+    objectFit: 'cover',
+    height: '70vh',
+    [theme.breakpoints.up('md')]: {
+      width: '22%',
     },
   },
   tabTwo__list: {
@@ -469,7 +488,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CoachModal = ({ modalOpen, setModalOpen, locale, coach }) => {
   const classes = useStyles()
-  const name =  coach.split('/')[0]
+  const name = coach.split('/')[0].trim()
   // const coach = marketing['9d']['en']
   return (
     <Modal
@@ -489,8 +508,8 @@ const CoachModal = ({ modalOpen, setModalOpen, locale, coach }) => {
 
           <img className={classes.modalCard__image}
             src={name === 'Gwynne Berry' ? "https://i.imgur.com/uPTpZzi.jpg" :
-            name === 'Jack Johnson' ? 'https://i.imgur.com/8deioVX.png' :
-              'https://i.imgur.com/IYUoAXL.jpg'} alt="" />
+              name === 'Jack Johnson' ? 'https://i.imgur.com/8deioVX.png' :
+                'https://i.imgur.com/IYUoAXL.jpg'} alt="" />
 
           <Typography component='div' className={classes.modalCard__text}>
             <Box
@@ -549,7 +568,7 @@ const MarketingDelta = ({ locale, history }) => {
             {marketing['1a'][locale]}
           </Box>
           <Box className={classes.typography__size__2}
-            fontWeight="fontWeightRegular" pr={10} mb={4}>
+            fontWeight="fontWeightRegular" pr={5} mb={4}>
             {marketing['1b'][locale]}
           </Box>
 
@@ -567,9 +586,7 @@ const MarketingDelta = ({ locale, history }) => {
           </div>
         </Typography>
 
-        {/* <SoccerLogo /> */}
-
-        <img src="https://i.imgur.com/iwepljK.png" alt=""/>
+        <img className={classes.jumbotron__image} src="https://i.imgur.com/iwepljK.png" alt="" />
       </main>
 
       <section id='guarantee' className={classes.iconsSectionContainer}>
@@ -678,7 +695,7 @@ const MarketingDelta = ({ locale, history }) => {
                 <Button
                   onClick={() => history.push('/authentication')}
                   className={classes.campCard__button}
-                  size="small" variant='contained' color="#71959E">
+                  size="small" variant='contained' color="primary">
                   {el[locale].split('.')[3]}
                 </Button>
               </CardActions>
@@ -691,7 +708,7 @@ const MarketingDelta = ({ locale, history }) => {
 
       <Paper className={classes.tabContainer} elevation={3}>
         <Tabs value={tabValue} onChange={(event, newValue) => setTabValue(newValue)}>
-          {[tabs['1a'][locale], tabs['1b'][locale], tabs['1c'][locale], tabs['1d'][locale]].map((x, i) => {
+          {[tabs['1a'][locale], tabs['1b'][locale], tabs['1c'][locale]].map((x, i) => {
             return (
               <Tab className={classes.tabs} style={{
                 ...(tabValue === i && {
@@ -727,7 +744,7 @@ const MarketingDelta = ({ locale, history }) => {
             </ul>
 
             <div className={classes.tabOne__cta}>
-            
+
               <Button color='primary'
                 className={classes.button}
                 onClick={() => scrollTo('camp-cards')} variant='contained'>
@@ -844,12 +861,38 @@ const MarketingDelta = ({ locale, history }) => {
 
           <img
             style={{ objectFit: 'contain' }}
-            className={classes.tabTwo__images}
-            src="https://uksouth1-mediap.svc.ms/transform/thumbnail?provider=spo&inputFormat=png&cs=fFNQTw&docid=https%3A%2F%2Findulgefootballltd.sharepoint.com%3A443%2F_api%2Fv2.0%2Fdrives%2Fb!TU8k-aDdhk23zj9aEI-r1adyiQ8NHXZEkLVhu7ukhjMU7bchdFchTYVLakTP-hD2%2Fitems%2F01QFKVWRYVKZPKBA2YPRDYU7EYREOEFZ2X%3Fversion%3DPublished&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvaW5kdWxnZWZvb3RiYWxsbHRkLnNoYXJlcG9pbnQuY29tQGVmMzMwMjlmLTE0NWUtNDdkNi1iNDA2LWMyMmZiNmE0Y2MxZSIsImlzcyI6IjAwMDAwMDAzLTAwMDAtMGZmMS1jZTAwLTAwMDAwMDAwMDAwMCIsIm5iZiI6IjE2MTc5ODA0MDAiLCJleHAiOiIxNjE4MDAyMDAwIiwiZW5kcG9pbnR1cmwiOiIxcy96TjdidE5RYW5iWmJuU2VQa1JzYlZxNWdpSlJiV1NMdHhxYUNMclE0PSIsImVuZHBvaW50dXJsTGVuZ3RoIjoiMTI1IiwiaXNsb29wYmFjayI6IlRydWUiLCJ2ZXIiOiJoYXNoZWRwcm9vZnRva2VuIiwic2l0ZWlkIjoiWmpreU5EUm1OR1F0WkdSaE1DMDBaRGcyTFdJM1kyVXRNMlkxWVRFd09HWmhZbVExIiwic2lnbmluX3N0YXRlIjoiW1wia21zaVwiXSIsIm5hbWVpZCI6IjAjLmZ8bWVtYmVyc2hpcHxrZW5uQGluZHVsZ2Vmb290YmFsbC5jb20iLCJuaWkiOiJtaWNyb3NvZnQuc2hhcmVwb2ludCIsImlzdXNlciI6InRydWUiLCJjYWNoZWtleSI6IjBoLmZ8bWVtYmVyc2hpcHwxMDAzMjAwMGU3OWEzM2Q1QGxpdmUuY29tIiwidHQiOiIwIiwidXNlUGVyc2lzdGVudENvb2tpZSI6IjMifQ.ckdGbzdYUTEvUEp6TExVaWhWU3dJR01jbzFRbXluYnhObWRGZmJCM25GRT0&encodeFailures=1&width=2878&height=1376&srcWidth=&srcHeight=" alt="" />
+            className={classes.ajax__images}
+            src="https://i.imgur.com/WOcmDHW.png" alt="" />
 
 
 
         </div>
+
+        <div className={classes.tabTwo__container}>
+
+        <img className={classes.tabTwo__images}
+            style={{ objectPosition: '30% 50%' }}
+            src="https://i.imgur.com/wlHiOb0.jpg" alt="" />
+
+          <Typography component='div' className={classes.tabTwo__text}>
+            <Box
+              fontSize={18} fontWeight="fontWeightBold" mb={2}>
+              {marketing['13a'][locale]}
+            </Box>
+            <Box
+              className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
+              {marketing['13b'][locale].split('/')[0]}
+            </Box>
+            <Box
+              className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
+              {marketing['13b'][locale].split('/')[1]}
+            </Box>
+          </Typography>
+
+        
+        </div>
+
+
       </TabPanel>
 
 
@@ -952,7 +995,7 @@ const MarketingDelta = ({ locale, history }) => {
         </div>
       </TabPanel>
 
-      {/* tab 4 */}
+      {/* tab 4
       <TabPanel className={classes.tabPanel} value={tabValue} index={3}>
 
         <Box
@@ -964,9 +1007,9 @@ const MarketingDelta = ({ locale, history }) => {
 
         <div className={classes.tabTwo__container}>
 
-          <Typography component='div' 
-          style={{ width: '88%' }}
-          className={classes.tabTwo__text}>
+          <Typography component='div'
+            style={{ width: '88%' }}
+            className={classes.tabTwo__text}>
             <Box
               fontSize={18} fontWeight="fontWeightBold" mb={2}>
               {marketing['12a'][locale]}
@@ -983,31 +1026,9 @@ const MarketingDelta = ({ locale, history }) => {
           </Typography>
         </div>
 
-        <div className={classes.tabTwo__container}>
-
-          <Typography component='div' className={classes.tabTwo__text}>
-            <Box
-              fontSize={18} fontWeight="fontWeightBold" mb={2}>
-              {marketing['13a'][locale]}
-            </Box>
-            <Box
-              className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
-              {marketing['13b'][locale].split('/')[0]}
-            </Box>
-            <Box
-              className={classes.typography__size__2} fontWeight="fontWeightRegular" mb={2}>
-              {marketing['13b'][locale].split('/')[1]}
-            </Box>
-          </Typography>
-
-          <img className={classes.tabTwo__images}
-            style={{ objectPosition: '30% 50%' }}
-            src="https://i.imgur.com/wlHiOb0.jpg" alt="" />
-        </div>
 
 
-
-      </TabPanel>
+      </TabPanel> */}
 
 
     </div >

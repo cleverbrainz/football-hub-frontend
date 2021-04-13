@@ -326,7 +326,7 @@ const arr = [
   {
     "page": "authorization",
     "section": "1b",
-    "english": "Indulge Football Player Development Programme: Create your account now.",
+    "english": "Indulge Football Player Development Programme: Create your account now",
     "korean": "인덜지 글로벌 유망주 육성 프로젝트: 지금 계정을 생성하세요."
   },
   {
