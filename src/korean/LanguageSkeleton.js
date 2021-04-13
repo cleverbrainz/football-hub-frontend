@@ -8,8 +8,8 @@ const arr = [
   {
     "page": "marketing",
     "section": "1b",
-    "english": "Indulge Football has proudly partnered with the world famous Ajax to deliver the ultimate football training experience! This camp is the first of our residential training projects as part of our football Pathway Development Programme.",
-    "korean": "인덜지 풋볼이 네덜란드 최고의 명문 구단 AFC아약스와 함께 최상의 축구 훈련 경험을 제공합니다! 본 합숙 트레이닝 캠프는 한국 최초 글로벌 유망주 육성 프로그램의 일환으로 축구 꿈나무들에게 전례 없는 기회를 선사할 것입니다."
+    "english": "Indulge Football has proudly partnered with the world famous Ajax to deliver the ultimate football training experience! This is the first of our residential training projects as part of our football Pathway Development Programme.",
+    "korean": "인덜지 풋볼이 네덜란드 최고의 명문 구단 AFC아약스와 함께 최상의 축구 훈련 경험을 제공합니다! 본 합숙 트레이닝 프로그램은 한국 최초 글로벌 유망주 육성 프로젝트의 일환으로 축구 꿈나무들에게 전례 없는 기회를 선사할 것입니다."
   },
   {
     "page": "marketing",
@@ -27,7 +27,7 @@ const arr = [
     "page": "marketing",
     "section": "3b",
     "english": "To secure your place all players must apply and complete a player profile and 3 football challenges designed by Professional UEFA Licensed coaches. All applicants will be assessed by professional coaches, and the best players within each age group will be invited.",
-    "korean": "캠프 참여 자격은 제한된 인원에게 주어집니다. 참가를 위해 모든 선수들은 지원서와 프로파일을 작성하고, 프로 UEFA 코치들이 디자인한 챌린지들을 완수해야 합니다. 이를 바탕으로 코치들의 평가를 거친 후 지원자 중 가장 뛰어난 선수들이 프로그램에 초대됩니다."
+    "korean": "프로그램 참여 자격은 제한된 인원에게 주어집니다. 참가를 위해 모든 선수들은 지원서와 프로파일을 작성하고, 프로 UEFA 코치들이 디자인한 챌린지들을 완수해야 합니다. 이를 바탕으로 코치들의 평가를 거친 후 지원자 중 가장 뛰어난 선수들이 프로그램에 초대됩니다."
   },
   {
     "page": "marketing",
@@ -38,8 +38,8 @@ const arr = [
   {
     "page": "marketing",
     "section": "4",
-    "english": "Create your own player profile account on ftballer.com. / Complete and submit your football challenges. / Your profile will be assessed by professional UEFA coaches. / Successful players will be selected to-join the residential training camp.",
-    "korean": "ftballer.com에서 선수 프로파일을 작성하세요. / 지원서를 작성하고 축구 챌린지를 완수하세요 / 모든 지원서와 챌린지 영상은 프로 UEFA 코치들이 평가합니다. / 뛰어난 선수들에게는 합숙 트레이닝 캠프에 참가할 자격이 주어집니다 "
+    "english": "Create your own player profile account on ftballer.com. / Complete and submit your football challenges. / Your profile will be assessed by professional UEFA coaches. / Successful players will be selected to join the residential training project.",
+    "korean": "ftballer.com에서 선수 프로파일을 작성하세요. / 지원서를 작성하고 축구 챌린지를 완수하세요 / 모든 지원서와 챌린지 영상은 프로 UEFA 코치들이 평가합니다. / 뛰어난 선수들에게는 합숙 트레이닝 프로그램에 참가할 자격이 주어집니다 "
   },
   {
     "page": "marketing",
@@ -69,7 +69,7 @@ const arr = [
     "page": "marketing",
     "section": "6a",
     "english": "What is Included?",
-    "korean": "캠프 제공 내용"
+    "korean": "프로그램 제공 내용"
   },
   {
     "page": "marketing",
@@ -81,7 +81,7 @@ const arr = [
     "page": "marketing",
     "section": "7",
     "english": "Why Apply?",
-    "korean": "본 합숙 트레이닝 캠프만의 특별함!"
+    "korean": "본 합숙 트레이닝 프로그램만의 특별함"
   },
   {
     "page": "marketing",
@@ -158,8 +158,8 @@ const arr = [
   {
     "page": "marketing",
     "section": "10b",
-    "english": "To be selected for the residential training camp as part of our pathway development programme you will need to complete an application. The application fee is £25 per person however it is FREE if you apply before 19th April! Your assessment will be reviewed by NYSES and a Team of UEFA Qualified Coaches. / Every player must complete an assessment. You will be asked to complete a player profile to show your football preferences and experiences so far in your career, a personal statement and finally you will complete 3 football challenges. We have challenges designed specifically for goalkeepers and outfield players. In these challenges you will demonstrating your ball mastery, travelling with a ball, receiving and ball striking.",
-    "korean": "글로벌 유망주 육성 프로젝트의 일환인 합숙 트레이닝 캠프 참여 자격을 얻기 위해서는 지원서를 제출하여야 하며, 4월 19일 이전에 접수한 참가자들에게는 지원료(£25)가 면제됩니다. 제출된 지원서들은 한국유소년축구교육원과 UEFA 공인 코치 팀이 평가와 검토를 실시합니다. / 지원서는 선수 프로필과 지금까지의 축구 경험 및 포부를 담은 자기 소개서, 그리고 세 가지 축구 챌린지로 구성되어 있습니다. 챌린지는 필드 플레이어와 골키퍼 각각 별도로 마련되어 있으며, 이를 통해 선수들의 공 숙련도와 드리블, 리시빙 및 스트라이킹 스킬 등을 보여주게 됩니다. "
+    "english": "To be selected for the residential training project as part of our pathway development programme you will need to complete an application. The application fee is £25 per person however it is FREE if you apply before 19th April! Your assessment will be reviewed by NYSES and a Team of UEFA Qualified Coaches. / Every player must complete an assessment. You will be asked to complete a player profile to show your football preferences and experiences so far in your career, a personal statement and finally you will complete 3 football challenges. We have challenges designed specifically for goalkeepers and outfield players. In these challenges you will demonstrating your ball mastery, travelling with a ball, receiving and ball striking.",
+    "korean": "글로벌 유망주 육성 프로젝트의 일환인 합숙 트레이닝 참여 자격을 얻기 위해서는 지원서를 제출하여야 하며, 4월 19일 이전에 접수한 참가자들에게는 지원료(£25)가 면제됩니다. 제출된 지원서들은 한국유소년축구교육원과 UEFA 공인 코치 팀이 평가와 검토를 실시합니다. / 모든 선수들은 주어진 챌린지들을 완수해야 합니다. 선호 포지션과 지금까지의 축구 경험을 담은 선수 프로필, 그리고 자기 소개서를 완성한 후에 세 가지 축구 챌린지가 주어집니다. 챌린지는 필드 플레이어와 골키퍼 각각 별도로 마련되어 있으며, 이를 통해 선수들의 공 숙련도와 드리블, 리시빙 및 스트라이킹 스킬 등을 보여주게 됩니다."
   },
   {
     "page": "marketing",
@@ -190,7 +190,7 @@ const arr = [
     "page": "marketing",
     "section": "12b",
     "english": "Inulge Football specialise in Player Pathways, Sponsorship and Consultancy, Fan Relationship Management and Digital Solutions. / We have been trading since 2008 and during that time have managed tours and events for thousands of customers including fan packages for the FIFA World Cup, been official ticket agency of elite professional clubs such as FC Barcelona and provided professional services to Premier League players including Harry Kane, Michail Antonio and Andros Townsend. / We have recently expanded our services into Asia, starting with South Korea where we have created partnerships with top companies and organisations. The pathway Development Programme will be the first of its kind in South Korea and we are very excited to be able to help develop youth pathways there and provide connections into European football. Indulge Football is proud to be a registered intermediary with the Korean Football Assocation.",
-    "korean": "인덜지풋볼은 선수 진로 개발, 스폰서쉽, 컨설팅, 팬 매니지먼트 그리고 디지털 솔루션에 대한 전문성을 바탕으로 클라이언트를 서포트합니다. / 2008년 설립 이후 FIFA 월드컵 팬 패키지를 포함하여 수천 명의 고객들을 위해 투어와 이벤트를 매니지먼트해 왔으며, FC바르셀로나와 같은 프로 엘리트 클럽들의 공식 티켓 에이전시로 활동하는 동시에 해리 케인, 미첼리 안토니오, 앤드로스 타운센트와 같은 프리미어리그 선수들에게도 전문 서비스를 제공해 왔습니다. / 현재 인덜지풋볼은 한국을 시작으로 여러 기업 및 기관들과 파트너쉽을 맺으며 아시아 전역으로 사업 영역을 확장하고 있습니다. / 본 글로벌 유망주 육성 프로젝트는 한국 최초이며, 우리는 유소년 선수들의 발전을 위해 유럽 축구와의 지속적인 연계를 제공한다는 점을 매우 자랑스럽게 여기고 있습니다."
+    "korean": "인덜지풋볼은 선수 진로 개발, 스폰서쉽, 컨설팅, 팬 매니지먼트 그리고 디지털 솔루션에 대한 전문성을 바탕으로 클라이언트를 서포트합니다. / 2008년 설립 이후 FIFA 월드컵 팬 패키지를 포함하여 수천 명의 고객들을 위해 투어와 이벤트를 매니지먼트해 왔으며, FC바르셀로나와 같은 프로 엘리트 클럽들의 공식 티켓 에이전시로 활동하는 동시에 해리 케인, 미첼리 안토니오, 앤드로스 타운센트와 같은 프리미어리그 선수들에게도 전문 서비스를 제공해 왔습니다. / 현재 인덜지풋볼은 한국을 시작으로 여러 기업 및 기관들과 파트너쉽을 맺으며 아시아 전역으로 사업 영역을 확장하고 있습니다. 본 글로벌 유망주 육성 프로젝트는 한국 최초이며, 우리는 유소년 선수들의 발전을 위해 유럽 축구와의 지속적인 연계를 제공한다는 점을 매우 자랑스럽게 여기고 있습니다. 인덜지풋볼은 대한축구협회(KFA)에 정식으로 등록되어 활동 중인 공식 중개인(사) 입니다."
   },
   {
     "page": "marketing",
@@ -209,7 +209,7 @@ const arr = [
     "page": "marketing",
     "section": "14",
     "english": "Residential Training Project",
-    "korean": "합숙 트레이닝 캠프"
+    "korean": "합숙 트레이닝 프로그램"
   },
   {
     "page": "marketing",
@@ -245,7 +245,7 @@ const arr = [
     "page": "marketing",
     "section": "18",
     "english": "What to Expect?",
-    "korean": "캠프 내용"
+    "korean": "프로그램 내용"
   },
   {
     "page": "marketing",
@@ -295,8 +295,8 @@ const arr = [
   {
     "page": "tabs",
     "section": "1a",
-    "english": "Camp",
-    "korean": "캠프"
+    "english": "Project",
+    "korean": "프로그램"
   },
   {
     "page": "tabs",
@@ -313,21 +313,21 @@ const arr = [
   {
     "page": "tabs",
     "section": "1d",
-    "english": "Programme",
-    "korean": "프로그램"
+    "english": "Indulge Football",
+    "korean": "인덜지풋볼"
   },
 
   {
     "page": "authorization",
     "section": "1a",
-    "english": "Indulge Player Pathway",
-    "korean": "인덜지 벤피카 캠프"
+    "english": "Pathway Development Programme",
+    "korean": "글로벌 유망주 육성 프로젝트"
   },
   {
     "page": "authorization",
     "section": "1b",
     "english": "Indulge Football Player Development Programme: Create your account now.",
-    "korean": ""
+    "korean": "인덜지 글로벌 유망주 육성 프로젝트: 지금 계정을 생성하세요."
   },
   {
     "page": "authorization",
@@ -434,20 +434,20 @@ const arr = [
   {
     "page": "authorization",
     "section": "8a",
-    "english": "o continue your application for the Residential Training Project with Ajax",
-    "korean": ""
+    "english": "to contnue your application for the Residential Training Project with Ajax",
+    "korean": "AFC 아약스와 함께 하는 합숙 트레이닝 캠프 참여 지원서를 완성하려면 "
   },
   {
     "page": "authorization",
     "section": "8b",
-    "english": "to start your application for the Indulge Ajax AFC Camp.",
-    "korean": "인덜지 벤피카 캠프 참가 스타트 위해"
+    "english": "to start your application for the Residential Training Project with Ajax",
+    "korean": "아약스와 함께 하는 합숙 트레이닝 프로그램 참여 지원을 위해"
   },
   {
     "page": "application",
     "section": "1",
     "english": "Pathway Development Programme: Application Form",
-    "korean": ""
+    "korean": "타이틀 - 글로벌 유망주 육성 프로젝트 - 지원서"
   },
   {
     "page": "application",
@@ -573,13 +573,13 @@ const arr = [
     "page": "application",
     "section": "4l",
     "english": "Please indicate if you are able to provide evidence of residency, if required.",
-    "korean": "주민등록등본과 여권 사본 제출 가능 여부를 답해주세요."
+    "korean": "나는 필요할 시 거주지 증명 서류를 제출할 수 있습니다."
   },
   {
     "page": "application",
     "section": "4m",
-    "english": "and passport",
-    "korean": "요청 시"
+    "english": "Please indicate if you are able to provide evidence of residency and passport, if required.",
+    "korean": "나는 필요할 시 거주지 증명 서류와 여권 사본을 제출할 수 있습니다."
   },
 
   {
@@ -687,14 +687,14 @@ const arr = [
   {
     "page": "application",
     "section": "7a",
-    "english": "Complete the following challenges",
-    "korean": "다음의 챌린지들을 완수하세요."
+    "english": "Challenge Instructions",
+    "korean": "챌린지 설명"
   },
   {
     "page": "application",
     "section": "9",
     "english": "All players must complete and film their 3 challenges as per the demonstration videos / Recreate each one separately and share the URL link against each challenge / Upload your challenges to your own social media channels and ensure they can be viewed by our coaches / Each video should be no more than 2 minutes in length and be clearly visible for assessment / Please use whatever equipment you need to recreate the challenges",
-    "korean": ""
+    "korean": "모든 선수들은 제시된 영상 대로 세 개의 챌린지들을 완수해야 합니다 / 예시를 재현하여 촬영한 영상을 소셜 미디어에 업로드하고 URL을 각각의 챌린지란에 공유해 주세요 / 공유한 URL은 평가 코치들이 확인할 수 있도록 반드시 공개 모드로 설정해 주세요 / 각각의 영상들은 2분 이내여야 하며, 평가가 가능한 퀄리티여야 합니다 / 예시에 나온 것과 똑같은 장비들을 사용하지 않아도 좋습니다"
   },
   {
     "page": "application",
@@ -905,8 +905,8 @@ const arr = [
   {
     "page": "application",
     "section": "15a",
-    "english": "Do you have any video of you playing? Please share your highlights here",
-    "korean": ""
+    "english": "Please share your football highlights",
+    "korean": "경기에서 활약했던 모습을 보여주세요."
   },
 
   {
@@ -952,8 +952,12 @@ const arr = [
     "english": "Daegu FC / Gangwon FC / Gwangju FC / Incheon United / Jeju United / Jeonbuk Hyudai Motors / Pohang Steelers / Seongnam FC / FC Seoul / Suwon Samsung Bluewings / Suwon FC / Ulsan Hyudai / Ansan Greenders / FC Anyang / Bucheon FC 1995 / Busan IPark / Chungnam Asan / Daejeon Hana Citizen / Gimcheon Sangmu FC / Gyeongnam FC / Jeonnam Dragons / Seoul E-Land",
     "korean": "대구 FC / 강원 FC / 광주 FC / 인천유나이티드 FC / 제주유나이티드 FC / 전북현대모터스 / 포항스틸러스 / 성남 FC / FC 서울 / 수원삼성블루윙즈 / 수원 FC / 울산현대축구단 / 안산 그리너스 FC / FC 안양 / 부천 FC 1995 / 부산아이파크 FC / 충남 아산 / 충남아산프로축구단 / 김천상무프로축구단 / 경남 FC / 전남드래곤즈 / 서울이랜드 FC"
   },
-
-
+  {
+    "page": "application",
+    "section": "19",
+    "english": "Under 6s / Under 7s / Under 8s / Under 9s / Under 10s / Under 11s / Under 12s / Under 13s / Under 14s / Under 15s",
+    "korean": "U6 / U7 / U8 / U9 / U10 / U11 / U12 / U13 / U14 / U15"
+  },
 
   {
     "page": "snackbar_messages",
@@ -1048,20 +1052,14 @@ const arr = [
   {
     "page": "snackbar_messages",
     "section": "8a",
-    "english": "Please ensure you have filled out all required fields before",
-    "korean": "필수 항목이 모두 입력되었는지 확인해 주세요"
+    "english": "Please ensure you have filled out all required fields before submitting",
+    "korean": "제출 전 필수 항목이 모두 입력되었는지 확인해 주세요."
   },
   {
     "page": "snackbar_messages",
     "section": "8b",
-    "english": "submitting",
-    "korean": "제출"
-  },
-  {
-    "page": "snackbar_messages",
-    "section": "8c",
-    "english": "moving on",
-    "korean": "다음으로"
+    "english": "Please ensure you have filled out all required fields before moving on",
+    "korean": "필수 항목이 모두 입력되었는지 확인해 주세요."
   },
   {
     "page": "snackbar_messages",
@@ -1162,8 +1160,8 @@ const arr = [
   {
     "page": "profile",
     "section": "5b",
-    "english": "Name",
-    "korean": "이름"
+    "english": "Project Name",
+    "korean": "지원 프로그램 타이틀"
   },
   {
     "page": "profile",
