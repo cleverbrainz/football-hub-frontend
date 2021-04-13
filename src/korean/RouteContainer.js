@@ -9,6 +9,7 @@ import {
 import ApplicationForm from './ApplicationForm'
 import SwitchLanguageFab from './SwitchLanguageFab'
 import HomeNav from '../components/Navbars/HomeNav'
+import NavBarKorea from '../components/Navbars/NavBarKorea'
 import UserAuthForm from './UserAuthForm'
 import ApplicantProfile from './ApplicantProfile'
 // import JSONConvertor from './JSONConvertor'
@@ -30,7 +31,7 @@ const RouteContainer = (props) => {
   return (
 
     <Router>
-      <HomeNav locale={locale}/>
+      <NavBarKorea locale={locale}/>
       <SwitchLanguageFab
         locale={locale}
         handleLocaleChange={(e) => {
