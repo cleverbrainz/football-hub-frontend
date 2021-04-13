@@ -33,8 +33,8 @@ const AddPhone = ({ location, history, locale }) => {
       width: '80%',
       margin: '0 auto',
       height: '70vh',
-      minHeight: '600px',
-      paddingTop: '110px',
+      minHeight: '800px',
+      // paddingTop: '110px',
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
@@ -46,9 +46,9 @@ const AddPhone = ({ location, history, locale }) => {
     },
     form: {
       margin: '10px auto',
-      width: '60%',
-      minWidth: '300px',
-      maxWidth: '600px',
+      // width: '60%',
+      // minWidth: '300px',
+      // maxWidth: '600px',
       display: 'flex',
       flexDirection: 'column',
       maxHeight: '600px',
@@ -57,7 +57,27 @@ const AddPhone = ({ location, history, locale }) => {
     },
     button: {
       marginTop: '10px',
-      position: 'relative'
+      position: 'relative',
+      backgroundColor: 'rgb(49, 1, 247)',
+      color: 'white',
+      fontSize: '12px',
+      letterSpacing: '2px',
+      height: '50px',
+      '&:hover': {
+        color: 'black'
+      }
+    },
+    disabledButton: {
+      marginTop: '10px',
+      position: 'relative',
+      color: 'rgb(49, 1, 247)',
+      backgroundColor: 'white',
+      fontSize: '12px',
+      letterSpacing: '2px',
+      height: '50px',
+      '&:hover': {
+        opacity: '0.8'
+      }
     },
     progress: {
       position: 'absolute'
@@ -72,12 +92,27 @@ const AddPhone = ({ location, history, locale }) => {
     },
     back: {
       alignSelf: 'end',
-      margin: '20px 20px'
+      margin: '90px 20px 0px',
     },
     label: {
       fontSize: '14px',
       fontWeight: 'bold'
     },
+    verificationCodeWrapper: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    verificationCode: {
+      height: '2px',
+      width: '100%',
+      transition: '0.5s'
+    },
+    verificationCodeSent: {
+      height: '50px',
+      width: '100%',
+      transition: '0.5s'
+    }
   }));
 
 
@@ -134,6 +169,11 @@ const AddPhone = ({ location, history, locale }) => {
     setLoginFields(fields)
     console.log(loginFields)
 
+  }
+
+  function fakeSendVerification(e) {
+    e.preventDefault()
+    setCodeSent(true)
   }
 
   function sendVerificationCode(e) {
@@ -238,14 +278,15 @@ const AddPhone = ({ location, history, locale }) => {
         <form
           autoComplete='off'
           onChange={(e) => handleFormChange(e)}
-          onSubmit={!codeSent ? (e) => sendVerificationCode(e) : (e) => confirmVerificationCode(e)}
+          // onSubmit={!codeSent ? (e) => sendVerificationCode(e) : (e) => confirmVerificationCode(e)}
+          onSubmit={!codeSent ? (e) => fakeSendVerification(e) : (e) => confirmVerificationCode(e)}
           className={classes.form}>
                     <div className={classes.field}>
               <div className={classes.label}>
                 <label> <span style={{ color: 'red' }}>*</span> {verification['1f'][locale]}
                </label>
               </div>
-              <div className="field has-addons">
+              <div className="field has-addons" style={{marginBottom: '10px'}}>
               {verified ? 
               <p class="control is-expanded">
               <input
@@ -280,14 +321,17 @@ const AddPhone = ({ location, history, locale }) => {
 
 
           {!verified && <FormControl variant="outlined">
-            <InputLabel htmlFor="outlined-verification-code">{verification['1c'][locale]}</InputLabel>
+            <div className={classes.verificationCodeWrapper}>
+            {codeSent && <InputLabel htmlFor="outlined-verification-code">{verification['1c'][locale]}</InputLabel>}
             <OutlinedInput
               id="outlined-verification-code"
               label='Verification Code'
               name='verificationCode'
               labelWidth={70}
+              className={!codeSent ? classes.verificationCode: classes.verificationCodeSent}
               value={verificationUpdated ? verification['1d'][locale].split(' / ')[2] : loginFields.verificationCode}
               disabled={!codeSent} />
+              </div>
           </FormControl>}
 
 
@@ -304,9 +348,10 @@ const AddPhone = ({ location, history, locale }) => {
         // </FormControl> */}
 
         <Button disabled={isLoading || verified || verificationUpdated}
-          className={classes.button} type='submit'
+          className={verified ? classes.disabledButton : classes.button} type='submit'
           variant='outlined'
-          color='primary'>
+          classes={{disabled: classes.disabledButton}}
+          >
           {verified || verificationUpdated ? verification['1d'][locale].split(' / ')[2] :
             !codeSent ? verification['1d'][locale].split(' / ')[0] : verification['1d'][locale].split(' / ')[1] }
 
