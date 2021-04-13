@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import { profile, snackbar_messages } from './LanguageSkeleton'
+import { profile, snackbar_messages, application as app } from './LanguageSkeleton'
 import auth from '../lib/auth'
 import axios from 'axios'
 import AdjustSharpIcon from '@material-ui/icons/AdjustSharp';
@@ -223,30 +223,33 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   const [message, setMessage] = useState()
   const [imageUpload, setImageUpload] = useState(false)
   const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === match.params.id)
+  const [subDate, setSubDate] = useState()
   const input = useRef()
   const defaultPic = 'https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80'
 
-  console.log({isOwnProfile, egg: auth.getUserId(), match})
+  console.log({ isOwnProfile, egg: auth.getUserId(), match })
+  
+  const date = new Date()
 
   const getData = async () => {
-    axios.get(`/users/${match.params.id}`)
-    .then(res => {
-      const { applications } = res.data[0]
-      setUser(res.data[0])
-      console.log(res.data)
 
-      if (applications.benfica_application) {
-        setApplication(applications.benfica_application)
-      } else if (applications.ajax_application) {
-        setApplication(applications.ajax_application)
-      }
-      setHasLoaded(true)
-    })
+    axios.get(`/users/${match.params.id}`)
+      .then(res => {
+        const { applications } = res.data[0]
+        setUser(res.data[0])
+
+        if (applications.benfica_application?.hasOwnProperty('submitted')) setSubDate(moment(applications.benfica_application.submission_date).format('MMMM Do YYYY'))
+
+        if (applications.benfica_application) {
+          setApplication(applications.benfica_application)
+        } else if (applications.ajax_application) {
+          setApplication(applications.ajax_application)
+        }
+        setHasLoaded(true)
+      })
   }
 
-  useEffect(() => {
-    getData()
-  }, [])
+  useEffect(() => getData(), [])
 
   const handleMediaChange = (e) => {
     if (!isOwnProfile) return
@@ -261,7 +264,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
         console.log(res.data)
         getData()
         setImageUpload(false)
-        
+
       })
       .catch(err => console.error(err))
   }
@@ -336,7 +339,26 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
     setCurrentScrollSection(item)
   }
 
-  const nav = [profile['1b'][locale], profile['1c'][locale], profile['1d'][locale], profile['1e'][locale]]
+  const attributesSection = [
+    {
+      att: `${app['5b'][locale]} (cm)`,
+      value: application?.player_attributes.height
+    },
+    {
+      att: `${app['5c'][locale]} (kg)`,
+      value: application?.player_attributes.weight
+    },
+    {
+      att: `${app['5d'][locale]}`,
+      value: application?.player_attributes.other_positions.map((x, i) => `${titleCase(x)} ${i === 0 ? ', ' : ''}`)
+    },
+    {
+      att: `${app['5e'][locale]}`,
+      value: application && titleCase(application.player_attributes.preferred_foot)
+    }
+  ]
+
+  const nav = [profile['1b'], profile['1c'], profile['1d'], profile['1e']]
   if (!hasLoaded) return null
   return (
 
@@ -349,7 +371,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
               fontSize={17}
               fontWeight="fontWeightBold" mb={3}>
               {profile['1a'][locale]}
-          </Box>
+            </Box>
           </Typography>
 
           <ul>
@@ -357,8 +379,8 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
             {nav.map((item, i) => {
               return <li
                 className={classes.listItems}
-                style={{ fontWeight: currentScrollSection === item ? 'bold' : 'initial' }}
-                onClick={() => scrollView(item)}> {locale === 'en' ? titleCase(item.replace(/-/g, i === 2 ? ' ' : ' & ')) : item} </li>
+                style={{ fontWeight: currentScrollSection === item['en'] ? 'bold' : 'initial' }}
+                onClick={() => scrollView(item['en'])}> {locale === 'en' ? titleCase(item['en'].replace(/-/g, i === 2 ? ' ' : ' & ')) : item['ko']} </li>
             })}
           </ul>
         </Paper>
@@ -394,8 +416,8 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
             {/* image avatar */}
             <figure className={classes.imageContainer} onClick={(e) => input.current.click(e)}>
-            <input ref={input}
-              style={{ display: 'none' }} onChange={(e) => handleMediaChange(e)} type="file" />
+              <input ref={input}
+                style={{ display: 'none' }} onChange={(e) => handleMediaChange(e)} type="file" />
               <img className={classes.image} alt='profile'
                 src={user.imageURL ? user.imageURL : defaultPic} />
             </figure>
@@ -420,20 +442,20 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                   <Box
                     fontSize={14}
                     fontWeight="fontWeightRegular" mb={0.5}>
-                      {/* {titleCase(application.football_history.current_club.club)} */}
-                    <span style={{fontWeight: "bold"}}>{profile['3b'][locale]}:</span>{`  ${titleCase(application.football_history.current_club.club)}`}
+                    {/* {titleCase(application.football_history.current_club.club)} */}
+                    <span style={{ fontWeight: "bold" }}>{profile['3b'][locale]}:</span>{`  ${titleCase(application.football_history.current_club.club)}`}
                   </Box>
                   <Box
                     fontSize={14}
                     fontWeight="fontWeightRegular" mb={0.5}>
                     {/* {titleCase(application.age_group)} */}
-                    <span style={{fontWeight: "bold"}}>{profile['3c'][locale]}</span>{`  ${titleCase(application.age_group)}`}
+                    <span style={{ fontWeight: "bold" }}>{profile['3c'][locale]}</span>{`  ${titleCase(application.age_group)}`}
                   </Box>
                   <Box
                     fontSize={14}
                     fontWeight="fontWeightRegular">
                     {/* {titleCase(application.player_attributes.position)} */}
-                    <span style={{fontWeight: "bold"}}>{profile['3d'][locale]}</span>{`  ${titleCase(application.player_attributes.position)}`}
+                    <span style={{ fontWeight: "bold" }}>{profile['3d'][locale]}</span>{`  ${titleCase(application.player_attributes.position)}`}
                   </Box>
 
                 </>
@@ -443,13 +465,13 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
           </Paper>
 
           {(application && application.hasOwnProperty('submitted')) && (
-            <Paper id={profile['1b'][locale]} elevation={3} className={`${classes.otherSections} nav-sections`} >
+            <Paper id={profile['1b']['en']} elevation={3} className={`${classes.otherSections} nav-sections`} >
               <Typography component='div' >
                 <Box
                   fontSize={20}
                   fontWeight="fontWeightBold" mb={3}>
                   {locale === 'en' ? titleCase(profile['1b'][locale]) : profile['1b'][locale]}
-              </Box>
+                </Box>
 
                 <Box
                   id='truncate-text'
@@ -470,12 +492,12 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
           )}
 
 
-          <Paper id={profile['1c'][locale]} elevation={3} className={`${classes.otherSections} nav-sections`}>
+          <Paper id={profile['1c']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
             <Typography component='div' >
               <Box
                 fontSize={20}
                 fontWeight="fontWeightBold" mb={3}>
-                {locale === 'en' ?  titleCase(profile['1c'][locale]) : profile['1c'][locale]}
+                {locale === 'en' ? titleCase(profile['1c'][locale]) : profile['1c'][locale]}
               </Box>
             </Typography>
 
@@ -485,8 +507,10 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                   <TableRow>
                     <TableCell>ID </TableCell>
                     <TableCell align="right"> {profile['5b'][locale]}</TableCell>
+
                     {(application && application.hasOwnProperty('submitted')) &&
                       <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
+
                     <TableCell align="right"> {profile['5d'][locale]}</TableCell>
                   </TableRow>
                 </TableHead>
@@ -494,9 +518,13 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                   <TableRow>
                     <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
                     <TableCell align="right"> PDP </TableCell>
+
                     {(application && application.hasOwnProperty('submitted')) &&
-                      <TableCell align="right"> {moment(application.submission_date).format('MMMM Do YYYY')} </TableCell>}
-                    <TableCell align="right" style={{ color: '#3100F7' }}> 
+                      <TableCell align="right"> 
+                      {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`} 
+                      </TableCell>}
+
+                    <TableCell align="right" style={{ color: '#3100F7' }}>
                       {(application && application.hasOwnProperty('submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
                     </TableCell>
                   </TableRow>
@@ -517,13 +545,13 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
           {(application && application.hasOwnProperty('submitted')) && (
             <>
-              <Paper id={profile['1d'][locale]} elevation={3} className={`${classes.otherSections} nav-sections`}>
+              <Paper id={profile['1d']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
                 <Typography component='div' >
                   <Box
                     fontSize={20}
                     fontWeight="fontWeightBold" mb={3}>
                     {locale === 'en' ? titleCase(profile['1d'][locale]) : profile['1d'][locale]}
-              </Box>
+                  </Box>
                 </Typography>
 
                 {application.football_history.previous_clubs.map((el, i) => {
@@ -562,8 +590,8 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                               <CheckCircleSharpIcon style={{ color: 'green', fontSize: '15px', transform: 'translateY(3px)', marginRight: '6px' }} /> :
                               <CancelSharpIcon style={{ color: 'red', fontSize: '15px', transform: 'translateY(3px)', marginRight: '6px' }} />}
 
-                              {profile['6'][locale]}
-                              
+                            {profile['6'][locale]}
+
                           </span>
                         </Box>
                       </Typography>
@@ -574,7 +602,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
               </Paper>
 
-              <div id={profile['1e'][locale]} className={`${classes.awardsSectionContainer} nav-sections`}>
+              <div id={profile['1e']['en']} className={`${classes.awardsSectionContainer} nav-sections`}>
                 <Paper className={classes.awardSections} elevation={3}>
                   <Typography component='div' >
                     <Box
@@ -584,14 +612,23 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
               </Box>
                   </Typography>
 
-                  {/* <ul>
-                    <li className={classes.skillItems}>Dribbling in tight spaces</li>
-                    <li className={classes.skillItems}>Shooting with accuracy</li>
-                    <li className={classes.skillItems}>Close ball control </li>
-                    <li className={classes.skillItems}>Passing to open up defence</li>
-                    <li className={classes.skillItems}>Speed to get up and down the wing</li>
-                    <li className={classes.skillItems}>Overall finesse. Match winner</li>
-                  </ul> */}
+                  <ul>
+                    {attributesSection.map(x => {
+                      return (
+                        <li className={classes.awardItems}>
+                          <Box
+                            fontSize={16}
+                            fontWeight="fontWeightRegular" mb={-0.5}>
+                            {x.att}
+                          </Box>
+                          <small style={{ fontSize: '12.5px', opacity: '0.75' }}> {x.value} </small>
+                        </li>
+                      )
+                    })}
+
+                  </ul>
+
+
                 </Paper>
 
                 {application.football_history.award_achieved && (
@@ -639,7 +676,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
         </Alert>
       </Snackbar>}
 
-      
+
 
     </div>
 

@@ -1888,7 +1888,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
           className={classes.subHeading}
           fontSize={15}
           fontWeight="fontWeightBold" mb={1}>
-          {application['2d'][locale]}
+          {application['7a'][locale]}
         </Box>
         <ul>
           {application['9'][locale].split('/').map(x => <li style={{ listStyleType: 'circle', fontSize: '14px' }}> {x} </li>)}
