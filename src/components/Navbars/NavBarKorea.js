@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Link, withRouter, useLocation } from 'react-router-dom';
-import { buttons } from '../../korean/LanguageSkeleton'
+import { buttons, profile } from '../../korean/LanguageSkeleton'
 import { Typography, Box, Button } from '@material-ui/core'
 import auth from '../../lib/auth';
 
-const styles = {
+let styles = {
   navBar: {
     zIndex: 100,
     height: 80,
     position: 'fixed',
     width: '100%',
-    backgroundColor: 'transparent',
     transition: '0.3s',
     padding: window.innerWidth > 600 ? '0 30px' : 0,
-
-    ...(localStorage.version === 'South Korea' && {
-      boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.1), 0px 1px 10px 0px rgba(0,0,0,0.12)',
-      backgroundColor: 'white'
-    })
+    boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.1), 0px 1px 10px 0px rgba(0,0,0,0.12)',
+    backgroundColor: 'white'
   },
   subContainer: {
     height: '100%',
@@ -32,34 +28,55 @@ const styles = {
   },
   menu: {
     backgroundColor: 'red'
+  },
+  buttonContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    // display: 'none'
+  },
+  roundedContainer: {
+    width: '33%',
+    // display: 'none'
+  },
+  rounded: {
+    borderTop: '3px solid rgb(49, 1, 247)',
+    borderRadius: '5px',
+    width: '100%',
+    margin: '15px 0 15px 0',
+    
+  },
+  button: {
+    width: '50%',
+    backgroundColor: 'rgb(49, 1, 247)',
+    color: 'white',
+    fontSize: '12px',
+    letterSpacing: '2px',
+    height: '50px',
   }
 }
 
 
 
-function HomeNav({ history, locale, user }) {
+function NavBarKorea({ history, locale, user }) {
 
   const location = useLocation()
   const [scrollPosition, setScrollPosition] = useState()
-  console.log(user)
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+  // console.log(user)
+  console.log(location)
+  
   
 
   useEffect(() => {
-    const nav = document.querySelector('nav')
+    // window.addEventListener('resize', () => {
+    //   setScreenWidth(window.innerWidth)
+    // })
 
-    if (localStorage.version === 'United Kingdom') {
-      window.addEventListener('scroll', () => {
-        setScrollPosition(window.pageYOffset)
-
-        if (scrollPosition > 340) {
-          nav.style.backgroundColor = 'white'
-          nav.style.boxShadow = '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.1), 0px 1px 10px 0px rgba(0,0,0,0.12)'
-        } else {
-          nav.style.backgroundColor = 'transparent'
-          nav.style.boxShadow = ''
-        }
-      })
-    }
+    // if (screenWidth < 1023) {
+    //   styles = { ...styles, buttonContainer: { ...styles.buttonContainer, display: 'flex'} }
+    // } else {
+    //   styles = { ...styles, buttonContainer: { ...styles.buttonContainer, display: 'none'} }
+    // }
   })
 
   const handleBurgerMenu = ({ user }) => {
@@ -83,6 +100,19 @@ function HomeNav({ history, locale, user }) {
     auth.logOut()
   }
 
+  const mobileRedirect = (destination) => {
+
+    const burger = document.querySelector('.burger')
+    const navItems = document.querySelector(`#${burger.dataset.target}`)
+
+    burger.classList.toggle('is-active')
+    navItems.classList.toggle('is-active')
+    
+    history.push(destination)
+    
+
+  }
+
 
   return (
     <>
@@ -90,7 +120,7 @@ function HomeNav({ history, locale, user }) {
         <div style={styles.subContainer} className="navbar-brand">
           <Typography component='div'>
             <Box fontSize={23} fontWeight="fontWeightRegular" m={1}>
-              <svg width="155" height="31" viewBox="0 0 2529 557" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="175" height="35" viewBox="0 0 2529 557" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2493.52 492.636C2512.76 492.636 2528.35 477.043 2528.35 457.809V457.809C2528.35 438.574 2512.76 422.981 2493.52 422.981V422.981C2474.29 422.981 2458.7 438.574 2458.7 457.809V457.809C2458.7 477.043 2474.29 492.636 2493.52 492.636V492.636Z" fill="#3101F7" />
                 <path d="M836.169 492.636V283.464H870.299V222.029H836.169V213.74C836.169 191.311 846.408 185.948 867.374 185.948H870.299V125H859.085C772.783 125 755.23 165.957 755.23 210.814V222.029H725V283.464H755.23V492.636H836.169Z" fill="black" />
                 <path d="M1027.03 492.636V283.464H1066.04V222.029H1027.03V131.826H946.095V222.029H906.114V283.464H946.095V492.636H1027.03Z" fill="black" />
@@ -108,7 +138,7 @@ function HomeNav({ history, locale, user }) {
             </Box>
           </Typography>
 
-          { (localStorage.version === 'South Korea' && location.pathname !== '/authentication') &&
+          { (location.pathname !== '/authentication') &&
 
           <a onClick={handleBurgerMenu} role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
             <span style={{ backgroundColor: 'black' }} aria-hidden="true"></span>
@@ -123,37 +153,27 @@ function HomeNav({ history, locale, user }) {
 
 
           <div className="navbar-end">
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }} className="navbar-item">
+            <div className="navbar-item">
               <div className="navbar-start">
               </div>
 
-              {localStorage.version === 'United Kingdom' && <div className="buttons">
-                <button style={{ backgroundColor: '#3d0F3d' }} className="button is-link">
-                  <Link style={{ color: 'white', }} to='/register/player'>Register Player</Link>
-                </button>
-                <button style={{ backgroundColor: '#3d3d3d' }} className="button is-link">
-                  <Link style={{ color: 'white', }} to='/register/trainer'>Register Company/Coach</Link>
-                </button>
-                <button component={Link} to='/login' className="button is-light">
-                  <Link style={{ color: 'black' }} to='/login'> Login </Link>
-                </button>
-              </div>}
-
-              {localStorage.version === 'South Korea' && 
-              
-              location.pathname === '/' ?  <Button
-                onClick={() => history.push('/authentication')}
-                variant='contained' color='primary'> {buttons['4'][locale]} </Button> :
+              {
+                location.pathname === '/' ?  
+                <div style={styles.buttonContainer}><Button
+                onClick={() => mobileRedirect('/authentication')} variant="outlined" style={styles.button} 
+                > {buttons['4'][locale]} </Button></div> :
 
                 location.pathname !== '/authentication' ?
-                <>
-                <Button onClick={() => mobileLogOut()}>Log Out</Button>
-                <Button>Other Details</Button>
-                </>
+                <div style={styles.buttonContainer} className='buttonContainer'>
+                <Button variant="outlined" style={styles.button} onClick={() => mobileRedirect(location.pathname + '/two-factor')}>{profile['2b'][locale]}</Button>
+                <div style={styles.roundedContainer} className='roundedContainer'>
+                <hr style={styles.rounded}/>
+                </div>
+                <Button variant="outlined" style={styles.button} onClick={() => mobileLogOut()}>{profile['2d'][locale]}</Button>
+                </div>
                 :
                 null
                 }
-
             </div>
           </div>
         </div>
@@ -163,4 +183,4 @@ function HomeNav({ history, locale, user }) {
 }
 
 
-export default withRouter(HomeNav)
+export default withRouter(NavBarKorea)
