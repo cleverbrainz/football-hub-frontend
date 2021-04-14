@@ -435,7 +435,8 @@ const App = () => {
 
   useEffect(() => {
 
-    const version = localStorage.version
+    // const version = localStorage.version
+    const version = 'South Korea'
     if (version) setNavigationRoute(version === 'United Kingdom' ? enRoutes : krRoutes)
 
 
