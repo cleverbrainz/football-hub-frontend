@@ -75,7 +75,7 @@ const arr = [
     "page": "marketing",
     "section": "6b",
     "english": "4 days football training with professional coaches from the Ajax Academy. / 3 nights accommodation in a 4* hotel based on twin share (single supplement available). / Full board – breakfast, lunch and dinner – menu designed for professional athletes. / 3 education seminars delivered by Ajax Academy staff. / Indulge Football Training Kit & tracksuit. / Personalised player pathway report. / Ajax training certificate. / Digital player profile on ftballer.com / Sports Insurance. / Transfers between hotel & training complex",
-    "korean": "아약스 아카데미 코치들과 함께 하는 4일간의 축구 트레이닝 / 4성급 호텔에서 3박 4일간의 합숙 (2인실) / 영양을 고려한 식사 / 아약스 아카데미 코치들이 직접 진행하는 교육 세미나 / 인덜지풋볼이 제공하는 트레이닝 키트 및 운동복 / 아약스 인증 개별 선수 평가 리포트 / 아약스 트레이닝 프로그램 이수 증명서 / 글로벌 축구 플랫폼 Ftballer.com에 디지털 선수 프로파일 등록 / 코비드-19 테스팅 / 프로그램 기간 동안 선수 상해 보험 / 호텔-트레이닝 필드 간 안전 이동"
+    "korean": "아약스 아카데미 코치들과 함께 하는 4일간의 축구 트레이닝 / 4성급 호텔에서 3박 4일간의 합숙 (2인실) / 영양을 고려한 식사 / 아약스 아카데미 코치들이 직접 진행하는 교육 세미나 / 인덜지풋볼이 제공하는 트레이닝 키트 및 운동복 / 아약스 인증 개별 선수 평가 리포트 / 아약스 트레이닝 프로그램 이수 증명서 / 글로벌 축구 플랫폼 Ftballer.com에 디지털 선수 프로파일 등록 / 프로그램 기간 동안 선수 상해 보험 / 호텔-트레이닝 필드 간 안전 이동"
   },
   {
     "page": "marketing",
@@ -442,6 +442,12 @@ const arr = [
     "section": "8b",
     "english": "to start your application for the Residential Training Project with Ajax",
     "korean": "아약스와 함께 하는 합숙 트레이닝 프로그램 참여 지원을 위해"
+  },
+  {
+    "page": "authorization",
+    "section": "9",
+    "english": "Must be longer than 8 characters / Must contain at least 1 number / Must contain at least 1 uppercase and 1 lowercase letter",
+    "korean": "8자 이상이어야 합니다 / 숫자를 포함하여야 합니다 / 대문자와 소문자 모두 포함하여야 합니다"
   },
   {
     "page": "application",

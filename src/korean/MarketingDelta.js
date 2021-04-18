@@ -77,6 +77,12 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '1.5625rem',
     },
   },
+  svg: {
+    width: '90vw',
+    [theme.breakpoints.up('md')]: {
+      width: '50vw'
+    },
+  },
   root: {
     width: '100vw',
     height: '100vh',
@@ -381,26 +387,36 @@ const useStyles = makeStyles((theme) => ({
   },
   tabThree__coachContainer: {
     display: 'flex',
-    justifyContent: 'space-between',
-    overflow: 'scroll'
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    height: '42vh',
+    overflow: 'scroll',
+    [theme.breakpoints.up('md')]: {
+      justifyContent: 'space-evenly',
+    },
   },
   tabThree_coachCard: {
-    width: '30%',
-    minWidth: '15rem',
+    width: '20%',
+    minWidth: '14rem',
     padding: '0',
     margin: '0 1rem',
+    height: '90%',
     "&:hover": {
       cursor: 'pointer',
-      "& img": {
-        transform: 'scale(1.1)',
-        transition: 'transform 0.2s',
-      }
-
+      transform: 'scale(1.1)',
+      transition: 'transform 0.2s'
     },
     [theme.breakpoints.up('md')]: {
       padding: '0 3rem',
       margin: '0',
     },
+  },
+  tabThree_coachCard_Inner: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%'
   },
   tabThree__coachCard__image: {
     borderRadius: '50%',
@@ -409,10 +425,6 @@ const useStyles = makeStyles((theme) => ({
     objectFit: 'cover',
     margin: '0 auto',
     display: 'block',
-    [theme.breakpoints.up('md')]: {
-      width: '10rem',
-      height: '10rem',
-    },
   },
   tabThree__coachCard__title: {
     fontFamily: 'Times New Roman',
@@ -433,7 +445,7 @@ const useStyles = makeStyles((theme) => ({
   modalCard: {
     backgroundColor: '#f1f1f1',
     height: '80%',
-    width: '100%',
+    width: '100vw',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -870,7 +882,7 @@ const MarketingDelta = ({ locale, history }) => {
 
         <div className={classes.tabTwo__container}>
 
-        <img className={classes.tabTwo__images}
+          <img className={classes.tabTwo__images}
             style={{ objectPosition: '30% 50%' }}
             src="https://i.imgur.com/wlHiOb0.jpg" alt="" />
 
@@ -889,7 +901,7 @@ const MarketingDelta = ({ locale, history }) => {
             </Box>
           </Typography>
 
-        
+
         </div>
 
 
@@ -956,8 +968,8 @@ const MarketingDelta = ({ locale, history }) => {
             marketing['11c'][locale]].map((coach, i) => {
               return (
 
-                <Paper elevation={0} className={classes.tabThree_coachCard}>
-                  <CardActionArea onClick={() => {
+                <Paper elevation={4} className={classes.tabThree_coachCard}>
+                  <CardActionArea className={classes.tabThree_coachCard_Inner} onClick={() => {
                     setActiveCoach(coach)
                     setModalOpen(true)
                   }}>

@@ -9,7 +9,8 @@ import {
   Radio,
   Snackbar,
   Checkbox,
-  FormControl
+  FormControl,
+  Tooltip
 } from "@material-ui/core";
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import EmailSharpIcon from '@material-ui/icons/EmailSharp';
@@ -19,6 +20,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import MuiAlert from '@material-ui/lab/Alert';
 import auth from '../lib/auth'
 import moment from 'moment'
+import HelpIcon from '@material-ui/icons/Help';
 import { firebaseApp } from '../lib/firebase';
 import * as firebase from "firebase";
 import Reaptcha from 'reaptcha';
@@ -62,21 +64,21 @@ const UserAuthForm = ({ locale, history }) => {
         'callback': function (response) {
           console.log('captcha!')
           handleSolved()
-  
+
         },
         'expired-callback': function () {
           console.log('captcha expired')
         },
         'hl': locale
       });
-  
-      window.recaptchaVerifier.render()
+
+    window.recaptchaVerifier.render()
   }
 
-  useEffect(() => { 
+  useEffect(() => {
     setupRecaptcha()
-    
-  },[])
+
+  }, [])
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -165,6 +167,13 @@ const UserAuthForm = ({ locale, history }) => {
       [theme.breakpoints.up('sm')]: {
         transform: 'translate(182px, 0px)',
       },
+    },
+    password_help: {
+      marginLeft: '10px',
+      [theme.breakpoints.up('sm')]: {
+        marginLeft: '0px',
+        transform: 'translateX(90px)'
+      },
     }
 
   }));
@@ -223,22 +232,22 @@ const UserAuthForm = ({ locale, history }) => {
             handleAfterRequestStates({
               success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['9'][locale]}`
             })
-    
+
             setTimeout(async () => {
-            if (category === 'player' || category === 'parent') {
-              history.push(`/user/${auth.getUserId()}`)
-            } else if (category === 'company') {
-              history.push('/tester')
-            } else {
-              history.push('/testercoach')
-            }
-          } ,1000)
+              if (category === 'player' || category === 'parent') {
+                history.push(`/user/${auth.getUserId()}`)
+              } else if (category === 'company') {
+                history.push('/tester')
+              } else {
+                history.push('/testercoach')
+              }
+            }, 1000)
           })
       })
   }
 
   const frontendLogin = () => {
-    
+
     const { email, password } = registerDetails
     firebaseApp.auth().signInWithEmailAndPassword(email, password)
       .then(data => {
@@ -252,16 +261,16 @@ const UserAuthForm = ({ locale, history }) => {
             handleAfterRequestStates({
               success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['9'][locale]}`
             })
-    
+
             setTimeout(async () => {
-            if (category === 'player' || category === 'parent') {
-              history.push(`/user/${auth.getUserId()}`)
-            } else if (category === 'company') {
-              history.push('/tester')
-            } else {
-              history.push('/testercoach')
-            }
-          } ,1000)
+              if (category === 'player' || category === 'parent') {
+                history.push(`/user/${auth.getUserId()}`)
+              } else if (category === 'company') {
+                history.push('/tester')
+              } else {
+                history.push('/testercoach')
+              }
+            }, 1000)
           })
       })
       .catch(error => {
@@ -277,7 +286,7 @@ const UserAuthForm = ({ locale, history }) => {
               multiFactorHint: error.resolver.hints[selectedIndex],
               session: error.resolver.session
             };
-            
+
 
             // Send SMS verification code
             return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, window.recaptchaVerifier)
@@ -291,9 +300,9 @@ const UserAuthForm = ({ locale, history }) => {
           }
         } else {
           console.log(error)
-        handleAfterRequestStates({
-          error: snackbar_messages['7c'][locale]
-        })
+          handleAfterRequestStates({
+            error: snackbar_messages['7c'][locale]
+          })
         }
       })
   }
@@ -317,12 +326,12 @@ const UserAuthForm = ({ locale, history }) => {
           history.push({
             pathname: `/user/${userId}`,
             state: {
-            application_fee_paid,
-            stripeId,
-            fee_needed
-          }
-        })
-       } ,1000)
+              application_fee_paid,
+              stripeId,
+              fee_needed
+            }
+          })
+        }, 1000)
 
       })
       .catch(err => {
@@ -379,10 +388,10 @@ const UserAuthForm = ({ locale, history }) => {
         break;
 
       case 'VERIFY CODE':
-            console.log(email, password)
-            // loginUser()
-            handleRecaptcha()
-            break;
+        console.log(email, password)
+        // loginUser()
+        handleRecaptcha()
+        break;
 
       default:
         break;
@@ -392,7 +401,7 @@ const UserAuthForm = ({ locale, history }) => {
   }
 
   const terms_paragraph = (
-    <p> I agree to the <a target='_blank' href='https://bit.ly/3sI1iS5'> Terms & Conditions </a> </p>
+    <p> I agree to the <a target='_blank' href='https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/Phase%201-%20Player%20consent%20to%20data%20collection_%20(1).pdf?alt=media&token=3ae116e8-b4dc-4da4-a3b8-d2eb063b4403'> Terms & Conditions </a> </p>
   );
 
   const classes = useStyles()
@@ -400,7 +409,7 @@ const UserAuthForm = ({ locale, history }) => {
   return (
     <div className={classes.root}>
       <main className={classes.main}>
-      
+
         <Typography component='div' >
           <Box
             className={classes.boldText}
@@ -515,31 +524,31 @@ const UserAuthForm = ({ locale, history }) => {
             </>
           )}
           {!phoneVerifyRequired &&
-          <div class="field" className={classes.inputContainer}>
-            <p
-              style={{ alignSelf: 'flex-end' }}
-              class="control" >
-              <span
-                style={{ color: 'red' }}> *  </span>  {authorization['4d'][locale]}
-              <input
-                onChange={(e) => handleFormChange(e)}
-                class='input'
-                name='email'
-                style={{
-                  marginLeft: 10,
-                  transform: 'translateY(2px)',
-                  width: '350px'
-                }}
-                type="email" />
-            </p>
-          </div>
+            <div class="field" className={classes.inputContainer}>
+              <p
+                style={{ alignSelf: 'flex-end' }}
+                class="control" >
+                <span
+                  style={{ color: 'red' }}> *  </span>  {authorization['4d'][locale]}
+                <input
+                  onChange={(e) => handleFormChange(e)}
+                  class='input'
+                  name='email'
+                  style={{
+                    marginLeft: 10,
+                    transform: 'translateY(2px)',
+                    width: '350px'
+                  }}
+                  type="email" />
+              </p>
+            </div>
           }
 
           {((!forgottenPassword && !phoneVerifyRequired) &&
             <>
               <div class="field" className={classes.inputContainer}>
                 <p
-                  style={{ alignSelf: 'flex-end' }}
+                  style={{ alignSelf: 'flex-end', position: 'relative' }}
                   class="control" >
                   <span
                     style={{ color: 'red' }}> *  </span> {authorization['4e'][locale]}
@@ -553,7 +562,18 @@ const UserAuthForm = ({ locale, history }) => {
                       width: '350px'
                     }}
                     type="password" />
+
+                  {registrationOrLogin !== 'login' &&
+                    <Tooltip title={<>
+                      {authorization['9'][locale].split('/').map(x => <li> {x} </li>)}
+                    </>}
+                      placement="bottom-start">
+                      <Button style={{ position: 'absolute', right: '-1rem', top: '0.23rem' }}> <HelpIcon /> </Button>
+                    </Tooltip>}
+
+
                 </p>
+
               </div>
 
               {registrationOrLogin !== 'login' && (
@@ -595,30 +615,30 @@ const UserAuthForm = ({ locale, history }) => {
 
             </>
           )}
-          { phoneVerifyRequired &&
-          <div>
-            
-            <div class="field" className={classes.inputContainer}>
-                    <p
-                      style={{ alignSelf: 'flex-end' }}
-                      class="control" >
-                      <span
-                        style={{ color: 'red' }}> *  </span>  {authorization['4g'][locale]}
-                      <input
-                        onChange={(e) => setVerificationCode(e.target.value)}
-                        name='verificationCode'
-                        class='input'
-                        style={{
-                          marginLeft: 10,
-                          transform: 'translateY(2px)',
-                          width: '350px'
-                        }}
-                        type="text" />
-                    </p>
-                  </div>
+          {phoneVerifyRequired &&
+            <div>
 
-          </div>
-        }
+              <div class="field" className={classes.inputContainer}>
+                <p
+                  style={{ alignSelf: 'flex-end' }}
+                  class="control" >
+                  <span
+                    style={{ color: 'red' }}> *  </span>  {authorization['4g'][locale]}
+                  <input
+                    onChange={(e) => setVerificationCode(e.target.value)}
+                    name='verificationCode'
+                    class='input'
+                    style={{
+                      marginLeft: 10,
+                      transform: 'translateY(2px)',
+                      width: '350px'
+                    }}
+                    type="text" />
+                </p>
+              </div>
+
+            </div>
+          }
 
           <div className={classes.button}>
             <Button
@@ -628,7 +648,7 @@ const UserAuthForm = ({ locale, history }) => {
               onClick={(e) => handleUserAuth(e.target.innerText)}
             // endIcon={<ArrowForwardIcon />}
             >
-              { phoneVerifyRequired ? 'Verify Code' : !forgottenPassword ? registrationOrLogin === 'login' ? authorization['5b'][locale] :
+              {phoneVerifyRequired ? 'Verify Code' : !forgottenPassword ? registrationOrLogin === 'login' ? authorization['5b'][locale] :
                 authorization['5a'][locale] : authorization['5c'][locale]}
               {isLoading && <CircularProgress size={30} className={classes.progress} />}
             </Button>
@@ -653,7 +673,7 @@ const UserAuthForm = ({ locale, history }) => {
           </Box>
           <Box
             fontSize={14} fontWeight="fontWeightRegular" m={0}>
-               {locale === 'ko' ? registrationOrLogin === 'login' ? authorization['8b'][locale] : authorization['8a'][locale] : ''} <Link className={classes.link}
+            {locale === 'ko' ? registrationOrLogin === 'login' ? authorization['8b'][locale] : authorization['8a'][locale] : ''} <Link className={classes.link}
               onClick={() => {
                 setRegistrationOrLogin(registrationOrLogin === 'registration' ? 'login' : 'registration')
                 registrationOrLogin === 'login' && setForgottenPassword(false)
