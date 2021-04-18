@@ -12,7 +12,7 @@ const Terms = () => {
       <p>
         These terms and conditions outline the rules and regulations for the use
         of Indulge Football's Website, located at
-        https://football-hub-4018a.firebaseapp.com/.
+        https://ftballer.com/.
       </p>
 
       <p>
