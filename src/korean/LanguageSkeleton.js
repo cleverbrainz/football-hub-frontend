@@ -44,26 +44,26 @@ const arr = [
   {
     "page": "marketing",
     "section": "5a",
-    "english": "Under 12s. 16th June 2021. Yang Yang. Apply",
-    "korean": "U12 (초6). 2021년 6월 16일 ~ 19일. 강원도 양양. 지원하기"
+    "english": "Under 12s. 5th June - 8th June. Yang Yang. Apply",
+    "korean": "U12 (초6). 2021년  5월 31일 ~ 6월 3일. 강원도 양양. 지원하기"
   },
   {
     "page": "marketing",
     "section": "5b",
-    "english": "Under 13s. 31st May 2021. Yang Yang. Apply",
-    "korean": "U13 (중1). 2021년 5월 31일 ~ 6월 3일. 강원도 양양. 지원하기"
+    "english": "Under 13s. 5th June - 8th June. Yang Yang. Apply",
+    "korean": "U13 (중1). 2021년 6월 5일 ~ 6월 8일. 강원도 양양. 지원하기"
   },
   {
     "page": "marketing",
     "section": "5c",
-    "english": "Under 14s. 5th June 2021. Venue TBC. Apply",
-    "korean": "U14 (중2). 2021년 6월 5일 ~ 6월 8일. 장소 추후 공지. 지원하기 "
+    "english": "Under 14s. 11th June - 14th June. Yang Yang. Apply",
+    "korean": "U14 (중2). 2021년 6월 11일 ~ 6월 14일. 강원도 양양. 지원하기"
   },
   {
     "page": "marketing",
     "section": "5d",
-    "english": "Under 15s. 11th June 2021. Venue TBC. Apply",
-    "korean": "U15 (중3). 2021년 6월 11일 ~ 6월 14일. 장소 추후 공지. 지원하기"
+    "english": "U15's. 16th June - 19th June. Yang Yang. Apply",
+    "korean": "U15 (중3). 2021년 6월 16일 ~6월 19일. 강원도 양양. 지원하기"
   },
   {
     "page": "marketing",

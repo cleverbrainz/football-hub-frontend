@@ -167,7 +167,7 @@ const AddPhone = ({ location, history, locale }) => {
     const fields = { ...loginFields, [name]: value }
     setLoginError('')
     setLoginFields(fields)
-    console.log(loginFields)
+    // console.log(loginFields)
 
   }
 
@@ -235,7 +235,7 @@ const AddPhone = ({ location, history, locale }) => {
     currentUser.multiFactor.enroll(multiFactorAssertion)
       .then(function () {
         // Second factor enrolled.
-        console.log('secondFactorEnrolled')
+        // console.log('secondFactorEnrolled')
         setVerificationUpdated(true)
         setCodeSent(false)
       });
@@ -249,7 +249,7 @@ const AddPhone = ({ location, history, locale }) => {
     <div className={classes.container}>
 
       {/* <Paper elevation={3} className={classes.paper}> */}
-      <Button className={`${classes.button} ${classes.back}`} variant='outlined' onClick={() => history.goBack()}>{verification['1e'][locale]}</Button>
+      <Button className={`${classes.button} ${classes.back}`} variant='outlined' onClick={() => history.push(`/user/${user.user.userId}`)}>{verification['1e'][locale]}</Button>
 
       <div style={{width:'90%', margin: '0 auto'}}>
       <Typography component='div' >

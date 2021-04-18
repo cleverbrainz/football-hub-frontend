@@ -148,8 +148,10 @@ const UserAuthForm = ({ locale, history }) => {
       position: 'absolute'
     },
     formFooter: {
+      // paddingBottom: '60px',
       [theme.breakpoints.up('sm')]: {
-        transform: 'translateX(-30px)'
+        transform: 'translateX(-30px)',
+        // paddingBottom: '0px',
       },
     },
     radio: {
@@ -254,7 +256,7 @@ const UserAuthForm = ({ locale, history }) => {
         // if (data.user.emailVerified) {
         axios.get(`/users/${data.user.uid}`)
           .then(res => {
-            console.log(res.data)
+            console.log(res)
             const { category } = res.data[0]
             localStorage.setItem('category', category)
 
@@ -263,7 +265,9 @@ const UserAuthForm = ({ locale, history }) => {
             })
 
             setTimeout(async () => {
-              if (category === 'player' || category === 'parent') {
+              if (category === 'admin') {
+                history.push('/dashboard')
+              } else if (category === 'player' || category === 'parent') {
                 history.push(`/user/${auth.getUserId()}`)
               } else if (category === 'company') {
                 history.push('/tester')
