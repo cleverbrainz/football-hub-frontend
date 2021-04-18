@@ -332,7 +332,8 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
       let checkout = await axios.post('/korean-application-fee', {
         stripeId,
         email: user.email,
-        locale
+        locale,
+        userId: auth.getUserId()
       })
       const session = await checkout.data
 

@@ -70,7 +70,7 @@ const SwitchLanguageFab = (props) => {
   return (
     <Fab className={classes.fab} variant="extended">
       <Typography component="div">
-        <Grid component="label" container alignItems="center" spacing={1}>
+        <Grid component="label" container alignItems="center" spacing={1} style={{ margin: '0px' }}>
           <Grid className={classes.text} item> KR </Grid>
           <Grid item>
             <AntSwitch

@@ -130,6 +130,11 @@ const UserAuthForm = ({ locale, history }) => {
       flexDirection: 'column',
       margin: '15px 0'
     },
+    inputP: {
+      [theme.breakpoints.up('sm')]: {
+        alignSelf: 'flex-end'
+      }
+    },
     link: {
       fontSize: '15px',
       textDecoration: 'underline'
@@ -148,10 +153,10 @@ const UserAuthForm = ({ locale, history }) => {
       position: 'absolute'
     },
     formFooter: {
-      // paddingBottom: '60px',
+      paddingBottom: '60px',
       [theme.breakpoints.up('sm')]: {
         transform: 'translateX(-30px)',
-        // paddingBottom: '0px',
+        paddingBottom: '0px',
       },
     },
     radio: {
@@ -253,7 +258,7 @@ const UserAuthForm = ({ locale, history }) => {
     const { email, password } = registerDetails
     firebaseApp.auth().signInWithEmailAndPassword(email, password)
       .then(data => {
-        // if (data.user.emailVerified) {
+        if (data.user.emailVerified) {
         axios.get(`/users/${data.user.uid}`)
           .then(res => {
             console.log(res)
@@ -276,6 +281,10 @@ const UserAuthForm = ({ locale, history }) => {
               }
             }, 1000)
           })
+        } else {
+            firebaseApp.auth().signOut()
+            handleAfterRequestStates({ error: 'Email has not yet been verifed. Please check your emails for a verification link.' })
+            }
       })
       .catch(error => {
         console.log(error)
@@ -381,7 +390,7 @@ const UserAuthForm = ({ locale, history }) => {
         }
         registerDetails.language = locale
         axios.post('/registerUserViaApplication', registerDetails)
-          .then(async res => {
+          .then(res => {
             handleAfterRequestStates({
               success: snackbar_messages['7f'][locale]
             })
@@ -405,7 +414,8 @@ const UserAuthForm = ({ locale, history }) => {
   }
 
   const terms_paragraph = (
-    <p> I agree to the <a target='_blank' href='https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/Phase%201-%20Player%20consent%20to%20data%20collection_%20(1).pdf?alt=media&token=3ae116e8-b4dc-4da4-a3b8-d2eb063b4403'> Terms & Conditions </a> </p>
+    locale === 'ko' ?  <p><a target='_blank' rel="noopener noreferrer" href='https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/Phase%201-%20Player%20consent%20to%20data%20collection_%20(1).pdf?alt=media&token=3ae116e8-b4dc-4da4-a3b8-d2eb063b4403'> 약관 </a> 동의 </p> 
+    : <p> I agree to the <a target='_blank' rel="noopener noreferrer" href='https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/Phase%201-%20Player%20consent%20to%20data%20collection_%20(1).pdf?alt=media&token=3ae116e8-b4dc-4da4-a3b8-d2eb063b4403'> Terms & Conditions </a> </p>
   );
 
   const classes = useStyles()
@@ -453,13 +463,15 @@ const UserAuthForm = ({ locale, history }) => {
                 control={<Radio />}
                 label={authorization['4a'][locale]} />
 
-              <p className={classes.helper}> <span style={{ color: 'red' }}> * </span> If you are under 14, a guardian <strong> must </strong>
+              {locale === 'ko' ? <p className={classes.helper}> <span style={{ color: 'red' }}> * </span> 14세 미만의 선수라면 법정대리인(보호자)이 작성 및 등록해 주셔야 합니다. </p> : <p className={classes.helper}> <span style={{ color: 'red' }}> * </span> If you are under 14, a guardian <strong> must </strong>
                 register on your behalf </p>
+              }
 
               {registerDetails.category === 'parent' &&
                 <div class="field" className={classes.inputContainer}>
                   <p
-                    style={{ alignSelf: 'flex-end' }}
+                    className={classes.inputP}
+                    // style={{ alignSelf: 'flex-end' }}
                     class="control">
 
                     <span style={{ color: 'red' }}>
@@ -471,7 +483,7 @@ const UserAuthForm = ({ locale, history }) => {
                     <input
                       onChange={(e) => handleFormChange(e)}
                       name='guardian_first_name'
-                      placeholder='First Name'
+                      placeholder={locale === 'ko' ? '이름' : 'First Name'}
                       class='input'
                       style={{
                         marginLeft: 10,
@@ -481,7 +493,7 @@ const UserAuthForm = ({ locale, history }) => {
                       type="text" />
                     <input
                       onChange={(e) => handleFormChange(e)}
-                      placeholder='Last Name'
+                      placeholder={locale === 'ko' ? '성' : 'Last Name'}
                       name='guardian_last_name'
                       class='input'
                       style={{
@@ -497,13 +509,13 @@ const UserAuthForm = ({ locale, history }) => {
 
               <div class="field" className={classes.inputContainer}>
                 <p
-                  style={{ alignSelf: 'flex-end' }}
+                  className={classes.inputP}
                   class="control" >
                   <span
                     style={{ color: 'red' }}> *  </span>  {authorization['4c'][locale]}
                   <input
                     onChange={(e) => handleFormChange(e)}
-                    placeholder='First Name'
+                    placeholder={locale === 'ko' ? '이름' : 'First Name'}
                     name='player_first_name'
                     class='input'
                     style={{
@@ -514,7 +526,7 @@ const UserAuthForm = ({ locale, history }) => {
                     type="text" />
                   <input
                     onChange={(e) => handleFormChange(e)}
-                    placeholder='Last Name'
+                    placeholder={locale === 'ko' ? '성' : 'Last Name'}
                     name='player_last_name'
                     class='input'
                     style={{
@@ -530,7 +542,8 @@ const UserAuthForm = ({ locale, history }) => {
           {!phoneVerifyRequired &&
             <div class="field" className={classes.inputContainer}>
               <p
-                style={{ alignSelf: 'flex-end' }}
+                // style={{ alignSelf: 'flex-end' }}
+                className={classes.inputP}
                 class="control" >
                 <span
                   style={{ color: 'red' }}> *  </span>  {authorization['4d'][locale]}
@@ -552,7 +565,8 @@ const UserAuthForm = ({ locale, history }) => {
             <>
               <div class="field" className={classes.inputContainer}>
                 <p
-                  style={{ alignSelf: 'flex-end', position: 'relative' }}
+                  className={classes.inputP}
+                  style={{ position: 'relative' }}
                   class="control" >
                   <span
                     style={{ color: 'red' }}> *  </span> {authorization['4e'][locale]}
@@ -568,7 +582,7 @@ const UserAuthForm = ({ locale, history }) => {
                     type="password" />
 
                   {registrationOrLogin !== 'login' &&
-                    <Tooltip title={<>
+                    <Tooltip enterTouchDelay={1} title={<>
                       {authorization['9'][locale].split('/').map(x => <li> {x} </li>)}
                     </>}
                       placement="bottom-start">
@@ -584,7 +598,8 @@ const UserAuthForm = ({ locale, history }) => {
                 <>
                   <div class="field" className={classes.inputContainer}>
                     <p
-                      style={{ alignSelf: 'flex-end' }}
+                      // style={{ alignSelf: 'flex-end' }}
+                      className={classes.inputP}
                       class="control" >
                       <span
                         style={{ color: 'red' }}> *  </span>  {authorization['4f'][locale]}
@@ -624,7 +639,8 @@ const UserAuthForm = ({ locale, history }) => {
 
               <div class="field" className={classes.inputContainer}>
                 <p
-                  style={{ alignSelf: 'flex-end' }}
+                  // style={{ alignSelf: 'flex-end' }}
+                  className={classes.inputP}
                   class="control" >
                   <span
                     style={{ color: 'red' }}> *  </span>  {authorization['4g'][locale]}
