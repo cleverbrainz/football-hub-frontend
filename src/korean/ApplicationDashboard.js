@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect, useContext } from 'react'
+import { AuthContext } from '../lib/context'
+import { Link, Redirect} from 'react-router-dom'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -91,43 +92,6 @@ const useStyles = makeStyles((theme) => ({
   }
 
 }))
-// const user1 = {
-//   personal_details: {
-//     name: 'Test Applicant',
-//     gender: 'Male',
-//     dob: '1990-2-10',
-//     address_line_1: '123 Fake St',
-//     address_line_2: 'Haringey',
-//     city: 'London',
-//     postcode: 'N15 2PP',
-//     residency_certificate: '',
-//   },
-//   player_attributes: {
-//     height: '6ft 2',
-//     weight: '75',
-//     position: 'RM',
-//     preferred_foot: 'R',
-//   },
-//   football_history: {
-//     current_club: 'Sheffield United',
-//     current_coaching_school: 'Sheffield United Academy',
-//     previous_clubs: '',
-//     previous_trails_attended: '',
-//     highlights_footage_link: '',
-//     social_media_link: '',
-//     bio_description: '',
-//   },
-//   challenges: {
-//     link_1: '',
-//     link_2: '',
-//     link_3: '',
-//   },
-//   ratings: {
-//     indulge: 0,
-//     application: 0,
-//     challenges: 1
-//   }
-// }
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -199,7 +163,7 @@ function AlertDialog({ open, setOpen, handleSave, setEditing }) {
 }
 
 
-const Application = ({ permissions, application, applications, setApplications, index, setEditing, open, setOpen, editing, averages, text, locale }) => {
+const Application = ({ permissions, application, filteredApplications, applications, setFilteredApplications, setApplications, filteredIndex, setEditing, open, setOpen, editing, averages, text, locale }) => {
 
   const classes = useStyles()
   const [userId, email, applicationInfo] = application
@@ -209,23 +173,26 @@ const Application = ({ permissions, application, applications, setApplications, 
   const { current_club, bio_description, previous_clubs, private_coach_name, private_coaching, highlights_footage_link, award_achieved } = football_history
 
   const [ratings, setRatings] = useState(applicationInfo.ratings)
-  const [averagePositionScore, averageCategoryScore, playerCategory] = averages(player_attributes.position)
+  const [[averagePositionScore, averageCategoryScore, playerCategory], setAverageScores] = useState(averages(player_attributes.position))
 
   console.log({ ratings })
 
   const handleSave = (event, approval = false) => {
     console.log('handling')
     event.preventDefault()
+    const newFiltered = [...filteredApplications]
     const newApps = [...applications]
     const newApplication = { ...applicationInfo, ratings: { ...ratings } }
-    newApps[index] = [userId, email, newApplication]
-    axios.patch(`/users/${userId}`, { userId, updates: { applications: { benfica: newApplication } } }, { headers: { authorization: `Bearer ${auth.getToken()}` } }).then(res => {
+    const applicationsIndex = applications.findIndex(app => app[0] === userId)
+    newApps[applicationsIndex] = [userId, email, newApplication]
+    newFiltered[filteredIndex] = [userId, email, newApplication]
+    axios.patch(`/users/${userId}`, { userId, updates: { applications: { ajax_application: newApplication } } }, { headers: { authorization: `Bearer ${auth.getToken()}` } }).then(res => {
       console.log(res)
       if (approval && ratings.indulge === 'Yes') {
         axios.post('/contactPlayer', {
           type: 'applicationSuccessful',
           recipient: { recipientId: userId },
-          emailContent: { contentCourse: 'Benfica Summer Camp' }
+          emailContent: { contentCourse: 'Ajax Summer Camp' }
         }).then(res => {
           console.log(res)
         })
@@ -233,12 +200,14 @@ const Application = ({ permissions, application, applications, setApplications, 
         axios.post('/contactPlayer', {
           type: 'applicationUnsuccessful',
           recipient: { recipientId: userId },
-          emailContent: { contentCourse: 'Benfica Summer Camp' }
+          emailContent: { contentCourse: 'Ajax Summer Camp' }
         }).then(res => {
           console.log(res)
         })
       }
       setApplications(newApps)
+      setFilteredApplications(newFiltered)
+      setAverageScores(averages(player_attributes.position))
       setEditing(false)
     })
   }
@@ -586,11 +555,11 @@ const Application = ({ permissions, application, applications, setApplications, 
                 setRatings({ ...ratings, application: event.target.value })
               }}>
               <MenuItem value={0} disabled>Unrated</MenuItem>
-              <MenuItem value={5}>{text[locale].Poor}</MenuItem>
-              <MenuItem value={4}>{text[locale].BelowAverage}</MenuItem>
-              <MenuItem value={3}>{text[locale].Average}</MenuItem>
-              <MenuItem value={2}>{text[locale].Good}</MenuItem>
               <MenuItem value={1}>{text[locale].Excellent}</MenuItem>
+              <MenuItem value={2}>{text[locale].Good}</MenuItem>
+              <MenuItem value={3}>{text[locale].Average}</MenuItem>
+              <MenuItem value={4}>{text[locale].BelowAverage}</MenuItem>
+              <MenuItem value={5}>{text[locale].Poor}</MenuItem>
             </Select>
           </div>
 
@@ -946,11 +915,11 @@ const Application = ({ permissions, application, applications, setApplications, 
                 setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge1: event.target.value } })
               }}>
               <MenuItem value={0} disabled>Unrated</MenuItem>
-              <MenuItem value={5}>5 - Poor</MenuItem>
-              <MenuItem value={4}>4 - Below Average</MenuItem>
-              <MenuItem value={3}>3 - Average</MenuItem>
-              <MenuItem value={2}>2 - Good</MenuItem>
               <MenuItem value={1}>1 - Excellent</MenuItem>
+              <MenuItem value={2}>2 - Good</MenuItem>
+              <MenuItem value={3}>3 - Average</MenuItem>
+              <MenuItem value={4}>4 - Below Average</MenuItem>
+              <MenuItem value={5}>5 - Poor</MenuItem>
             </Select>
           </FormControl>
         </div>
@@ -978,11 +947,11 @@ const Application = ({ permissions, application, applications, setApplications, 
                 setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge2: event.target.value } })
               }}>
               <MenuItem value={0} disabled>Unrated</MenuItem>
-              <MenuItem value={5}>5 - Poor</MenuItem>
-              <MenuItem value={4}>4 - Below Average</MenuItem>
-              <MenuItem value={3}>3 - Average</MenuItem>
-              <MenuItem value={2}>2 - Good</MenuItem>
               <MenuItem value={1}>1 - Excellent</MenuItem>
+              <MenuItem value={2}>2 - Good</MenuItem>
+              <MenuItem value={3}>3 - Average</MenuItem>
+              <MenuItem value={4}>4 - Below Average</MenuItem>
+              <MenuItem value={5}>5 - Poor</MenuItem>
             </Select>
           </FormControl>
         </div>
@@ -1012,11 +981,11 @@ const Application = ({ permissions, application, applications, setApplications, 
                 setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge3: event.target.value } })
               }}>
               <MenuItem value={0} disabled>Unrated</MenuItem>
-              <MenuItem value={5}>5 - Poor</MenuItem>
-              <MenuItem value={4}>4 - Below Average</MenuItem>
-              <MenuItem value={3}>3 - Average</MenuItem>
-              <MenuItem value={2}>2 - Good</MenuItem>
               <MenuItem value={1}>1 - Excellent</MenuItem>
+              <MenuItem value={2}>2 - Good</MenuItem>
+              <MenuItem value={3}>3 - Average</MenuItem>
+              <MenuItem value={4}>4 - Below Average</MenuItem>
+              <MenuItem value={5}>5 - Poor</MenuItem>
             </Select>
           </FormControl>
         </div>
@@ -1033,6 +1002,9 @@ const Application = ({ permissions, application, applications, setApplications, 
           </div>
         </div>
       )}
+      <br/>
+      <br/>
+      <br/>
 
 
       <AlertDialog open={open} setOpen={setOpen} handleSave={handleSave} setEditing={setEditing} />
@@ -1047,11 +1019,13 @@ const Application = ({ permissions, application, applications, setApplications, 
 
 
 const ApplicationDashboard = ({ locale }) => {
+
+  const { user } = useContext(AuthContext)
   const classes = useStyles()
-  const [user, setUser] = useState(null)
+  // const [user, setUser] = useState(null)
   const [permissions, setPermissions] = useState(1)
   const [tabValue, setTabValue] = useState(0)
-  const [coursesModerating, setCoursesModerating] = useState(['Benfica'])
+  const [coursesModerating, setCoursesModerating] = useState(['Ajax'])
   const [selectedCourse, setSelectedCourse] = useState('select')
   const [applications, setApplications] = useState([])
   const [filteredApplications, setFilteredApplications] = useState([])
@@ -1071,6 +1045,7 @@ const ApplicationDashboard = ({ locale }) => {
     Attack: ['Striker'],
     Goalkeeper: ['Goalkeeper'],
   }
+  const [redirect, setRedirect] = useState(false)
 
   const getAverageScore = (position, cat = '') => {
 
@@ -1103,12 +1078,6 @@ const ApplicationDashboard = ({ locale }) => {
     return [averagePositionScore, averageCategoryScore, playerCategory]
   }
 
-  // const [language, setLanguage] = useState(null)
-
-  // console.log(props)
-
-  // const benficaUserIds = ['aBDdhuP8D9abnRD3LxoOKuNu7Wr2', 'vfqmRwEAeXMijj2WUozS8aT034M2', '6KIIPGyFOzLPePWhCeupWCBBjRw1']
-  const benficaUserIds = ['xBe3mKbMtGg0G33FRnOOgjiWJvu2', 'aBDdhuP8D9abnRD3LxoOKuNu7Wr2', 'vfqmRwEAeXMijj2WUozS8aT034M2', 'zAUwes3cC5ZMLHBPV79AKeM9vVK2', 'Tyel8gUXLCNK1o9Cx7DobGAtRPk2', 'rXWw1onbxLcDHIJwBsozumJ6UlG2']
 
 
   const handleFilterChange = (event) => {
@@ -1172,19 +1141,24 @@ const ApplicationDashboard = ({ locale }) => {
   // console.log(permissions)
 
   const getData = async function () {
-    // let userData = await axios.get(`/users/${auth.getUserId()}`)
-    // userData = await userData.data[0]
+    let adminData = await axios.get(`/users/${auth.getUserId()}`)
+    adminData = await adminData.data[0]
+    if (adminData.category !== 'admin') {
+      setRedirect(true)
+    } else {
     // const { courses, adminLevel } = userData
     // const courseArray = []
     const applicantArray = []
     let arr = await axios.get('/getApplicationIds')
     arr = await arr.data
     console.log({ arr })
-    for (const benficaUser of arr) {
-      let userData = await axios.get(`/users/${benficaUser}`)
+    for (const ajaxUser of arr) {
+      let userData = await axios.get(`/users/${ajaxUser}`)
       userData = await userData.data[0]
       const app = [userData.userId, userData.email]
-      userData.applications.benfica ? app.push(userData.applications.benfica) : userData.applications.benfica_application ? app.push(userData.applications.benfica_application) : console.log('')
+      if (userData.applications.ajax_application) {
+        app.push(userData.applications.ajax_application)
+      }
       // if (app.length === 3) applicantArray.push(app)
       if (app.length === 3 && app[2].ratings.challengesMap && auth.dobToAge(app[2].personal_details.dob) <= 15) applicantArray.push(app)
     }
@@ -1197,12 +1171,16 @@ const ApplicationDashboard = ({ locale }) => {
     //   courseArray.push(courseData)
     // }
     // for (const course of courseArray) {
-    // }
+    }
   }
   useEffect(() => {
     getData()
   }, [])
 
+
+  const handleFix = () => {
+    axios.get('/fixbenfica').then(res => console.log(res))
+  }
 
 
   const text = {
@@ -1307,9 +1285,13 @@ const ApplicationDashboard = ({ locale }) => {
 
 
   // console.log({ applications })
-  if (applications.length === 0 || !locale) return null
+  if (!user) return null
+  if (redirect) return (
+    <Redirect />
+  )
   return (
     <Container>
+      <br />
       <br />
       <br />
       <br />
@@ -1322,12 +1304,12 @@ const ApplicationDashboard = ({ locale }) => {
           value={permissions}
           onChange={(event) => setPermissions(Number(event.target.value))}
         >
-          <FormControlLabel value={0} control={<Radio />} label="Indulge" />
-          <FormControlLabel value={1} control={<Radio />} label="Korean Company" />
+          <FormControlLabel value={0} control={<Radio />} label="Indulge Football" />
+          <FormControlLabel value={1} control={<Radio />} label="NYSES" />
           <FormControlLabel
             value={2}
             control={<Radio />}
-            label="UK Coach"
+            label="UK Coaching Staff"
           />
         </RadioGroup>
       </FormControl>
@@ -1345,7 +1327,7 @@ const ApplicationDashboard = ({ locale }) => {
           })}
         </Select>
       </FormControl>
-      {selectedCourse === 'Benfica' &&
+      {selectedCourse === 'Ajax' &&
         <FormControl>
           <InputLabel>Select Age Range</InputLabel>
           <Select value={ageRange} inputProps={{
@@ -1397,13 +1379,13 @@ const ApplicationDashboard = ({ locale }) => {
 
 
           <Tab style={{ display: 'none' }} label={text[locale].ApplicationList} icon={<ListIcon />} />
-          <Tab style={{ display: 'none' }} label={text[locale].ViewSingleApplication} icon={<PersonIcon />} />}
+          <Tab style={{ display: 'none' }} label={text[locale].ViewSingleApplication} icon={<PersonIcon />} />
 
         </Tabs>
       </AppBar>
 
       <TabPanel value={tabValue} index={0}>
-        {selectedCourse === 'Benfica' ?
+        {selectedCourse === 'Ajax' ?
           <>
             <Container
             // style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', textAlign: 'center' }}
@@ -1413,7 +1395,7 @@ const ApplicationDashboard = ({ locale }) => {
                 <Typography component='div' >
                   <Box
                     fontSize={25} fontWeight="fontWeightRegular" m={-1}>
-                    Indulge Benfica Camp: {text[locale].ApplicationList}
+                    Indulge Ajax Camp: {text[locale].ApplicationList}
                   </Box>
                 </Typography>
 
@@ -1585,7 +1567,7 @@ const ApplicationDashboard = ({ locale }) => {
         }
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
-        <Application editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} index={applicantIndex} averages={getAverageScore} text={text} locale={locale} />
+        <Application editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} filteredApplications={filteredApplications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} setFilteredApplications={setFilteredApplications} filteredIndex={applicantIndex} averages={getAverageScore} text={text} locale={locale} />
       </TabPanel>
     </Container>
   )

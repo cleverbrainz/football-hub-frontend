@@ -162,6 +162,9 @@ function NavBarKorea({ history, locale, user }) {
                 <div style={styles.buttonContainer} className='buttonContainer'><Button
                 onClick={() => mobileRedirect('/authentication')} variant="outlined" style={styles.button} 
                 > {buttons['4'][locale]} </Button></div> :
+                location.pathname === '/dashboard' ?
+                <Button variant="outlined" style={styles.button} onClick={() => mobileLogOut()}>{profile['2d'][locale]}</Button>
+                :
                 
 
                 location.pathname !== '/authentication' ?
@@ -173,6 +176,7 @@ function NavBarKorea({ history, locale, user }) {
                 <Button variant="outlined" style={styles.button} onClick={() => mobileLogOut()}>{profile['2d'][locale]}</Button>
                 </div>
                 :
+                
                 null
                 }
             </div>

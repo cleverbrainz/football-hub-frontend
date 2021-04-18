@@ -25,7 +25,7 @@ import AuthRouter from '../lib/PrivateRoute'
 
 const RouteContainer = (props) => {
 
-  const [locale, setLocale] = useState('en')
+  const [locale, setLocale] = useState('ko')
   // const theme = createMuiTheme({}, locale === 'en' ? enUS : koKR);
 
   return (
@@ -76,9 +76,10 @@ const RouteContainer = (props) => {
 
         <Route exact path="/"
           render={(props) => (
-            <MarketingDelta
-              {...props}
-              locale={locale} />
+            // <MarketingDelta
+            //   {...props}
+            //   locale={locale} />
+            <Redirect to='/authentication'/>
           )} />
 
         <AuthRouter exact path="/dashboard" 

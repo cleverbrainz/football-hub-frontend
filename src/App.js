@@ -107,11 +107,12 @@ import RouteContainer from './korean/RouteContainer'
 import { Dialog, useMediaQuery, DialogContent, DialogTitle, Button, DialogActions } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import AddPhone from './pages/AddPhone'
-const stripePromise = loadStripe('pk_test_JX84GPfLfXGxVFWvGHaz1AWE')
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY)
 
 
 
 // axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
+axios.defaults.baseURL = process.env.REACT_APP_AXIOS_DEFAULTS_BASE_URL
 
 
 

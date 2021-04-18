@@ -7,10 +7,10 @@ import { AuthContext } from './context';
 const AuthRouter = ({ locale, component: Component, ...rest }) => {
 
     const {user} = useContext(AuthContext);
-    console.log(user)
-    console.log(user.user)
-    console.log(!!user.checked)
-    console.log(locale)
+    // console.log(user)
+    // console.log(user.user)
+    // console.log(!!user.checked)
+    // console.log(locale)
     
     return ( 
         <Route

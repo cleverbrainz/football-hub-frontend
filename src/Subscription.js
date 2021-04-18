@@ -13,7 +13,7 @@ const Subscription = () => {
   const stripe = useStripe()
   const authUser = useContext(AuthContext);
   const { user, userData, setUserData } = authUser
-  console.log('auth', authUser)
+  // console.log('auth', authUser)
   const [userId, setUserId] = useState(null) 
   const [plans, setPlans] = useState([])
   // const [userData, setUserData] = useState({})
@@ -23,17 +23,17 @@ const Subscription = () => {
   useEffect(() => {
     async function getData() {
       if (!user.user) return
-      console.log(authUser)
+      // console.log(authUser)
       const plans = await axios.get('/plans')
       const planData = plans.data
-      console.log(user.user.uid)
+      // console.log(user.user.uid)
       const userCall = await axios.get(`/users/${user.user.uid}`)
       // const userCall = await axios.get(`/users/id7ZeO3z8eOVpQXWdIXavYo9UNB3`)
       
-      console.log(userCall)
+      // console.log(userCall)
       const returnData = await userCall.data[0]
-      console.log('plans', planData)
-      console.log('user', returnData)
+      // console.log('plans', planData)
+      // console.log('user', returnData)
       let subs
       let status = ''
       
@@ -84,7 +84,7 @@ const Subscription = () => {
     //     const { data } = res
     //     window.location.assign(data.url)
     //   })
-    const funcRef = firebase.app().functions('europe-west2').httpsCallable('ext-firestore-stripe-subscriptions-createPortalLink')
+    const funcRef = firebase.app().functions(process.env.REACT_APP_FUNCTIONS_SERVER_LOCATION).httpsCallable('ext-firestore-stripe-subscriptions-createPortalLink')
     funcRef({ returnUrl: window.location.href })
       .then(res => {  
         console.log(res)
@@ -114,7 +114,7 @@ const Subscription = () => {
 
   const sendToCheckout = (event, price) => {
     event.preventDefault()
-    axios.post('/subscriptions/new', { userId: userId, price: price, url: 'https://football-hub-4018a.firebaseapp.com/tester' })
+    axios.post('/subscriptions/new', { userId: userId, price: price, url: process.env.REACT_APP_SUBSCRIPTIONS_NEW_URL })
       .then(res => {
         const { error, sessionId } = res.data
         console.log(res)
