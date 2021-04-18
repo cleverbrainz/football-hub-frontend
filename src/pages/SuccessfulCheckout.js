@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
       <h1> FT BALLER</h1>
       <p> Thank you for your booking </p>
 
-      <p> Please click here to return to the <a href='https://football-hub-4018a.firebaseapp.com/'> site </a>  </p>
+      <p> Please click here to return to the <a href={process.env.REACT_APP_WEBSITE_URL}> site </a>  </p>
     </div>
   );
 };
