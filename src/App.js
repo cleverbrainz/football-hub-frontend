@@ -112,7 +112,7 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY)
 
 
 // axios.defaults.baseURL = "https://europe-west2-football-hub-4018a.cloudfunctions.net/api"
-axios.defaults.baseURL = process.env.REACT_APP_AXIOS_DEFAULTS_BASE_URL
+// axios.defaults.baseURL = process.env.REACT_APP_AXIOS_DEFAULTS_BASE_URL
 
 
 
