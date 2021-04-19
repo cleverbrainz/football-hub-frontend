@@ -283,7 +283,7 @@ const UserAuthForm = ({ locale, history }) => {
           })
         } else {
             firebaseApp.auth().signOut()
-            handleAfterRequestStates({ error: 'Email has not yet been verifed. Please check your emails for a verification link.' })
+            handleAfterRequestStates({ error: `${snackbar_messages['7a'][locale]} ${snackbar_messages['10'][locale]}` })
             }
       })
       .catch(error => {

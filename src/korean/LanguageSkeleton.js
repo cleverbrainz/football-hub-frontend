@@ -1074,6 +1074,12 @@ const arr = [
     "korean": "프로필 페이지로 이동합니다…"
   },
   {
+    "page": "snackbar_messages",
+    "section": "10",
+    "english": "Email has not yet been verifed. Please check your emails for a verification link.",
+    "korean": "이메일 인증이 완료되지 않았습니다. 메일함을 확인해주세요."
+  },
+  {
     "page": "profile",
     "section": "1a",
     "english": "Sections",
