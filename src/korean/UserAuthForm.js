@@ -283,7 +283,7 @@ const UserAuthForm = ({ locale, history }) => {
           })
         } else {
             firebaseApp.auth().signOut()
-            handleAfterRequestStates({ error: `${snackbar_messages['7a'][locale]} ${snackbar_messages['10'][locale]}` })
+            handleAfterRequestStates({ error: `${snackbar_messages['10'][locale]}` })
             }
       })
       .catch(error => {
@@ -414,7 +414,7 @@ const UserAuthForm = ({ locale, history }) => {
   }
 
   const terms_paragraph = (
-    locale === 'ko' ?  <p><a target='_blank' rel="noopener noreferrer" href='https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/Phase%201-%20Player%20consent%20to%20data%20collection_%20(1).pdf?alt=media&token=3ae116e8-b4dc-4da4-a3b8-d2eb063b4403'> 약관 </a> 동의 </p> 
+    locale === 'ko' ?  <p><a target='_blank' rel="noopener noreferrer" href='https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/ftballer%20T%26C%20-%20Korean.pdf?alt=media&token=1a21f4d1-0f0a-44d9-b21d-b1d9273e6bb4'> 약관 </a> 동의 </p> 
     : <p> I agree to the <a target='_blank' rel="noopener noreferrer" href='https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/Phase%201-%20Player%20consent%20to%20data%20collection_%20(1).pdf?alt=media&token=3ae116e8-b4dc-4da4-a3b8-d2eb063b4403'> Terms & Conditions </a> </p>
   );
 

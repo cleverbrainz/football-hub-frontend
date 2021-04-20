@@ -419,7 +419,7 @@ export default function RegisterPlayer({ match }) {
   const completedRegistration = (
     <>
       <Typography variant='h4'>
-        Thank you for registering to the Football Hub!
+        Thank you for registering to ftballer!
     </Typography>
       <p style={{ color: 'green' }}>
         {registrationSuccessMessage && registrationSuccessMessage.message}
@@ -469,7 +469,7 @@ export default function RegisterPlayer({ match }) {
         {activeStep === steps.length ? (
           <div>
             <Typography className={classes.instructions}>
-              Thank you for registering with Ballers Hub. Your account is waiting to be verified.
+              Thank you for registering with ftballer. Your account is waiting to be verified.
             </Typography>
             <Button onClick={handleReset}>Reset</Button>
           </div>

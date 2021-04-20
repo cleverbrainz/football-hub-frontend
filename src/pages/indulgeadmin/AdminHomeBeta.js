@@ -165,7 +165,7 @@ export default function AdminHomeBeta() {
               <Menu />
             </IconButton>
             <Typography variant="h6" noWrap>
-              BALLERS HUB
+              ftballer
           </Typography>
 
           </div>

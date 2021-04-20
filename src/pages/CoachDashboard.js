@@ -225,7 +225,7 @@ export default function CoachProfile({ history }) {
               <Menu />
             </IconButton>
             <Typography variant="h6" noWrap>
-              BALLERS HUB
+              ftballer
           </Typography>
 
           </div>
