@@ -282,8 +282,12 @@ const UserAuthForm = ({ locale, history }) => {
             }, 1000)
           })
         } else {
-            firebaseApp.auth().signOut()
-            handleAfterRequestStates({ error: `${snackbar_messages['10'][locale]}` })
+            firebaseApp.auth().currentUser.sendEmailVerification().then(() => {
+              
+              firebaseApp.auth().signOut()
+              handleAfterRequestStates({ error: `${snackbar_messages['10'][locale]}` })
+              
+            })
             }
       })
       .catch(error => {

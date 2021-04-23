@@ -1892,6 +1892,11 @@ export default function ApplicationForm({ history, location, locale, match, setL
         </Box>
         <ul>
           {application['9'][locale].split('/').map(x => <li style={{ listStyleType: 'circle', fontSize: '14px' }}> {x} </li>)}
+          <li style={{ listStyleType: 'circle', fontSize: '14px' }}>
+            <a style={{ fontSize: '16px'}}target="_blank" rel="noopener noreferrer" 
+              href={locale === 'ko' ? 'https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A5%E1%86%AF%E1%84%8C%E1%85%B5%E1%84%91%E1%85%AE%E1%86%BA%E1%84%87%E1%85%A9%E1%86%AF%20%E2%80%93%20%E1%84%8E%E1%85%A2%E1%86%AF%E1%84%85%E1%85%B5%E1%86%AB%E1%84%8C%E1%85%B5.pdf?alt=media&token=ea6de0d8-c7d8-466f-b2c3-90edc050c06a' : 'https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/Indulge%20Football%20%E2%80%93%20The%20Challenges.pdf?alt=media&token=7f0af846-b9a8-4eae-8a4e-6be1487c4d54'}
+            >{locale === 'ko' ? '챌린지 팁을 보려면 클릭하세요' : 'Click here to see more on what the assessment team are looking for'}</a>
+          </li>
         </ul>
 
 
