@@ -3,6 +3,7 @@ import { AuthContext } from '../lib/context'
 import { Link, Redirect} from 'react-router-dom'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
+import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormControl from '@material-ui/core/FormControl'
 import FormLabel from '@material-ui/core/FormLabel'
@@ -14,6 +15,7 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import SortByAlphaSharpIcon from '@material-ui/icons/SortByAlphaSharp';
 import ImportExportSharpIcon from '@material-ui/icons/ImportExportSharp';
 import ArrowBackSharpIcon from '@material-ui/icons/ArrowBackSharp';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import {
   Box,
   TextField,
@@ -37,14 +39,23 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Drawer,
+  Divider,
+  List, 
+  ListItem,
+  ListItemText,
   Button
 } from '@material-ui/core'
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 
 import axios from 'axios'
 import auth from '../lib/auth'
+const drawerWidth = 200
 
 const useStyles = makeStyles((theme) => ({
+  root: { 
+    display: 'flex'
+  },
   appBar: {
     height: '70px'
   },
@@ -69,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
   },
   select: {
     fontSize: '14px',
-    marginLeft: '20px'
+    paddingLeft: '20px'
   },
   button: {
     fontSize: '12px',
@@ -89,6 +100,21 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       flexDirection: 'row',
     },
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+    zIndex: 1
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  // necessary for content to be below app bar
+  toolbar: { ...theme.mixins.toolbar, height: '80px' },
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing(3),
   }
 
 }))
@@ -1031,6 +1057,7 @@ const ApplicationDashboard = ({ locale }) => {
   const [applicantIndex, setApplicantIndex] = useState(0)
   const [editing, setEditing] = useState(false)
   const [open, setOpen] = useState(false)
+  const [viewSelect, setViewSelect] = useState('All')
   const [filters, setFilters] = useState({
     ageRange: 'All',
     positionCategory: 'All',
@@ -1280,6 +1307,116 @@ const ApplicationDashboard = ({ locale }) => {
     }
   }
 
+  const ApplicationDashboardOptions = () => {
+    const classes = useStyles();
+  
+    return (
+      <Drawer
+      className={classes.drawer}
+      variant="permanent"
+      classes={{
+        paper: classes.drawerPaper,
+      }}
+      anchor="left"
+    >
+      <div className={classes.toolbar} />
+      <FormGroup>
+      <Typography>Select Course</Typography>
+      <FormControl>
+          <InputLabel>{text[locale].Courses}</InputLabel>
+          <Select className={classes.select} value={selectedCourse} onChange={(event) => setSelectedCourse(event.target.value)}>
+            <MenuItem value="select" disabled>
+              {text[locale].SelectACourse}
+            </MenuItem>
+            {coursesModerating.map((course, index) => {
+              return (
+                <MenuItem value={course}>{course}</MenuItem>
+              )
+            })}
+          </Select>
+        </FormControl>
+        {selectedCourse === 'Ajax' &&
+        <>
+          <FormControl>
+            <InputLabel>Select Age Range</InputLabel>
+            <Select className={classes.select} value={ageRange} inputProps={{
+                          name: 'ageRange',
+                        }} onChange={handleFilterChange}>
+              <MenuItem value={'All'}>
+                All age ranges
+              </MenuItem>
+              <MenuItem value="Under 12s">Under 12</MenuItem>
+              <MenuItem value="Under 13s">Under 13</MenuItem>
+              <MenuItem value="Under 14s">Under 14</MenuItem>
+              <MenuItem value="Under 15s">Under 15</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl>
+          <InputLabel id="demo-simple-select-label">
+            {text[locale].Category}
+          </InputLabel>
+          <Select
+            className={classes.select}
+            style={{ fontSize: '14px' }}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={filters.positionCategory}
+            inputProps={{
+              name: 'positionCategory',
+            }}
+            onChange={handleFilterChange}
+          >
+            <MenuItem value={'All'}>{text[locale].AllPositions}</MenuItem>
+            <MenuItem value={'Goalkeeper'}>Goalkeeper</MenuItem>
+            <MenuItem value={'Defence'}>Defence</MenuItem>
+            <MenuItem value={'Midfield'}>Midfield</MenuItem>
+            <MenuItem value={'Attack'}>Attack</MenuItem>
+          </Select>
+        </FormControl>
+        {
+        !['All', 'Attack', 'Goalkeeper'].some(x => x === filters.positionCategory) && <FormControl >
+          <InputLabel id="demo-simple-select-label">
+            {text[locale].Position}
+          </InputLabel>
+          <Select
+            className={classes.select}
+            style={{ fontSize: '14px' }}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={filters.position}
+            inputProps={{
+              name: 'position',
+            }}
+            onChange={handleFilterChange}
+          >
+            <MenuItem value={'All'}>{text[locale].AllPositions}</MenuItem>
+            {positions[filters.positionCategory].map(position => {
+              return (
+                <MenuItem value={position}>{position}</MenuItem>
+              )
+            })}
+          </Select>
+        </FormControl>
+        }
+        </>
+    }
+    </FormGroup>
+    <Divider />
+      <List>
+      <ListItem selected={viewSelect === 'All' ? true : false} onClick={() => setViewSelect('All')} button>
+            <ListItemText primary={`All Applications: ${filteredApplications.length}`} />
+        </ListItem>
+        <ListItem selected={viewSelect === 'Approved' ? true : false} onClick={() => setViewSelect('Approved')} button>
+            <ListItemText primary={'Approved'} />
+        </ListItem>
+      </List>
+      <Divider />
+
+    </Drawer>
+    
+    )
+  }
+
   const { ageRange } = filters
 
 
@@ -1289,7 +1426,11 @@ const ApplicationDashboard = ({ locale }) => {
     <Redirect />
   )
   return (
+    <div className={classes.root}>
+    <CssBaseline />
+    <ApplicationDashboardOptions locale={locale}/>
     <Container>
+      
       <br />
       <br />
       <br />
@@ -1313,7 +1454,7 @@ const ApplicationDashboard = ({ locale }) => {
         </RadioGroup>
       </FormControl>
 
-      <FormControl>
+      {/* <FormControl>
         <InputLabel>{text[locale].Courses}</InputLabel>
         <Select value={selectedCourse} onChange={(event) => setSelectedCourse(event.target.value)}>
           <MenuItem value="select" disabled>
@@ -1341,7 +1482,7 @@ const ApplicationDashboard = ({ locale }) => {
             <MenuItem value="Under 15s">Under 15</MenuItem>
           </Select>
         </FormControl>
-      }
+} */}
       {/* <FormHelperText></FormHelperText> */}
 
 
@@ -1399,7 +1540,7 @@ const ApplicationDashboard = ({ locale }) => {
                 </Typography>
 
 
-                <div>
+                {/* <div>
                   <FormControl className={classes.select}>
                     <InputLabel id="demo-simple-select-label">
                       {text[locale].Category}
@@ -1444,7 +1585,7 @@ const ApplicationDashboard = ({ locale }) => {
                       })}
                     </Select>
                   </FormControl>}
-                </div>
+                </div> */}
               </div>
 
               {/* <FormControl>
@@ -1569,15 +1710,7 @@ const ApplicationDashboard = ({ locale }) => {
         <Application editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} filteredApplications={filteredApplications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} setFilteredApplications={setFilteredApplications} filteredIndex={applicantIndex} averages={getAverageScore} text={text} locale={locale} />
       </TabPanel>
     </Container>
-  )
-}
-
-
-
-const ApplicationDashboardOptions = ({ locale }) => {
-  return (
-    <Container> 
-    </Container>
+    </div>
   )
 }
 
