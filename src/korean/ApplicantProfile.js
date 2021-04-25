@@ -571,7 +571,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
           {!application?.hasOwnProperty('challenges_submitted') && (
             <Box display="flex" flexDirection="column" textAlign="center">
               <Container style={{ marginBottom: '25px'}}>
-                {profile['9a'].split(' / ').map(text => (
+                {profile['9a'][locale].split(' / ').map(text => (
                   <Typography>{text}</Typography>
                 )
                 )}
