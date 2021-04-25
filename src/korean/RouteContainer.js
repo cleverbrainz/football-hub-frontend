@@ -66,6 +66,16 @@ const RouteContainer = (props) => {
               locale={locale}
               setLocale={setLocale} />
           )} />
+        
+        <AuthRouter exact path="/challenges"
+          locale={locale}
+          component={(props) => (
+            <ApplicationForm
+              {...props}
+              locale={locale}
+              challenges={true}
+              setLocale={setLocale} />
+          )} />
 
         <Route exact path="/authentication"
           render={(props) => (

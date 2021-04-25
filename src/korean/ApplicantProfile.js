@@ -17,6 +17,7 @@ import {
   Paper,
   Typography,
   Box,
+  Container,
   Table,
   TableContainer,
   TableHead,
@@ -266,7 +267,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
         const { applications } = res.data[0]
         setUser(res.data[0])
 
-        if (applications.ajax_application?.hasOwnProperty('submitted')) setSubDate(moment(applications.ajax_application.submission_date).format('MMMM Do YYYY'))
+        if (applications.ajax_application?.hasOwnProperty('challenges_submitted')) setSubDate(moment(applications.ajax_application.submission_date).format('MMMM Do YYYY'))
 
         if (applications.ajax_application) {
           setApplication(applications.ajax_application)
@@ -345,7 +346,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
         handleAfterRequestStates({ error: snackbar_messages['7b'][locale] })
       }
     } else {
-      history.push('/application')
+      application?.submitted ? history.push('/challenges') : history.push('/application')
     }
   }
 
@@ -395,7 +396,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
     <div className={classes.root}>
 
-      {(application && application.hasOwnProperty('submitted')) && (
+      {(application && application.hasOwnProperty('challenges_submitted')) && (
         <Paper id='nav' elevation={3} className={classes.menu}>
           <Typography component='div' >
             <Box
@@ -465,7 +466,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                 {user.name}
               </Box>
 
-              {(application && application.hasOwnProperty('submitted')) && (
+              {(application && application.hasOwnProperty('challenges_submitted')) && (
                 <>
                   <Box
                     fontSize={13}
@@ -498,7 +499,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
             </Typography>
           </Paper>
 
-          {(application && application.hasOwnProperty('submitted')) && (
+          {(application && application.hasOwnProperty('challenges_submitted')) && (
             <Paper id={profile['1b']['en']} elevation={3} className={`${classes.otherSections} nav-sections`} >
               <Typography component='div' >
                 <Box
@@ -542,7 +543,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                     <TableCell>ID </TableCell>
                     <TableCell align="right"> {profile['5b'][locale]}</TableCell>
 
-                    {(application && application.hasOwnProperty('submitted')) &&
+                    {(application && application.hasOwnProperty('challenges_submitted')) &&
                       <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
 
                     <TableCell align="right"> {profile['5d'][locale]}</TableCell>
@@ -553,13 +554,13 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                     <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
                     <TableCell align="right"> PDP </TableCell>
 
-                    {(application && application.hasOwnProperty('submitted')) &&
+                    {(application && application.hasOwnProperty('challenges_submitted')) &&
                       <TableCell align="right"> 
                       {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`} 
                       </TableCell>}
 
                     <TableCell align="right" style={{ color: '#3100F7' }}>
-                      {(application && application.hasOwnProperty('submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
+                      {(application && application.hasOwnProperty('challenges_submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -567,17 +568,38 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
             </TableContainer>
           </Paper>
 
-          {!application?.hasOwnProperty('submitted') && (
+          {!application?.hasOwnProperty('challenges_submitted') && (
+            <Box display="flex" flexDirection="column" textAlign="center">
+              <Container style={{ marginBottom: '25px'}}>
+                {profile['9a'].split(' / ').map(text => (
+                  <Typography>{text}</Typography>
+                )
+                )}
+              </Container>
+              <Container style={{marginBottom: '50px'}}>
             <Button
-              style={{ width: '15rem', margin: '0 auto' }}
+              style={{ width: '15rem', margin: '5px 10px' }}
               variant='outlined'
               color='primary'
+              disabled={application?.submitted}
               onClick={() => handleRedirect()}>
-              {application ? profile['8a'][locale] : profile['8b'][locale]}
+              {application ? application.submitted ? profile['8d'][locale] : profile['8a'][locale] : profile['8b'][locale]}
             </Button>
+             <Button
+             style={{ width: '15rem', margin: '5px 10px' }}
+             variant='outlined'
+             color='primary'
+             disabled={!application?.submitted}
+             onClick={() => handleRedirect()}>
+             {locale === 'ko' ? '축구 챌린지' : 'Football Challenges'}
+           </Button>
+           </Container>
+           </Box>
+
+
           )}
 
-          {(application && application.hasOwnProperty('submitted')) && (
+          {(application && application.hasOwnProperty('challenges_submitted')) && (
             <>
               <Paper id={profile['1d']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
                 <Typography component='div' >

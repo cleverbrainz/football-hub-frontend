@@ -224,14 +224,14 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function ApplicationForm({ history, location, locale, match, setLocale }) {
+export default function ApplicationForm({ history, location, locale, match, setLocale, challenges }) {
   // console.log(match)
 
   // console.log(history, location)
   const classes = useStyles();
   const [message, setMessage] = useState()
   const [isLoading, setIsLoading] = useState(false)
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(challenges ? 2 : 0);
   const [isSafari, setIsSafari] = useState(false)
   const [open, setOpen] = useState(false);
   const [accountCategory, setAccountCategory] = useState()
@@ -486,23 +486,26 @@ export default function ApplicationForm({ history, location, locale, match, setL
         dob,
         applications: {
           ajax_application: {
-            ...(type === 'submit' && {
+            ...(type === 'application' && {
               age_group: `Under ${group}s`,
               submitted: true,
               submission_date: moment()
             }),
+            ...(type === 'challenges' && {
+              challenges_submitted: true
+            }),
             ...applicationDetails,
             personal_details: {
               ...applicationDetails.personal_details,
-              contact_number: type === 'submit' ? contact_number.join('') : contact_number,
-              alt_contact_number: type === 'submit' ? (alt_contact_number[1] && alt_contact_number[2]) ? alt_contact_number.join('') : contact_number.join('') : alt_contact_number
+              contact_number: type === 'application' ? contact_number.join('') : contact_number,
+              alt_contact_number: type === 'application' ? (alt_contact_number[1] && alt_contact_number[2]) ? alt_contact_number.join('') : contact_number.join('') : alt_contact_number
             }
           }
         }
       }
     }, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
-        if (type === 'submit') {
+        if (type === 'challenges') {
           axios.post('/contactPlayer', {
             type: 'applicationReceived',
             recipient: { recipientId: auth.getUserId() },
@@ -549,7 +552,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
         })
       } else {
 
-        if (activeStep === 2) {
+        if (activeStep !== 0) {
           setOpen(true)
         } else {
           scroll()
@@ -1993,7 +1996,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
 
           <Button
-            style={{ display: activeStep === 0 ? 'none' : 'initial' }}
+            style={{ display: activeStep === 1 ? 'initial' : 'none' }}
             disabled={activeStep === 0 || isLoading}
             onClick={handleBack}
             className={classes.button}>
@@ -2025,7 +2028,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             className={classes.button}
             endIcon={<ArrowForwardIcon />}>
             {isLoading && <CircularProgress size={30} className={classes.progress} />}
-            {activeStep === steps.length - 1 ? application['10c'][locale] : application['10d'][locale]}
+            {activeStep === 0 ? application['10d'][locale] : application['10c'][locale] }
           </Button>
         </div>
       </div>
@@ -2063,7 +2066,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             {application['10a'][locale]}
           </Button>
           <Button variant='outlined' onClick={() => {
-            handleApplicationSave('submit')
+            handleApplicationSave(activeStep === 2 ? 'challenges' : 'application')
             setTimeout(() => {
               history.push(`/user/${auth.getUserId()}`)
             }, (3000));
