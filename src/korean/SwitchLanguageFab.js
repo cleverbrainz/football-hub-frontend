@@ -24,7 +24,7 @@ const SwitchLanguageFab = (props) => {
       left: '2%',
       bottom: '2%',
       zIndex: '1000',
-      display: location.pathname.slice(0,12) === '/application' ? 'none' : 'initial'
+      display: location.pathname.slice(0,12) === '/application' ? 'none' : location.pathname.slice(0,11) === '/challenges' ? 'none' : 'initial'
     },
   }))
   const classes = useStyles()
@@ -33,7 +33,7 @@ const SwitchLanguageFab = (props) => {
       width: 28,
       height: 16,
       padding: 0,
-      display: location.pathname.slice(0,12) === '/application' ? 'none' : 'flex',
+      display: location.pathname.slice(0,12) === '/application' ? 'none' : location.pathname.slice(0,11) === '/challenges' ? 'none' : 'flex'
     },
     switchBase: {
       padding: 2,
@@ -70,7 +70,7 @@ const SwitchLanguageFab = (props) => {
   return (
     <Fab className={classes.fab} variant="extended">
       <Typography component="div">
-        <Grid component="label" container alignItems="center" spacing={1}>
+        <Grid component="label" container alignItems="center" spacing={1} style={{ margin: '0px' }}>
           <Grid className={classes.text} item> KR </Grid>
           <Grid item>
             <AntSwitch

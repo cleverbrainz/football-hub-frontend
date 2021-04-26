@@ -210,7 +210,7 @@ export default function AdminDashboard({ history }) {
               <Menu />
             </IconButton>
             <Typography variant="h6" noWrap>
-              FT BALLER
+              ftballer
           </Typography>
 
           </div>

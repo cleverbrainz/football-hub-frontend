@@ -1017,7 +1017,6 @@ const Application = ({ permissions, application, filteredApplications, applicati
 
 
 
-
 const ApplicationDashboard = ({ locale }) => {
 
   const { user } = useContext(AuthContext)
@@ -1569,6 +1568,15 @@ const ApplicationDashboard = ({ locale }) => {
       <TabPanel value={tabValue} index={1}>
         <Application editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} filteredApplications={filteredApplications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} setFilteredApplications={setFilteredApplications} filteredIndex={applicantIndex} averages={getAverageScore} text={text} locale={locale} />
       </TabPanel>
+    </Container>
+  )
+}
+
+
+
+const ApplicationDashboardOptions = ({ locale }) => {
+  return (
+    <Container> 
     </Container>
   )
 }

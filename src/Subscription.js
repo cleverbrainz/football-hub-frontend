@@ -157,7 +157,7 @@ const Subscription = () => {
 
   if (!hasSubs) return (
     <>
-    <Typography gutterBottom variant="h3" component="h2">Welcome to FTBallr!</Typography>
+    <Typography gutterBottom variant="h3" component="h2">Welcome to ftballer!</Typography>
     <Typography gutterBottom variant="h5" component="h2">To post listings on our service you'll need a subscription, please see the options below.</Typography>
     <Container>
       {plans.length > 0 && 
