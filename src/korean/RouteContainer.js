@@ -12,6 +12,7 @@ import HomeNav from '../components/Navbars/HomeNav'
 import NavBarKorea from '../components/Navbars/NavBarKorea'
 import UserAuthForm from './UserAuthForm'
 import ApplicantProfile from './ApplicantProfile'
+import PostAppForm from './PostAppForm'
 // import JSONConvertor from './JSONConvertor'
 import ApplicationDashboard from './ApplicationDashboard';
 // import MarketingBeta from './MarketingBeta ';
@@ -31,7 +32,7 @@ const RouteContainer = (props) => {
   return (
 
     <Router>
-      <NavBarKorea locale={locale}/>
+      <NavBarKorea locale={locale} />
       <SwitchLanguageFab
         locale={locale}
         handleLocaleChange={(e) => {
@@ -39,7 +40,13 @@ const RouteContainer = (props) => {
         }} />
       <Switch>
 
-        {/* <Route exact path="/success=true" component={ApplicationProcessFlow} /> */}
+        <AuthRouter exact path="/user/:id/pdp-form"
+          locale={locale}
+          component={(props) => (
+            <PostAppForm
+              {...props}
+              locale={locale} />
+          )} />
 
         <AuthRouter exact path="/user/:id"
           locale={locale}
@@ -79,21 +86,21 @@ const RouteContainer = (props) => {
             // <MarketingDelta
             //   {...props}
             //   locale={locale} />
-            <Redirect to='/authentication'/>
+            <Redirect to='/authentication' />
           )} />
 
-        <AuthRouter exact path="/dashboard" 
+        <AuthRouter exact path="/dashboard"
           locale={locale}
           component={(props) => (
             <ApplicationDashboard
               {...props}
               locale={locale}
             />
-        )} />
+          )} />
 
-        
 
-        
+
+
 
 
       </Switch>

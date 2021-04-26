@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { Link } from 'react-router-dom'
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -10,6 +11,14 @@ import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
 import CancelSharpIcon from '@material-ui/icons/CancelSharp';
 import PeopleAltSharpIcon from '@material-ui/icons/PeopleAltSharp';
 import moment from 'moment'
+import Dialog from '@material-ui/core/Dialog';
+import CloudUploadSharpIcon from '@material-ui/icons/CloudUploadSharp';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+import InfoIcon from '@material-ui/icons/Info';
 import { useStripe } from "@stripe/react-stripe-js";
 
 import {
@@ -17,6 +26,8 @@ import {
   Paper,
   Typography,
   Box,
+  FormControlLabel,
+  Checkbox,
   Table,
   TableContainer,
   TableHead,
@@ -248,6 +259,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   const [currentScrollSection, setCurrentScrollSection] = useState('about')
   const [hasLoaded, setHasLoaded] = useState(false)
   const [open, setOpen] = useState()
+  const [dialogOpen, setDialogOpen] = useState()
   const [message, setMessage] = useState()
   const [imageUpload, setImageUpload] = useState(false)
   const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === match.params.id)
@@ -256,15 +268,17 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   const defaultPic = 'https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80'
 
   console.log({ isOwnProfile, egg: auth.getUserId(), match })
-  
+
   const date = new Date()
 
   const getData = async () => {
 
     axios.get(`/users/${match.params.id}`)
       .then(res => {
+        console.log('THISSS ISSS', res.data)
         const { applications } = res.data[0]
         setUser(res.data[0])
+
 
         if (applications.ajax_application?.hasOwnProperty('submitted')) setSubDate(moment(applications.ajax_application.submission_date).format('MMMM Do YYYY'))
 
@@ -277,7 +291,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
       })
   }
 
-  useEffect(() => { 
+  useEffect(() => {
     getData()
   }, [])
 
@@ -299,6 +313,10 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
       .catch(err => console.error(err))
   }
 
+
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
 
 
 
@@ -324,7 +342,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
     const fee_needed = (application_fee_paid === 'unpaid' && moment().isAfter(moment('03/20/2021')))
 
     handleAfterRequestStates({
-      success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['7g'][locale].split('/')[fee_needed ? 0 : 1]}`
+      success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['7g'][locale].split('/')[(fee_needed) ? 0 : 1]}`
     })
 
     // fee needed = unpaid application + date is after 14.04.21
@@ -389,6 +407,45 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
     }
   ]
 
+  const ageCampDates = {
+    'Under 12s': {
+      en: '31st May - 3rd June',
+      ko: '2021년 5월 31일 ~ 6월 3일'
+    },
+    'Under 13s': {
+      en: '5th June - 8th June',
+      ko: '2021년 6월 5일 ~ 6월 8일'
+    },
+    'Under 14s': {
+      en: '11th June - 14th June',
+      ko: '2021년 6월 11일 ~ 6월 14일'
+    },
+    'Under 15s': {
+      en: '16th June - 19th June',
+      ko: '2021년 6월 16일 ~6월 19일'
+    }
+  }
+
+
+  // const handleDialogActions = () => {
+
+  //   setDialogOpen(false)
+
+  //   axios.patch(`/users/${auth.getUserId()}`, {
+  //     userId: auth.getUserId(),
+  //     updates: {
+  //       applications: {
+  //         ajax_application: {
+  //           ...application,
+  //         }
+  //       }
+  //     }
+  //   }, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+  //     .then(res => setMessage({ success: 'Your payment confirmation has been saved' }))
+  //     .catch(() => setMessage({ error: 'Something went wrong. Please try again.' }))
+  // }
+
+
   const nav = [profile['1b'], profile['1c'], profile['1d'], profile['1e']]
   if (!hasLoaded) return null
   return (
@@ -451,9 +508,9 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                 style={{ display: 'none' }} onChange={(e) => handleMediaChange(e)} type="file" />
               <img className={classes.image} alt='profile'
                 src={user.imageURL ? user.imageURL : defaultPic} />
-                <div className={classes.overlay}>
-                  <p className={classes.overlayText}>{profile['8c'][locale]}</p>
-                </div>
+              <div className={classes.overlay}>
+                <p className={classes.overlayText}>{profile['8c'][locale]}</p>
+              </div>
             </figure>
             {/* user title */}
 
@@ -498,7 +555,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
             </Typography>
           </Paper>
 
-          {(application && application.hasOwnProperty('submitted')) && (
+          {(application?.hasOwnProperty('submitted')) && (
             <Paper id={profile['1b']['en']} elevation={3} className={`${classes.otherSections} nav-sections`} >
               <Typography component='div' >
                 <Box
@@ -508,6 +565,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                 </Box>
 
                 <Box
+                  style={{ wordBreak: 'break-all' }}
                   id='truncate-text'
                   className='line-clamp'
                   fontSize={14}
@@ -526,46 +584,115 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
           )}
 
 
-          <Paper id={profile['1c']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
-            <Typography component='div' >
-              <Box
-                fontSize={20}
-                fontWeight="fontWeightBold" mb={3}>
-                {locale === 'en' ? titleCase(profile['1c'][locale]) : profile['1c'][locale]}
+          {application?.ratings.indulge !== 'yes' ? (
+            <Paper id={profile['1c']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
+              <Typography component='div' >
+                <Box
+                  fontSize={20}
+                  fontWeight="fontWeightBold" mb={3}>
+                  {locale === 'en' ? titleCase(profile['1c'][locale]) : profile['1c'][locale]}
+                </Box>
+              </Typography>
+
+              <TableContainer >
+                <Table className={classes.table} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>ID </TableCell>
+                      <TableCell align="right"> {profile['5b'][locale]}</TableCell>
+
+                      {(application && application.hasOwnProperty('submitted')) &&
+                        <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
+
+                      <TableCell align="right"> {profile['5d'][locale]}</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
+                      <TableCell align="right"> PDP </TableCell>
+
+                      {(application && application.hasOwnProperty('submitted')) &&
+                        <TableCell align="right">
+                          {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
+                        </TableCell>}
+
+                      <TableCell align="right" style={{ color: '#3100F7' }}>
+                        {(application && application.hasOwnProperty('submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          ) : (
+              <Paper id='upcoming' elevation={3} className={`${classes.otherSections} nav-sections`}>
+                <Typography component='div' >
+                  <Box
+                    fontSize={20}
+                    fontWeight="fontWeightBold" mb={3}>
+                    Upcoming Camps
               </Box>
-            </Typography>
+                </Typography>
 
-            <TableContainer >
-              <Table className={classes.table} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>ID </TableCell>
-                    <TableCell align="right"> {profile['5b'][locale]}</TableCell>
+                <TableContainer >
+                  <Table className={classes.table} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="right"> {profile['5b'][locale]}</TableCell>
 
-                    {(application && application.hasOwnProperty('submitted')) &&
-                      <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
+                        {(application && application.hasOwnProperty('submitted')) &&
+                          <TableCell align="right"> Camp Date </TableCell>}
 
-                    <TableCell align="right"> {profile['5d'][locale]}</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
-                    <TableCell align="right"> PDP </TableCell>
+                        <TableCell align="right"> Payment </TableCell>
+                        <TableCell align="right"> PDP Form</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell align="right"> PDP </TableCell>
 
-                    {(application && application.hasOwnProperty('submitted')) &&
-                      <TableCell align="right"> 
-                      {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`} 
-                      </TableCell>}
+                        <TableCell align="right">
+                          {ageCampDates[application.age_group][locale]}
+                          </TableCell>
 
-                    <TableCell align="right" style={{ color: '#3100F7' }}>
-                      {(application && application.hasOwnProperty('submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
+                        <TableCell align="right">
+                          {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} /> :
+                              application.post_app_actions?.payment_confirm === 'yes' ?
+                                <InfoIcon style={{ color: 'blue', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} />
+                                : <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> }
+
+                          {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <a onClick={() => setDialogOpen(true)}> Click for details </a>
+                            : application.post_app_actions.payment_confirm === 'yes' ? 'In Review' : 'Confirmed'}
+
+                        </TableCell>
+
+                        <TableCell align="right" style={{ color: '#3100F7' }}>
+
+                          {application.post_app_actions ?
+                            Object.keys(application.post_app_actions).filter(x => application.post_app_actions[x] === '').length === 0 ?
+                              <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
+                              <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
+                            <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />
+                          }
+
+
+
+                          <Link
+                            to={{
+                              pathname: `/user/${auth.getUserId()}/pdp-form`,
+                              state: application
+                            }}> Click for form </Link>
+                        </TableCell>
+
+                      </TableRow>
+
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            )}
+
 
           {!application?.hasOwnProperty('submitted') && (
             <Button
@@ -577,7 +704,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
             </Button>
           )}
 
-          {(application && application.hasOwnProperty('submitted')) && (
+          {(application?.hasOwnProperty('submitted')) && (
             <>
               <Paper id={profile['1d']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
                 <Typography component='div' >
@@ -692,27 +819,66 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
             </>
           )}
         </div>
-      ) : <CircularProgress size={65} className={classes.progress} />}
+      ) : <CircularProgress size={65} className={classes.progress} />
+      }
+
+
+      {
+        dialogOpen && (
+          <div>
+            <Dialog
+              open={dialogOpen}
+              TransitionComponent={Transition}
+              keepMounted
+              onClose={() => setDialogOpen(false)}
+              aria-labelledby="alert-dialog-slide-title"
+              aria-describedby="alert-dialog-slide-description"
+            >
+              <DialogTitle id="alert-dialog-slide-title">
+                Payment Details for PDP Complete Fee
+            </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-slide-description">
+
+                  <p> Please use the payment details below for bank transfer and ensure you attach the payment reference below. </p>
+
+                  <p>Sort Code: .....</p>
+                  <p>IBAN: .....</p>
+                  <p>Account Num: .....</p>
+                  <p>BIC/SWIFT: .....</p>
+
+                  <p> Payment Reference: {`PDP ${auth.getUserId().substring(0, 10)} ${user.player_last_name}`} </p>
+
+                  <p> You can confirm that you've made payment on the post app form </p>
+
+                </DialogContentText>
+
+              </DialogContent>
+            </Dialog>
+          </div>
+        )
+      }
+
+
+      {
+        message && <Snackbar
+          open={open}
+          autoHideDuration={5000}
+          onClose={closeSnackBar}>
+          <Alert onClose={closeSnackBar} severity={message.success ? 'success' : 'error'}>
+            {message.success ?
+              message.success :
+              message.error ?
+                message.error : (
+                  Object.keys(message).map(x => <li> {message[x]} </li>)
+                )}
+          </Alert>
+        </Snackbar>
+      }
 
 
 
-      {message && <Snackbar
-        open={open}
-        autoHideDuration={5000}
-        onClose={closeSnackBar}>
-        <Alert onClose={closeSnackBar} severity={message.success ? 'success' : 'error'}>
-          {message.success ?
-            message.success :
-            message.error ?
-              message.error : (
-                Object.keys(message).map(x => <li> {message[x]} </li>)
-              )}
-        </Alert>
-      </Snackbar>}
-
-
-
-    </div>
+    </div >
 
 
   );
