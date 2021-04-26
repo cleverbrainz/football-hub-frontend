@@ -7,7 +7,7 @@ const Terms = () => {
         <strong>Terms and Conditions</strong>
       </h2>
 
-      <p>Welcome to FT Baller!</p>
+      <p>Welcome to ftballer!</p>
 
       <p>
         These terms and conditions outline the rules and regulations for the use
@@ -17,7 +17,7 @@ const Terms = () => {
 
       <p>
         By accessing this website we assume you accept these terms and
-        conditions. Do not continue to use FT Baller if you do not agree to take
+        conditions. Do not continue to use ftballer if you do not agree to take
         all of the terms and conditions stated on this page.
       </p>
 
@@ -43,7 +43,7 @@ const Terms = () => {
       </h3>
 
       <p>
-        We employ the use of cookies. By accessing FT Baller, you agreed to use
+        We employ the use of cookies. By accessing ftballer, you agreed to use
         cookies in agreement with the Indulge Football's Privacy Policy.
       </p>
 
@@ -61,7 +61,7 @@ const Terms = () => {
 
       <p>
         Unless otherwise stated, Indulge Football and/or its licensors own the
-        intellectual property rights for all material on FT Baller. All
+        intellectual property rights for all material on ftballer. All
         intellectual property rights are reserved. You may access this from FT
         Baller for your own personal use subjected to restrictions set in these
         terms and conditions.
@@ -69,10 +69,10 @@ const Terms = () => {
 
       <p>You must not:</p>
       <ul>
-        <li>Republish material from FT Baller</li>
-        <li>Sell, rent or sub-license material from FT Baller</li>
-        <li>Reproduce, duplicate or copy material from FT Baller</li>
-        <li>Redistribute content from FT Baller</li>
+        <li>Republish material from ftballer</li>
+        <li>Sell, rent or sub-license material from ftballer</li>
+        <li>Reproduce, duplicate or copy material from ftballer</li>
+        <li>Redistribute content from ftballer</li>
       </ul>
 
       <p>

@@ -171,7 +171,7 @@ const AddPhone = ({ location, history, locale }) => {
 
   }
 
-  function fakeSendVerification(e) {
+  function sendTestVerification(e) {
     e.preventDefault()
     setCodeSent(true)
   }
@@ -278,8 +278,8 @@ const AddPhone = ({ location, history, locale }) => {
         <form
           autoComplete='off'
           onChange={(e) => handleFormChange(e)}
-          // onSubmit={!codeSent ? (e) => sendVerificationCode(e) : (e) => confirmVerificationCode(e)}
-          onSubmit={!codeSent ? (e) => fakeSendVerification(e) : (e) => confirmVerificationCode(e)}
+          onSubmit={!codeSent ? (e) => sendVerificationCode(e) : (e) => confirmVerificationCode(e)}
+          // onSubmit={!codeSent ? (e) => sendTestVerification(e) : (e) => confirmVerificationCode(e)}
           className={classes.form}>
                     <div className={classes.field}>
               <div className={classes.label}>

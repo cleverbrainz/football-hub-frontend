@@ -26,8 +26,7 @@ import {
   Paper,
   Typography,
   Box,
-  FormControlLabel,
-  Checkbox,
+  Container,
   Table,
   TableContainer,
   TableHead,
@@ -279,8 +278,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
         const { applications } = res.data[0]
         setUser(res.data[0])
 
-
-        if (applications.ajax_application?.hasOwnProperty('submitted')) setSubDate(moment(applications.ajax_application.submission_date).format('MMMM Do YYYY'))
+        if (applications.ajax_application?.hasOwnProperty('challenges_submitted')) setSubDate(moment(applications.ajax_application.submission_date).format('MMMM Do YYYY'))
 
         if (applications.ajax_application) {
           setApplication(applications.ajax_application)
@@ -339,7 +337,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   async function handleRedirect() {
 
     const { stripeId, application_fee_paid } = user
-    const fee_needed = (application_fee_paid === 'unpaid' && moment().isAfter(moment('03/20/2021')))
+    const fee_needed = (application_fee_paid === 'unpaid' && moment().isAfter(moment('05/31/2021')))
 
     handleAfterRequestStates({
       success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['7g'][locale].split('/')[(fee_needed) ? 0 : 1]}`
@@ -363,7 +361,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
         handleAfterRequestStates({ error: snackbar_messages['7b'][locale] })
       }
     } else {
-      history.push('/application')
+      application?.submitted ? history.push('/challenges') : history.push('/application')
     }
   }
 
@@ -452,7 +450,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
     <div className={classes.root}>
 
-      {(application && application.hasOwnProperty('submitted')) && (
+      {(application && application.hasOwnProperty('challenges_submitted')) && (
         <Paper id='nav' elevation={3} className={classes.menu}>
           <Typography component='div' >
             <Box
@@ -522,7 +520,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                 {user.name}
               </Box>
 
-              {(application && application.hasOwnProperty('submitted')) && (
+              {(application && application.hasOwnProperty('challenges_submitted')) && (
                 <>
                   <Box
                     fontSize={13}
@@ -555,7 +553,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
             </Typography>
           </Paper>
 
-          {(application?.hasOwnProperty('submitted')) && (
+          {(application && application.hasOwnProperty('challenges_submitted')) && (
             <Paper id={profile['1b']['en']} elevation={3} className={`${classes.otherSections} nav-sections`} >
               <Typography component='div' >
                 <Box
@@ -581,130 +579,188 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
 
             </Paper>
-          )}
+          )
+          }
 
 
-          {application?.ratings.indulge !== 'yes' ? (
-            <Paper id={profile['1c']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
-              <Typography component='div' >
-                <Box
-                  fontSize={20}
-                  fontWeight="fontWeightBold" mb={3}>
-                  {locale === 'en' ? titleCase(profile['1c'][locale]) : profile['1c'][locale]}
-                </Box>
-              </Typography>
-
-              <TableContainer >
-                <Table className={classes.table} aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>ID </TableCell>
-                      <TableCell align="right"> {profile['5b'][locale]}</TableCell>
-
-                      {(application && application.hasOwnProperty('submitted')) &&
-                        <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
-
-                      <TableCell align="right"> {profile['5d'][locale]}</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
-                      <TableCell align="right"> PDP </TableCell>
-
-                      {(application && application.hasOwnProperty('submitted')) &&
-                        <TableCell align="right">
-                          {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
-                        </TableCell>}
-
-                      <TableCell align="right" style={{ color: '#3100F7' }}>
-                        {(application && application.hasOwnProperty('submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
-          ) : (
-              <Paper id='upcoming' elevation={3} className={`${classes.otherSections} nav-sections`}>
+          {
+            application?.ratings.indulge !== 'yes' ? (
+              <Paper id={profile['1c']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
                 <Typography component='div' >
                   <Box
                     fontSize={20}
                     fontWeight="fontWeightBold" mb={3}>
-                    Upcoming Camps
-              </Box>
+                    {locale === 'en' ? titleCase(profile['1c'][locale]) : profile['1c'][locale]}
+                  </Box>
                 </Typography>
 
                 <TableContainer >
                   <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                       <TableRow>
+                        <TableCell>ID </TableCell>
                         <TableCell align="right"> {profile['5b'][locale]}</TableCell>
 
                         {(application && application.hasOwnProperty('submitted')) &&
-                          <TableCell align="right"> Camp Date </TableCell>}
+                          <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
 
-                        <TableCell align="right"> Payment </TableCell>
-                        <TableCell align="right"> PDP Form</TableCell>
+                        <TableCell align="right"> {profile['5d'][locale]}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       <TableRow>
+                        <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
                         <TableCell align="right"> PDP </TableCell>
 
-                        <TableCell align="right">
-                          {ageCampDates[application.age_group][locale]}
-                          </TableCell>
-
-                        <TableCell align="right">
-                          {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} /> :
-                              application.post_app_actions?.payment_confirm === 'yes' ?
-                                <InfoIcon style={{ color: 'blue', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} />
-                                : <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> }
-
-                          {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <a onClick={() => setDialogOpen(true)}> Click for details </a>
-                            : application.post_app_actions.payment_confirm === 'yes' ? 'In Review' : 'Confirmed'}
-
-                        </TableCell>
+                        {(application && application.hasOwnProperty('submitted')) &&
+                          <TableCell align="right">
+                            {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
+                          </TableCell>}
 
                         <TableCell align="right" style={{ color: '#3100F7' }}>
-
-                          {application.post_app_actions ?
-                            Object.keys(application.post_app_actions).filter(x => application.post_app_actions[x] === '').length === 0 ?
-                              <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
-                              <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
-                            <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />
-                          }
-
-
-
-                          <Link
-                            to={{
-                              pathname: `/user/${auth.getUserId()}/pdp-form`,
-                              state: application
-                            }}> Click for form </Link>
+                          {(application && application.hasOwnProperty('submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
                         </TableCell>
-
                       </TableRow>
-
                     </TableBody>
                   </Table>
                 </TableContainer>
               </Paper>
-            )}
+            ) : (
+                <Paper id='upcoming' elevation={3} className={`${classes.otherSections} nav-sections`}>
+                  <Typography component='div' >
+                    <Box
+                      fontSize={20}
+                      fontWeight="fontWeightBold" mb={3}>
+                      Upcoming Camps
+              </Box>
+                  </Typography>
+
+                  <TableContainer >
+                    <Table className={classes.table} aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align="right"> {profile['5b'][locale]}</TableCell>
+
+                          {(application && application.hasOwnProperty('submitted')) &&
+                            <TableCell align="right"> Camp Date </TableCell>}
+
+                          <TableCell align="right"> Payment </TableCell>
+                          <TableCell align="right"> PDP Form</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell align="right"> PDP </TableCell>
+
+                          <TableCell align="right">
+                            {ageCampDates[application.age_group][locale]}
+                          </TableCell>
+
+                          <TableCell align="right">
+                            {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} /> :
+                              application.post_app_actions?.payment_confirm === 'yes' ?
+                                <InfoIcon style={{ color: 'blue', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} />
+                                : <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />}
+
+                            {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <a onClick={() => setDialogOpen(true)}> Click for details </a>
+                              : application.post_app_actions.payment_confirm === 'yes' ? 'In Review' : 'Confirmed'}
+
+                          </TableCell>
+
+                          <TableCell align="right" style={{ color: '#3100F7' }}>
+
+                            {application.post_app_actions ?
+                              Object.keys(application.post_app_actions).filter(x => application.post_app_actions[x] === '').length === 0 ?
+                                <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
+                                <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
+                              <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />
+                            }
 
 
-          {!application?.hasOwnProperty('submitted') && (
-            <Button
-              style={{ width: '15rem', margin: '0 auto' }}
-              variant='outlined'
-              color='primary'
-              onClick={() => handleRedirect()}>
-              {application ? profile['8a'][locale] : profile['8b'][locale]}
-            </Button>
-          )}
 
-          {(application?.hasOwnProperty('submitted')) && (
+                            <Link
+                              to={{
+                                pathname: `/user/${auth.getUserId()}/pdp-form`,
+                                state: application
+                              }}> Click for form </Link>
+                          </TableCell>
+
+                        </TableRow>
+
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              )
+          }
+
+          <Paper>
+            <TableContainer>
+              <Table className={classes.table} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>ID </TableCell>
+                    <TableCell align="right"> {profile['5b'][locale]}</TableCell>
+
+                    {(application && application.hasOwnProperty('challenges_submitted')) &&
+                      <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
+
+                    <TableCell align="right"> {profile['5d'][locale]}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
+                    <TableCell align="right"> PDP </TableCell>
+
+                    {(application && application.hasOwnProperty('challenges_submitted')) &&
+                      <TableCell align="right">
+                        {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
+                      </TableCell>}
+
+                    <TableCell align="right" style={{ color: '#3100F7' }}>
+                      {(application && application.hasOwnProperty('challenges_submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+
+          {
+            !application?.hasOwnProperty('challenges_submitted') && (
+              <Box display="flex" flexDirection="column" textAlign="center">
+                <Container style={{ marginBottom: '25px' }}>
+                  {profile['9a'][locale].split(' / ').map(text => (
+                    <Typography>{text}</Typography>
+                  )
+                  )}
+                </Container>
+                <Container style={{ marginBottom: '50px' }}>
+                  <Button
+                    style={{ width: '15rem', margin: '5px 10px' }}
+                    variant='outlined'
+                    color='primary'
+                    disabled={application?.submitted}
+                    onClick={() => handleRedirect()}>
+                    {application ? application.submitted ? profile['8d'][locale] : profile['8a'][locale] : profile['8b'][locale]}
+                  </Button>
+                  <Button
+                    style={{ width: '15rem', margin: '5px 10px' }}
+                    variant='outlined'
+                    color='primary'
+                    disabled={!application?.submitted}
+                    onClick={() => handleRedirect()}>
+                    {locale === 'ko' ? '축구 챌린지' : 'Football Challenges'}
+                  </Button>
+                </Container>
+              </Box>
+
+
+            )
+          }
+
+          {(application && application.hasOwnProperty('challenges_submitted')) && (
             <>
               <Paper id={profile['1d']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
                 <Typography component='div' >
@@ -817,8 +873,9 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
               </div>
             </>
-          )}
-        </div>
+          )
+          }
+        </div >
       ) : <CircularProgress size={65} className={classes.progress} />
       }
 

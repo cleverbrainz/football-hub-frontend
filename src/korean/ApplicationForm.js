@@ -224,14 +224,14 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function ApplicationForm({ history, location, locale, match, setLocale }) {
+export default function ApplicationForm({ history, location, locale, match, setLocale, challenges }) {
   // console.log(match)
 
   // console.log(history, location)
   const classes = useStyles();
   const [message, setMessage] = useState()
   const [isLoading, setIsLoading] = useState(false)
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(challenges ? 2 : 0);
   const [isSafari, setIsSafari] = useState(false)
   const [open, setOpen] = useState(false);
   const [accountCategory, setAccountCategory] = useState()
@@ -486,23 +486,26 @@ export default function ApplicationForm({ history, location, locale, match, setL
         dob,
         applications: {
           ajax_application: {
-            ...(type === 'submit' && {
+            ...(type === 'application' && {
               age_group: `Under ${group}s`,
               submitted: true,
               submission_date: moment()
             }),
+            ...(type === 'challenges' && {
+              challenges_submitted: true
+            }),
             ...applicationDetails,
             personal_details: {
               ...applicationDetails.personal_details,
-              contact_number: type === 'submit' ? contact_number.join('') : contact_number,
-              alt_contact_number: type === 'submit' ? (alt_contact_number[1] && alt_contact_number[2]) ? alt_contact_number.join('') : contact_number.join('') : alt_contact_number
+              contact_number: type === 'application' ? contact_number.join('') : contact_number,
+              alt_contact_number: type === 'application' ? (alt_contact_number[1] && alt_contact_number[2]) ? alt_contact_number.join('') : contact_number.join('') : alt_contact_number
             }
           }
         }
       }
     }, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
-        if (type === 'submit') {
+        if (type === 'challenges') {
           axios.post('/contactPlayer', {
             type: 'applicationReceived',
             recipient: { recipientId: auth.getUserId() },
@@ -549,7 +552,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
         })
       } else {
 
-        if (activeStep === 2) {
+        if (activeStep !== 0) {
           setOpen(true)
         } else {
           scroll()
@@ -1892,6 +1895,11 @@ export default function ApplicationForm({ history, location, locale, match, setL
         </Box>
         <ul>
           {application['9'][locale].split('/').map(x => <li style={{ listStyleType: 'circle', fontSize: '14px' }}> {x} </li>)}
+          <li style={{ listStyleType: 'circle', fontSize: '14px' }}>
+            <a style={{ fontSize: '16px'}}target="_blank" rel="noopener noreferrer" 
+              href={locale === 'ko' ? 'https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A5%E1%86%AF%E1%84%8C%E1%85%B5%E1%84%91%E1%85%AE%E1%86%BA%E1%84%87%E1%85%A9%E1%86%AF%20%E2%80%93%20%E1%84%8E%E1%85%A2%E1%86%AF%E1%84%85%E1%85%B5%E1%86%AB%E1%84%8C%E1%85%B5.pdf?alt=media&token=ea6de0d8-c7d8-466f-b2c3-90edc050c06a' : 'https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/Indulge%20Football%20%E2%80%93%20The%20Challenges.pdf?alt=media&token=7f0af846-b9a8-4eae-8a4e-6be1487c4d54'}
+            >{locale === 'ko' ? '챌린지 팁을 보려면 클릭하세요' : 'Click here to see more on what the assessment team are looking for'}</a>
+          </li>
         </ul>
 
 
@@ -1988,7 +1996,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
 
           <Button
-            style={{ display: activeStep === 0 ? 'none' : 'initial' }}
+            style={{ display: activeStep === 1 ? 'initial' : 'none' }}
             disabled={activeStep === 0 || isLoading}
             onClick={handleBack}
             className={classes.button}>
@@ -2020,7 +2028,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             className={classes.button}
             endIcon={<ArrowForwardIcon />}>
             {isLoading && <CircularProgress size={30} className={classes.progress} />}
-            {activeStep === steps.length - 1 ? application['10c'][locale] : application['10d'][locale]}
+            {activeStep === 0 ? application['10d'][locale] : application['10c'][locale] }
           </Button>
         </div>
       </div>
@@ -2058,7 +2066,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             {application['10a'][locale]}
           </Button>
           <Button variant='outlined' onClick={() => {
-            handleApplicationSave('submit')
+            handleApplicationSave(activeStep === 2 ? 'challenges' : 'application')
             setTimeout(() => {
               history.push(`/user/${auth.getUserId()}`)
             }, (3000));

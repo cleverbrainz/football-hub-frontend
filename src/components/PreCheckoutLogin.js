@@ -165,7 +165,7 @@ export default function PreCheckoutLogin({
       >
 
         <DialogTitle id="alert-dialog-title">
-          {category !== 'login' ? 'Sign up and join the FT Ballr community!' : 'Log into your FT Ballr account'}
+          {category !== 'login' ? 'Sign up and join the ftballer community!' : 'Log into your ftballer account'}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

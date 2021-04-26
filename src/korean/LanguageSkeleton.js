@@ -1074,6 +1074,12 @@ const arr = [
     "korean": "프로필 페이지로 이동합니다…"
   },
   {
+    "page": "snackbar_messages",
+    "section": "10",
+    "english": "Email has not yet been verifed. Please check your emails for a verification link.",
+    "korean": "이메일 인증이 완료되지 않았습니다. 메일함을 확인해주세요."
+  },
+  {
     "page": "profile",
     "section": "1a",
     "english": "Sections",
@@ -1222,6 +1228,18 @@ const arr = [
     "section": "8c",
     "english": "Add Your Photo",
     "korean": "지원하기"
+  },
+  {
+    "page": "profile",
+    "section": "8d",
+    "english": "Section Completed",
+    "korean": "섹션 완료"
+  },
+  {
+    "page": "profile",
+    "section": "9a",
+    "english": "Please compete and submit your personal information and football history. / After this please complete and submit the challenges.",
+    "korean": "먼저 참가신청자 본인의 정보와 유스 경력을 토대로 프로필을 작성하여 참가신청을 완료하세요. / 참가신청 이후 가이드라인에 따라 챌린지 영상(유튜브) 업로드하여 제출하세요."
   }
 ]
 
