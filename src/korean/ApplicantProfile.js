@@ -334,6 +334,32 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
     setMessage();
   };
 
+  const handleFormSubmit = (e) => {
+
+    const yes = document.querySelector('#payment-confirm-yes').value
+
+    console.log({ payment: yes ? 'yes' : 'no' })
+
+    axios.patch(`/users/${auth.getUserId()}`, {
+      userId: auth.getUserId(),
+      updates: {
+        applications: {
+          ajax_application: {
+            ...application,
+            post_app_actions: {
+              ...application.post_app_actions,
+              payment_confirm: yes ? 'yes' : 'no'
+            }
+          }
+        }
+      }
+    }, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+    .then(res => {
+      setMessage({ success: 'Payment confirmation saved' })
+      setDialogOpen(false)
+    })
+  }
+
   async function handleRedirect() {
 
     const { stripeId, application_fee_paid } = user
@@ -646,6 +672,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
                           <TableCell align="right"> Payment </TableCell>
                           <TableCell align="right"> PDP Form</TableCell>
+                          <TableCell align="right"> Itinerary</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -662,7 +689,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                                 <InfoIcon style={{ color: 'blue', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} />
                                 : <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />}
 
-                            {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <a onClick={() => setDialogOpen(true)}> Click for details </a>
+                            {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <a onClick={() => setDialogOpen(true)}> View </a>
                               : application.post_app_actions.payment_confirm === 'yes' ? 'In Review' : 'Confirmed'}
 
                           </TableCell>
@@ -675,14 +702,15 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                                 <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
                               <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />
                             }
-
-
-
                             <Link
                               to={{
                                 pathname: `/user/${auth.getUserId()}/pdp-form`,
                                 state: application
-                              }}> Click for form </Link>
+                              }}> View </Link>
+                          </TableCell>
+
+                          <TableCell align="right">
+                            <a target='_blank' rel='noopener noreferrer' href='https://indulgefootball.kr/PDP%20Sample%20Daily%20Itinerary.pdf'> View </a>
                           </TableCell>
 
                         </TableRow>
@@ -906,11 +934,38 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
                   <p> Payment Reference: {`PDP ${auth.getUserId().substring(0, 10)} ${user.player_last_name}`} </p>
 
-                  <p> You can confirm that you've made payment on the post app form </p>
-
                 </DialogContentText>
 
+
+                <div className={classes.field}>
+                  <div className={classes.label}>
+                    <label > <span style={{ color: 'red' }}>*</span>  Please type your reference number to confirm that you have made payment </label>
+                  </div>
+                  <div class="field-body">
+
+                    {!application.post_app_actions?.payment_confirm  && <p className="help"> Once saved, you will not be able to see this pop up again </p>}
+
+                    <p class="control is-expanded">
+                      <input
+                        disabled={['yes', 'indulge'].includes(application.post_app_actions?.payment_confirm)}
+                        value={application.post_app_actions?.payment_confirm}
+                        class="input" type="text"
+                        id='payment-confirm-yes'
+                      />
+                    </p>
+                  </div>
+                </div>
+
               </DialogContent>
+
+              <DialogActions>
+                <Button variant='contained' onClick={() => setDialogOpen(false)} color='primary'>
+                  Back
+                </Button>
+                <Button variant='contained' onClick={handleFormSubmit} color='primary'>
+                  Save
+                </Button>
+              </DialogActions>
             </Dialog>
           </div>
         )
