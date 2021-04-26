@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import {
   CircularProgress,
@@ -58,23 +58,22 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-const PostAppForm = ({ location: { state }, history }) => {
+const PostAppForm = ({ location, history }) => {
 
 
   const classes = useStyles()
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState()
-
   const [form, setForm] = useState(null)
+  const state  = useRef(location.state)
 
   useEffect(() => {
-    if (state.hasOwnProperty('post_app_actions')) {
+    if (state.current.hasOwnProperty('post_app_actions')) {
       setForm({
-        ...state.post_app_actions
+        ...state.current.post_app_actions
       })
     } else {
       setForm({
-        payment_confirm: '',
         kit_size_top: '',
         kit_size_bottom: '',
         other_health_conditions: '',
@@ -108,13 +107,6 @@ const PostAppForm = ({ location: { state }, history }) => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault()
-
-    // for (const i in form) {
-    //   if (i === '' || !i) {
-    //     return setMessage({ error: 'Please ensure you have filled out all required fields' })
-    //   }
-    // }
-
     setIsLoading(true)
 
     axios.patch(`/users/${auth.getUserId()}`, {
@@ -122,8 +114,9 @@ const PostAppForm = ({ location: { state }, history }) => {
       updates: {
         applications: {
           ajax_application: {
-            ...state,
+            ...state.current,
             post_app_actions: {
+              ...state.current.post_app_actions,
               ...form
             }
           }
@@ -158,41 +151,6 @@ const PostAppForm = ({ location: { state }, history }) => {
           </Typography>
 
           <form onChange={(e) => handleFormChange(e)} onSubmit={(e) => handleFormSubmit(e)}>
-
-            <div className={classes.field} style={{ marginBottom: '2rem'}}>
-              <div className={classes.label}>
-                <label > Please <a target='_blank' href='https://indulgefootball.kr/PDP%20Sample%20Daily%20Itinerary.pdf'> click here </a> for the PDP project itinerary </label>
-              </div>
-            </div>
-
-
-            <div className={classes.field}>
-              <div className={classes.label}>
-                <label > <span style={{ color: 'red' }}>*</span>  Please confirm if you have made payment. The team will confirm this </label>
-              </div>
-              <div class="field-body">
-                <div class="field is-narrow">
-                  {/* {!state.post_app_actions?.payment_confirm  && <p className="help"> Once saved, you will not be able to unselect this field </p>} */}
-                  <div class="control">
-                    <label style={{ marginRight: '0.5rem' }} class="radio">
-                      <input type="radio" checked={['yes', 'indulge'].includes(form.payment_confirm)}
-                        disabled={state.post_app_actions ? !['no', ''].includes(state.post_app_actions?.payment_confirm) : false} id='yes' name="payment_confirm" style={{ marginRight: '5px', transform: 'translateY(2px)' }} />
-                      Yes
-                      </label>
-
-                    <label class="radio">
-                      <input type="radio"
-                        checked={form.payment_confirm === 'no'}
-                        disabled={state.post_app_actions ? !['no', ''].includes(state.post_app_actions?.payment_confirm) : false} id='no' name="payment_confirm" style={{ marginRight: '5px', transform: 'translateY(2px)' }} />
-                      No
-                      </label>
-                  </div>
-                </div>
-              </div>
-              {state.post_app_actions?.payment_confirm === 'yes' && <p class='help is-info'> The team is currently confirming your payment and will update you once finished</p>}
-              {state.post_app_actions?.payment_confirm === 'indulge' && <p class='help is-success'> Your payment has successfully been receieved</p>}
-            </div>
-
 
             <div style={{ transform: 'translateY(12px)' }} className={classes.label}>
               <label > Kit Size </label>
