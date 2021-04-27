@@ -488,11 +488,11 @@ export default function ApplicationForm({ history, location, locale, match, setL
           ajax_application: {
             ...(type === 'application' && {
               age_group: `Under ${group}s`,
-              submitted: true,
-              submission_date: moment()
+              submitted: true
             }),
             ...(type === 'challenges' && {
-              challenges_submitted: true
+              challenges_submitted: true,
+              submission_date: moment()
             }),
             ...applicationDetails,
             personal_details: {
@@ -509,7 +509,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
           axios.post('/contactPlayer', {
             type: 'applicationReceived',
             recipient: { recipientId: auth.getUserId() },
-            emailContent: { contentCourse: `Ajax Camp: Under ${group}s` },
+            emailContent: { contentCourse: `Ajax Camp: U${group}` },
             locale: locale
           }).then((res) => {
             setMessage({ success: snackbar_messages['1a'][locale], info: res.info })

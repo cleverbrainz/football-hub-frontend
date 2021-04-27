@@ -266,7 +266,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   const input = useRef()
   const defaultPic = 'https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80'
 
-  console.log({ isOwnProfile, egg: auth.getUserId(), match })
+  // console.log({ isOwnProfile, egg: auth.getUserId(), match })
 
   const date = new Date()
 
@@ -274,7 +274,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
     axios.get(`/users/${match.params.id}`)
       .then(res => {
-        console.log('THISSS ISSS', res.data)
+        // console.log('THISSS ISSS', res.data)
         const { applications } = res.data[0]
         setUser(res.data[0])
 
@@ -303,7 +303,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
     axios.post(`/user/${auth.getUserId()}/image`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         getData()
         setImageUpload(false)
 
@@ -338,7 +338,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
     const yes = document.querySelector('#payment-confirm-yes').value
 
-    console.log({ payment: yes ? 'yes' : 'no' })
+    // console.log({ payment: yes ? 'yes' : 'no' })
 
     axios.patch(`/users/${auth.getUserId()}`, {
       userId: auth.getUserId(),
@@ -407,7 +407,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   }
 
   function scrollView(item) {
-    console.log(item)
+    // console.log(item)
     document.querySelector(`#${item}`).scrollIntoView({ block: 'center' })
     setCurrentScrollSection(item)
   }
@@ -627,7 +627,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                         <TableCell>ID </TableCell>
                         <TableCell align="right"> {profile['5b'][locale]}</TableCell>
 
-                        {(application && application.hasOwnProperty('submitted')) &&
+                        {(application && application.hasOwnProperty('challenges_submitted')) &&
                           <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
 
                         <TableCell align="right"> {profile['5d'][locale]}</TableCell>
@@ -638,13 +638,13 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                         <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
                         <TableCell align="right"> PDP </TableCell>
 
-                        {(application && application.hasOwnProperty('submitted')) &&
+                        {(application && application.hasOwnProperty('challenges_submitted')) &&
                           <TableCell align="right">
                             {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
                           </TableCell>}
 
                         <TableCell align="right" style={{ color: '#3100F7' }}>
-                          {(application && application.hasOwnProperty('submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
+                          {(application && application.hasOwnProperty('challenges_submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -667,7 +667,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                         <TableRow>
                           <TableCell align="right"> {profile['5b'][locale]}</TableCell>
 
-                          {(application && application.hasOwnProperty('submitted')) &&
+                          {(application && application.hasOwnProperty('challenges_submitted')) &&
                             <TableCell align="right"> Camp Date </TableCell>}
 
                           <TableCell align="right"> Payment </TableCell>
@@ -722,7 +722,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
               )
           }
 
-          <Paper>
+          {/* <Paper>
             <TableContainer>
               <Table className={classes.table} aria-label="simple table">
                 <TableHead>
@@ -753,7 +753,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                 </TableBody>
               </Table>
             </TableContainer>
-          </Paper>
+          </Paper> */}
 
           {
             !application?.hasOwnProperty('challenges_submitted') && (
