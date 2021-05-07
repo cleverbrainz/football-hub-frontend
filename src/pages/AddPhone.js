@@ -249,7 +249,7 @@ const AddPhone = ({ location, history, locale }) => {
     <div className={classes.container}>
 
       {/* <Paper elevation={3} className={classes.paper}> */}
-      <Button className={`${classes.button} ${classes.back}`} variant='outlined' onClick={() => history.push(`/user/${user.user.userId}`)}>{verification['1e'][locale]}</Button>
+      <Button className={`${classes.button} ${classes.back}`} variant='outlined' onClick={() => history.push(`/user/${auth.getUserId()}`)}>{verification['1e'][locale]}</Button>
 
       <div style={{width:'90%', margin: '0 auto'}}>
       <Typography component='div' >

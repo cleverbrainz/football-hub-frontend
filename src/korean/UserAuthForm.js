@@ -9,21 +9,16 @@ import {
   Radio,
   Snackbar,
   Checkbox,
-  FormControl,
   Tooltip
 } from "@material-ui/core";
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import EmailSharpIcon from '@material-ui/icons/EmailSharp';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import MuiAlert from '@material-ui/lab/Alert';
 import auth from '../lib/auth'
-import moment from 'moment'
 import HelpIcon from '@material-ui/icons/Help';
 import { firebaseApp } from '../lib/firebase';
 import * as firebase from "firebase";
-import Reaptcha from 'reaptcha';
 import { AuthContext } from '../lib/context';
 
 const UserAuthForm = ({ locale, history }) => {
@@ -223,7 +218,7 @@ const UserAuthForm = ({ locale, history }) => {
   const handleRecaptcha = () => {
     var cred = firebase.auth.PhoneAuthProvider.credential(
       verificationId, verificationCode);
-    console.log(cred)
+    // console.log(cred)
     var multiFactorAssertion =
       firebase.auth.PhoneMultiFactorGenerator.assertion(cred);
     // Complete sign-in.
@@ -231,7 +226,7 @@ const UserAuthForm = ({ locale, history }) => {
     resolver.resolveSignIn(multiFactorAssertion)
       .then(function (data) {
         // User successfully signed in with the second factor phone number.
-        console.log(data)
+        // console.log(data)
         axios.get(`/users/${data.user.uid}`)
           .then(res => {
             // console.log(res.data)
@@ -261,7 +256,7 @@ const UserAuthForm = ({ locale, history }) => {
         if (data.user.emailVerified) {
         axios.get(`/users/${data.user.uid}`)
           .then(res => {
-            console.log(res)
+            // console.log(res)
             const { category } = res.data[0]
             localStorage.setItem('category', category)
 
@@ -272,7 +267,7 @@ const UserAuthForm = ({ locale, history }) => {
             setTimeout(async () => {
               if (category === 'admin') {
                 history.push('/dashboard')
-              } else if (category === 'player' || category === 'parent') {
+              } else if (['player', 'parent', 'test'].includes(category)) {
                 history.push(`/user/${auth.getUserId()}`)
               } else if (category === 'company') {
                 history.push('/tester')
@@ -291,7 +286,7 @@ const UserAuthForm = ({ locale, history }) => {
             }
       })
       .catch(error => {
-        console.log(error)
+        // console.log(error)
         if (error.code === 'auth/multi-factor-auth-required') {
           setResolver(error.resolver)
           setHints(error.resolver.hints[0])
@@ -316,7 +311,7 @@ const UserAuthForm = ({ locale, history }) => {
             // Unsupported second factor.
           }
         } else {
-          console.log(error)
+          // console.log(error)
           handleAfterRequestStates({
             error: snackbar_messages['7c'][locale]
           })
@@ -324,45 +319,45 @@ const UserAuthForm = ({ locale, history }) => {
       })
   }
 
-  function loginUser() {
-    const { email, password } = registerDetails
-    axios.post('/login', { email, password })
-      .then(res => {
-        const { application_fee_paid, token, stripeId, userId } = res.data
-        const fee_needed = application_fee_paid === 'unpaid' && moment().isAfter(moment('03/20/2021'))
+  // function loginUser() {
+  //   const { email, password } = registerDetails
+  //   axios.post('/login', { email, password })
+  //     .then(res => {
+  //       const { application_fee_paid, token, stripeId, userId } = res.data
+  //       const fee_needed = application_fee_paid === 'unpaid' && moment().isAfter(moment('03/20/2021'))
 
-        auth.setToken(token)
+  //       auth.setToken(token)
 
 
-        handleAfterRequestStates({
-          success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['9'][locale]}`
-        })
+  //       handleAfterRequestStates({
+  //         success: `${snackbar_messages['7a'][locale]} ${snackbar_messages['9'][locale]}`
+  //       })
 
-        setTimeout(async () => {
+  //       setTimeout(async () => {
 
-          history.push({
-            pathname: `/user/${userId}`,
-            state: {
-              application_fee_paid,
-              stripeId,
-              fee_needed
-            }
-          })
-        }, 1000)
+  //         history.push({
+  //           pathname: `/user/${userId}`,
+  //           state: {
+  //             application_fee_paid,
+  //             stripeId,
+  //             fee_needed
+  //           }
+  //         })
+  //       }, 1000)
 
-      })
-      .catch(err => {
-        console.log(err)
-        handleAfterRequestStates({
-          error: snackbar_messages['7c'][locale]
-        })
-      })
-  }
+  //     })
+  //     .catch(err => {
+  //       console.log(err)
+  //       handleAfterRequestStates({
+  //         error: snackbar_messages['7c'][locale]
+  //       })
+  //     })
+  // }
 
   function handleUserAuth(text) {
     const { email, password } = registerDetails
     setIsLoading(true)
-    console.log(text)
+    // console.log(text)
     switch (text) {
 
       case 'RESET PASSWORD':
@@ -379,7 +374,7 @@ const UserAuthForm = ({ locale, history }) => {
 
       case 'SIGN IN':
       case '로그인':
-        console.log(email, password)
+        // console.log(email, password)
         // loginUser()
         frontendLogin()
         break;
@@ -405,7 +400,7 @@ const UserAuthForm = ({ locale, history }) => {
         break;
 
       case 'VERIFY CODE':
-        console.log(email, password)
+        // console.log(email, password)
         // loginUser()
         handleRecaptcha()
         break;

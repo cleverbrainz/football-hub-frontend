@@ -1,21 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { languages, marketing } from './LanguageSkeleton'
+import React, { useEffect } from 'react';
+import { marketing } from './LanguageSkeleton'
 import {
   Typography,
-  Grid,
-  Fab,
   Box,
-  Switch,
   Card,
   CardActions,
   CardContent,
-  Button,
-  Tabs,
-  Tab
-} from "@material-ui/core";
-import TabPanel from '@material-ui/lab/TabPanel'
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import HomeNav from '../components/Navbars/HomeNav'
+  Button} from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
 import StarsSharpIcon from '@material-ui/icons/StarsSharp';
 import EventSharpIcon from '@material-ui/icons/EventSharp';
 import ScheduleSharpIcon from '@material-ui/icons/ScheduleSharp';
@@ -194,17 +186,6 @@ const Marketing = (props) => {
   const classes = useStyles()
   const { locale, history } = props
 
-  const {
-    mainTitle,
-    headerMain,
-    headerParagraph,
-    headerList,
-    subSectionHeaders,
-    subSectionCards,
-    subSectionCampsTitle,
-    subSectionCampsCards,
-    subSectionCampsCardButton
-  } = languages[locale].marketingPage
 
 
 

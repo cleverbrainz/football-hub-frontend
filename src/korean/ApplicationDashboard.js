@@ -12,15 +12,13 @@ import ListIcon from '@material-ui/icons/List';
 import PersonIcon from '@material-ui/icons/Person';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
-import SortByAlphaSharpIcon from '@material-ui/icons/SortByAlphaSharp';
 import ImportExportSharpIcon from '@material-ui/icons/ImportExportSharp';
 import ArrowBackSharpIcon from '@material-ui/icons/ArrowBackSharp';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Popover from '@material-ui/core/Popover';
 import {
   Box,
-  TextField,
   Container,
-  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -29,7 +27,6 @@ import {
   TableHead,
   TableBody,
   TableRow,
-  Grid,
   Typography,
   AppBar,
   Tabs,
@@ -46,7 +43,7 @@ import {
   ListItemText,
   Button
 } from '@material-ui/core'
-import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import axios from 'axios'
 import auth from '../lib/auth'
@@ -189,19 +186,20 @@ function AlertDialog({ open, setOpen, handleSave, setEditing }) {
 }
 
 
-const Application = ({ permissions, application, filteredApplications, applications, setFilteredApplications, setApplications, filteredIndex, setEditing, open, setOpen, editing, averages, text, locale }) => {
+const Application = ({ viewSelect, permissions, application, filteredApplications, applications, setFilteredApplications, setApplications, filteredIndex, setEditing, open, setOpen, editing, averages, text, locale }) => {
 
   const classes = useStyles()
   const [userId, email, applicationInfo] = application
-  const { personal_details, player_attributes, challenges, football_history } = applicationInfo
+  const { personal_details, player_attributes, challenges, football_history, submitted, challenges_submitted, post_app_actions } = applicationInfo
   const { name, player_first_name, player_last_name, address_line_1, address_line_2, city, country, postcode, nationality, can_provide_certificates } = personal_details
+  const { allergies, kit_size_bottom, kit_size_top, injury_history, agree_tcs, payment_confirm, others } = post_app_actions
   const { position } = player_attributes
-  const { current_club, bio_description, previous_clubs, private_coach_name, private_coaching, highlights_footage_link, award_achieved } = football_history
+  const { current_club, bio_description, previous_clubs, private_coach_name, private_coaching, highlights_footage_link, award_achieved, award_reasoning } = football_history
 
   const [ratings, setRatings] = useState(applicationInfo.ratings)
   const [[averagePositionScore, averageCategoryScore, playerCategory], setAverageScores] = useState(averages(player_attributes.position))
 
-  console.log({ ratings })
+  // console.log({ ratings })
 
   const handleSave = (event, approval = false) => {
     console.log('handling')
@@ -213,14 +211,14 @@ const Application = ({ permissions, application, filteredApplications, applicati
     newApps[applicationsIndex] = [userId, email, newApplication]
     newFiltered[filteredIndex] = [userId, email, newApplication]
     axios.patch(`/users/${userId}`, { userId, updates: { applications: { ajax_application: newApplication } } }, { headers: { authorization: `Bearer ${auth.getToken()}` } }).then(res => {
-      console.log(res)
+      // console.log(res)
       if (approval && ratings.indulge === 'Yes') {
         axios.post('/contactPlayer', {
           type: 'applicationSuccessful',
           recipient: { recipientId: userId },
           emailContent: { contentCourse: 'Ajax Summer Camp' }
         }).then(res => {
-          console.log(res)
+          // console.log(res)
         })
       } else if (approval && ratings.indulge === 'No') {
         axios.post('/contactPlayer', {
@@ -228,7 +226,7 @@ const Application = ({ permissions, application, filteredApplications, applicati
           recipient: { recipientId: userId },
           emailContent: { contentCourse: 'Ajax Summer Camp' }
         }).then(res => {
-          console.log(res)
+          // console.log(res)
         })
       }
       setApplications(newApps)
@@ -265,7 +263,7 @@ const Application = ({ permissions, application, filteredApplications, applicati
           fontSize={35} fontWeight="fontWeightBold" m={0}>
           {player_first_name} {player_last_name}
         </Box>
-
+        { viewSelect === 'All' &&
         <FormControl style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}>
 
           <div>
@@ -274,8 +272,8 @@ const Application = ({ permissions, application, filteredApplications, applicati
               fontSize={12} fontWeight="fontWeightBold" m={0}>
               Approve
           </Box>
-
-            <Select value={ratings.indulge} style={{ fontSize: '14px' }} onChange={(event) => {
+          
+            <Select disabled={!challenges_submitted} value={ratings.indulge} style={{ fontSize: '14px' }} onChange={(event) => {
               setEditing(true)
               setRatings({ ...ratings, indulge: event.target.value })
             }}>
@@ -285,8 +283,9 @@ const Application = ({ permissions, application, filteredApplications, applicati
             </Select>
           </div>
 
-          {editing && <Button style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event, true)}>{text[locale].Save}</Button>}
+          {editing && <Button disabled={!challenges_submitted} style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event, true)}>{text[locale].Save}</Button>}
         </FormControl>
+          }
       </Typography>
 
       <div className="field-body" style={{ margin: '10px 0', borderBottom: '1px dashed grey', padding: '20px 0' }}>
@@ -413,6 +412,8 @@ const Application = ({ permissions, application, filteredApplications, applicati
         })}
       </div>
 
+      {viewSelect === 'All' &&
+      <>  
       <Typography className={classes.inputContainers} component='div'>
         <Box
           fontSize={14} fontWeight="fontWeightBold" m={0}>
@@ -464,6 +465,8 @@ const Application = ({ permissions, application, filteredApplications, applicati
           </div>
         )
       })}
+
+
 
 
       {award_achieved && (
@@ -523,9 +526,33 @@ const Application = ({ permissions, application, filteredApplications, applicati
             </Box>
       </Typography>
 
+      {/* <Typography className={classes.inputContainers} component='div'>
+        <Box
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
+          Highlights Footage Links
+        </Box>
+      </Typography> */}
+
       <div class="field-body" >
-        {['highlights_footage_link', 'private_coach_name'].map((el, i) => {
-          if (!private_coaching && el === 'private_coach_name') return
+        {highlights_footage_link.map((el, i) => {
+          return (
+            <div class='field'
+            onClick={() => {
+              el.slice(0, 8) === 'https://' ? window.open(el, '_blank') : window.open(`//${el}`, '_blank')
+            }}
+          >
+            <label className={classes.label}> Link {i + 1} </label>
+            <div class="control">
+              <input class="input is-small" type="text" value={el} readonly />
+            </div>
+          </div>
+          )
+        })}
+      </div>
+
+      <div class="field-body" >
+        {['private_coach_name', 'private_coach_company', 'private_coach_website'].map((el, i) => {
+          // if (!private_coaching && el === 'private_coach_name') return
           const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
           return (
             <div class='field' style={{ marginBottom: '10px' }} >
@@ -547,7 +574,33 @@ const Application = ({ permissions, application, filteredApplications, applicati
         </div>
 
       </div>
+      </>
+      }
+      { viewSelect === 'Approved' && 
+<>
+<Typography className={classes.inputContainers} component='div'>
+<Box
+  fontSize={14} fontWeight="fontWeightBold" m={0}>
+  Application Responses
+    </Box>
+</Typography>
+      <div class="field-body" >
+      {['allergies', 'kit_size_top', 'kit_size_bottom', 'injuries', 'others'].map((el, i) => {
+          // if (!private_coaching && el === 'private_coach_name') return
+          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+          return (
+            <div class='field' style={{ marginBottom: '10px' }} >
+              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+              <div class="control">
+                <input class="input is-small" type="text" value={post_app_actions[el] ? post_app_actions[el] : 'None'} readonly />
+              </div>
+            </div>
+          )
+        })}
 
+    </div>
+    </>
+      }
 
       <AlertDialog open={open} setOpen={setOpen} handleSave={handleSave} setEditing={setEditing} />
     </>
@@ -574,6 +627,7 @@ const Application = ({ permissions, application, filteredApplications, applicati
             </Box>
 
             <Select
+              disabled={!submitted}
               value={ratings.application}
               style={{ fontSize: '14px' }}
               onChange={(event) => {
@@ -589,7 +643,7 @@ const Application = ({ permissions, application, filteredApplications, applicati
             </Select>
           </div>
 
-          {editing && <Button style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event)}>{text[locale].Save}</Button>}
+          {editing && <Button disabled={!submitted} style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event)}>{text[locale].Save}</Button>}
         </FormControl>
       </Typography>
 
@@ -733,7 +787,7 @@ const Application = ({ permissions, application, filteredApplications, applicati
       })}
 
 
-      {award_achieved && (
+      {(award_achieved || award_reasoning) && (
         <>
           <Typography className={classes.inputContainers} component='div'>
             <Box
@@ -767,8 +821,25 @@ const Application = ({ permissions, application, filteredApplications, applicati
       </Typography>
 
       <div class="field-body" >
-        {['highlights_footage_link', 'private_coach_name'].map((el, i) => {
-          if (!private_coaching && el === 'private_coach_name') return
+        {highlights_footage_link.map((el, i) => {
+          return (
+            <div class='field'
+            onClick={() => {
+              el.slice(0, 8) === 'https://' ? window.open(el, '_blank') : window.open(`//${el}`, '_blank')
+            }}
+          >
+            <label className={classes.label}> Link {i + 1} </label>
+            <div class="control">
+              <input class="input is-small" type="text" value={el} readonly />
+            </div>
+          </div>
+          )
+        })}
+      </div>
+
+      <div class="field-body" >
+        {['private_coach_name', 'private_coach_company', 'private_coach_website'].map((el, i) => {
+          // if (!private_coaching && el === 'private_coach_name') return
           const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
           return (
             <div class='field' style={{ marginBottom: '10px' }} >
@@ -808,7 +879,7 @@ const Application = ({ permissions, application, filteredApplications, applicati
           fontSize={35} fontWeight="fontWeightBold" m={0}>
           {player_first_name} {player_last_name}
         </Box>
-        {editing && <Button style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event)}>Save</Button>}
+        {editing && <Button style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" disabled={!challenges_submitted} onClick={(event) => handleSave(event)}>Save</Button>}
       </Typography>
 
 
@@ -935,6 +1006,7 @@ const Application = ({ permissions, application, filteredApplications, applicati
             </Box>
 
             <Select
+              disabled={!challenges_submitted}
               style={{ fontSize: '14px' }}
               value={ratings.challengesMap.challenge1} onChange={(event) => {
                 setEditing(true)
@@ -967,7 +1039,7 @@ const Application = ({ permissions, application, filteredApplications, applicati
               Select Rating
             </Box>
 
-            <Select value={ratings.challengesMap.challenge2}
+            <Select disabled={!challenges_submitted} value={ratings.challengesMap.challenge2}
               style={{ fontSize: '14px' }} onChange={(event) => {
                 setEditing(true)
                 setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge2: event.target.value } })
@@ -1001,7 +1073,7 @@ const Application = ({ permissions, application, filteredApplications, applicati
               Select Rating
             </Box>
 
-            <Select value={ratings.challengesMap.challenge3}
+            <Select disabled={!challenges_submitted} value={ratings.challengesMap.challenge3}
               style={{ fontSize: '14px' }} onChange={(event) => {
                 setEditing(true)
                 setRatings({ ...ratings, challengesMap: { ...ratings.challengesMap, challenge3: event.target.value } })
@@ -1048,8 +1120,10 @@ const ApplicationDashboard = ({ locale }) => {
   const { user } = useContext(AuthContext)
   const classes = useStyles()
   // const [user, setUser] = useState(null)
-  const [permissions, setPermissions] = useState(1)
+  const [permissions, setPermissions] = useState()
+  const [initialPermission, setInitialPermission] = useState()
   const [tabValue, setTabValue] = useState(0)
+  const [currentUserCount, setCurrentUserCount] = useState(0)
   const [coursesModerating, setCoursesModerating] = useState(['Ajax'])
   const [selectedCourse, setSelectedCourse] = useState('select')
   const [applications, setApplications] = useState([])
@@ -1061,7 +1135,8 @@ const ApplicationDashboard = ({ locale }) => {
   const [filters, setFilters] = useState({
     ageRange: 'All',
     positionCategory: 'All',
-    position: 'All'
+    position: 'All',
+    applicationStatus: 'All'
   })
   const [sort, setSort] = useState({ type: '', direction: 'down' })
 
@@ -1099,7 +1174,7 @@ const ApplicationDashboard = ({ locale }) => {
     }
     const averagePositionScore = filteredPositionPlayers.length > 0 ? (filteredPositionPlayers.reduce((a, b) => a + b, 0) / filteredPositionPlayers.length).toFixed(1) : 'N/A'
     const averageCategoryScore = filteredCategoryPlayers.length > 0 ? (filteredCategoryPlayers.reduce((a, b) => a + b, 0) / filteredCategoryPlayers.length).toFixed(1) : 'N/A'
-    console.log(filteredCategoryPlayers)
+    // console.log(filteredCategoryPlayers)
 
     return [averagePositionScore, averageCategoryScore, playerCategory]
   }
@@ -1107,14 +1182,16 @@ const ApplicationDashboard = ({ locale }) => {
 
 
   const handleFilterChange = (event) => {
-    console.log(event)
+    // console.log(event)
     const name = event.target.name
     const newFilters = name === 'positionCategory' ? { ...filters, [name]: event.target.value, position: 'All' } : { ...filters, [name]: event.target.value }
-    console.log(newFilters)
+    // console.log(newFilters)
     const filteredPlayers = []
     for (const application of applications) {
       const [id, email, player] = application
-      console.log(newFilters.ageRange, player.age_group)
+      const status = player.challenges_submitted ? 'complete' : player.submitted ? 'onlyApplication' : 'started'
+      // console.log(newFilters.ageRange, player.age_group)
+      if (newFilters.applicationStatus === 'All' || newFilters.applicationStatus === status) {
       if (newFilters.ageRange === player.age_group || newFilters.ageRange === 'All') {
       if (newFilters.positionCategory === 'All') {
         filteredPlayers.push(application)
@@ -1124,16 +1201,17 @@ const ApplicationDashboard = ({ locale }) => {
         }
       }
       }
+      }
     }
 
-    console.log({ filteredPlayers })
+    // console.log({ filteredPlayers })
     setFilters(newFilters)
     setFilteredApplications(filteredPlayers)
   }
 
   const handleSort = (event, type) => {
     const [parent, key] = type.split(' ')
-    console.log(parent, key)
+    // console.log(parent, key)
     // console.log(event)
     const newSort = sort.type === key ? sort.direction === 'down' ? { type: key, direction: 'up' } : { type: key, direction: 'down' } : { type: key, direction: 'down' }
     event.preventDefault()
@@ -1166,42 +1244,47 @@ const ApplicationDashboard = ({ locale }) => {
 
   // console.log(permissions)
 
-  const getData = async function () {
+  const checkAdmin = async function () {
     let adminData = await axios.get(`/users/${auth.getUserId()}`)
     adminData = await adminData.data[0]
     if (adminData.category !== 'admin') {
       setRedirect(true)
     } else {
+      setInitialPermission(adminData.permissions)
+      setPermissions(adminData.permissions)
+    }
+
+  }
+
+  const getData = async function () {
+
     // const { courses, adminLevel } = userData
     // const courseArray = []
+    if (selectedCourse === 'select') return
     const applicantArray = []
-    let arr = await axios.get('/getApplicationIds')
+    let arr = await axios.get(`/getApplicationIds/${selectedCourse.toLowerCase()}_application`)
     arr = await arr.data
-    console.log({ arr })
-    for (const ajaxUser of arr) {
-      let userData = await axios.get(`/users/${ajaxUser}`)
-      userData = await userData.data[0]
-      const app = [userData.userId, userData.email]
-      if (userData.applications.ajax_application) {
-        app.push(userData.applications.ajax_application)
-      }
-      // if (app.length === 3) applicantArray.push(app)
+    // console.log({ arr })
+    for (const ajaxUser of arr.applications) {
+      const app = [ajaxUser.userId, ajaxUser.email, ajaxUser.applications[`${selectedCourse.toLowerCase()}_application`]]
+      // if (ajaxUser.applications.ajax_application) {
+      //   app.push(ajaxUser.applications.ajax_application)
+      // }
       if (app.length === 3 && app[2].ratings.challengesMap && auth.dobToAge(app[2].personal_details.dob) <= 15) applicantArray.push(app)
     }
+
     setApplications(applicantArray)
     setFilteredApplications(applicantArray)
-    console.log(applicantArray)
-    // for (const course of courses) {
-    //   let courseData = await axios.get(`/courses/${course}`)
-    //   courseData = await courseData.data[0]
-    //   courseArray.push(courseData)
-    // }
-    // for (const course of courseArray) {
-    }
+    setCurrentUserCount(arr.length)
+    // console.log(applicantArray)
   }
   useEffect(() => {
-    getData()
-  }, [])
+    if (initialPermission === undefined) {
+      checkAdmin()
+    } else {
+      getData()
+    }
+  }, [initialPermission, selectedCourse])
 
 
   const handleFix = () => {
@@ -1338,6 +1421,19 @@ const ApplicationDashboard = ({ locale }) => {
         {selectedCourse === 'Ajax' &&
         <>
           <FormControl>
+            <InputLabel>Application Status</InputLabel>
+            <Select className={classes.select} value={applicationStatus} inputProps={{
+                          name: 'applicationStatus',
+                        }} onChange={handleFilterChange}>
+              <MenuItem value={'All'}>
+                All
+              </MenuItem>
+              <MenuItem value="started">Started but not submitted</MenuItem>
+              <MenuItem value="onlyApplication">Submitted Application</MenuItem>
+              <MenuItem value="complete">Submitted Application & Challenges</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl>
             <InputLabel>Select Age Range</InputLabel>
             <Select className={classes.select} value={ageRange} inputProps={{
                           name: 'ageRange',
@@ -1406,9 +1502,11 @@ const ApplicationDashboard = ({ locale }) => {
       <ListItem selected={viewSelect === 'All' ? true : false} onClick={() => setViewSelect('All')} button>
             <ListItemText primary={`All Applications: ${filteredApplications.length}`} />
         </ListItem>
+        { initialPermission === 0 &&
         <ListItem selected={viewSelect === 'Approved' ? true : false} onClick={() => setViewSelect('Approved')} button>
             <ListItemText primary={'Approved'} />
         </ListItem>
+        }
       </List>
       <Divider />
 
@@ -1417,15 +1515,13 @@ const ApplicationDashboard = ({ locale }) => {
     )
   }
 
-  const { ageRange } = filters
+  const { ageRange, applicationStatus } = filters
 
-
-  // console.log({ applications })
-  if (!user) return null
+  if (initialPermission === undefined || permissions === undefined) return null
   if (redirect) return (
     <Redirect />
   )
-  return (
+  if (typeof permissions === 'number') return (
     <div className={classes.root}>
     <CssBaseline />
     <ApplicationDashboardOptions locale={locale}/>
@@ -1435,7 +1531,7 @@ const ApplicationDashboard = ({ locale }) => {
       <br />
       <br />
       <br />
-      <FormControl component="fieldset">
+      { initialPermission === 0 && <FormControl component="fieldset">
         <FormLabel component="legend">Access Type</FormLabel>
         <RadioGroup
           row
@@ -1453,38 +1549,7 @@ const ApplicationDashboard = ({ locale }) => {
           />
         </RadioGroup>
       </FormControl>
-
-      {/* <FormControl>
-        <InputLabel>{text[locale].Courses}</InputLabel>
-        <Select value={selectedCourse} onChange={(event) => setSelectedCourse(event.target.value)}>
-          <MenuItem value="select" disabled>
-            {text[locale].SelectACourse}
-          </MenuItem>
-          {coursesModerating.map((course, index) => {
-            return (
-              <MenuItem value={course}>{course}</MenuItem>
-            )
-          })}
-        </Select>
-      </FormControl>
-      {selectedCourse === 'Ajax' &&
-        <FormControl>
-          <InputLabel>Select Age Range</InputLabel>
-          <Select value={ageRange} inputProps={{
-                        name: 'ageRange',
-                      }} onChange={handleFilterChange}>
-            <MenuItem value={'All'}>
-              All age ranges
-            </MenuItem>
-            <MenuItem value="Under 12s">Under 12</MenuItem>
-            <MenuItem value="Under 13s">Under 13</MenuItem>
-            <MenuItem value="Under 14s">Under 14</MenuItem>
-            <MenuItem value="Under 15s">Under 15</MenuItem>
-          </Select>
-        </FormControl>
-} */}
-      {/* <FormHelperText></FormHelperText> */}
-
+      }
 
       <AppBar
         className={classes.appBar}
@@ -1528,90 +1593,22 @@ const ApplicationDashboard = ({ locale }) => {
         {selectedCourse === 'Ajax' ?
           <>
             <Container
-            // style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', textAlign: 'center' }}
             >
               <div className={classes.containerInner}>
-
                 <Typography component='div' >
                   <Box
                     fontSize={25} fontWeight="fontWeightRegular" m={-1}>
                     Indulge Ajax Camp: {text[locale].ApplicationList}
                   </Box>
                 </Typography>
-
-
-                {/* <div>
-                  <FormControl className={classes.select}>
-                    <InputLabel id="demo-simple-select-label">
-                      {text[locale].Category}
-                    </InputLabel>
-                    <Select
-                      style={{ fontSize: '14px' }}
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={filters.positionCategory}
-                      inputProps={{
-                        name: 'positionCategory',
-                      }}
-                      onChange={handleFilterChange}
-                    >
-                      <MenuItem value={'All'}>{text[locale].AllPositions}</MenuItem>
-                      <MenuItem value={'Goalkeeper'}>Goalkeeper</MenuItem>
-                      <MenuItem value={'Defence'}>Defence</MenuItem>
-                      <MenuItem value={'Midfield'}>Midfield</MenuItem>
-                      <MenuItem value={'Attack'}>Attack</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  {!['All', 'Attack', 'Goalkeeper'].some(x => x === filters.positionCategory) && <FormControl className={classes.select}>
-                    <InputLabel id="demo-simple-select-label">
-                      {text[locale].Position}
-                    </InputLabel>
-                    <Select
-                      style={{ fontSize: '14px' }}
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={filters.position}
-                      inputProps={{
-                        name: 'position',
-                      }}
-                      onChange={handleFilterChange}
-                    >
-                      <MenuItem value={'All'}>{text[locale].AllPositions}</MenuItem>
-                      {positions[filters.positionCategory].map(position => {
-                        return (
-                          <MenuItem value={position}>{position}</MenuItem>
-                        )
-                      })}
-                    </Select>
-                  </FormControl>}
-                </div> */}
+                <Typography component='div' >
+                  <Box fontSize={20} fontStyle="oblique" fontWeight="fontWeightRegular" m={-1}>Total players registered on site: {currentUserCount}</Box>
+                </Typography>
               </div>
-
-              {/* <FormControl>
-                    <InputLabel id="demo-simple-select-label">
-                      Age
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={filters.ageRange}
-                      inputProps={{
-                        name: 'ageRange',
-                      }}
-                      onChange={handleFilterChange}
-                    >
-                      <MenuItem value={'0-100'}>All</MenuItem>
-                      <MenuItem value={'20-24'}>20 - 24</MenuItem>
-                      <MenuItem value={'24-29'}>24 - 29</MenuItem>
-                      <MenuItem value={'30-35'}>30 - 34</MenuItem>
-                      {/* Age Groups: 15-16 - 17 - 18 */}
-              {/* </Select> */}
-              {/* </FormControl> */}
               {permissions === 0 && <Typography variant="h6">{filters.positionCategory === 'All' ? `Average Completed Application Score: ${getAverageScore('All', 'All')[0]}` : filters.position === 'All' ? `Average ${filters.positionCategory} Score: ${getAverageScore('All', filters.positionCategory)[1]}` : `Average ${filters.position} Score: ${getAverageScore(filters.position, filters.positionCategory)[1]}`}</Typography>}
             </Container>
 
-
+            { viewSelect === 'All' ?
             <Table>
               <TableHead>
                 <TableRow>
@@ -1658,12 +1655,13 @@ const ApplicationDashboard = ({ locale }) => {
                       </Button>
                     </TableCell>}
                   {permissions === 0 && <TableCell align="right">{text[locale].Approved}</TableCell>}
+                  <TableCell align="right">Submission Status</TableCell>
                   <TableCell align="right"></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {filteredApplications.map(([userId, email, applicant], index) => {
-                  const { personal_details, player_attributes, ratings } = applicant
+                  const { personal_details, player_attributes, ratings, submitted, challenges_submitted } = applicant
                   return (
                     <TableRow>
                       <TableCell>{`${personal_details.player_first_name} ${personal_details.player_last_name}`}</TableCell>
@@ -1693,6 +1691,7 @@ const ApplicationDashboard = ({ locale }) => {
                           {ratings.indulge === 0 ? text[locale].AwaitingApproval : ratings.indulge}
                         </TableCell>
                       }
+                      <TableCell align="right">{ submitted && challenges_submitted ? 'Application & Challenges Submitted' : submitted ? 'Only Application' : 'Started'}</TableCell>
                       <TableCell><Link className={classes.tabs} onClick={() => {
                         setApplicantIndex(index)
                         setTabValue(1)
@@ -1702,12 +1701,77 @@ const ApplicationDashboard = ({ locale }) => {
                 })}
               </TableBody>
             </Table>
+            :
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="right">
+                    <Button
+                      className={classes.tableHeading}
+                      onClick={(event) => handleSort(event, 'personal_details name')}>
+                      {/* {text[locale].Name} {sort.type === 'name' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
+                      {text[locale].Name}  <ImportExportSharpIcon className={classes.sortIcons} />
+                    </Button>
+                  </TableCell>
+                  <TableCell align="right" >
+                    <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'personal_details dob')}>
+                      {/* {text[locale].Age}  {sort.type === 'dob' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
+                      {text[locale].Age}  <ImportExportSharpIcon className={classes.sortIcons} />
+                    </Button>
+                  </TableCell>
+                  <TableCell align="right">Position</TableCell>
+                  <TableCell align="right">Ts&Cs</TableCell>
+                  <TableCell align="right">Paid</TableCell>
+                  <TableCell align="right">
+                    Allergies
+                  </TableCell>
+                    <TableCell align="right" >
+                      Injuries History
+                    </TableCell>
+                    <TableCell align="right">Other Health Conditions</TableCell>
+                  <TableCell
+                    // className={classes.tableHeading}
+                    style={{ paddingLeft: '1rem' }}
+                    align="right">
+                    Kit Size (Top / Bottom)
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredApplications.map(([userId, email, applicant], index) => {
+                  const { personal_details, player_attributes, ratings, submitted, challenges_submitted, post_app_actions } = applicant
+                  const { allergies, kit_size_bottom, kit_size_top, injury_history, agree_tcs, payment_confirm, others } = post_app_actions ? post_app_actions : {}
+                  return (
+                    <TableRow>
+                      <TableCell>{`${personal_details.player_first_name} ${personal_details.player_last_name}`}</TableCell>
+                      <TableCell>{auth.dobToAge(personal_details.dob)}</TableCell>
+                      
+                      {(permissions === 0 || permissions === 2) &&
+                        <TableCell>{player_attributes.position}</TableCell>
+                      }
+                      <TableCell>{agree_tcs === 'yes' ?  'Agreed' : 'Not Yet Agreed' }</TableCell>
+                      <TableCell>{payment_confirm === 'indulge' ?  'Confirmed' : payment_confirm === 'yes' ? 'Pending' : 'No' }</TableCell>
+                      <TableCell>{allergies ?  'True' : 'None' }</TableCell>
+                      <TableCell>{injury_history ?  'True' : 'None' }</TableCell>
+                      <TableCell>{others ?  'True' : 'None' }</TableCell>
+                      <TableCell>{kit_size_top} / {kit_size_bottom}</TableCell>
+                      
+                      <TableCell><Link className={classes.tabs} onClick={() => {
+                        setApplicantIndex(index)
+                        setTabValue(1)
+                      }}>View Player Information</Link></TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          }
           </> :
           <Typography>Select a course to review applications</Typography>
         }
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
-        <Application editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} filteredApplications={filteredApplications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} setFilteredApplications={setFilteredApplications} filteredIndex={applicantIndex} averages={getAverageScore} text={text} locale={locale} />
+        <Application viewSelect={viewSelect} editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} filteredApplications={filteredApplications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} setFilteredApplications={setFilteredApplications} filteredIndex={applicantIndex} averages={getAverageScore} text={text} locale={locale} />
       </TabPanel>
     </Container>
     </div>

@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { application, buttons, snackbar_messages, authorization } from './LanguageSkeleton'
 import { NationalityDropDown } from './Nationality'
-import PropTypes from 'prop-types';
-import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
-import Tooltip from '@material-ui/core/Tooltip';
 import StepLabel from '@material-ui/core/StepLabel';
 import PersonSharpIcon from '@material-ui/icons/PersonSharp';
 import HistorySharpIcon from '@material-ui/icons/HistorySharp';
@@ -14,31 +12,25 @@ import DirectionsRunSharpIcon from '@material-ui/icons/DirectionsRunSharp';
 import StepConnector from '@material-ui/core/StepConnector';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Box from '@material-ui/core/Box';
 import Snackbar from '@material-ui/core/Snackbar';
 import ClearSharpIcon from '@material-ui/icons/ClearSharp';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
-import CloudUploadSharpIcon from '@material-ui/icons/CloudUploadSharp';
 import axios from 'axios'
 import MuiAlert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress'
 import auth from '../lib/auth'
 import moment from 'moment'
 import Selector, { components } from 'react-select';
-import makeAnimated from 'react-select/animated';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import InfoSharpIcon from '@material-ui/icons/InfoSharp';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
-import { Switch } from '@material-ui/core';
 import {
   FormControlLabel,
   Radio,
@@ -488,11 +480,11 @@ export default function ApplicationForm({ history, location, locale, match, setL
           ajax_application: {
             ...(type === 'application' && {
               age_group: `Under ${group}s`,
-              submitted: true,
-              submission_date: moment()
+              submitted: true
             }),
             ...(type === 'challenges' && {
-              challenges_submitted: true
+              challenges_submitted: true,
+              submission_date: moment()
             }),
             ...applicationDetails,
             personal_details: {
@@ -509,7 +501,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
           axios.post('/contactPlayer', {
             type: 'applicationReceived',
             recipient: { recipientId: auth.getUserId() },
-            emailContent: { contentCourse: `Ajax Camp: Under ${group}s` },
+            emailContent: { contentCourse: `Ajax Camp: U${group}` },
             locale: locale
           }).then((res) => {
             setMessage({ success: snackbar_messages['1a'][locale], info: res.info })
@@ -689,15 +681,15 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
 
       const age = moment('2021-12-31').diff(value, 'years')
-      const group = age < 13 ? 13 : (age !== 14 && age < 15) ? age + 1 : 15
+      const group = age < 12 ? 12 : (age !== 14 && age < 15) ? age + 1 : 15
 
-      setMessage((age > 11 && age < 15) ? {
+      setMessage((age >= 10 && age < 15) ? {
         info: snackbar_messages['3'][locale].replace('s', `${group}s`)
       } : {
           error: snackbar_messages['4'][locale]
         })
 
-      if (age > 11 && age < 15) {
+      if (age >= 10 && age < 15) {
         setApplicationDetails({
           ...applicationDetails,
           personal_details: {

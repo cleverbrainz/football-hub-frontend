@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom'
-import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import { profile, snackbar_messages, application as app } from './LanguageSkeleton'
@@ -12,7 +12,6 @@ import CancelSharpIcon from '@material-ui/icons/CancelSharp';
 import PeopleAltSharpIcon from '@material-ui/icons/PeopleAltSharp';
 import moment from 'moment'
 import Dialog from '@material-ui/core/Dialog';
-import CloudUploadSharpIcon from '@material-ui/icons/CloudUploadSharp';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -269,7 +268,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   const input = useRef()
   const defaultPic = 'https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80'
 
-  console.log({ isOwnProfile, egg: auth.getUserId(), match })
+  // console.log({ isOwnProfile, egg: auth.getUserId(), match })
 
   const date = new Date()
 
@@ -277,7 +276,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
     axios.get(`/users/${match.params.id}`)
       .then(res => {
-        console.log('THISSS ISSS', res.data)
+        // console.log('THISSS ISSS', res.data)
         const { applications } = res.data[0]
         setUser(res.data[0])
 
@@ -316,7 +315,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
     axios.post(`/user/${auth.getUserId()}/image`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         getData()
         setImageUpload(false)
 
@@ -349,8 +348,14 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
   const handleFormSubmit = (e) => {
 
+<<<<<<< HEAD
     const ref = `PDP ${auth.getUserId().substring(0, 10)} ${user.player_last_name}`
     const { type } = dialog
+=======
+    const yes = document.querySelector('#payment-confirm-yes').value
+
+    // console.log({ payment: yes ? 'yes' : 'no' })
+>>>>>>> e0de1b3482de3a5481d9c62d1c753bdab0def6ef
 
     axios.patch(`/users/${auth.getUserId()}`, {
       userId: auth.getUserId(),
@@ -426,13 +431,13 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   }
 
   function applySentenceCase(str) {
-    return str.replace(/.+?[\.\?\!](\s|$)/g, function (txt) {
+    return str.replace(/.+?[.?!](\s|$)/g, function (txt) {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
   }
 
   function scrollView(item) {
-    console.log(item)
+    // console.log(item)
     document.querySelector(`#${item}`).scrollIntoView({ block: 'center' })
     setCurrentScrollSection(item)
   }
@@ -641,7 +646,11 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                           </TableCell>}
 
                         <TableCell align="right" style={{ color: '#3100F7' }}>
+<<<<<<< HEAD
                           {(application && application.hasOwnProperty('challenges_submitted')) ? application.ratings.indulge === 'yes' ? 'Accepted' : profile['5f'][locale] : profile['5e'][locale]}
+=======
+                          {(application && application.hasOwnProperty('challenges_submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
+>>>>>>> e0de1b3482de3a5481d9c62d1c753bdab0def6ef
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -664,7 +673,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                         <TableRow>
                           <TableCell align="right"> {profile['5b'][locale]}</TableCell>
 
-                          {(application && application.hasOwnProperty('submitted')) &&
+                          {(application && application.hasOwnProperty('challenges_submitted')) &&
                             <TableCell align="right"> Camp Date </TableCell>}
 
                           <TableCell align="right"> Payment </TableCell>
@@ -687,10 +696,14 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                                 <InfoIcon style={{ color: 'blue', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} />
                                 : <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />}
 
+<<<<<<< HEAD
                             {(!application.post_app_actions?.payment_confirm || application.post_app_actions?.payment_confirm === 'no') ? <a onClick={() => setDialog({
                               type: 'payment',
                               open: true
                             })}> View </a>
+=======
+                            {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <Button onClick={() => setDialogOpen(true)}> View </Button>
+>>>>>>> e0de1b3482de3a5481d9c62d1c753bdab0def6ef
                               : application.post_app_actions.payment_confirm === 'yes' ? 'In Review' : 'Confirmed'}
 
                           </TableCell>
@@ -723,7 +736,42 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
               )
           }
 
+<<<<<<< HEAD
 
+=======
+          {/* <Paper>
+            <TableContainer>
+              <Table className={classes.table} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>ID </TableCell>
+                    <TableCell align="right"> {profile['5b'][locale]}</TableCell>
+
+                    {(application && application.hasOwnProperty('challenges_submitted')) &&
+                      <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
+
+                    <TableCell align="right"> {profile['5d'][locale]}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
+                    <TableCell align="right"> PDP </TableCell>
+
+                    {(application && application.hasOwnProperty('challenges_submitted')) &&
+                      <TableCell align="right">
+                        {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
+                      </TableCell>}
+
+                    <TableCell align="right" style={{ color: '#3100F7' }}>
+                      {(application && application.hasOwnProperty('challenges_submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper> */}
+>>>>>>> e0de1b3482de3a5481d9c62d1c753bdab0def6ef
 
           {
             !application?.hasOwnProperty('challenges_submitted') && (

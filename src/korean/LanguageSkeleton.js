@@ -1238,7 +1238,7 @@ const arr = [
   {
     "page": "profile",
     "section": "9a",
-    "english": "Please compete and submit your personal information and football history. / After this please complete and submit the challenges.",
+    "english": "Please complete and submit your personal information and football history. / After this please complete and submit the challenges.",
     "korean": "먼저 참가신청자 본인의 정보와 유스 경력을 토대로 프로필을 작성하여 참가신청을 완료하세요. / 참가신청 이후 가이드라인에 따라 챌린지 영상(유튜브) 업로드하여 제출하세요."
   }
 ]

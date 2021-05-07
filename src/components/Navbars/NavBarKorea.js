@@ -63,7 +63,8 @@ function NavBarKorea({ history, locale, user }) {
   const [scrollPosition, setScrollPosition] = useState()
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
   // console.log(user)
-  console.log(location)
+  // console.log(location)
+  
   
   
 
