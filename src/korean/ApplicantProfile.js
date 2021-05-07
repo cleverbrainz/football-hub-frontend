@@ -348,14 +348,8 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
   const handleFormSubmit = (e) => {
 
-<<<<<<< HEAD
     const ref = `PDP ${auth.getUserId().substring(0, 10)} ${user.player_last_name}`
     const { type } = dialog
-=======
-    const yes = document.querySelector('#payment-confirm-yes').value
-
-    // console.log({ payment: yes ? 'yes' : 'no' })
->>>>>>> e0de1b3482de3a5481d9c62d1c753bdab0def6ef
 
     axios.patch(`/users/${auth.getUserId()}`, {
       userId: auth.getUserId(),
@@ -646,11 +640,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                           </TableCell>}
 
                         <TableCell align="right" style={{ color: '#3100F7' }}>
-<<<<<<< HEAD
                           {(application && application.hasOwnProperty('challenges_submitted')) ? application.ratings.indulge === 'yes' ? 'Accepted' : profile['5f'][locale] : profile['5e'][locale]}
-=======
-                          {(application && application.hasOwnProperty('challenges_submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
->>>>>>> e0de1b3482de3a5481d9c62d1c753bdab0def6ef
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -696,14 +686,10 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                                 <InfoIcon style={{ color: 'blue', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} />
                                 : <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />}
 
-<<<<<<< HEAD
                             {(!application.post_app_actions?.payment_confirm || application.post_app_actions?.payment_confirm === 'no') ? <a onClick={() => setDialog({
                               type: 'payment',
                               open: true
                             })}> View </a>
-=======
-                            {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <Button onClick={() => setDialogOpen(true)}> View </Button>
->>>>>>> e0de1b3482de3a5481d9c62d1c753bdab0def6ef
                               : application.post_app_actions.payment_confirm === 'yes' ? 'In Review' : 'Confirmed'}
 
                           </TableCell>
@@ -736,42 +722,6 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
               )
           }
 
-<<<<<<< HEAD
-
-=======
-          {/* <Paper>
-            <TableContainer>
-              <Table className={classes.table} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>ID </TableCell>
-                    <TableCell align="right"> {profile['5b'][locale]}</TableCell>
-
-                    {(application && application.hasOwnProperty('challenges_submitted')) &&
-                      <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
-
-                    <TableCell align="right"> {profile['5d'][locale]}</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
-                    <TableCell align="right"> PDP </TableCell>
-
-                    {(application && application.hasOwnProperty('challenges_submitted')) &&
-                      <TableCell align="right">
-                        {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
-                      </TableCell>}
-
-                    <TableCell align="right" style={{ color: '#3100F7' }}>
-                      {(application && application.hasOwnProperty('challenges_submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper> */}
->>>>>>> e0de1b3482de3a5481d9c62d1c753bdab0def6ef
 
           {
             !application?.hasOwnProperty('challenges_submitted') && (
