@@ -348,7 +348,11 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
   const handleFormSubmit = (e) => {
 
+<<<<<<< HEAD
     const ref = `PDP ${auth.getUserId().substring(0, 10)} ${user.player_last_name}`
+=======
+    const ref = `PDP-AJAX-${auth.getUserId().substring(0, 5)}`
+>>>>>>> c48ff03482b4d98b45f150cf318290d87e235b34
     const { type } = dialog
 
     axios.patch(`/users/${auth.getUserId()}`, {
