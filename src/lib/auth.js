@@ -11,7 +11,7 @@ function isLoggedIn() {
 
   if (!localStorage.token) return false
   // if (localStorage.token === null) return false
-  console.log(localStorage.token)
+  // console.log(localStorage.token)
 
   const decodedToken = jwt.decode(localStorage.token)
 
@@ -55,9 +55,9 @@ function dobToAge(age) {
     return NaN
   }
   
-  console.log(dobArr)
+  // console.log(dobArr)
   const millisecondsDOB = new Date(age)
-  console.log({dobArr, millisecondsDOB})
+  // console.log({dobArr, millisecondsDOB})
   const millisecondsNow = new Date()
   const ageInMilliseconds = millisecondsNow-millisecondsDOB;
 //--We will leverage Date.parse and now method to calculate age in milliseconds refer here https://www.w3schools.com/jsref/jsref_parse.asp

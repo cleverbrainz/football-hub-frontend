@@ -23,13 +23,13 @@ export const AuthProvider = ({ children }) => {
   
   useEffect(() => {
     firebaseApp.auth().onAuthStateChanged(function(user){
-      console.log('authchange!!!')
-      console.log(user)
-      console.log(firebaseApp.auth().currentUser)
+      // console.log('authchange!!!')
+      // console.log(user)
+      // console.log(firebaseApp.auth().currentUser)
       // if (user !== null) {
       if (user !== null && user.emailVerified) {
         user.getIdToken().then(token => {
-          console.log(token)
+          // console.log(token)
           auth.setToken(token)
           setUser({
             'user': user,
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
           });
         });
     } else {
-      console.log('no user')
+      // console.log('no user')
       setUser({
         'user': null,
         'checked': true

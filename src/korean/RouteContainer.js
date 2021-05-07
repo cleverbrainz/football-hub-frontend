@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -8,7 +8,6 @@ import {
 // import Marketing from './Marketing'
 import ApplicationForm from './ApplicationForm'
 import SwitchLanguageFab from './SwitchLanguageFab'
-import HomeNav from '../components/Navbars/HomeNav'
 import NavBarKorea from '../components/Navbars/NavBarKorea'
 import UserAuthForm from './UserAuthForm'
 import ApplicantProfile from './ApplicantProfile'
@@ -16,9 +15,6 @@ import PostAppForm from './PostAppForm'
 // import JSONConvertor from './JSONConvertor'
 import ApplicationDashboard from './ApplicationDashboard';
 // import MarketingBeta from './MarketingBeta ';
-import MarketingDelta from './MarketingDelta';
-import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import AddPhone from '../pages/AddPhone';
 import AuthRouter from '../lib/PrivateRoute'
 

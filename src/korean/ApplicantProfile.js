@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom'
-import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import { profile, snackbar_messages, application as app } from './LanguageSkeleton'
@@ -12,7 +12,6 @@ import CancelSharpIcon from '@material-ui/icons/CancelSharp';
 import PeopleAltSharpIcon from '@material-ui/icons/PeopleAltSharp';
 import moment from 'moment'
 import Dialog from '@material-ui/core/Dialog';
-import CloudUploadSharpIcon from '@material-ui/icons/CloudUploadSharp';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -401,7 +400,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   }
 
   function applySentenceCase(str) {
-    return str.replace(/.+?[\.\?\!](\s|$)/g, function (txt) {
+    return str.replace(/.+?[.?!](\s|$)/g, function (txt) {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
   }
@@ -689,7 +688,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                                 <InfoIcon style={{ color: 'blue', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} />
                                 : <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />}
 
-                            {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <a onClick={() => setDialogOpen(true)}> View </a>
+                            {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <Button onClick={() => setDialogOpen(true)}> View </Button>
                               : application.post_app_actions.payment_confirm === 'yes' ? 'In Review' : 'Confirmed'}
 
                           </TableCell>
