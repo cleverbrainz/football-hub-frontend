@@ -258,7 +258,10 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   const [currentScrollSection, setCurrentScrollSection] = useState('about')
   const [hasLoaded, setHasLoaded] = useState(false)
   const [open, setOpen] = useState()
-  const [dialogOpen, setDialogOpen] = useState()
+  const [dialog, setDialog] = useState({
+    open: false,
+    type: 't&cs'
+  })
   const [message, setMessage] = useState()
   const [imageUpload, setImageUpload] = useState(false)
   const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === match.params.id)
@@ -278,7 +281,17 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
         const { applications } = res.data[0]
         setUser(res.data[0])
 
-        if (applications.ajax_application?.hasOwnProperty('challenges_submitted')) setSubDate(moment(applications.ajax_application.submission_date).format('MMMM Do YYYY'))
+        if (applications.ajax_application?.hasOwnProperty('challenges_submitted')) {
+          setSubDate(moment(applications.ajax_application.submission_date).format('MMMM Do YYYY'))
+        }
+
+        if (applications.ajax_application?.ratings.indulge === 'yes' && !applications.ajax_application?.post_app_actions) {
+          setDialog({
+            ...dialog,
+            open: true
+          })
+        }
+
 
         if (applications.ajax_application) {
           setApplication(applications.ajax_application)
@@ -336,9 +349,8 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
   const handleFormSubmit = (e) => {
 
-    const yes = document.querySelector('#payment-confirm-yes').value
-
-    console.log({ payment: yes ? 'yes' : 'no' })
+    const ref = `PDP ${auth.getUserId().substring(0, 10)} ${user.player_last_name}`
+    const { type } = dialog
 
     axios.patch(`/users/${auth.getUserId()}`, {
       userId: auth.getUserId(),
@@ -348,16 +360,29 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
             ...application,
             post_app_actions: {
               ...application.post_app_actions,
-              payment_confirm: yes ? 'yes' : 'no'
+              ...(type === 'payment' ? {
+                payment_confirm: document.querySelector('#payment-confirm-yes').value === ref ? 'yes' : 'no'
+              } : {
+                  agree_tcs: 'yes'
+                })
             }
           }
         }
       }
     }, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
-    .then(res => {
-      setMessage({ success: 'Payment confirmation saved' })
-      setDialogOpen(false)
-    })
+      .then(res => {
+        setDialog({
+          ...dialog,
+          open: false
+        })
+        getData()
+      })
+      .catch(res => {
+        setDialog({
+          ...dialog,
+          open: false
+        })
+      })
   }
 
   async function handleRedirect() {
@@ -449,26 +474,6 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
       ko: '2021년 6월 16일 ~6월 19일'
     }
   }
-
-
-  // const handleDialogActions = () => {
-
-  //   setDialogOpen(false)
-
-  //   axios.patch(`/users/${auth.getUserId()}`, {
-  //     userId: auth.getUserId(),
-  //     updates: {
-  //       applications: {
-  //         ajax_application: {
-  //           ...application,
-  //         }
-  //       }
-  //     }
-  //   }, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
-  //     .then(res => setMessage({ success: 'Your payment confirmation has been saved' }))
-  //     .catch(() => setMessage({ error: 'Something went wrong. Please try again.' }))
-  // }
-
 
   const nav = [profile['1b'], profile['1c'], profile['1d'], profile['1e']]
   if (!hasLoaded) return null
@@ -610,24 +615,16 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
 
           {
-            application?.ratings.indulge !== 'yes' ? (
+            (application?.ratings.indulge !== 'yes' || !application?.post_app_actions?.agree_tcs) ? (
               <Paper id={profile['1c']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
-                <Typography component='div' >
-                  <Box
-                    fontSize={20}
-                    fontWeight="fontWeightBold" mb={3}>
-                    {locale === 'en' ? titleCase(profile['1c'][locale]) : profile['1c'][locale]}
-                  </Box>
-                </Typography>
-
-                <TableContainer >
+                <TableContainer>
                   <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                       <TableRow>
                         <TableCell>ID </TableCell>
                         <TableCell align="right"> {profile['5b'][locale]}</TableCell>
 
-                        {(application && application.hasOwnProperty('submitted')) &&
+                        {(application && application.hasOwnProperty('challenges_submitted')) &&
                           <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
 
                         <TableCell align="right"> {profile['5d'][locale]}</TableCell>
@@ -638,13 +635,13 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                         <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
                         <TableCell align="right"> PDP </TableCell>
 
-                        {(application && application.hasOwnProperty('submitted')) &&
+                        {(application && application.hasOwnProperty('challenges_submitted')) &&
                           <TableCell align="right">
                             {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
                           </TableCell>}
 
                         <TableCell align="right" style={{ color: '#3100F7' }}>
-                          {(application && application.hasOwnProperty('submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
+                          {(application && application.hasOwnProperty('challenges_submitted')) ? application.ratings.indulge === 'yes' ? 'Accepted' : profile['5f'][locale] : profile['5e'][locale]}
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -684,12 +681,16 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                           </TableCell>
 
                           <TableCell align="right">
-                            {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} /> :
+                            {(!application.post_app_actions?.payment_confirm || application.post_app_actions?.payment_confirm === 'no') ?
+                              <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} /> :
                               application.post_app_actions?.payment_confirm === 'yes' ?
                                 <InfoIcon style={{ color: 'blue', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} />
                                 : <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />}
 
-                            {(!application.post_app_actions || application.post_app_actions.payment_confirm === 'no') ? <a onClick={() => setDialogOpen(true)}> View </a>
+                            {(!application.post_app_actions?.payment_confirm || application.post_app_actions?.payment_confirm === 'no') ? <a onClick={() => setDialog({
+                              type: 'payment',
+                              open: true
+                            })}> View </a>
                               : application.post_app_actions.payment_confirm === 'yes' ? 'In Review' : 'Confirmed'}
 
                           </TableCell>
@@ -697,7 +698,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                           <TableCell align="right" style={{ color: '#3100F7' }}>
 
                             {application.post_app_actions ?
-                              Object.keys(application.post_app_actions).filter(x => application.post_app_actions[x] === '').length === 0 ?
+                              Object.keys(application.post_app_actions).filter(x => application.post_app_actions[x] === '').length === 0 && application.post_app_actions.hasOwnProperty('allergies') ?
                                 <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
                                 <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
                               <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />
@@ -722,38 +723,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
               )
           }
 
-          <Paper>
-            <TableContainer>
-              <Table className={classes.table} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>ID </TableCell>
-                    <TableCell align="right"> {profile['5b'][locale]}</TableCell>
 
-                    {(application && application.hasOwnProperty('challenges_submitted')) &&
-                      <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
-
-                    <TableCell align="right"> {profile['5d'][locale]}</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
-                    <TableCell align="right"> PDP </TableCell>
-
-                    {(application && application.hasOwnProperty('challenges_submitted')) &&
-                      <TableCell align="right">
-                        {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
-                      </TableCell>}
-
-                    <TableCell align="right" style={{ color: '#3100F7' }}>
-                      {(application && application.hasOwnProperty('challenges_submitted')) ? profile['5f'][locale] : profile['5e'][locale]}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
 
           {
             !application?.hasOwnProperty('challenges_submitted') && (
@@ -909,91 +879,166 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
 
       {
-        dialogOpen && (
+        dialog.open && (
           <div>
             <Dialog
-              open={dialogOpen}
+              open={dialog.open}
               TransitionComponent={Transition}
               keepMounted
-              onClose={() => setDialogOpen(false)}
+              onClose={() => setDialog({
+                ...dialog,
+                open: false
+              })}
               aria-labelledby="alert-dialog-slide-title"
               aria-describedby="alert-dialog-slide-description"
             >
               <DialogTitle id="alert-dialog-slide-title">
-                Payment Details for PDP Complete Fee
-            </DialogTitle>
+              <Box
+                          fontSize={20}
+                          fontWeight="fontWeightBold" mb={-1}>
+                           {dialog.type === 'payment' ? 'Payment Details for PDP Complete Fee' : 'Terms & Conditions'}
+                        </Box>
+                        
+               
+              </DialogTitle>
               <DialogContent>
-                <DialogContentText id="alert-dialog-slide-description">
 
-                  <p> Please use the payment details below for bank transfer and ensure you attach the payment reference below. </p>
+                {dialog.type === 'payment' ? (
+                  <>
+                    <DialogContentText id="alert-dialog-slide-description">
 
-                  <p>Sort Code: .....</p>
-                  <p>IBAN: .....</p>
-                  <p>Account Num: .....</p>
-                  <p>BIC/SWIFT: .....</p>
-
-                  <p> Payment Reference: {`PDP ${auth.getUserId().substring(0, 10)} ${user.player_last_name}`} </p>
-
-                </DialogContentText>
-
-
-                <div className={classes.field}>
-                  <div className={classes.label}>
-                    <label > <span style={{ color: 'red' }}>*</span>  Please type your reference number to confirm that you have made payment </label>
-                  </div>
-                  <div class="field-body">
-
-                    {!application.post_app_actions?.payment_confirm  && <p className="help"> Once saved, you will not be able to see this pop up again </p>}
-
-                    <p class="control is-expanded">
-                      <input
-                        disabled={['yes', 'indulge'].includes(application.post_app_actions?.payment_confirm)}
-                        value={application.post_app_actions?.payment_confirm}
-                        class="input" type="text"
-                        id='payment-confirm-yes'
-                      />
-                    </p>
-                  </div>
+                    <div className={classes.label}>
+                  <label>  Please use the payment details below for bank transfer and ensure you attach the payment reference below.</label>
                 </div>
 
+                      <Typography component='div' >
+                        <Box
+                          fontSize={17}
+                          fontWeight="fontWeightBold" mb={.5} mt={2}>
+                          Korean Branch 
+                        </Box>
+                        <Box
+                          fontSize={14}
+                          fontWeight="fontWeightRegular" mb={3}>
+                          <ul>
+                            <li> <strong> (Tax) Registration Number: </strong> 466-84-00025  </li>
+                            <li> <strong> Business Registration Number: </strong> 285081-0000734 </li>
+                            <li> <strong> Registered as: </strong> 엘에스알스포츠 주식회사 (LSR SPORTS LIMITED) </li>
+                            <li> <strong> Date of Establishment: </strong> 28/03/2021 </li>
+                          </ul>
+                        </Box>
+                      </Typography>
+
+                      <Typography component='div' >
+                        <Box
+                          fontSize={17}
+                          fontWeight="fontWeightBold" mb={.5}>
+                          Korean Bank Account
+                        </Box>
+                        <Box
+                          fontSize={14}
+                          fontWeight="fontWeightRegular" mb={3}>
+                          <ul>
+                            <li> <strong> Bank: </strong> KEB Hana Bank </li>
+                            <li> <strong> Acc Number: </strong> 189-910050-34304 </li>
+                            <li> <strong> Account issued: </strong> 30/04/2021 </li>
+                            <li> <strong> Bank Branch at: </strong> 서초동 (Seocho) </li>
+                            <li> <strong> Account Holder Name:</strong> 엘에스알스포츠 주식회사 (LSR SPORTS LIMITED) </li>
+                            <li> <strong> Swift Code: </strong> KOEXKRSE </li>
+                          </ul>
+                        </Box>
+                      </Typography>
+        
+                      <Typography component='div' >
+                        <Box
+                          fontSize={17}
+                          fontWeight="fontWeightBold" mb={.5}>
+                          Payment Reference 
+                        </Box>
+                        <Box
+                          fontSize={14}
+                          fontWeight="fontWeightRegular" mb={3}>
+                        <strong> {`PDP-AJAX-${auth.getUserId().substring(0, 5)}`}  </strong>  
+                        </Box>
+                      </Typography>
+                    </DialogContentText>
+
+
+                    <div className={classes.field}>
+                <div className={classes.label}>
+                  <label> Please confirm payment by typing in your payment reference </label>
+                </div>
+                {!application.post_app_actions?.payment_confirm && <p className="help"> Please leave this blank until you have made payment. Once saved, you will not be able to see again. </p>}
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                    <input
+                      style={{ marginTop: '10px' }}
+                                disabled={['yes', 'indulge'].includes(application.post_app_actions?.payment_confirm)}
+                                class="input" type="text"
+                                id='payment-confirm-yes'
+                              />
+                    </div>
+                  </div>
+                </div>
+              </div>
+                  </>
+                      ) : (
+                    <>
+                        <DialogContentText id="alert-dialog-slide-description">
+
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum interdum lectus eu tortor egestas pretium. Vestibulum ullamcorper leo nec felis varius porta. Praesent sit amet luctus tellus. Vivamus ut facilisis arcu. Ut placerat lectus ex, eu tempus mauris ultricies vel. Donec pellentesque nunc lacus, non interdum sapien consectetur placerat. Pellentesque laoreet malesuada ante tincidunt fringilla. Fusce eu tincidunt nisi, ut aliquet metus. Phasellus elementum vitae mauris a tristique.
+    
+    Vivamus at ultrices libero, in commodo libero. Aliquam tempus est enim, nec aliquet nunc viverra viverra. Mauris pharetra, turpis vitae convallis rutrum, odio libero consequat odio, sed congue magna libero sed lectus. Mauris sit amet tellus vitae nisi egestas aliquam. Nulla facilisi. Proin tincidunt tortor libero, at malesuada nisl dictum at. Suspendisse potenti. Mauris eu elit eget ligula accumsan mollis. Donec at commodo quam, placerat laoreet est. Suspendisse at mauris erat. Nullam eget mollis nulla.
+    
+    Sed eget urna pellentesque, dignissim risus non, placerat turpis. Donec tempus leo metus, ut convallis lorem tristique ut. Duis interdum eleifend ipsum. Proin quis porta nisi. Maecenas pharetra felis eu ex gravida, ac imperdiet nibh luctus. Donec congue viverra odio, eu auctor purus ornare eget. Nunc porttitor non enim at sollicitudin. Sed vestibulum massa urna, eget venenatis neque rhoncus in. Cras id luctus velit, non congue dolor. Fusce vehicula ultrices leo, ut pellentesque tellus vulputate vitae. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin orci urna, dignissim at justo non, luctus interdum mauris.
+    
+                      </DialogContentText>
+                      </>
+                      )}
+    
+    
               </DialogContent>
 
-              <DialogActions>
-                <Button variant='contained' onClick={() => setDialogOpen(false)} color='primary'>
-                  Back
+                    <DialogActions>
+                      <Button variant='contained' onClick={() => setDialog({
+                        ...dialog,
+                        open: false
+                      })} color='primary'>
+                        Back
                 </Button>
-                <Button variant='contained' onClick={handleFormSubmit} color='primary'>
-                  Save
-                </Button>
-              </DialogActions>
-            </Dialog>
+                      <Button variant='contained' onClick={handleFormSubmit} color='primary'>
+                        {dialog.type === 'payment' ? 'Save' : 'I agree to the T&Cs'}
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
           </div>
-        )
-      }
-
-
+              )
+            }
+      
+      
       {
-        message && <Snackbar
-          open={open}
-          autoHideDuration={5000}
-          onClose={closeSnackBar}>
-          <Alert onClose={closeSnackBar} severity={message.success ? 'success' : 'error'}>
-            {message.success ?
-              message.success :
-              message.error ?
-                message.error : (
-                  Object.keys(message).map(x => <li> {message[x]} </li>)
-                )}
-          </Alert>
-        </Snackbar>
-      }
+                message && <Snackbar
+                  open={open}
+                  autoHideDuration={5000}
+                  onClose={closeSnackBar}>
+                  <Alert onClose={closeSnackBar} severity={message.success ? 'success' : 'error'}>
+                    {message.success ?
+                      message.success :
+                      message.error ?
+                        message.error : (
+                          Object.keys(message).map(x => <li> {message[x]} </li>)
+                        )}
+                  </Alert>
+                </Snackbar>
+              }
 
 
 
     </div >
 
 
-  );
-};
-
+            );
+          };
+          
 export default ApplicantProfile;

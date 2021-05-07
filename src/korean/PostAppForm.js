@@ -65,20 +65,32 @@ const PostAppForm = ({ location, history }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState()
   const [form, setForm] = useState(null)
-  const state  = useRef(location.state)
+  const state = useRef(location.state)
 
   useEffect(() => {
     if (state.current.hasOwnProperty('post_app_actions')) {
-      setForm({
-        ...state.current.post_app_actions
-      })
+      const { kit_size_top, kit_size_bottom, others, injuries, allergies } = state.current.post_app_actions
+      const obj = {
+        kit_size_top,
+        kit_size_bottom,
+        others: !others ? 'no' : 'yes',
+        injuries: !injuries ? 'no' : 'yes',
+        allergies: !allergies ? 'no' : 'yes',
+        others_text: !others ? '' : others,
+        injuries_text: !injuries ? '' : injuries,
+        allergies_text: !allergies ?  '' : allergies
+      }
+      setForm(obj)
     } else {
       setForm({
         kit_size_top: '',
         kit_size_bottom: '',
-        other_health_conditions: '',
-        injury_history: '',
-        allergies: ''
+        others: '',
+        injuries: '',
+        allergies: '',
+        others_text: '',
+        injuries_text: '',
+        allergies_text: ''
       })
     }
   }, [])
@@ -109,6 +121,14 @@ const PostAppForm = ({ location, history }) => {
     e.preventDefault()
     setIsLoading(true)
 
+    const obj = {
+      kit_size_top: form.kit_size_top,
+      kit_size_bottom: form.kit_size_bottom,
+      injuries: form.injuries === 'yes' ? form.injuries_text : false,
+      allergies: form.allergies === 'yes' ? form.allergies_text : false,
+      others: form.others === 'yes' ? form.others_text : false
+    }
+
     axios.patch(`/users/${auth.getUserId()}`, {
       userId: auth.getUserId(),
       updates: {
@@ -117,7 +137,7 @@ const PostAppForm = ({ location, history }) => {
             ...state.current,
             post_app_actions: {
               ...state.current.post_app_actions,
-              ...form
+              ...obj
             }
           }
         }
@@ -167,7 +187,7 @@ const PostAppForm = ({ location, history }) => {
                   <div class="control">
                     <div class="select is-fullwidth">
                       <select value={form.kit_size_top} name='kit_size_top'>
-                        <option disabled={form.kit_size_top !== ''}></option>
+                        <option disabled={form.kit_size_top && form.kit_size_top !== ''}></option>
                         <option value='80'>80</option>
                         <option value='85'>85</option>
                         <option value='90'>90</option>
@@ -186,7 +206,7 @@ const PostAppForm = ({ location, history }) => {
                   <div class="control">
                     <div class="select is-fullwidth">
                       <select value={form.kit_size_bottom} name='kit_size_bottom'>
-                        <option disabled={form.kit_size_bottom !== ''}></option>
+                        <option disabled={form.kit_size_bottom && form.kit_size_bottom !== ''}></option>
                         <option value='80'>80</option>
                         <option value='85'>85</option>
                         <option value='90'>90</option>
@@ -197,55 +217,113 @@ const PostAppForm = ({ location, history }) => {
               </div>
             </div>
 
-            <div className={classes.field}>
+
+            {/* injuries */}
+            <div className={classes.field} style={{ flex: '0.2' }}>
               <div className={classes.label}>
-                <label > <span style={{ color: 'red' }}>*</span>  Injury History </label>
+                <label > <span style={{ color: 'red' }}>*</span>  Do you have any injuries? </label>
               </div>
-              <div class="field-body">
-                <div class="field">
-                  <p className="help"> If you have had any injuries in the past, please let us know below </p>
-                  <div class="control">
-                    <textarea value={form.injury_history} class="textarea" name='injury_history'></textarea>
+              <div class="field is-narrow">
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select value={form.injuries} name='injuries'>
+                      <option disabled={form.injuries && form.injuries !== ''}></option>
+                      <option value='yes'>Yes</option>
+                      <option value='no'>No</option>
+                    </select>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className={classes.field}>
-              <div className={classes.label}>
-                <label ><span style={{ color: 'red' }}>*</span> Do you have any allergies?</label>
+            {form.injuries === 'yes' && (
+              <div className={classes.field}>
+                <div className={classes.label}>
+                  <label> Please let us know below </label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <textarea value={form.injuries_text} class="textarea" name='injuries_text'></textarea>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="field-body">
-                <div class="field">
-                  <p className="help"> If you have any allergies (e.g. food), please let us know below </p>
-                  <div class="control">
-                    <textarea class="textarea" value={form.allergies} name='allergies'></textarea>
+            )}
+
+            {/* allergies */}
+            <div className={classes.field} style={{ flex: '0.2' }}>
+              <div className={classes.label}>
+                <label > <span style={{ color: 'red' }}>*</span>  Do you have any allergies? </label>
+              </div>
+              <div class="field is-narrow">
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select value={form.allergies} name='allergies'>
+                      <option disabled={form.allergies && form.allergies !== ''}></option>
+                      <option value='yes'>Yes</option>
+                      <option value='no'>No</option>
+                    </select>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className={classes.field}>
-              <div className={classes.label}>
-                <label > <span style={{ color: 'red' }}>*</span>  Other Health Conditions</label>
+
+            {form.allergies === 'yes' && (
+              <div className={classes.field}>
+                <div className={classes.label}>
+                  <label> Please let us know below </label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <textarea class="textarea" value={form.allergies_text} name='allergies_text'></textarea>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="field-body">
-                <div class="field">
-                  <p className="help"> If you have any other health conditions please let us know below </p>
-                  <div class="control">
-                    <textarea class="textarea" value={form.other_health_conditions} name='other_health_conditions'></textarea>
+            )}
+
+            {/* others */}
+            <div className={classes.field} style={{ flex: '0.2' }}>
+              <div className={classes.label}>
+                <label> <span style={{ color: 'red' }}>*</span>  Do you have any other concerning health conditions? </label>
+              </div>
+              <div class="field is-narrow">
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select value={form.others} name='others'>
+                      <option disabled={form.others && form.others !== ''}></option>
+                      <option value='yes'>Yes</option>
+                      <option value='no'>No</option>
+                    </select>
                   </div>
                 </div>
               </div>
             </div>
 
+
+            {form.others === 'yes' && (
+              <div className={classes.field}>
+                <div className={classes.label}>
+                  <label> Please let us know below </label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <textarea class="textarea" value={form.others_text} name='others_text'></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+
             <div className={classes.field}>
               <div class="field-body">
-
-
                 <div class="field">
                   <div class="control" className={classes.button}>
-
                     <Button onClick={() => history.goBack()} style={{ transform: 'translateX(-1rem', position: 'relative' }} color='primary' variant='outlined'>
                       Back
                   {isLoading && <CircularProgress size={30} className={classes.progress} />}

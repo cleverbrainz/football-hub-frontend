@@ -1,6 +1,9 @@
 import * as firebase from "firebase";
 import "firebase/firebase";
 import "firebase/storage";
+// import { getAnalytics } from "firebase/analytics";
+
+
 
 var firebaseApp = firebase.initializeApp({
   // apiKey: "AIzaSyAY-zXO9xGAb1Q5-9BlmqeTX6Ox2B4X9UM",
@@ -21,6 +24,8 @@ var firebaseApp = firebase.initializeApp({
 });
 
 var db = firebaseApp.firestore();
+
+// const analytics = getAnalytics();
 
 //export const companyd = db.doc('CompanyDetails/DgCPpBU80KBoXeuztw7z');
 
