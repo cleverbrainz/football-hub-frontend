@@ -1,27 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import PeopleAltSharpIcon from '@material-ui/icons/PeopleAltSharp';
 import PersonAddSharpIcon from '@material-ui/icons/PersonAddSharp';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormPropsTextFields from '../admin/AddCoaches'
-import Requests from '../Requests'
+import Requests from '../../Dashboards/dashboardComponents/Requests'
 import {
   Typography,
-  Card,
-  CardContent,
+  AppBar,
+  Box,
+  Tab,
+  Tabs,
 } from "@material-ui/core";
-import CancelSharpIcon from "@material-ui/icons/CancelSharp";
-import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import auth from '../../lib/auth'
-import DeleteComponent from './DeleteComponent'
+import DeleteComponent from '../../Dashboards/dashboardComponents/DeleteComponent'
 
 import CompanyPageBetaTable from '../../components/CompanyPageBetaTable'
 

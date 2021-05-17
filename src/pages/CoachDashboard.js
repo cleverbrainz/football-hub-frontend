@@ -31,24 +31,7 @@ import {
 } from '@material-ui/icons';
 
 import auth from '../lib/auth'
-// import { AuthContext } from '../lib/context'
-
-// import {
-//   Summary,
-//   Coaches,
-//   Listings,
-//   Sessions,
-//   Messages
-// } from '../components/Dashboard'
-
-import Summary from '../components/Dashboard/Summary'
 import Messages from '../components/Dashboard/CompanyMessages'
-import Listings from '../components/Dashboard/Listings'
-// import Coaches from '../components/Dashboard/Coaches'
-// import Coaches from '../pages/admin/Coaches'
-import CoachPageBeta from '../pages/admin/CoachPageBeta'
-import Sessions from '../components/Dashboard/Sessions'
-import Requests from '../pages/Requests'
 import Profile from './Profile'
 import CompanyPageBeta from './admin/CompanyPageBeta';
 import CoachSessions from '../components/Dashboard/CoachSessions';

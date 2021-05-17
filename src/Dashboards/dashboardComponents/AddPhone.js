@@ -13,17 +13,17 @@ import VisibilityOffSharpIcon from '@material-ui/icons/VisibilityOffSharp';
 import VisibilitySharpIcon from '@material-ui/icons/VisibilitySharp';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
-import auth from '../lib/auth'
-import { AuthContext } from "../lib/context";
-import { firebaseApp } from '../lib/firebase';
+import auth from '../../lib/auth'
+import { AuthContext } from "../../lib/context";
+import { firebaseApp } from '../../lib/firebase';
 import {
   MenuItem,
   Select,
   Paper
 } from '@material-ui/core'
-import { verification } from '../korean/LanguageSkeleton'
+import { verification } from '../../korean/LanguageSkeleton'
 import * as firebase from "firebase";
-import PhoneDropDown from './admin/PhoneDropdown';
+import PhoneDropDown from '../../korean/PhoneDropdown';
 
 const AddPhone = ({ location, history, locale }) => {
 

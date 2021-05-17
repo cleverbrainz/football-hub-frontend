@@ -16,7 +16,7 @@ import {
 import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import auth from '../../lib/auth'
-import DeleteComponent from '../../pages/admin/DeleteComponent'
+import DeleteComponent from '../../Dashboards/dashboardComponents/DeleteComponent'
 import AddListings from './AddListings'
 import EditSharpIcon from '@material-ui/icons/EditSharp';
 import ListingsPageTable from './ListingsPageTable'

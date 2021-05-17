@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '../lib/context'
-import { Link, Redirect} from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormGroup from '@material-ui/core/FormGroup'
@@ -38,7 +38,7 @@ import {
   DialogActions,
   Drawer,
   Divider,
-  List, 
+  List,
   ListItem,
   ListItemText,
   Button
@@ -47,11 +47,12 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import axios from 'axios'
 import auth from '../lib/auth'
-const drawerWidth = 200
+const drawerWidth = 230
 
 const useStyles = makeStyles((theme) => ({
-  root: { 
-    display: 'flex'
+  root: {
+    display: 'flex',
+    paddingTop: '100px'
   },
   appBar: {
     height: '70px'
@@ -62,8 +63,11 @@ const useStyles = makeStyles((theme) => ({
   tableHeading: {
     textTransform: 'capitalize',
     fontWeight: 'bold',
-    paddingLeft: 0,
   },
+  tableHeadingIcon: {
+    paddingLeft: '5px'
+  },
+
   sortIcons: {
     fontSize: '1rem',
     transform: 'translate(8px, 1px)'
@@ -75,9 +79,18 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginBottom: '1rem'
   },
+  selectContainer: {
+    margin: '0.75rem 0',
+    width: '100%'
+  },
   select: {
+    marginTop: '.5rem',
     fontSize: '14px',
-    paddingLeft: '20px'
+    paddingTop: '0.5rem',
+
+  },
+  menuItems: {
+    fontSize: '14px'
   },
   button: {
     fontSize: '12px',
@@ -87,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold'
   },
   inputContainers: {
-    color: 'orange',
+    color: '#3100F7',
     margin: '30px 0 8px 0 '
   },
   applicationHeader: {
@@ -101,17 +114,20 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    zIndex: 1
+    zIndex: 1,
+
   },
   drawerPaper: {
+    padding: '1.5rem 1.3rem',
     width: drawerWidth,
   },
   // necessary for content to be below app bar
   toolbar: { ...theme.mixins.toolbar, height: '80px' },
   content: {
+
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(3),
+    // padding: theme.spacing(3),
   }
 
 }))
@@ -263,29 +279,29 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
           fontSize={35} fontWeight="fontWeightBold" m={0}>
           {player_first_name} {player_last_name}
         </Box>
-        { viewSelect === 'All' &&
-        <FormControl style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}>
+        {viewSelect === 'All' &&
+          <FormControl style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}>
 
-          <div>
-            <Box
-              style={{ color: 'orange' }}
-              fontSize={12} fontWeight="fontWeightBold" m={0}>
-              Approve
+            <div>
+              <Box
+                style={{ color: '#3100F7' }}
+                fontSize={12} fontWeight="fontWeightBold" m={0}>
+                Approve
           </Box>
-          
-            <Select disabled={!challenges_submitted} value={ratings.indulge} style={{ fontSize: '14px' }} onChange={(event) => {
-              setEditing(true)
-              setRatings({ ...ratings, indulge: event.target.value })
-            }}>
-              <MenuItem value={0} disabled>-</MenuItem>
-              <MenuItem value={'Yes'}>Yes</MenuItem>
-              <MenuItem value={'No'}>No</MenuItem>
-            </Select>
-          </div>
 
-          {editing && <Button disabled={!challenges_submitted} style={{ marginLeft: '30px', height: '37px' }} variant="outlined" color="primary" onClick={(event) => handleSave(event, true)}>{text[locale].Save}</Button>}
-        </FormControl>
-          }
+              <Select disabled={!challenges_submitted} value={ratings.indulge} style={{ fontSize: '14px' }} onChange={(event) => {
+                setEditing(true)
+                setRatings({ ...ratings, indulge: event.target.value })
+              }}>
+                <MenuItem value={0} disabled>-</MenuItem>
+                <MenuItem value={'Yes'}>Yes</MenuItem>
+                <MenuItem value={'No'}>No</MenuItem>
+              </Select>
+            </div>
+
+            {editing && <Button disabled={!challenges_submitted} style={{ marginLeft: '30px', height: '37px', padding: '.5rem 1.75rem' }} variant="contained" color="primary" onClick={(event) => handleSave(event, true)}>{text[locale].Save}</Button>}
+          </FormControl>
+        }
       </Typography>
 
       <div className="field-body" style={{ margin: '10px 0', borderBottom: '1px dashed grey', padding: '20px 0' }}>
@@ -413,193 +429,193 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
       </div>
 
       {viewSelect === 'All' &&
-      <>  
-      <Typography className={classes.inputContainers} component='div'>
-        <Box
-          fontSize={14} fontWeight="fontWeightBold" m={0}>
-          Current Club
-        </Box>
-      </Typography>
-
-      <div class="field-body" >
-        {Object.keys(current_club).map((el, i) => {
-          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
-          return (
-            <div class='field' style={{ flex: 'none' }}>
-              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
-              <div class="control">
-                <input class="input is-small" type="text" value={current_club[el]} readonly />
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      <Typography className={classes.inputContainers} component='div'>
-        <Box
-          fontSize={14} fontWeight="fontWeightBold" m={0}>
-          Previous Clubs
-        </Box>
-      </Typography>
-
-      {previous_clubs.map((club, i) => {
-        return (
-          <div className="field-body" style={{ marginBottom: '1rem' }}>
-            <Box
-              style={{ color: 'orange' }}
-              fontSize={12} fontWeight="fontWeightBold" mr={1}>
-              {i + 1}.
-            </Box>
-            {Object.keys(club).map(field => {
-              const label = field.includes('_') ? capitalise(field) : field.charAt(0).toUpperCase() + field.slice(1)
-              return (
-                <div class='field' style={{ flex: 'none' }}>
-                  <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
-                  <div class="control">
-                    <input class="input is-small" type="text" value={club[field]} readonly />
-                  </div>
-                </div>
-              )
-            }
-            )}
-          </div>
-        )
-      })}
-
-
-
-
-      {award_achieved && (
         <>
           <Typography className={classes.inputContainers} component='div'>
             <Box
               fontSize={14} fontWeight="fontWeightBold" m={0}>
-              Awards Achieved
-            </Box>
+              Current Club
+        </Box>
           </Typography>
 
-          <div className="field-body">
-            {['award_name', 'award_date', 'award_reasoning'].map(el => {
+          <div class="field-body" >
+            {Object.keys(current_club).map((el, i) => {
               const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
               return (
-                <div class='field' style={{ flex: el === 'award_reasoning' ? 1 : 'none' }}>
+                <div class='field' style={{ flex: 'none' }}>
                   <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
                   <div class="control">
-                    <input class="input is-small" type="text" value={football_history[el]} readonly />
+                    <input class="input is-small" type="text" value={current_club[el]} readonly />
                   </div>
                 </div>
               )
-            }
-            )}
+            })}
           </div>
-        </>
-      )}
 
-
-      <Typography className={classes.inputContainers} component='div'>
-        <Box
-          fontSize={14} fontWeight="fontWeightBold" m={0}>
-          Challenges
+          <Typography className={classes.inputContainers} component='div'>
+            <Box
+              fontSize={14} fontWeight="fontWeightBold" m={0}>
+              Previous Clubs
         </Box>
-      </Typography>
+          </Typography>
 
-      <div class="field-body" >
-        {Object.keys(challenges).map(el => {
-          const label = capitalise(el)
-          return (
-            <div class='field'
-              onClick={() => window.open(`//${challenges[el]}`, '_blank')}
-            >
-              <label className={classes.label} > {label} </label>
-              <div class="control">
-                <input class="input is-small" type="text" value={challenges[el]} readonly />
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      <Typography className={classes.inputContainers} component='div'>
-        <Box
-          fontSize={14} fontWeight="fontWeightBold" m={0}>
-          Other Application Details
+          {previous_clubs.map((club, i) => {
+            return (
+              <div className="field-body" style={{ marginBottom: '1rem' }}>
+                <Box
+                  style={{ color: '#3100F7' }}
+                  fontSize={12} fontWeight="fontWeightBold" mr={1}>
+                  {i + 1}.
             </Box>
-      </Typography>
+                {Object.keys(club).map(field => {
+                  const label = field.includes('_') ? capitalise(field) : field.charAt(0).toUpperCase() + field.slice(1)
+                  return (
+                    <div class='field' style={{ flex: 'none' }}>
+                      <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+                      <div class="control">
+                        <input class="input is-small" type="text" value={club[field]} readonly />
+                      </div>
+                    </div>
+                  )
+                }
+                )}
+              </div>
+            )
+          })}
 
-      {/* <Typography className={classes.inputContainers} component='div'>
+
+
+
+          {award_achieved && (
+            <>
+              <Typography className={classes.inputContainers} component='div'>
+                <Box
+                  fontSize={14} fontWeight="fontWeightBold" m={0}>
+                  Awards Achieved
+            </Box>
+              </Typography>
+
+              <div className="field-body">
+                {['award_name', 'award_date', 'award_reasoning'].map(el => {
+                  const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+                  return (
+                    <div class='field' style={{ flex: el === 'award_reasoning' ? 1 : 'none' }}>
+                      <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+                      <div class="control">
+                        <input class="input is-small" type="text" value={football_history[el]} readonly />
+                      </div>
+                    </div>
+                  )
+                }
+                )}
+              </div>
+            </>
+          )}
+
+
+          <Typography className={classes.inputContainers} component='div'>
+            <Box
+              fontSize={14} fontWeight="fontWeightBold" m={0}>
+              Challenges
+        </Box>
+          </Typography>
+
+          <div class="field-body" >
+            {Object.keys(challenges).map(el => {
+              const label = capitalise(el)
+              return (
+                <div class='field'
+                  onClick={() => window.open(`//${challenges[el]}`, '_blank')}
+                >
+                  <label className={classes.label} > {label} </label>
+                  <div class="control">
+                    <input class="input is-small" type="text" value={challenges[el]} readonly />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <Typography className={classes.inputContainers} component='div'>
+            <Box
+              fontSize={14} fontWeight="fontWeightBold" m={0}>
+              Other Application Details
+            </Box>
+          </Typography>
+
+          {/* <Typography className={classes.inputContainers} component='div'>
         <Box
           fontSize={14} fontWeight="fontWeightBold" m={0}>
           Highlights Footage Links
         </Box>
       </Typography> */}
 
-      <div class="field-body" >
-        {highlights_footage_link.map((el, i) => {
-          return (
-            <div class='field'
-            onClick={() => {
-              el.slice(0, 8) === 'https://' ? window.open(el, '_blank') : window.open(`//${el}`, '_blank')
-            }}
-          >
-            <label className={classes.label}> Link {i + 1} </label>
-            <div class="control">
-              <input class="input is-small" type="text" value={el} readonly />
-            </div>
+          <div class="field-body" >
+            {highlights_footage_link.map((el, i) => {
+              return (
+                <div class='field'
+                  onClick={() => {
+                    el.slice(0, 8) === 'https://' ? window.open(el, '_blank') : window.open(`//${el}`, '_blank')
+                  }}
+                >
+                  <label className={classes.label}> Link {i + 1} </label>
+                  <div class="control">
+                    <input class="input is-small" type="text" value={el} readonly />
+                  </div>
+                </div>
+              )
+            })}
           </div>
-          )
-        })}
-      </div>
 
-      <div class="field-body" >
-        {['private_coach_name', 'private_coach_company', 'private_coach_website'].map((el, i) => {
-          // if (!private_coaching && el === 'private_coach_name') return
-          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
-          return (
-            <div class='field' style={{ marginBottom: '10px' }} >
-              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+          <div class="field-body" >
+            {['private_coach_name', 'private_coach_company', 'private_coach_website'].map((el, i) => {
+              // if (!private_coaching && el === 'private_coach_name') return
+              const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+              return (
+                <div class='field' style={{ marginBottom: '10px' }} >
+                  <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+                  <div class="control">
+                    <input class="input is-small" type="text" value={football_history[el]} readonly />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <div class="field-body" >
+            <div class='field'>
+              <label className={classes.label} > Description </label>
               <div class="control">
-                <input class="input is-small" type="text" value={football_history[el]} readonly />
+                <textarea class="textarea is-small" onfocus="this.blur()" type="text" value={bio_description} readonly />
               </div>
             </div>
-          )
-        })}
-      </div>
 
-      <div class="field-body" >
-        <div class='field'>
-          <label className={classes.label} > Description </label>
-          <div class="control">
-            <textarea class="textarea is-small" onfocus="this.blur()" type="text" value={bio_description} readonly />
           </div>
-        </div>
-
-      </div>
-      </>
+        </>
       }
-      { viewSelect === 'Approved' && 
-<>
-<Typography className={classes.inputContainers} component='div'>
-<Box
-  fontSize={14} fontWeight="fontWeightBold" m={0}>
-  Application Responses
+      {viewSelect === 'Approved' &&
+        <>
+          <Typography className={classes.inputContainers} component='div'>
+            <Box
+              fontSize={14} fontWeight="fontWeightBold" m={0}>
+              Application Responses
     </Box>
-</Typography>
-      <div class="field-body" >
-      {['allergies', 'kit_size_top', 'kit_size_bottom', 'injuries', 'others'].map((el, i) => {
-          // if (!private_coaching && el === 'private_coach_name') return
-          const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
-          return (
-            <div class='field' style={{ marginBottom: '10px' }} >
-              <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
-              <div class="control">
-                <input class="input is-small" type="text" value={post_app_actions[el] ? post_app_actions[el] : 'None'} readonly />
-              </div>
-            </div>
-          )
-        })}
+          </Typography>
+          <div class="field-body" >
+            {['allergies', 'kit_size_top', 'kit_size_bottom', 'injuries', 'others'].map((el, i) => {
+              // if (!private_coaching && el === 'private_coach_name') return
+              const label = el.includes('_') ? capitalise(el) : el.charAt(0).toUpperCase() + el.slice(1)
+              return (
+                <div class='field' style={{ marginBottom: '10px' }} >
+                  <label className={classes.label} > {text[locale][label] ? text[locale][label] : label} </label>
+                  <div class="control">
+                    <input class="input is-small" type="text" value={post_app_actions[el] ? post_app_actions[el] : 'None'} readonly />
+                  </div>
+                </div>
+              )
+            })}
 
-    </div>
-    </>
+          </div>
+        </>
       }
 
       <AlertDialog open={open} setOpen={setOpen} handleSave={handleSave} setEditing={setEditing} />
@@ -621,7 +637,7 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
 
           <div>
             <Box
-              style={{ color: 'orange' }}
+              style={{ color: '#3100F7' }}
               fontSize={12} fontWeight="fontWeightBold" m={0}>
               {text[locale].SelectRating}
             </Box>
@@ -667,7 +683,7 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
 
 
         <div class="field"
-          style={{ marginRight: '10px'}}>
+          style={{ marginRight: '10px' }}>
           <label className={classes.label}> {text[locale].Address} </label>
           <div class="control">
             <input class="input is-small" type="text"
@@ -766,7 +782,7 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
         return (
           <div className="field-body" style={{ marginBottom: '1rem' }}>
             <Box
-              style={{ color: 'orange' }}
+              style={{ color: '#3100F7' }}
               fontSize={12} fontWeight="fontWeightBold" mr={1}>
               {i + 1}.
             </Box>
@@ -824,15 +840,15 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
         {highlights_footage_link.map((el, i) => {
           return (
             <div class='field'
-            onClick={() => {
-              el.slice(0, 8) === 'https://' ? window.open(el, '_blank') : window.open(`//${el}`, '_blank')
-            }}
-          >
-            <label className={classes.label}> Link {i + 1} </label>
-            <div class="control">
-              <input class="input is-small" type="text" value={el} readonly />
+              onClick={() => {
+                el.slice(0, 8) === 'https://' ? window.open(el, '_blank') : window.open(`//${el}`, '_blank')
+              }}
+            >
+              <label className={classes.label}> Link {i + 1} </label>
+              <div class="control">
+                <input class="input is-small" type="text" value={el} readonly />
+              </div>
             </div>
-          </div>
           )
         })}
       </div>
@@ -895,47 +911,47 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
         </div>
       </div>
 
-        <Typography className={classes.inputContainers} component='div' >
-          <Box
-            fontSize={14} fontWeight="fontWeightBold" m={0}>
-            {text[locale].PlayerDetails}
-          </Box>
-        </Typography>
+      <Typography className={classes.inputContainers} component='div' >
+        <Box
+          fontSize={14} fontWeight="fontWeightBold" m={0}>
+          {text[locale].PlayerDetails}
+        </Box>
+      </Typography>
 
 
-        <div class="field-body" style={{ marginBottom: '1rem' }}>
+      <div class="field-body" style={{ marginBottom: '1rem' }}>
 
-          <div class='field'
-            style={{ flex: '0.8', marginRight: '10px' }}>
-            <label className={classes.label} > Email Address </label>
-            <div class="control">
-              <input class="input is-small" type="text" value={email} readonly />
-            </div>
+        <div class='field'
+          style={{ flex: '0.8', marginRight: '10px' }}>
+          <label className={classes.label} > Email Address </label>
+          <div class="control">
+            <input class="input is-small" type="text" value={email} readonly />
           </div>
-
-
-          <div class="field"
-            style={{ marginRight: '10px' }}>
-            <label className={classes.label}> {text[locale].Address} </label>
-            <div class="control">
-              <input class="input is-small" type="text"
-                value={[address_line_1, address_line_2, city, country, postcode].join(', ')} readonly />
-            </div>
-          </div>
-
-
-          <div class="field"
-            style={{ marginRight: '10px', flex: '0.8' }}>
-            <label className={classes.label}>
-              {`Can Provide Residency${nationality !== 'south korean' ? ' & Passport' : ''} Evidence`}
-            </label>
-            <div class="control">
-              <input class="input is-small" type="text"
-                value={can_provide_certificates} readonly />
-            </div>
-          </div>
-
         </div>
+
+
+        <div class="field"
+          style={{ marginRight: '10px' }}>
+          <label className={classes.label}> {text[locale].Address} </label>
+          <div class="control">
+            <input class="input is-small" type="text"
+              value={[address_line_1, address_line_2, city, country, postcode].join(', ')} readonly />
+          </div>
+        </div>
+
+
+        <div class="field"
+          style={{ marginRight: '10px', flex: '0.8' }}>
+          <label className={classes.label}>
+            {`Can Provide Residency${nationality !== 'south korean' ? ' & Passport' : ''} Evidence`}
+          </label>
+          <div class="control">
+            <input class="input is-small" type="text"
+              value={can_provide_certificates} readonly />
+          </div>
+        </div>
+
+      </div>
 
       <div className="field-body">
         {['contact_number', 'dob', 'gender', 'nationality'].map((el, index) => {
@@ -1000,7 +1016,7 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
             style={{ marginTop: '15px', width: '50%' }}
           >
             <Box
-              style={{ color: 'orange' }}
+              style={{ color: '#3100F7' }}
               fontSize={12} fontWeight="fontWeightBold" m={0}>
               Select Rating
             </Box>
@@ -1034,7 +1050,7 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
           >
 
             <Box
-              style={{ color: 'orange' }}
+              style={{ color: '#3100F7' }}
               fontSize={12} fontWeight="fontWeightBold" m={0}>
               Select Rating
             </Box>
@@ -1068,7 +1084,7 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
           >
 
             <Box
-              style={{ color: 'orange' }}
+              style={{ color: '#3100F7' }}
               fontSize={12} fontWeight="fontWeightBold" m={0}>
               Select Rating
             </Box>
@@ -1100,9 +1116,9 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
           </div>
         </div>
       )}
-      <br/>
-      <br/>
-      <br/>
+      <br />
+      <br />
+      <br />
 
 
       <AlertDialog open={open} setOpen={setOpen} handleSave={handleSave} setEditing={setEditing} />
@@ -1192,15 +1208,15 @@ const ApplicationDashboard = ({ locale }) => {
       const status = player.challenges_submitted ? 'complete' : player.submitted ? 'onlyApplication' : 'started'
       // console.log(newFilters.ageRange, player.age_group)
       if (newFilters.applicationStatus === 'All' || newFilters.applicationStatus === status) {
-      if (newFilters.ageRange === player.age_group || newFilters.ageRange === 'All') {
-      if (newFilters.positionCategory === 'All') {
-        filteredPlayers.push(application)
-      } else if (positions[newFilters.positionCategory].map(item => item.toLowerCase()).includes(player.player_attributes.position)) {
-        if (newFilters.position === 'All' || newFilters.position.toLowerCase() === player.player_attributes.position) {
-          filteredPlayers.push(application)
+        if (newFilters.ageRange === player.age_group || newFilters.ageRange === 'All') {
+          if (newFilters.positionCategory === 'All') {
+            filteredPlayers.push(application)
+          } else if (positions[newFilters.positionCategory].map(item => item.toLowerCase()).includes(player.player_attributes.position)) {
+            if (newFilters.position === 'All' || newFilters.position.toLowerCase() === player.player_attributes.position) {
+              filteredPlayers.push(application)
+            }
+          }
         }
-      }
-      }
       }
     }
 
@@ -1226,7 +1242,7 @@ const ApplicationDashboard = ({ locale }) => {
         // return (Number(a[2].ratings.application) + Number(Object.values(a[2].ratings.challengesMap).reduce((x,y) => x + y, 0))) - (Number(b[2].ratings.application) + Number(Object.values(b[2].ratings.challengesMap).reduce((x,y) => x + y, 0)))
       })
     } else {
-      
+
       sorted.sort((a, b) => a[2][parent][a[2][parent][key] ? key : 'player_first_name'].localeCompare(a[2][parent][b[2][parent][key] ? key : 'player_first_name']))
     }
 
@@ -1306,7 +1322,7 @@ const ApplicationDashboard = ({ locale }) => {
       Score: 'Score',
       Approved: 'Approved',
       AwaitingApproval: 'Awaiting Approval',
-      ViewApplication: 'View Application',
+      ViewApplication: 'View',
       Category: 'Category',
       Checked: 'Checked',
       AwaitingCheck: 'Awaiting Check',
@@ -1392,126 +1408,215 @@ const ApplicationDashboard = ({ locale }) => {
 
   const ApplicationDashboardOptions = () => {
     const classes = useStyles();
-  
+
     return (
       <Drawer
-      className={classes.drawer}
-      variant="permanent"
-      classes={{
-        paper: classes.drawerPaper,
-      }}
-      anchor="left"
-    >
-      <div className={classes.toolbar} />
-      <FormGroup>
-      <Typography>Select Course</Typography>
-      <FormControl>
-          <InputLabel>{text[locale].Courses}</InputLabel>
-          <Select className={classes.select} value={selectedCourse} onChange={(event) => setSelectedCourse(event.target.value)}>
-            <MenuItem value="select" disabled>
-              {text[locale].SelectACourse}
-            </MenuItem>
-            {coursesModerating.map((course, index) => {
-              return (
-                <MenuItem value={course}>{course}</MenuItem>
-              )
-            })}
-          </Select>
-        </FormControl>
-        {selectedCourse === 'Ajax' &&
-        <>
-          <FormControl>
-            <InputLabel>Application Status</InputLabel>
-            <Select className={classes.select} value={applicationStatus} inputProps={{
-                          name: 'applicationStatus',
-                        }} onChange={handleFilterChange}>
-              <MenuItem value={'All'}>
-                All
-              </MenuItem>
-              <MenuItem value="started">Started but not submitted</MenuItem>
-              <MenuItem value="onlyApplication">Submitted Application</MenuItem>
-              <MenuItem value="complete">Submitted Application & Challenges</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel>Select Age Range</InputLabel>
-            <Select className={classes.select} value={ageRange} inputProps={{
-                          name: 'ageRange',
-                        }} onChange={handleFilterChange}>
-              <MenuItem value={'All'}>
-                All age ranges
-              </MenuItem>
-              <MenuItem value="Under 12s">Under 12</MenuItem>
-              <MenuItem value="Under 13s">Under 13</MenuItem>
-              <MenuItem value="Under 14s">Under 14</MenuItem>
-              <MenuItem value="Under 15s">Under 15</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl>
-          <InputLabel id="demo-simple-select-label">
-            {text[locale].Category}
-          </InputLabel>
-          <Select
-            className={classes.select}
-            style={{ fontSize: '14px' }}
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={filters.positionCategory}
-            inputProps={{
-              name: 'positionCategory',
-            }}
-            onChange={handleFilterChange}
-          >
-            <MenuItem value={'All'}>{text[locale].AllPositions}</MenuItem>
-            <MenuItem value={'Goalkeeper'}>Goalkeeper</MenuItem>
-            <MenuItem value={'Defence'}>Defence</MenuItem>
-            <MenuItem value={'Midfield'}>Midfield</MenuItem>
-            <MenuItem value={'Attack'}>Attack</MenuItem>
-          </Select>
-        </FormControl>
-        {
-        !['All', 'Attack', 'Goalkeeper'].some(x => x === filters.positionCategory) && <FormControl >
-          <InputLabel id="demo-simple-select-label">
-            {text[locale].Position}
-          </InputLabel>
-          <Select
-            className={classes.select}
-            style={{ fontSize: '14px' }}
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={filters.position}
-            inputProps={{
-              name: 'position',
-            }}
-            onChange={handleFilterChange}
-          >
-            <MenuItem value={'All'}>{text[locale].AllPositions}</MenuItem>
-            {positions[filters.positionCategory].map(position => {
-              return (
-                <MenuItem value={position}>{position}</MenuItem>
-              )
-            })}
-          </Select>
-        </FormControl>
-        }
-        </>
-    }
-    </FormGroup>
-    <Divider />
-      <List>
-      <ListItem selected={viewSelect === 'All' ? true : false} onClick={() => setViewSelect('All')} button>
-            <ListItemText primary={`All Applications: ${filteredApplications.length}`} />
-        </ListItem>
-        { initialPermission === 0 &&
-        <ListItem selected={viewSelect === 'Approved' ? true : false} onClick={() => setViewSelect('Approved')} button>
-            <ListItemText primary={'Approved'} />
-        </ListItem>
-        }
-      </List>
-      <Divider />
+        className={classes.drawer}
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+        anchor="left"
+      >
+        <div className={classes.toolbar} />
+        <FormGroup >
+          <Typography component='div'>
+            <Box fontSize={16} fontWeight="fontWeightBold" mt={0} mb={1.25}>
+              Apply Filters
+            </Box>
+          </Typography>
 
-    </Drawer>
-    
+          {initialPermission === 0 && <FormControl className={classes.selectContainer}>
+            <InputLabel> Access Type </InputLabel>
+            <Select className={classes.select}
+              // disabled={tabValue === 1}
+              value={permissions}
+              inputProps={{
+                name: 'access',
+              }}
+              onChange={(event) => setPermissions(Number(event.target.value))}>
+
+              <MenuItem className={classes.menuItems} value={0}> Indulge Football </MenuItem>
+              <MenuItem className={classes.menuItems} value={1}> NYSES </MenuItem>
+              <MenuItem className={classes.menuItems} value={2}> UK Coaching Staff </MenuItem>
+            </Select>
+          </FormControl>}
+
+          <FormControl className={classes.selectContainer}>
+            <InputLabel>{text[locale].Courses}</InputLabel>
+            <Select
+              className={classes.select}
+              disabled={tabValue === 1}
+              value={selectedCourse}
+              onChange={(event) => setSelectedCourse(event.target.value)}>
+              <MenuItem className={classes.menuItems} value="select" disabled>
+                {text[locale].SelectACourse}
+              </MenuItem>
+              {coursesModerating.map((course, index) => {
+                return (
+                  <MenuItem className={classes.menuItems} value={course}>{course}</MenuItem>
+                )
+              })}
+            </Select>
+          </FormControl>
+
+          {selectedCourse === 'Ajax' &&
+            <>
+              <FormControl className={classes.selectContainer}>
+                <InputLabel>Application Status</InputLabel>
+                <Select className={classes.select}
+                  disabled={tabValue === 1}
+                  value={applicationStatus}
+                  inputProps={{
+                    name: 'applicationStatus',
+                  }}
+                  onChange={handleFilterChange}>
+
+                  <MenuItem className={classes.menuItems} value={'All'}>
+                    All
+                  </MenuItem>
+                  <MenuItem className={classes.menuItems} value="started">Started but not submitted</MenuItem>
+                  <MenuItem className={classes.menuItems} value="onlyApplication">Submitted Application</MenuItem>
+                  <MenuItem className={classes.menuItems} value="complete">Submitted Application & Challenges</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl className={classes.selectContainer}>
+                <InputLabel> Age Group </InputLabel>
+                <Select className={classes.select}
+                  disabled={tabValue === 1}
+                  value={ageRange} inputProps={{
+                    name: 'ageRange',
+                  }} onChange={handleFilterChange}>
+                  <MenuItem className={classes.menuItems} value={'All'}>
+                    All
+              </MenuItem>
+                  <MenuItem className={classes.menuItems} value="Under 12s">Under 12</MenuItem>
+                  <MenuItem className={classes.menuItems} value="Under 13s">Under 13</MenuItem>
+                  <MenuItem className={classes.menuItems} value="Under 14s">Under 14</MenuItem>
+                  <MenuItem className={classes.menuItems} value="Under 15s">Under 15</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl className={classes.selectContainer}>
+                <InputLabel id="demo-simple-select-label">
+                  {text[locale].Category}
+                </InputLabel>
+                <Select
+                  disabled={tabValue === 1}
+                  className={classes.select}
+                  style={{ fontSize: '14px' }}
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={filters.positionCategory}
+                  inputProps={{
+                    name: 'positionCategory',
+                  }}
+                  onChange={handleFilterChange}
+                >
+                  <MenuItem className={classes.menuItems} value={'All'}>{text[locale].AllPositions}</MenuItem>
+                  <MenuItem className={classes.menuItems} value={'Goalkeeper'}>Goalkeeper</MenuItem>
+                  <MenuItem className={classes.menuItems} value={'Defence'}>Defence</MenuItem>
+                  <MenuItem className={classes.menuItems} value={'Midfield'}>Midfield</MenuItem>
+                  <MenuItem className={classes.menuItems} value={'Attack'}>Attack</MenuItem>
+                </Select>
+              </FormControl>
+              {
+                !['All', 'Attack', 'Goalkeeper'].some(x => x === filters.positionCategory) && <FormControl
+                  style={{ cursor: tabValue === 1 ? 'not-allowed' : 'inital' }}>
+                  <InputLabel id="demo-simple-select-label">
+                    {text[locale].Position}
+                  </InputLabel>
+                  <Select
+                    disabled={tabValue === 1}
+                    className={classes.select}
+                    style={{ fontSize: '14px' }}
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={filters.position}
+                    inputProps={{
+                      name: 'position',
+                    }}
+                    onChange={handleFilterChange}
+                  >
+                    <MenuItem className={classes.menuItems} value={'All'}>{text[locale].AllPositions}</MenuItem>
+                    {positions[filters.positionCategory].map(position => {
+                      return (
+                        <MenuItem className={classes.menuItems} value={position}>{position}</MenuItem>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
+              }
+
+              <FormControl className={classes.selectContainer}>
+                <InputLabel> Application Type </InputLabel>
+                <Select className={classes.select}
+                  disabled={tabValue === 1 || selectedCourse === 'select'}
+                  value={viewSelect}
+                  onClick={e => setViewSelect(e.target.value)}>
+                  <MenuItem className={classes.menuItems} value={'All'}>
+                    All
+              </MenuItem>
+                  <MenuItem className={classes.menuItems} value="Approved"> Approved </MenuItem>
+                </Select>
+              </FormControl>
+
+            </>
+          }
+
+          <Button
+            style={{ marginTop: '1rem' }}
+            className={classes.button}
+            onClick={() => {
+              if (tabValue === 1) {
+                setTabValue(0)
+
+                setFilters({ ...filters })
+                setSelectedCourse(selectedCourse)
+                setViewSelect(viewSelect)
+                setFilteredApplications([ ...filteredApplications ])
+                return
+              }
+
+              setFilters({
+                ageRange: 'All',
+                positionCategory: 'All',
+                position: 'All',
+                applicationStatus: 'All'
+              })
+              setSelectedCourse('select')
+              setViewSelect('All')
+              setFilteredApplications([])
+            }}
+            variant='outlined' disabled={selectedCourse === 'select'} color='secondary'>
+            {tabValue === 1 ? 'Return to List' : 'Clear Filters'}
+          </Button>
+        </FormGroup>
+
+        {/* <List>
+
+          <ListItem
+            className={classes.menuItems}
+            disabled={tabValue === 1 || selectedCourse === 'select'}
+            selected={viewSelect === 'All' ? true : false}
+            onClick={() => setViewSelect('All')} button>
+            <ListItemText secondary={`All Applications: ${filteredApplications.length}`} />
+          </ListItem>
+
+          {initialPermission === 0 &&
+            <ListItem
+              disabled={tabValue === 1 || selectedCourse === 'select'}
+              selected={viewSelect === 'Approved' ? true : false}
+              onClick={() => setViewSelect('Approved')} button>
+              <ListItemText secondary={'Approved'} />
+            </ListItem>
+          }
+        </List> */}
+
+
+      </Drawer >
+
     )
   }
 
@@ -1523,257 +1628,299 @@ const ApplicationDashboard = ({ locale }) => {
   )
   if (typeof permissions === 'number') return (
     <div className={classes.root}>
-    <CssBaseline />
-    <ApplicationDashboardOptions locale={locale}/>
-    <Container>
-      
-      <br />
-      <br />
-      <br />
-      <br />
-      { initialPermission === 0 && <FormControl component="fieldset">
-        <FormLabel component="legend">Access Type</FormLabel>
-        <RadioGroup
-          row
-          aria-label="access"
-          name="access"
-          value={permissions}
-          onChange={(event) => setPermissions(Number(event.target.value))}
-        >
-          <FormControlLabel value={0} control={<Radio />} label="Indulge Football" />
-          <FormControlLabel value={1} control={<Radio />} label="NYSES" />
-          <FormControlLabel
-            value={2}
-            control={<Radio />}
-            label="UK Coaching Staff"
-          />
-        </RadioGroup>
-      </FormControl>
-      }
-
-      <AppBar
-        className={classes.appBar}
-        position="static" color="default">
-        <Tabs
-          className={classes.appBarInner}
-          value={tabValue}
-          variant="scrollable"
-          scrollButtons="on"
-          indicatorColor="primary"
-          textColor="primary"
-          aria-label="scrollable force tabs example"
-          onChange={(event, newValue) => {
-            if (!editing) {
-              setTabValue(newValue)
-            } else {
-              setOpen(true)
-            }
-          }}
-        >
-
-          {tabValue === 1 &&
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => setTabValue(0)}
-              className={classes.button}
-              startIcon={<ArrowBackSharpIcon />}>
-              {text[locale].Back}
-            </Button>}
-
-
-
-          <Tab style={{ display: 'none' }} label={text[locale].ApplicationList} icon={<ListIcon />} />
-          <Tab style={{ display: 'none' }} label={text[locale].ViewSingleApplication} icon={<PersonIcon />} />
-
-        </Tabs>
-      </AppBar>
-
-      <TabPanel value={tabValue} index={0}>
-        {selectedCourse === 'Ajax' ?
-          <>
-            <Container
+      <CssBaseline />
+      <ApplicationDashboardOptions locale={locale} />
+      <Container>
+        {/* 
+        <br />
+        <br />
+        <br />
+        <br />
+        {initialPermission === 0 && <FormControl component="fieldset">
+          <FormLabel component="legend">Access Type</FormLabel>
+          <RadioGroup
+            row
+            aria-label="access"
+            name="access"
+            value={permissions}
+            onChange={(event) => setPermissions(Number(event.target.value))}
+          >
+            <FormControlLabel value={0} control={<Radio />} label="Indulge Football" />
+            <FormControlLabel value={1} control={<Radio />} label="NYSES" />
+            <FormControlLabel
+              value={2}
+              control={<Radio />}
+              label="UK Coaching Staff"
+            />
+          </RadioGroup>
+        </FormControl>
+        } */}
+        {/* {tabValue === 1 &&
+          <AppBar
+            className={classes.appBar}
+            position="static" color="default">
+            <Tabs
+              className={classes.appBarInner}
+              value={tabValue}
+              variant="scrollable"
+              scrollButtons="on"
+              indicatorColor="primary"
+              textColor="primary"
+              aria-label="scrollable force tabs example"
+              onChange={(event, newValue) => {
+                if (!editing) {
+                  setTabValue(newValue)
+                } else {
+                  setOpen(true)
+                }
+              }}
             >
-              <div className={classes.containerInner}>
-                <Typography component='div' >
-                  <Box
-                    fontSize={25} fontWeight="fontWeightRegular" m={-1}>
-                    Indulge Ajax Camp: {text[locale].ApplicationList}
-                  </Box>
-                </Typography>
-                <Typography component='div' >
-                  <Box fontSize={20} fontStyle="oblique" fontWeight="fontWeightRegular" m={-1}>Total players registered on site: {currentUserCount}</Box>
-                </Typography>
-              </div>
-              {permissions === 0 && <Typography variant="h6">{filters.positionCategory === 'All' ? `Average Completed Application Score: ${getAverageScore('All', 'All')[0]}` : filters.position === 'All' ? `Average ${filters.positionCategory} Score: ${getAverageScore('All', filters.positionCategory)[1]}` : `Average ${filters.position} Score: ${getAverageScore(filters.position, filters.positionCategory)[1]}`}</Typography>}
-            </Container>
 
-            { viewSelect === 'All' ?
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="right">
-                    <Button
-                      className={classes.tableHeading}
-                      onClick={(event) => handleSort(event, 'personal_details name')}>
-                      {/* {text[locale].Name} {sort.type === 'name' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
-                      {text[locale].Name}  <ImportExportSharpIcon className={classes.sortIcons} />
-                    </Button>
-                  </TableCell>
-                  <TableCell align="right" >
-                    <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'personal_details dob')}>
-                      {/* {text[locale].Age}  {sort.type === 'dob' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
-                      {text[locale].Age}  <ImportExportSharpIcon className={classes.sortIcons} />
-                    </Button>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'personal_details city')}>
-                      {/* {text[locale].City} {sort.type === 'city' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
-                      {text[locale].City} <ImportExportSharpIcon className={classes.sortIcons} />
-                    </Button>
-                  </TableCell>
-                  {(permissions === 0 || permissions === 2) &&
-                    <TableCell align="right" >
-                      <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'player_attributes position')}>
-                        {text[locale].Position} {sort.type === 'position' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />}
-                      </Button>
-                    </TableCell>
-                  }
-                  <TableCell
-                    className={classes.tableHeading}
-                    style={{ paddingLeft: '1rem' }}
-                    align="right">
-                    {/* <Button onClick={(event) => handleSort(event, 'personal_details status')}> */}
-                    {/* {text[locale].Status} {sort.type === 'city' ? sort.direction === 'down' ? <ArrowDropDownIcon/> : <ArrowDropUpIcon/> : '' } */}
-                    {/* </Button> */}
-                    {text[locale].Status}
-                  </TableCell>
-                  {permissions === 0 &&
-                    <TableCell align="right">
-                      <Button onClick={(event) => handleSort(event, 'player score')}>
-                        {text[locale].Score} {sort.type === 'score' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />}
-                      </Button>
-                    </TableCell>}
-                  {permissions === 0 && <TableCell align="right">{text[locale].Approved}</TableCell>}
-                  <TableCell align="right">Submission Status</TableCell>
-                  <TableCell align="right"></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredApplications.map(([userId, email, applicant], index) => {
-                  const { personal_details, player_attributes, ratings, submitted, challenges_submitted } = applicant
-                  return (
+
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => setTabValue(0)}
+                className={classes.button}
+                startIcon={<ArrowBackSharpIcon style={{ fontSize: '17px', transform: 'translate(.5px)' }} />}>
+               
+              </Button>
+
+
+
+              <Tab style={{ display: 'none' }} label={text[locale].ApplicationList} icon={<ListIcon />} />
+              <Tab style={{ display: 'none' }} label={text[locale].ViewSingleApplication} icon={<PersonIcon />} />
+
+            </Tabs>
+          </AppBar>} */}
+
+        <TabPanel value={tabValue} index={0}>
+          {selectedCourse === 'Ajax' ?
+            <>
+              <Container>
+                <div className={classes.containerInner}>
+                  <Typography component='div' >
+                    <Box
+                      fontSize={30} fontWeight="fontWeightBold" mt={2} mb={-1}>
+                      Indulge Ajax Camp: {text[locale].ApplicationList}
+                    </Box>
+                  </Typography>
+                </div>
+
+                <div className="field-body" style={{ margin: '10px 0', borderBottom: '1px dashed grey', padding: '20px 0' }}>
+
+                  {permissions === 0 && <div class='field' style={{ flex: 'none' }}>
+                    <label className={classes.label} > {filters.positionCategory === 'All' ?
+                      `Average Completed Application Score` :
+                      filters.position === 'All' ? `Average ${filters.positionCategory} Score` :
+                        `Avergae ${filters.position} Score`}
+                    </label>
+
+                    <div class="control">
+                      <input class="input is-small is-static" type="text" value={filters.positionCategory === 'All' ?
+                        getAverageScore('All', 'All')[0] :
+                        filters.position === 'All' ? getAverageScore('All', filters.positionCategory)[1] :
+                          getAverageScore(filters.position, filters.positionCategory)[1]} readonly />
+                    </div>
+                  </div>}
+
+
+                  <div class='field' style={{ flex: 'none', margin: '0 2rem' }}>
+                    <label className={classes.label} > Total Players Registered </label>
+                    <div class="control">
+                      <input class="input is-small is-static" type="text" value={currentUserCount} readonly />
+                    </div>
+                  </div>
+
+                  <div class='field' style={{ flex: 'none' }}>
+                    <label className={classes.label} > Filter Results </label>
+                    <div class="control">
+                      <input class="input is-small is-static" type="text" value={`${filteredApplications.length} Applications`} readonly />
+                    </div>
+                  </div>
+
+
+                </div>
+
+                {/* {permissions === 0 && <Typography variant="h6">{filters.positionCategory === 'All' ?
+                  `Average Completed Application Score: ${getAverageScore('All', 'All')[0]}` :
+                  filters.position === 'All' ? `Average ${filters.positionCategory} Score: ${getAverageScore('All', filters.positionCategory)[1]}` :
+                    `Average ${filters.position} Score: ${getAverageScore(filters.position, filters.positionCategory)[1]}`}
+                </Typography>} */}
+              </Container>
+
+              {viewSelect === 'All' ?
+                <Table>
+                  <TableHead>
                     <TableRow>
-                      <TableCell>{`${personal_details.player_first_name} ${personal_details.player_last_name}`}</TableCell>
-                      <TableCell>{auth.dobToAge(personal_details.dob)}</TableCell>
-                      <TableCell>{personal_details.city}</TableCell>
+                      <TableCell className={classes.tableHeadingIcon} align="right">
+                        <Button
+                          className={classes.tableHeading}
+
+                          onClick={(event) => handleSort(event, 'personal_details name')}>
+                          {/* {text[locale].Name} {sort.type === 'name' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
+                          {text[locale].Name}  <ImportExportSharpIcon className={classes.sortIcons} />
+                        </Button>
+                      </TableCell>
+                      <TableCell className={classes.tableHeadingIcon} align="right" >
+                        <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'personal_details dob')}>
+                          {/* {text[locale].Age}  {sort.type === 'dob' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
+                          {text[locale].Age}  <ImportExportSharpIcon className={classes.sortIcons} />
+                        </Button>
+                      </TableCell>
+                      <TableCell className={classes.tableHeadingIcon} align="right">
+                        <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'personal_details city')}>
+                          {/* {text[locale].City} {sort.type === 'city' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
+                          {text[locale].City} <ImportExportSharpIcon className={classes.sortIcons} />
+                        </Button>
+                      </TableCell>
                       {(permissions === 0 || permissions === 2) &&
-                        <TableCell>{player_attributes.position}</TableCell>
-                      }
-                      {permissions === 0 ?
-                        <TableCell>
-                          {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck}
-                        </TableCell> :
-                        permissions === 1 ?
-                          <TableCell>
-                            {ratings.application > 0 ? text[locale].Checked : text[locale].AwaitingCheck}
-                          </TableCell> :
-                          <TableCell>
-                            {!Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck}
-                          </TableCell>
-                      }
-                      {permissions === 0 &&
-                        <TableCell>
-                          {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? Number(ratings.application) + Number(Object.values(ratings.challengesMap).reduce((x, y) => x + y, 0)) : 'N/A'}
-                        </TableCell>}
-                      {permissions === 0 &&
-                        <TableCell>
-                          {ratings.indulge === 0 ? text[locale].AwaitingApproval : ratings.indulge}
+                        <TableCell className={classes.tableHeadingIcon} align="right" >
+                          <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'player_attributes position')}>
+                            {text[locale].Position} <ImportExportSharpIcon className={classes.sortIcons} />
+                          </Button>
                         </TableCell>
                       }
-                      <TableCell align="right">{ submitted && challenges_submitted ? 'Application & Challenges Submitted' : submitted ? 'Only Application' : 'Started'}</TableCell>
-                      <TableCell><Link className={classes.tabs} onClick={() => {
-                        setApplicantIndex(index)
-                        setTabValue(1)
-                      }}>{text[locale].ViewApplication}</Link></TableCell>
+                      <TableCell
+                        className={classes.tableHeading}
+                        style={{ paddingLeft: '1rem' }}
+                        align="right">
+                        {text[locale].Status}
+                      </TableCell>
+                      {permissions === 0 &&
+                        <TableCell className={classes.tableHeadingIcon} align="right">
+                          <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'player score')}>
+                            {text[locale].Score} <ImportExportSharpIcon className={classes.sortIcons} />
+                          </Button>
+                        </TableCell>}
+                      {permissions === 0 && <TableCell className={classes.tableHeading} align="right">{text[locale].Approved}</TableCell>}
+                      <TableCell className={classes.tableHeading} align="right">Submission Status</TableCell>
+                      <TableCell align="right"></TableCell>
                     </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-            :
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="right">
-                    <Button
-                      className={classes.tableHeading}
-                      onClick={(event) => handleSort(event, 'personal_details name')}>
-                      {/* {text[locale].Name} {sort.type === 'name' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
-                      {text[locale].Name}  <ImportExportSharpIcon className={classes.sortIcons} />
-                    </Button>
-                  </TableCell>
-                  <TableCell align="right" >
-                    <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'personal_details dob')}>
-                      {/* {text[locale].Age}  {sort.type === 'dob' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
-                      {text[locale].Age}  <ImportExportSharpIcon className={classes.sortIcons} />
-                    </Button>
-                  </TableCell>
-                  <TableCell align="right">Position</TableCell>
-                  <TableCell align="right">Ts&Cs</TableCell>
-                  <TableCell align="right">Paid</TableCell>
-                  <TableCell align="right">
-                    Allergies
-                  </TableCell>
-                    <TableCell align="right" >
-                      Injuries History
-                    </TableCell>
-                    <TableCell align="right">Other Health Conditions</TableCell>
-                  <TableCell
-                    // className={classes.tableHeading}
-                    style={{ paddingLeft: '1rem' }}
-                    align="right">
-                    Kit Size (Top / Bottom)
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredApplications.map(([userId, email, applicant], index) => {
-                  const { personal_details, player_attributes, ratings, submitted, challenges_submitted, post_app_actions } = applicant
-                  const { allergies, kit_size_bottom, kit_size_top, injury_history, agree_tcs, payment_confirm, others } = post_app_actions ? post_app_actions : {}
-                  return (
+                  </TableHead>
+                  <TableBody>
+                    {filteredApplications.map(([userId, email, applicant], index) => {
+                      const { personal_details, player_attributes, ratings, submitted, challenges_submitted } = applicant
+                      return (
+                        <TableRow>
+                          <TableCell>{`${personal_details.player_first_name} ${personal_details.player_last_name}`}</TableCell>
+                          <TableCell>{auth.dobToAge(personal_details.dob)}</TableCell>
+                          <TableCell>{personal_details.city}</TableCell>
+                          {(permissions === 0 || permissions === 2) &&
+                            <TableCell>{player_attributes.position}</TableCell>
+                          }
+                          {permissions === 0 ?
+                            <TableCell>
+                              {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck}
+                            </TableCell> :
+                            permissions === 1 ?
+                              <TableCell>
+                                {ratings.application > 0 ? text[locale].Checked : text[locale].AwaitingCheck}
+                              </TableCell> :
+                              <TableCell>
+                                {!Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck}
+                              </TableCell>
+                          }
+                          {permissions === 0 &&
+                            <TableCell>
+                              {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? Number(ratings.application) + Number(Object.values(ratings.challengesMap).reduce((x, y) => x + y, 0)) : 'N/A'}
+                            </TableCell>}
+                          {permissions === 0 &&
+                            <TableCell>
+                              {ratings.indulge === 0 ? text[locale].AwaitingApproval : ratings.indulge}
+                            </TableCell>
+                          }
+                          <TableCell align="right">{submitted && challenges_submitted ? 'Application & Challenges Submitted' : submitted ? 'Only Application' : 'Started'}</TableCell>
+                          <TableCell><Link className={classes.tabs} onClick={() => {
+                            setApplicantIndex(index)
+                            setTabValue(1)
+                          }}>{text[locale].ViewApplication}</Link></TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+                :
+                <Table>
+                  <TableHead>
                     <TableRow>
-                      <TableCell>{`${personal_details.player_first_name} ${personal_details.player_last_name}`}</TableCell>
-                      <TableCell>{auth.dobToAge(personal_details.dob)}</TableCell>
-                      
-                      {(permissions === 0 || permissions === 2) &&
-                        <TableCell>{player_attributes.position}</TableCell>
-                      }
-                      <TableCell>{agree_tcs === 'yes' ?  'Agreed' : 'Not Yet Agreed' }</TableCell>
-                      <TableCell>{payment_confirm === 'indulge' ?  'Confirmed' : payment_confirm === 'yes' ? 'Pending' : 'No' }</TableCell>
-                      <TableCell>{allergies ?  'True' : 'None' }</TableCell>
-                      <TableCell>{injury_history ?  'True' : 'None' }</TableCell>
-                      <TableCell>{others ?  'True' : 'None' }</TableCell>
-                      <TableCell>{kit_size_top} / {kit_size_bottom}</TableCell>
-                      
-                      <TableCell><Link className={classes.tabs} onClick={() => {
-                        setApplicantIndex(index)
-                        setTabValue(1)
-                      }}>View Player Information</Link></TableCell>
+                      <TableCell className={classes.tableHeadingIcon} align="right">
+                        <Button
+                          className={classes.tableHeading}
+                          onClick={(event) => handleSort(event, 'personal_details name')}>
+                          {/* {text[locale].Name} {sort.type === 'name' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
+                          {text[locale].Name}  <ImportExportSharpIcon className={classes.sortIcons} />
+                        </Button>
+                      </TableCell>
+                      <TableCell className={classes.tableHeadingIcon} align="right" >
+                        <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'personal_details dob')}>
+                          {/* {text[locale].Age}  {sort.type === 'dob' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
+                          {text[locale].Age}  <ImportExportSharpIcon className={classes.sortIcons} />
+                        </Button>
+                      </TableCell>
+                      <TableCell className={classes.tableHeading} align="right">Position</TableCell>
+                      <TableCell className={classes.tableHeading} align="right">T&Cs</TableCell>
+                      <TableCell className={classes.tableHeading} align="right">Paid</TableCell>
+                      <TableCell className={classes.tableHeading} align="right">
+                        Allergies
+                  </TableCell>
+                      <TableCell className={classes.tableHeading} align="right" >
+                        Injuries
+                    </TableCell>
+                      <TableCell className={classes.tableHeading} align="right">Other</TableCell>
+                      <TableCell
+                        className={classes.tableHeading}
+                        align="right">
+                        Kit Size
+                  </TableCell>
+                      <TableCell
+                        className={classes.tableHeading}
+                        // style={{ paddingLeft: '1rem' }}
+                        align="right">
+                      </TableCell>
                     </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
+                  </TableHead>
+                  <TableBody>
+                    {filteredApplications.map(([userId, email, applicant], index) => {
+                      const { personal_details, player_attributes, ratings, submitted, challenges_submitted, post_app_actions } = applicant
+                      const { allergies, kit_size_bottom, kit_size_top, injury_history, agree_tcs, payment_confirm, others } = post_app_actions ? post_app_actions : {}
+                      return (
+                        <TableRow>
+                          <TableCell>{`${personal_details.player_first_name} ${personal_details.player_last_name}`}</TableCell>
+                          <TableCell>{auth.dobToAge(personal_details.dob)}</TableCell>
+
+                          {(permissions === 0 || permissions === 2) &&
+                            <TableCell>{player_attributes.position}</TableCell>
+                          }
+                          <TableCell>{agree_tcs === 'yes' ? 'Agreed' : 'Not Yet Agreed'}</TableCell>
+                          <TableCell>{payment_confirm === 'indulge' ? 'Confirmed' : payment_confirm === 'yes' ? 'Pending' : 'No'}</TableCell>
+                          <TableCell>{allergies ? 'True' : 'None'}</TableCell>
+                          <TableCell>{injury_history ? 'True' : 'None'}</TableCell>
+                          <TableCell>{others ? 'True' : 'None'}</TableCell>
+                          <TableCell>{kit_size_top} / {kit_size_bottom}</TableCell>
+
+                          <TableCell><Link className={classes.tabs} onClick={() => {
+                            setApplicantIndex(index)
+                            setTabValue(1)
+                          }}>View</Link></TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              }
+            </> :
+            <Typography component='div'>
+              <Box fontSize={16} fontWeight="fontWeightBold" >
+                Select a course to review applications
+              </Box>
+            </Typography>
           }
-          </> :
-          <Typography>Select a course to review applications</Typography>
-        }
-      </TabPanel>
-      <TabPanel value={tabValue} index={1}>
-        <Application viewSelect={viewSelect} editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} filteredApplications={filteredApplications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} setFilteredApplications={setFilteredApplications} filteredIndex={applicantIndex} averages={getAverageScore} text={text} locale={locale} />
-      </TabPanel>
-    </Container>
+        </TabPanel>
+        <TabPanel value={tabValue} index={1}>
+          <Application viewSelect={viewSelect} editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} filteredApplications={filteredApplications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} setFilteredApplications={setFilteredApplications} filteredIndex={applicantIndex} averages={getAverageScore} text={text} locale={locale} />
+        </TabPanel>
+      </Container>
     </div>
   )
 }

@@ -4,11 +4,6 @@ import { option, select } from '@material-ui/core'
 
 const PhoneDropDown = ({locale}) => {
   
-  
-  
-  
-  
-  
   return (
       <>
         <option data-countryCode="" disabled value="">Select</option>

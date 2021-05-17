@@ -35,7 +35,7 @@ import {
   FormControlLabel,
   Radio,
 } from "@material-ui/core";
-import PhoneDropDown from '../pages/admin/PhoneDropdown';
+import PhoneDropDown from './PhoneDropdown';
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {

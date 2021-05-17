@@ -15,7 +15,7 @@ import PostAppForm from './PostAppForm'
 // import JSONConvertor from './JSONConvertor'
 import ApplicationDashboard from './ApplicationDashboard';
 // import MarketingBeta from './MarketingBeta ';
-import AddPhone from '../pages/AddPhone';
+import AddPhone from '../Dashboards/dashboardComponents/AddPhone';
 import AuthRouter from '../lib/PrivateRoute'
 
 
