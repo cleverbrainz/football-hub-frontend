@@ -1,21 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '../lib/context'
 import { Link, Redirect } from 'react-router-dom'
-import Radio from '@material-ui/core/Radio'
-import RadioGroup from '@material-ui/core/RadioGroup'
-import FormGroup from '@material-ui/core/FormGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import FormControl from '@material-ui/core/FormControl'
-import FormLabel from '@material-ui/core/FormLabel'
 import PropTypes from 'prop-types';
-import ListIcon from '@material-ui/icons/List';
-import PersonIcon from '@material-ui/icons/Person';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ImportExportSharpIcon from '@material-ui/icons/ImportExportSharp';
-import ArrowBackSharpIcon from '@material-ui/icons/ArrowBackSharp';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Popover from '@material-ui/core/Popover';
 import {
   Box,
   Container,
@@ -28,25 +16,23 @@ import {
   TableBody,
   TableRow,
   Typography,
-  AppBar,
-  Tabs,
-  Tab,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
   Drawer,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
+  FormControl,
+  FormGroup,
   Button
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 
 import axios from 'axios'
 import auth from '../lib/auth'
+import AssessmentCategoryDashboard from './Assessment/AssessmentCategoryDashboard'
+import AssessmentCoachView from './Assessment/AssessmentCoachView'
+
 const drawerWidth = 230
 
 const useStyles = makeStyles((theme) => ({
@@ -262,14 +248,8 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
 
 
   if (permissions === 0) return (
-    // <Container>
+
     <>
-      {/* <Grid container justify="center"
-        alignItems="center" spacing={2}>
-
-
-
-        <Grid item xs={6}> */}
 
       <Typography
         className={classes.applicationHeader}
@@ -1135,7 +1115,6 @@ const ApplicationDashboard = ({ locale }) => {
 
   const { user } = useContext(AuthContext)
   const classes = useStyles()
-  // const [user, setUser] = useState(null)
   const [permissions, setPermissions] = useState()
   const [initialPermission, setInitialPermission] = useState()
   const [tabValue, setTabValue] = useState(0)
@@ -1156,6 +1135,15 @@ const ApplicationDashboard = ({ locale }) => {
   })
   const [sort, setSort] = useState({ type: '', direction: 'down' })
 
+  // useEffect(() => {
+  //   setFilters({
+  //     ...filters,
+  //     applicationStatus: 'enrolled'
+  //   })
+  //   setSelectedCourse('ajax')
+  //   setTabValue(2)
+  // }, [])
+
   const positions = {
     Defence: ['Right Back', 'Right Wing Back', 'Left Wing Back', 'Left Back', 'Centre Back', 'Sweeper'],
     Midfield: ['Right Wing', 'Right Midfield', 'Left Wing', 'Left Midfield', 'Central Midfield', 'Defensive Midfield', 'Attacking Midfield'],
@@ -1163,6 +1151,8 @@ const ApplicationDashboard = ({ locale }) => {
     Goalkeeper: ['Goalkeeper'],
   }
   const [redirect, setRedirect] = useState(false)
+
+  const [assessmentView, setAssessmentView] = useState()
 
   const getAverageScore = (position, cat = '') => {
 
@@ -1198,15 +1188,19 @@ const ApplicationDashboard = ({ locale }) => {
 
 
   const handleFilterChange = (event) => {
-    // console.log(event)
+
+    //applicationStatus
     const name = event.target.name
     const newFilters = name === 'positionCategory' ? { ...filters, [name]: event.target.value, position: 'All' } : { ...filters, [name]: event.target.value }
-    // console.log(newFilters)
+
     const filteredPlayers = []
     for (const application of applications) {
       const [id, email, player] = application
-      const status = player.challenges_submitted ? 'complete' : player.submitted ? 'onlyApplication' : 'started'
-      // console.log(newFilters.ageRange, player.age_group)
+      const { post_app_actions, challenges_submitted, submitted } = player
+
+      const status = (post_app_actions?.payment_confirm === 'indulge' && post_app_actions?.agree_tcs === 'yes')
+        ? 'enrolled' : challenges_submitted ? 'complete' : submitted ? 'onlyApplication' : 'started'
+
       if (newFilters.applicationStatus === 'All' || newFilters.applicationStatus === status) {
         if (newFilters.ageRange === player.age_group || newFilters.ageRange === 'All') {
           if (newFilters.positionCategory === 'All') {
@@ -1220,15 +1214,15 @@ const ApplicationDashboard = ({ locale }) => {
       }
     }
 
-    // console.log({ filteredPlayers })
     setFilters(newFilters)
     setFilteredApplications(filteredPlayers)
   }
 
+
+
   const handleSort = (event, type) => {
     const [parent, key] = type.split(' ')
-    // console.log(parent, key)
-    // console.log(event)
+
     const newSort = sort.type === key ? sort.direction === 'down' ? { type: key, direction: 'up' } : { type: key, direction: 'down' } : { type: key, direction: 'down' }
     event.preventDefault()
     const sorted = [...filteredApplications]
@@ -1239,7 +1233,7 @@ const ApplicationDashboard = ({ locale }) => {
         const sortA = Object.values(a[2].ratings.challengesMap).some(x => x === 0) ? 100 : (Number(a[2].ratings.application) + Number(Object.values(a[2].ratings.challengesMap).reduce((x, y) => x + y, 0)))
         const sortB = Object.values(b[2].ratings.challengesMap).some(x => x === 0) ? 100 : (Number(b[2].ratings.application) + Number(Object.values(b[2].ratings.challengesMap).reduce((x, y) => x + y, 0)))
         return sortA - sortB
-        // return (Number(a[2].ratings.application) + Number(Object.values(a[2].ratings.challengesMap).reduce((x,y) => x + y, 0))) - (Number(b[2].ratings.application) + Number(Object.values(b[2].ratings.challengesMap).reduce((x,y) => x + y, 0)))
+
       })
     } else {
 
@@ -1250,15 +1244,14 @@ const ApplicationDashboard = ({ locale }) => {
       sorted.reverse()
     }
 
-    //  === filteredApplications ? filteredApplications.sort((a, b) => b[2][parent][key] > a[2][parent][key]) : filteredApplications.sort((a, b) => a[2][parent][key] > b[2][parent][key])
-    // console.log(sorted)
+
     setSort({ ...newSort })
     setFilteredApplications(sorted)
 
   }
 
 
-  // console.log(permissions)
+
 
   const checkAdmin = async function () {
     let adminData = await axios.get(`/users/${auth.getUserId()}`)
@@ -1274,25 +1267,21 @@ const ApplicationDashboard = ({ locale }) => {
 
   const getData = async function () {
 
-    // const { courses, adminLevel } = userData
-    // const courseArray = []
     if (selectedCourse === 'select') return
     const applicantArray = []
     let arr = await axios.get(`/getApplicationIds/${selectedCourse.toLowerCase()}_application`)
     arr = await arr.data
-    // console.log({ arr })
+
     for (const ajaxUser of arr.applications) {
       const app = [ajaxUser.userId, ajaxUser.email, ajaxUser.applications[`${selectedCourse.toLowerCase()}_application`]]
-      // if (ajaxUser.applications.ajax_application) {
-      //   app.push(ajaxUser.applications.ajax_application)
-      // }
+
       if (app.length === 3 && app[2].ratings.challengesMap && auth.dobToAge(app[2].personal_details.dob) <= 15) applicantArray.push(app)
     }
 
     setApplications(applicantArray)
     setFilteredApplications(applicantArray)
     setCurrentUserCount(arr.length)
-    // console.log(applicantArray)
+
   }
   useEffect(() => {
     if (initialPermission === undefined) {
@@ -1303,9 +1292,9 @@ const ApplicationDashboard = ({ locale }) => {
   }, [initialPermission, selectedCourse])
 
 
-  const handleFix = () => {
-    axios.get('/fixbenfica').then(res => console.log(res))
-  }
+  // const handleFix = () => {
+  //   axios.get('/fixbenfica').then(res => console.log(res))
+  // }
 
 
   const text = {
@@ -1429,7 +1418,7 @@ const ApplicationDashboard = ({ locale }) => {
           {initialPermission === 0 && <FormControl className={classes.selectContainer}>
             <InputLabel> Access Type </InputLabel>
             <Select className={classes.select}
-              // disabled={tabValue === 1}
+              disabled={tabValue === 2 || tabValue === 3}
               value={permissions}
               inputProps={{
                 name: 'access',
@@ -1446,7 +1435,7 @@ const ApplicationDashboard = ({ locale }) => {
             <InputLabel>{text[locale].Courses}</InputLabel>
             <Select
               className={classes.select}
-              disabled={tabValue === 1}
+              disabled={tabValue !== 0}
               value={selectedCourse}
               onChange={(event) => setSelectedCourse(event.target.value)}>
               <MenuItem className={classes.menuItems} value="select" disabled>
@@ -1465,7 +1454,7 @@ const ApplicationDashboard = ({ locale }) => {
               <FormControl className={classes.selectContainer}>
                 <InputLabel>Application Status</InputLabel>
                 <Select className={classes.select}
-                  disabled={tabValue === 1}
+                  disabled={tabValue !== 0}
                   value={applicationStatus}
                   inputProps={{
                     name: 'applicationStatus',
@@ -1478,13 +1467,14 @@ const ApplicationDashboard = ({ locale }) => {
                   <MenuItem className={classes.menuItems} value="started">Started but not submitted</MenuItem>
                   <MenuItem className={classes.menuItems} value="onlyApplication">Submitted Application</MenuItem>
                   <MenuItem className={classes.menuItems} value="complete">Submitted Application & Challenges</MenuItem>
+                  <MenuItem className={classes.menuItems} value="enrolled">Application Accepted & Enrolled</MenuItem>
                 </Select>
               </FormControl>
 
               <FormControl className={classes.selectContainer}>
                 <InputLabel> Age Group </InputLabel>
                 <Select className={classes.select}
-                  disabled={tabValue === 1}
+                  disabled={tabValue !== 0}
                   value={ageRange} inputProps={{
                     name: 'ageRange',
                   }} onChange={handleFilterChange}>
@@ -1503,7 +1493,7 @@ const ApplicationDashboard = ({ locale }) => {
                   {text[locale].Category}
                 </InputLabel>
                 <Select
-                  disabled={tabValue === 1}
+                  disabled={tabValue !== 0}
                   className={classes.select}
                   style={{ fontSize: '14px' }}
                   labelId="demo-simple-select-label"
@@ -1528,7 +1518,7 @@ const ApplicationDashboard = ({ locale }) => {
                     {text[locale].Position}
                   </InputLabel>
                   <Select
-                    disabled={tabValue === 1}
+                    disabled={tabValue !== 0}
                     className={classes.select}
                     style={{ fontSize: '14px' }}
                     labelId="demo-simple-select-label"
@@ -1552,7 +1542,7 @@ const ApplicationDashboard = ({ locale }) => {
               <FormControl className={classes.selectContainer}>
                 <InputLabel> Application Type </InputLabel>
                 <Select className={classes.select}
-                  disabled={tabValue === 1 || selectedCourse === 'select'}
+                  disabled={tabValue !== 0 || selectedCourse === 'select'}
                   value={viewSelect}
                   onClick={e => setViewSelect(e.target.value)}>
                   <MenuItem className={classes.menuItems} value={'All'}>
@@ -1569,13 +1559,19 @@ const ApplicationDashboard = ({ locale }) => {
             style={{ marginTop: '1rem' }}
             className={classes.button}
             onClick={() => {
-              if (tabValue === 1) {
-                setTabValue(0)
 
+              if (tabValue !== 0) {
+
+                if (tabValue === 3) {
+                  setTabValue(2)
+                  return
+                }
+
+                setTabValue(0)
                 setFilters({ ...filters })
                 setSelectedCourse(selectedCourse)
                 setViewSelect(viewSelect)
-                setFilteredApplications([ ...filteredApplications ])
+                setFilteredApplications([...filteredApplications])
                 return
               }
 
@@ -1590,30 +1586,9 @@ const ApplicationDashboard = ({ locale }) => {
               setFilteredApplications([])
             }}
             variant='outlined' disabled={selectedCourse === 'select'} color='secondary'>
-            {tabValue === 1 ? 'Return to List' : 'Clear Filters'}
+            {tabValue === 3 ? 'Return to Ass. List' : tabValue !== 0 ? 'Return to App. List' : 'Clear Filters'}
           </Button>
         </FormGroup>
-
-        {/* <List>
-
-          <ListItem
-            className={classes.menuItems}
-            disabled={tabValue === 1 || selectedCourse === 'select'}
-            selected={viewSelect === 'All' ? true : false}
-            onClick={() => setViewSelect('All')} button>
-            <ListItemText secondary={`All Applications: ${filteredApplications.length}`} />
-          </ListItem>
-
-          {initialPermission === 0 &&
-            <ListItem
-              disabled={tabValue === 1 || selectedCourse === 'select'}
-              selected={viewSelect === 'Approved' ? true : false}
-              onClick={() => setViewSelect('Approved')} button>
-              <ListItemText secondary={'Approved'} />
-            </ListItem>
-          }
-        </List> */}
-
 
       </Drawer >
 
@@ -1631,68 +1606,6 @@ const ApplicationDashboard = ({ locale }) => {
       <CssBaseline />
       <ApplicationDashboardOptions locale={locale} />
       <Container>
-        {/* 
-        <br />
-        <br />
-        <br />
-        <br />
-        {initialPermission === 0 && <FormControl component="fieldset">
-          <FormLabel component="legend">Access Type</FormLabel>
-          <RadioGroup
-            row
-            aria-label="access"
-            name="access"
-            value={permissions}
-            onChange={(event) => setPermissions(Number(event.target.value))}
-          >
-            <FormControlLabel value={0} control={<Radio />} label="Indulge Football" />
-            <FormControlLabel value={1} control={<Radio />} label="NYSES" />
-            <FormControlLabel
-              value={2}
-              control={<Radio />}
-              label="UK Coaching Staff"
-            />
-          </RadioGroup>
-        </FormControl>
-        } */}
-        {/* {tabValue === 1 &&
-          <AppBar
-            className={classes.appBar}
-            position="static" color="default">
-            <Tabs
-              className={classes.appBarInner}
-              value={tabValue}
-              variant="scrollable"
-              scrollButtons="on"
-              indicatorColor="primary"
-              textColor="primary"
-              aria-label="scrollable force tabs example"
-              onChange={(event, newValue) => {
-                if (!editing) {
-                  setTabValue(newValue)
-                } else {
-                  setOpen(true)
-                }
-              }}
-            >
-
-
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => setTabValue(0)}
-                className={classes.button}
-                startIcon={<ArrowBackSharpIcon style={{ fontSize: '17px', transform: 'translate(.5px)' }} />}>
-               
-              </Button>
-
-
-
-              <Tab style={{ display: 'none' }} label={text[locale].ApplicationList} icon={<ListIcon />} />
-              <Tab style={{ display: 'none' }} label={text[locale].ViewSingleApplication} icon={<PersonIcon />} />
-
-            </Tabs>
-          </AppBar>} */}
 
         <TabPanel value={tabValue} index={0}>
           {selectedCourse === 'Ajax' ?
@@ -1742,35 +1655,30 @@ const ApplicationDashboard = ({ locale }) => {
 
                 </div>
 
-                {/* {permissions === 0 && <Typography variant="h6">{filters.positionCategory === 'All' ?
-                  `Average Completed Application Score: ${getAverageScore('All', 'All')[0]}` :
-                  filters.position === 'All' ? `Average ${filters.positionCategory} Score: ${getAverageScore('All', filters.positionCategory)[1]}` :
-                    `Average ${filters.position} Score: ${getAverageScore(filters.position, filters.positionCategory)[1]}`}
-                </Typography>} */}
               </Container>
 
               {viewSelect === 'All' ?
-                <Table>
-                  <TableHead>
+                <Table aria-label="collapsible table">
+                  <TableHead >
                     <TableRow>
                       <TableCell className={classes.tableHeadingIcon} align="right">
                         <Button
                           className={classes.tableHeading}
 
                           onClick={(event) => handleSort(event, 'personal_details name')}>
-                          {/* {text[locale].Name} {sort.type === 'name' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
+                         
                           {text[locale].Name}  <ImportExportSharpIcon className={classes.sortIcons} />
                         </Button>
                       </TableCell>
                       <TableCell className={classes.tableHeadingIcon} align="right" >
                         <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'personal_details dob')}>
-                          {/* {text[locale].Age}  {sort.type === 'dob' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
+                          
                           {text[locale].Age}  <ImportExportSharpIcon className={classes.sortIcons} />
                         </Button>
                       </TableCell>
                       <TableCell className={classes.tableHeadingIcon} align="right">
                         <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'personal_details city')}>
-                          {/* {text[locale].City} {sort.type === 'city' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
+                        
                           {text[locale].City} <ImportExportSharpIcon className={classes.sortIcons} />
                         </Button>
                       </TableCell>
@@ -1781,26 +1689,35 @@ const ApplicationDashboard = ({ locale }) => {
                           </Button>
                         </TableCell>
                       }
-                      <TableCell
-                        className={classes.tableHeading}
-                        style={{ paddingLeft: '1rem' }}
-                        align="right">
-                        {text[locale].Status}
-                      </TableCell>
+
+                      {filters.applicationStatus !== 'enrolled' &&
+                        <TableCell
+                          className={classes.tableHeading}
+                          style={{ paddingLeft: '1rem' }}
+                          align="right">
+                          {text[locale].Status}
+                        </TableCell>
+                      }
+
                       {permissions === 0 &&
                         <TableCell className={classes.tableHeadingIcon} align="right">
                           <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'player score')}>
                             {text[locale].Score} <ImportExportSharpIcon className={classes.sortIcons} />
                           </Button>
                         </TableCell>}
-                      {permissions === 0 && <TableCell className={classes.tableHeading} align="right">{text[locale].Approved}</TableCell>}
+
+
+                      {filters.applicationStatus !== 'enrolled' &&
+                        permissions === 0 && <TableCell className={classes.tableHeading} align="right">{text[locale].Approved}</TableCell>}
+
+
                       <TableCell className={classes.tableHeading} align="right">Submission Status</TableCell>
                       <TableCell align="right"></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {filteredApplications.map(([userId, email, applicant], index) => {
-                      const { personal_details, player_attributes, ratings, submitted, challenges_submitted } = applicant
+                      const { personal_details, player_attributes, ratings, submitted, challenges_submitted, post_app_actions } = applicant
                       return (
                         <TableRow>
                           <TableCell>{`${personal_details.player_first_name} ${personal_details.player_last_name}`}</TableCell>
@@ -1809,32 +1726,55 @@ const ApplicationDashboard = ({ locale }) => {
                           {(permissions === 0 || permissions === 2) &&
                             <TableCell>{player_attributes.position}</TableCell>
                           }
-                          {permissions === 0 ?
-                            <TableCell>
-                              {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck}
-                            </TableCell> :
-                            permissions === 1 ?
-                              <TableCell>
-                                {ratings.application > 0 ? text[locale].Checked : text[locale].AwaitingCheck}
-                              </TableCell> :
-                              <TableCell>
-                                {!Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck}
-                              </TableCell>
-                          }
+
+
+                          {filters.applicationStatus !== 'enrolled' && (
+                            <>
+                              {permissions === 0 ?
+                                <TableCell>
+                                  {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck}
+                                </TableCell> :
+                                permissions === 1 ?
+                                  <TableCell>
+                                    {ratings.application > 0 ? text[locale].Checked : text[locale].AwaitingCheck}
+                                  </TableCell> :
+                                  <TableCell>
+                                    {!Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? text[locale].Checked : text[locale].AwaitingCheck}
+                                  </TableCell>}
+
+                            </>
+                          )}
                           {permissions === 0 &&
                             <TableCell>
                               {ratings.application > 0 && !Object.values(ratings.challengesMap).some(challenge => challenge === 0) ? Number(ratings.application) + Number(Object.values(ratings.challengesMap).reduce((x, y) => x + y, 0)) : 'N/A'}
                             </TableCell>}
-                          {permissions === 0 &&
+
+                          {filters.applicationStatus !== 'enrolled' && permissions === 0 &&
                             <TableCell>
                               {ratings.indulge === 0 ? text[locale].AwaitingApproval : ratings.indulge}
                             </TableCell>
                           }
-                          <TableCell align="right">{submitted && challenges_submitted ? 'Application & Challenges Submitted' : submitted ? 'Only Application' : 'Started'}</TableCell>
-                          <TableCell><Link className={classes.tabs} onClick={() => {
-                            setApplicantIndex(index)
-                            setTabValue(1)
-                          }}>{text[locale].ViewApplication}</Link></TableCell>
+
+
+
+                          <TableCell align="right">{(post_app_actions?.payment_confirm === 'indulge' &&
+                            post_app_actions?.agree_tcs === 'yes') ? 'Application Accepeted & Enrolled' :
+                            (submitted && challenges_submitted) ? 'Application & Challenges Submitted'
+                              : submitted ? 'Only Application' : 'Started'}</TableCell>
+                          <TableCell>
+
+
+                            <Link className={classes.tabs} onClick={() => {
+                              if (filters.applicationStatus === 'enrolled') {
+                                setTabValue(2)
+                              } else {
+                                setTabValue(1)
+                              }
+                              setApplicantIndex(index)
+                            }}>
+                              {filters.applicationStatus === 'enrolled' ? 'View Assessment' : text[locale].ViewApplication}
+                            </Link>
+                          </TableCell>
                         </TableRow>
                       )
                     })}
@@ -1848,13 +1788,13 @@ const ApplicationDashboard = ({ locale }) => {
                         <Button
                           className={classes.tableHeading}
                           onClick={(event) => handleSort(event, 'personal_details name')}>
-                          {/* {text[locale].Name} {sort.type === 'name' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
+
                           {text[locale].Name}  <ImportExportSharpIcon className={classes.sortIcons} />
                         </Button>
                       </TableCell>
                       <TableCell className={classes.tableHeadingIcon} align="right" >
                         <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'personal_details dob')}>
-                          {/* {text[locale].Age}  {sort.type === 'dob' ? sort.direction === 'down' ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> : <ArrowDropDownIcon style={{ opacity: 0 }} />} */}
+
                           {text[locale].Age}  <ImportExportSharpIcon className={classes.sortIcons} />
                         </Button>
                       </TableCell>
@@ -1917,9 +1857,46 @@ const ApplicationDashboard = ({ locale }) => {
             </Typography>
           }
         </TabPanel>
+
         <TabPanel value={tabValue} index={1}>
-          <Application viewSelect={viewSelect} editing={editing} open={open} setOpen={setOpen} setEditing={setEditing} applications={applications} filteredApplications={filteredApplications} application={filteredApplications[applicantIndex]} permissions={permissions} setApplications={setApplications} setFilteredApplications={setFilteredApplications} filteredIndex={applicantIndex} averages={getAverageScore} text={text} locale={locale} />
+          <Application
+            viewSelect={viewSelect}
+            editing={editing}
+            open={open}
+            setOpen={setOpen}
+            setEditing={setEditing}
+            applications={applications}
+            filteredApplications={filteredApplications}
+            application={filteredApplications[applicantIndex]}
+            permissions={permissions}
+            setApplications={setApplications}
+            setFilteredApplications={setFilteredApplications}
+            filteredIndex={applicantIndex}
+            averages={getAverageScore}
+            text={text}
+            locale={locale} />
         </TabPanel>
+
+
+        <TabPanel value={tabValue} index={2}>
+          <AssessmentCategoryDashboard
+            setAssessmentView={setAssessmentView}
+            setTabValue={setTabValue}
+            filteredApplications={filteredApplications}
+            application={filteredApplications[applicantIndex]}
+          />
+        </TabPanel>
+
+        <TabPanel value={tabValue} index={3}>
+          <AssessmentCoachView
+            assessmentView={assessmentView}
+            // applications={applications}
+            setTabValue={setTabValue}
+            application={filteredApplications[applicantIndex]}
+          />
+        </TabPanel>
+
+
       </Container>
     </div>
   )

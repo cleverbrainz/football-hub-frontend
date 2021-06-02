@@ -98,14 +98,13 @@ const useStyles = makeStyles((theme) => ({
     transition: '.2s ease',
     backgroundColor: '#2d2d2d',
     '&:hover': {
-      opacity: 0.7,
+      opacity: 0.8,
       cursor: 'pointer'
     }
   },
   overlayText: {
     color: 'white',
     fontSize: '1.25rem',
-    letterSpacing: '5px',
     position: 'absolute',
     top: '50%',
     left: '50%',
@@ -555,7 +554,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                     fontSize={13}
                     fontWeight="fontWeightRegular" mb={1}
                     style={{ color: '#3100F7', letterSpacing: '5px' }}>
-                    CURRENTLY
+                    {profile['3a'][locale]}
                   </Box>
                   <Box
                     fontSize={14}
@@ -616,13 +615,13 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
             (application?.ratings.indulge !== 'yes' || !application?.post_app_actions?.agree_tcs) ? (
               <Paper id={profile['1c']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
                 <Typography component='div' >
-                    <Box
-                      fontSize={20}
-                      fontWeight="fontWeightBold" mb={3}>
-                       Applications
-              </Box>
-                  </Typography>
-                  
+                  <Box
+                    fontSize={20}
+                    fontWeight="fontWeightBold" mb={3}>
+                    {profile['1c'][locale]}
+                  </Box>
+                </Typography>
+
                 <TableContainer>
                   <Table className={classes.table} aria-label="simple table">
                     <TableHead>
@@ -633,11 +632,12 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                         {(application && application.hasOwnProperty('challenges_submitted')) &&
                           <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
 
-                       
-                        {application?.hasOwnProperty('challenges_submitted') &&  <TableCell align="right"> {profile['5d'][locale]}</TableCell>}
 
-                        {!application?.hasOwnProperty('challenges_submitted') &&  <TableCell align="right"> Personal Information </TableCell>}
-                        {!application?.hasOwnProperty('challenges_submitted') &&  <TableCell align="right"> Challenges </TableCell>}
+                        {application?.hasOwnProperty('challenges_submitted') && <TableCell align="right"> {profile['5d'][locale]}</TableCell>}
+
+                        {!application?.hasOwnProperty('challenges_submitted') && <TableCell align="right"> {app['2e'][locale]}</TableCell>}
+                        {!application?.hasOwnProperty('challenges_submitted') && <TableCell align="right">
+                          {app['2d'][locale]} </TableCell>}
 
 
                       </TableRow>
@@ -652,73 +652,78 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                             {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
                           </TableCell>}
 
-                        {application?.hasOwnProperty('challenges_submitted') &&  <TableCell align="right" style={{ color: '#3100F7' }}>
+                        {application?.hasOwnProperty('challenges_submitted') && <TableCell align="right" style={{ color: '#3100F7' }}>
                           {(application && application.hasOwnProperty('challenges_submitted')) ? application.ratings.indulge === 'yes' ? 'Accepted' : profile['5f'][locale] : profile['5e'][locale]}
                         </TableCell>}
 
-                       
-                       
-                       
 
-                        {!application?.hasOwnProperty('challenges_submitted') &&  <TableCell align="right">
+
+
+
+                        {!application?.hasOwnProperty('challenges_submitted') && <TableCell align="right">
                           {(application && application?.submitted) ? (
-                           <>
-                             <CheckCircleSharpIcon style={{ 
-                              color: 'green', 
-                              fontSize: '17px',
-                              transform: 'translateY(4px)', 
-                              marginRight: '6px' }} /> 
-                              
-                              Completed 
-                              </>
-                            ) : ( 
+                            <>
+                              <CheckCircleSharpIcon style={{
+                                color: 'green',
+                                fontSize: '17px',
+                                transform: 'translateY(4px)',
+                                marginRight: '6px'
+                              }} />
+
+                              {profile['10a'][locale]}
+                            </>
+                          ) : (
                               <>
-                              <CancelSharpIcon style={{ 
-                                color: 'red', 
-                                fontSize: '17px', 
-                                transform: 'translateY(3px)', 
-                                marginRight: '6px' }} /> 
-      
-                             <a href='' onClick={() => handleRedirect()}> View </a> 
-                             </>
+                                <CancelSharpIcon style={{
+                                  color: 'red',
+                                  fontSize: '17px',
+                                  transform: 'translateY(3px)',
+                                  marginRight: '6px'
+                                }} />
+
+                                <a href='' onClick={() => handleRedirect()}>  {profile['10b'][locale]} </a>
+                              </>
                             )}
                         </TableCell>}
 
 
-                        {!application?.hasOwnProperty('challenges_submitted') &&  <TableCell
-                     
-                        align="right">
-                        {(application && application?.challenges_submitted) ? (
-                           <>
-                             <CheckCircleSharpIcon style={{ 
-                              color: 'green', 
-                              fontSize: '17px',
-                              transform: 'translateY(4px)', 
-                              marginRight: '6px' }} /> 
-                              
-                              Completed 
-                              </>
-                            ) : ( 
+                        {!application?.hasOwnProperty('challenges_submitted') && <TableCell
+
+                          align="right">
+                          {(application && application?.challenges_submitted) ? (
+                            <>
+                              <CheckCircleSharpIcon style={{
+                                color: 'green',
+                                fontSize: '17px',
+                                transform: 'translateY(4px)',
+                                marginRight: '6px'
+                              }} />
+
+                              {profile['10a'][locale]}
+                            </>
+                          ) : (
                               <>
-                              <CancelSharpIcon style={{ 
-                                color: 'red', 
-                                fontSize: '17px', 
-                                transform: 'translateY(3px)', 
-                                marginRight: '6px' }} /> 
-      
-                             <a 
-                              style={{ ...(!application?.submitted && {
-                                pointerEvents: 'none',
-                                color: 'darkgrey'
-                              }) 
-                            }}
-                             href='' onClick={() => handleRedirect()}> View </a> 
-                             </>
+                                <CancelSharpIcon style={{
+                                  color: 'red',
+                                  fontSize: '17px',
+                                  transform: 'translateY(3px)',
+                                  marginRight: '6px'
+                                }} />
+
+                                <a
+                                  style={{
+                                    ...(!application?.submitted && {
+                                      pointerEvents: 'none',
+                                      color: 'darkgrey'
+                                    })
+                                  }}
+                                  href='' onClick={() => handleRedirect()}>  {profile['10b'][locale]} </a>
+                              </>
                             )}
                         </TableCell>}
-                      
 
-          {/* {
+
+                        {/* {
             !application?.hasOwnProperty('challenges_submitted') && (
               <Box display="flex" flexDirection="column" textAlign="center">
                 <Container style={{ marginBottom: '25px' }}>
@@ -899,7 +904,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                     <Box
                       fontSize={20}
                       fontWeight="fontWeightBold" mb={3}>
-                      Attributes
+                      {profile['10c'][locale]}
               </Box>
                   </Typography>
 
@@ -928,7 +933,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                       <Box
                         fontSize={20}
                         fontWeight="fontWeightBold" mb={3}>
-                        Acheivements
+                        {profile['1f'][locale]}
                       </Box>
                     </Typography>
 
@@ -937,7 +942,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                         <Box
                           fontSize={16}
                           fontWeight="fontWeightRegular" mb={-0.5}>
-                          {application.football_history.award_name.toUpperCase()} Award
+                          {application.football_history.award_name.toUpperCase()} {app['14a'][locale].split(' ')[0]}
                         </Box>
                         <small style={{ fontSize: '12.5px', opacity: '0.75' }}> {application.football_history.award_date} </small>
                       </li>
@@ -969,13 +974,13 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
               aria-describedby="alert-dialog-slide-description"
             >
               <DialogTitle id="alert-dialog-slide-title">
-              <Box
-                          fontSize={20}
-                          fontWeight="fontWeightBold" mb={-1}>
-                           {dialog.type === 'payment' ? 'Payment Details for PDP Complete Fee' : 'Terms & Conditions'}
-                        </Box>
-                        
-               
+                <Box
+                  fontSize={20}
+                  fontWeight="fontWeightBold" mb={-1}>
+                  {dialog.type === 'payment' ? 'Payment Details for PDP Complete Fee' : profile['11a'][locale]}
+                </Box>
+
+
               </DialogTitle>
               <DialogContent>
 
@@ -983,15 +988,15 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                   <>
                     <DialogContentText id="alert-dialog-slide-description">
 
-                    <div className={classes.label}>
-                  <label>  Please use the payment details below for bank transfer and ensure you attach the payment reference below.</label>
-                </div>
+                      <div className={classes.label}>
+                        <label>  Please use the payment details below for bank transfer and ensure you attach the payment reference below.</label>
+                      </div>
 
                       <Typography component='div' >
                         <Box
                           fontSize={17}
                           fontWeight="fontWeightBold" mb={.5} mt={2}>
-                          Korean Branch 
+                          Korean Branch
                         </Box>
                         <Box
                           fontSize={14}
@@ -1024,97 +1029,337 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                           </ul>
                         </Box>
                       </Typography>
-        
+
                       <Typography component='div' >
                         <Box
                           fontSize={17}
                           fontWeight="fontWeightBold" mb={.5}>
-                          Payment Reference 
+                          Payment Reference
                         </Box>
                         <Box
                           fontSize={14}
                           fontWeight="fontWeightRegular" mb={3}>
-                        <strong> {`PDP-AJAX-${auth.getUserId().substring(0, 5)}`}  </strong>  
+                          <strong> {`PDP-AJAX-${auth.getUserId().substring(0, 5)}`}  </strong>
                         </Box>
                       </Typography>
                     </DialogContentText>
 
 
                     <div className={classes.field}>
-                <div className={classes.label}>
-                  <label> Please confirm payment by typing in your payment reference </label>
-                </div>
-                {!application.post_app_actions?.payment_confirm && <p className="help"> Please leave this blank until you have made payment. Once saved, you will not be able to see again. </p>}
-                <div class="field-body">
-                  <div class="field">
-                    <div class="control">
-                    <input
-                      style={{ marginTop: '10px' }}
-                                disabled={['yes', 'indulge'].includes(application.post_app_actions?.payment_confirm)}
-                                class="input" type="text"
-                                id='payment-confirm-yes'
-                              />
+                      <div className={classes.label}>
+                        <label> Please confirm payment by typing in your payment reference </label>
+                      </div>
+                      {!application.post_app_actions?.payment_confirm && <p className="help"> Please leave this blank until you have made payment. Once saved, you will not be able to see again. </p>}
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control">
+                            <input
+                              style={{ marginTop: '10px' }}
+                              disabled={['yes', 'indulge'].includes(application.post_app_actions?.payment_confirm)}
+                              class="input" type="text"
+                              id='payment-confirm-yes'
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
                   </>
-                      ) : (
+                ) : (
                     <>
-                        <DialogContentText id="alert-dialog-slide-description">
+                      <DialogContentText id="alert-dialog-slide-description">
+                        <Typography component='div' >
 
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum interdum lectus eu tortor egestas pretium. Vestibulum ullamcorper leo nec felis varius porta. Praesent sit amet luctus tellus. Vivamus ut facilisis arcu. Ut placerat lectus ex, eu tempus mauris ultricies vel. Donec pellentesque nunc lacus, non interdum sapien consectetur placerat. Pellentesque laoreet malesuada ante tincidunt fringilla. Fusce eu tincidunt nisi, ut aliquet metus. Phasellus elementum vitae mauris a tristique.
-    
-    Vivamus at ultrices libero, in commodo libero. Aliquam tempus est enim, nec aliquet nunc viverra viverra. Mauris pharetra, turpis vitae convallis rutrum, odio libero consequat odio, sed congue magna libero sed lectus. Mauris sit amet tellus vitae nisi egestas aliquam. Nulla facilisi. Proin tincidunt tortor libero, at malesuada nisl dictum at. Suspendisse potenti. Mauris eu elit eget ligula accumsan mollis. Donec at commodo quam, placerat laoreet est. Suspendisse at mauris erat. Nullam eget mollis nulla.
-    
-    Sed eget urna pellentesque, dignissim risus non, placerat turpis. Donec tempus leo metus, ut convallis lorem tristique ut. Duis interdum eleifend ipsum. Proin quis porta nisi. Maecenas pharetra felis eu ex gravida, ac imperdiet nibh luctus. Donec congue viverra odio, eu auctor purus ornare eget. Nunc porttitor non enim at sollicitudin. Sed vestibulum massa urna, eget venenatis neque rhoncus in. Cras id luctus velit, non congue dolor. Fusce vehicula ultrices leo, ut pellentesque tellus vulputate vitae. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin orci urna, dignissim at justo non, luctus interdum mauris.
-    
+                          <Box
+                            fontSize={14}
+                            fontWeight="fontWeightRegular" mb={2}>
+                            {profile['11b'][locale]}
+                          </Box>
+
+
+
+                          <Typography component='div' mb={1}>
+
+                            <Box
+                              fontSize={17} style={{ color: 'black' }}
+                              fontWeight="fontWeightRegular" mb={.5}>
+                              {profile['11c'][locale].split('|')[0]}
+                            </Box>
+
+
+                            <Box
+                              fontSize={14}
+                              fontWeight="fontWeightRegular" mb={2}>
+                              {profile['11c'][locale].split('|').map((x, i) => {
+                                if (i === 0) return
+                                return (
+                                  <li style={{ listStyleType: 'decimal', marginBottom: '3px' }}> {x.trim()} </li>
+                                )
+                              })}
+
+                            </Box>
+                          </Typography>
+
+
+
+                          <Box
+                            fontSize={17} style={{ color: 'black' }}
+                            fontWeight="fontWeightRegular" mb={.5}>
+                            {profile['11d'][locale].split('|')[0]}
+                          </Box>
+
+                          <Typography component='div'>
+                            {profile['11d'][locale].split('|').map((x, i) => {
+                              if (i === 0) return
+                              return <Box
+                                fontSize={14}
+                                fontWeight="fontWeightRegular" mb={i === profile['11d'][locale].split('|').length - 1 ? 2 : .5}>
+                                <li style={{ listStyleType: 'none' }}> {x.trim()} </li>
+                              </Box>
+                            })}
+                          </Typography>
+
+                          <Box
+                            fontSize={17} style={{ color: 'black' }}
+                            fontWeight="fontWeightRegular" mb={.5}>
+                            {profile['11e'][locale].split('|')[0]}
+                          </Box>
+
+                          <Typography component='div'>
+                            <Box
+                              fontSize={14}
+                              fontWeight="fontWeightRegular" mb={1}>
+                              {profile['11e'][locale].split('|')[1]}
+                            </Box>
+                            <Box
+                              fontSize={14}
+                              fontWeight="fontWeightRegular" mb={1}>
+                              {profile['11e'][locale].split('|').map((x, i) => {
+                                if ([0, 1, 5].includes(i)) return
+                                return <li style={{ listStyleType: 'lower-alpha' }}>
+                                  {x.trim()}
+                                </li>
+                              })}
+                            </Box>
+                            <Box
+                              fontSize={14}
+                              fontWeight="fontWeightRegular" mb={2}>
+                              {profile['11e'][locale].split('|')[5]}
+                            </Box>
+                          </Typography>
+
+
+                          <Box
+                            fontSize={17} style={{ color: 'black' }}
+                            fontWeight="fontWeightRegular" mb={.5}>
+                            {profile['11f'][locale].split(locale === 'en' ? '/' : '|')[0]}
+                          </Box>
+
+                          {profile['11f'][locale].split(locale === 'en' ? '/' : '|').map((x, i) => {
+                            if (i === 0) return
+                            return <Box
+                              fontSize={14}
+                              fontWeight="fontWeightRegular" mb={i === profile['11f'][locale].split(locale === 'en' ? '/' : '|').length - 1 ? 2 : 1}>
+                              {x.trim()}
+                            </Box>
+                          })}
+
+
+                          <Box
+                            fontSize={17} style={{ color: 'black' }}
+                            fontWeight="fontWeightRegular" mb={.5}>
+                            {profile['11g'][locale].split('|')[0]}
+                          </Box>
+
+                          {profile['11g'][locale].split('|').map((x, i) => {
+                            if (i === 0) return
+                            return <Box
+                              fontSize={14}
+                              fontWeight="fontWeightRegular" mb={i === 2 ? 2 : 1}>
+                              {x.trim()}
+                            </Box>
+                          })}
+
+
+
+
+                          <Box
+                            fontSize={17} style={{ color: 'black' }}
+                            fontWeight="fontWeightRegular" mb={.5}>
+                            {profile['11h'][locale].split('/')[0]}
+                          </Box>
+
+                          {profile['11h'][locale].split('/').map((x, i) => {
+                            if (i === 0) return
+                            return <Box
+                              fontSize={14}
+                              fontWeight="fontWeightRegular" mb={i === 2 ? 2 : 1}>
+                              {x.trim()}
+                            </Box>
+                          })}
+
+
+
+                          <Box
+                            fontSize={17} style={{ color: 'black' }}
+                            fontWeight="fontWeightRegular" mb={.5}>
+                            {profile['11i'][locale].split('/')[0]}
+                          </Box>
+
+                          {profile['11i'][locale].split('/').map((x, i) => {
+                            if (i === 0) return
+                            return <Box
+                              fontSize={14}
+                              fontWeight="fontWeightRegular" mb={i === 2 ? 2 : 1}>
+                              {x.trim()}
+                            </Box>
+                          })}
+
+                          <Box
+                            fontSize={17} style={{ color: 'black' }}
+                            fontWeight="fontWeightRegular" mb={.5}>
+                            {profile['11j'][locale].split('/')[0]}
+                          </Box>
+
+                          <Box
+                            fontSize={14}
+                            fontWeight="fontWeightRegular" mb={1}>
+                            {profile['11j'][locale].split('/')[1]}
+                          </Box>
+
+                          <Box
+                            fontSize={14}
+                            fontWeight="fontWeightRegular" mb={2}>
+                            {profile['11j'][locale].split('/').map((x, i) => {
+                              if (i === 0 || i === 1) return
+                              return <li style={{ listStyleType: 'lower-alpha' }}>{x.trim()} </li>
+                            })}
+                          </Box>
+
+                          <Box
+                            fontSize={17} style={{ color: 'black' }}
+                            fontWeight="fontWeightRegular" mb={.5}>
+                            {profile['11k'][locale].split('|')[0]}
+                          </Box>
+
+
+                          {[profile['11k'][locale].split('|')[1],
+                          profile['11k'][locale].split('|')[2]].map(x => {
+                            return <Box
+                              fontSize={14}
+                              fontWeight="fontWeightRegular" mb={1}>
+                              {x}
+                            </Box>
+                          })}
+
+                          <Box
+                            fontSize={14}
+                            fontWeight="fontWeightRegular" mb={1}>
+                            {profile['11k'][locale].split('|').map((x, i) => {
+                              if (i < 3 || i > 7) return
+                              return <li style={{ listStyleType: 'lower-alpha' }}> {x.trim()} </li>
+                            })}
+                          </Box>
+
+
+                          <Box
+                            fontSize={14}
+                            fontWeight="fontWeightRegular" mb={1}>
+                            {profile['11k'][locale].split('|')[8]}
+                          </Box>
+
+                          <Box
+                            fontSize={14}
+                            fontWeight="fontWeightRegular" mb={1}>
+                            {profile['11k'][locale].split('|').map((x, i) => {
+                              if (i < 9 || i > 10) return
+                              return <li style={{ listStyleType: 'lower-alpha' }}> {x.trim()} </li>
+                            })}
+                          </Box>
+
+                          <Box
+                            fontSize={14}
+                            fontWeight="fontWeightRegular" mb={2}>
+                            {profile['11k'][locale].split('|')[11]}
+                          </Box>
+
+
+
+                          <Box
+                            fontSize={17} style={{ color: 'black' }}
+                            fontWeight="fontWeightRegular" mb={.5}>
+                            {profile['11l'][locale].split(locale === 'en' ? '/' : '|')[0]}
+                          </Box>
+
+                          <Box
+                            fontSize={14}
+                            fontWeight="fontWeightRegular" mb={2}>
+                            {profile['11l'][locale].split(locale === 'en' ? '/' : '|')[1]}
+                          </Box>
+
+                          <Box
+                            fontSize={17} style={{ color: 'black' }}
+                            fontWeight="fontWeightRegular" mb={.5}>
+                            {profile['11m'][locale].split('/')[0]}
+                          </Box>
+
+                          <Box
+                            fontSize={14}
+                            fontWeight="fontWeightRegular" mb={.5}>
+                            {profile['11m'][locale].split('/')[1]}
+                          </Box>
+
+
+                        </Typography>
+
+
+
+
                       </DialogContentText>
-                      </>
-                      )}
-    
-    
+                    </>
+                  )}
+
+
               </DialogContent>
 
-                    <DialogActions>
-                      <Button variant='outlined' onClick={() => setDialog({
-                        ...dialog,
-                        open: false
-                      })} color='primary'>
-                        Back
+              <DialogActions>
+                <Button variant='outlined' onClick={() => setDialog({
+                  ...dialog,
+                  open: false
+                })} color='primary'>
+                  {app['10a'][locale]}
                 </Button>
-                      <Button variant='contained' onClick={handleFormSubmit} color='primary'>
-                        {dialog.type === 'payment' ? 'Save' : 'I agree to the T&Cs'}
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
+                <Button variant='contained' onClick={handleFormSubmit} color='primary'>
+                  {dialog.type === 'payment' ? app['10b'][locale] : 'I agree'}
+                </Button>
+              </DialogActions>
+            </Dialog>
           </div>
-              )
-            }
-      
-      
+        )
+      }
+
+
       {
-                message && <Snackbar
-                  open={open}
-                  autoHideDuration={5000}
-                  onClose={closeSnackBar}>
-                  <Alert onClose={closeSnackBar} severity={message.success ? 'success' : 'error'}>
-                    {message.success ?
-                      message.success :
-                      message.error ?
-                        message.error : (
-                          Object.keys(message).map(x => <li> {message[x]} </li>)
-                        )}
-                  </Alert>
-                </Snackbar>
-              }
+        message && <Snackbar
+          open={open}
+          autoHideDuration={5000}
+          onClose={closeSnackBar}>
+          <Alert onClose={closeSnackBar} severity={message.success ? 'success' : 'error'}>
+            {message.success ?
+              message.success :
+              message.error ?
+                message.error : (
+                  Object.keys(message).map(x => <li> {message[x]} </li>)
+                )}
+          </Alert>
+        </Snackbar>
+      }
 
 
 
     </div >
 
 
-            );
-          };
-          
+  );
+};
+
 export default ApplicantProfile;

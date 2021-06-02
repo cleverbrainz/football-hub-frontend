@@ -35,7 +35,7 @@ const RouteContainer = (props) => {
           locale === 'en' ? setLocale('ko') : setLocale('en')
         }} />
       <Switch>
-
+        
         <AuthRouter exact path="/user/:id/pdp-form"
           locale={locale}
           component={(props) => (

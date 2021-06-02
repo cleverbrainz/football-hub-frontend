@@ -36,6 +36,7 @@ import {
   Radio,
 } from "@material-ui/core";
 import PhoneDropDown from './PhoneDropdown';
+import ApplicationSummary from './ApplicationSummary'
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -804,14 +805,14 @@ export default function ApplicationForm({ history, location, locale, match, setL
   };
 
   const ageGroupSelection = (
-    application['19']['en'].split('/').map((x,i) => {
+    application['19']['en'].split('/').map((x, i) => {
       if (i < 6) return
       return <option value={x.toLowerCase()}> {application['19'][locale].split('/')[i]} </option>
     })
   )
 
   const previousAgeGroupSelection = (
-    application['19']['en'].split('/').map((x,i) => {
+    application['19']['en'].split('/').map((x, i) => {
       return <option value={x.toLowerCase()}> {application['19'][locale].split('/')[i]} </option>
     })
   )
@@ -1886,14 +1887,12 @@ export default function ApplicationForm({ history, location, locale, match, setL
           {application['7a'][locale]}
         </Box>
         <ul>
-          {application['9'][locale].split('/').map(x => <li style={{ listStyleType: 'circle', fontSize: '14px' }}> {x} </li>)}
-          <li style={{ listStyleType: 'circle', fontSize: '14px' }}>
-            <a style={{ fontSize: '16px'}}target="_blank" rel="noopener noreferrer" 
-              href={locale === 'ko' ? 'https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A5%E1%86%AF%E1%84%8C%E1%85%B5%E1%84%91%E1%85%AE%E1%86%BA%E1%84%87%E1%85%A9%E1%86%AF%20%E2%80%93%20%E1%84%8E%E1%85%A2%E1%86%AF%E1%84%85%E1%85%B5%E1%86%AB%E1%84%8C%E1%85%B5.pdf?alt=media&token=ea6de0d8-c7d8-466f-b2c3-90edc050c06a' : 'https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/Indulge%20Football%20%E2%80%93%20The%20Challenges.pdf?alt=media&token=7f0af846-b9a8-4eae-8a4e-6be1487c4d54'}
-            >{locale === 'ko' ? '챌린지 팁을 보려면 클릭하세요' : 'Click here to see more on what the assessment team are looking for'}</a>
-          </li>
+          {application['9'][locale].split(locale === 'ko' ? '|' : '/').map((x, i) => <li style={{ listStyleType: i === 2 ? 'none' : 'circle', fontSize: '14px' }}> {x} </li>)}
         </ul>
 
+        <a target="_blank" rel="noopener noreferrer"
+          href={locale === 'ko' ? 'https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A5%E1%86%AF%E1%84%8C%E1%85%B5%E1%84%91%E1%85%AE%E1%86%BA%E1%84%87%E1%85%A9%E1%86%AF%20%E2%80%93%20%E1%84%8E%E1%85%A2%E1%86%AF%E1%84%85%E1%85%B5%E1%86%AB%E1%84%8C%E1%85%B5.pdf?alt=media&token=ea6de0d8-c7d8-466f-b2c3-90edc050c06a' : 'https://firebasestorage.googleapis.com/v0/b/football-hub-4018a.appspot.com/o/Indulge%20Football%20%E2%80%93%20The%20Challenges.pdf?alt=media&token=7f0af846-b9a8-4eae-8a4e-6be1487c4d54'}
+        >{locale === 'ko' ? '챌린지 팁을 보려면 클릭하세요' : 'Click here to see more on what the assessment team are looking for'}</a>
 
       </Typography>
 
@@ -2020,7 +2019,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             className={classes.button}
             endIcon={<ArrowForwardIcon />}>
             {isLoading && <CircularProgress size={30} className={classes.progress} />}
-            {activeStep === 0 ? application['10d'][locale] : application['10c'][locale] }
+            {activeStep === 0 ? application['10d'][locale] : application['10c'][locale]}
           </Button>
         </div>
       </div>
@@ -2043,13 +2042,38 @@ export default function ApplicationForm({ history, location, locale, match, setL
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle id="alert-dialog-slide-title">
-          {application['16a'][locale]}
+
+
+          {activeStep !== 2 ? application['16a'][locale] : application['20'][locale]}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            {application['16b'][locale]}
-            <br /> <br />
-            {application['16c'][locale]}
+
+            {activeStep !== 2 ? (
+              <>
+                {application['16b'][locale]}
+                <br /> <br />
+                {application['16c'][locale]}
+                <br /> <br />
+              </>
+            ) : (
+                <>
+                  {application['20a'][locale]}
+                  <br /> <br />
+                  {application['20b'][locale]}
+                  <br /> <br />
+                </>
+              )}
+
+
+
+
+            <ApplicationSummary
+              activeStep={activeStep}
+              locale={locale}
+              applicationDetails={applicationDetails}
+              accountCategory={accountCategory}
+            />
           </DialogContentText>
         </DialogContent>
 

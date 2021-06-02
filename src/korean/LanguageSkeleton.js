@@ -585,7 +585,7 @@ const arr = [
     "page": "application",
     "section": "4m",
     "english": "Please indicate if you are able to provide evidence of residency and passport, if required.",
-    "korean": "나는 필요할 시 거주지 증명 서류와 여권 사본을 제출할 수 있습니다."
+    "korean": "나는 필요할 경우 거주지 증명 서류와 여권 사본을 제출할 수 있습니다."
   },
 
   {
@@ -664,7 +664,7 @@ const arr = [
     "page": "application",
     "section": "6h",
     "english": "Please tell us more about yourself and your football experiences, achievements, and ambitions.",
-    "korean": "본인의 축구 경험, 성취 그리고 포부에 대해 서술해 주세요."
+    "korean": "본인의 축구 경험, 성취 그리고 앞으로의 포부에 대해 서술해 주세요."
   },
   {
     "page": "application",
@@ -700,7 +700,7 @@ const arr = [
     "page": "application",
     "section": "9",
     "english": "All players must complete and film their 3 challenges as per the demonstration videos / Recreate each one separately and share the URL link against each challenge / Upload your challenges to your own social media channels and ensure they can be viewed by our coaches / Each video should be no more than 2 minutes in length and be clearly visible for assessment / Please use whatever equipment you need to recreate the challenges",
-    "korean": "모든 선수들은 제시된 영상 대로 세 개의 챌린지들을 완수해야 합니다 / 예시를 재현하여 촬영한 영상을 소셜 미디어에 업로드하고 URL을 각각의 챌린지란에 공유해 주세요 / 공유한 URL은 평가 코치들이 확인할 수 있도록 반드시 공개 모드로 설정해 주세요 / 각각의 영상들은 2분 이내여야 하며, 평가가 가능한 퀄리티여야 합니다 / 예시에 나온 것과 똑같은 장비들을 사용하지 않아도 좋습니다"
+    "korean": "모든 지원자들은 제시된 영상대로 세 개의 챌린지를 완수해야 합니다. | 지원자들은 각각의 챌린지 영상을 직접 따라하여 촬영한 후 유튜브에 업로드하고, 해당 영상 링크를 복사하여 알맞은 챌린지 칸에 첨부해 주세요. | 주의: 링크가 중복되거나 잘못된 URL이 아닌지 제출 전 꼭 확인해 주세요. | 공유한 유튜브 영상(URL)은 평가 코치들이 확인할 수 있도록 반드시 공개 모드로 설정해 주세요. | 업로드 영상의 길이는 각각 2분 이내로, 육안으로 평가가 가능한  해상도여야 합니다. | 챌린지 영상에서 사용된 훈련도구(콘, 골대 등)가 없다면 주변에서 구할 수 있는 다양한 대체 물품/장비를 활용하셔도 좋습니다."
   },
   {
     "page": "application",
@@ -856,7 +856,7 @@ const arr = [
     "page": "application",
     "section": "14b",
     "english": "Date of Award",
-    "korean": "수상 일자"
+    "korean": "수상 연도"
   },
   {
     "page": "application",
@@ -964,6 +964,28 @@ const arr = [
     "english": "Under 6s / Under 7s / Under 8s / Under 9s / Under 10s / Under 11s / Under 12s / Under 13s / Under 14s / Under 15s",
     "korean": "U6 / U7 / U8 / U9 / U10 / U11 / U12 / U13 / U14 / U15"
   },
+  {
+    "page": "application",
+    "section": "20",
+    "english": "",
+    "korean": "챌린지 영상 제출"
+  },
+  {
+    "page": "application",
+    "section": "20a",
+    "english": "",
+    "korean": "제출 후에는 수정할 수 없습니다. 챌린지 영상 링크를 확인/수정하려면 뒤로가기를 눌러주세요."
+  },
+
+
+  {
+    "page": "application",
+    "section": "20b",
+    "english": "",
+    "korean": "입력한 URL이 정확하다면 제출하기 버튼을 클릭해 주세요."
+  },
+
+
 
   {
     "page": "snackbar_messages",
@@ -1112,7 +1134,7 @@ const arr = [
   {
     "page": "profile",
     "section": "1f",
-    "english": "achievements",
+    "english": "Achievements",
     "korean": "성취"
   },
   {
@@ -1143,7 +1165,7 @@ const arr = [
     "page": "profile",
     "section": "3a",
     "english": "Currently",
-    "korean": "Currently"
+    "korean": "현재"
   },
   {
     "page": "profile",
@@ -1240,7 +1262,103 @@ const arr = [
     "section": "9a",
     "english": "Please complete and submit your personal information and football history. / After this please complete and submit the challenges.",
     "korean": "먼저 참가신청자 본인의 정보와 유스 경력을 토대로 프로필을 작성하여 참가신청을 완료하세요. / 참가신청 이후 가이드라인에 따라 챌린지 영상(유튜브) 업로드하여 제출하세요."
-  }
+  },
+  {
+    "page": "profile",
+    "section": "10a",
+    "english": "Completed",
+    "korean": "완료"
+  },
+  {
+    "page": "profile",
+    "section": "10b",
+    "english": "View",
+    "korean": "보기"
+  },
+  {
+    "page": "profile",
+    "section": "10c",
+    "english": "Attributes",
+    "korean": "특성"
+  },
+  {
+    "page": "profile",
+    "section": "11a",
+    "english": "Terms & Conditions for registration for the Pathway Development Programme",
+    "korean": "글로벌 유망주 육성 프로젝트 - 합숙 트레이닝 프로그램 등록 약관"
+  },
+  {
+    "page": "profile",
+    "section": "11b",
+    "english": "These terms and conditions (the 'Terms') govern your registration for the Pathway Development Programme (“the Programme”). You, the participant, will be accepted to participate in the Programme on the basis that you pay the Fee and accept the Terms of this contract. It is a legal agreement and it sets out the rights and obligations of you and LSR Sports Limited (trading as “Indulge Football”) (“Indulge Football”). By registering for the Programme, you are agreeing to be bound by these Terms and the General Terms (defined below).",
+    "korean": "본 약관(이하 “약관”)은 글로벌 유망주 육성 프로젝트 - 합숙 트레이닝 프로그램 (“프로그램”)에 대한 귀하의 참여 등록에 적용됩니다. 참가자는 수수료를 지불하고 본 계약 조건에 동의하는 것을 전제로 프로그램에 참여할 수 있습니다. 본 계약은 법적 계약이며, 귀하와 LSR Sports Limited (“인덜지풋볼”)의 권리와 의무를 명시하고 있습니다. 프로그램에 등록함으로써 귀하는 본 약관 및 일반 약관(하기 내용)에 구속되는 것에 동의하게 됩니다."
+  },
+  {
+    "page": "profile",
+    "section": "11c",
+    "english": "General Terms | You must provide proof of identity and legal residency in Korea, e.g. a copy of your resident registration certificate and passport (if you’re a Korean national) or foreigner registration certificate (if you are a non-Korean national), when requested. |  All applications must be accompanied by payment in full of the appropriate registration fee. |  All fees and charges are exclusive of V.A.T. | You may cancel your registration without any charge providing you do so at least 17 days prior to the start of the Programme. |  All registrations must be made in advance of the start date of the Programme. No registration will be taken on the day of the Programme. |  All itineraries, activities and venues are subject to change according to weather, programming and a satisfactory level of numbers. We may cancel any courses and/or change any information given, should this be necessary for any reason. If we have to cancel a Programme for whatever reason we will offer an alternative Programme (if available and suitable) or a full refund. |   You must ensure that the participant is physically fit and able to participate in the sporting activities and accordingly you accept all risks resulting from participation in the course. |  We may require additional information depending on the medical information supplied to us by you before we can accept your registration. |   In the event that the participant needs medical attention during the operation of the Programme, subject to any written notice (of which we must have received prior to the commencement of the relevant Programme) from a parent or guardian to the contrary, you agree to us arranging for any appropriate and necessary treatment. | Except in respect of death or personal injury resulting from any negligence of the participant club or Indulge Football, neither the club and Indulge Football nor any of its officers, employees or agents shall be responsible for (whether in tort, contract or otherwise): (i) any loss, damage or injury to any participant or to any property belonging to any participant in relation to the Programme, resulting from any cause whatsoever; (ii) for any loss of profit, loss of use, loss of opportunity or any indirect, economic or consequential losses whatsoever; and/or (iii) any losses arising from any cancellation, postponement or rearrangement of a Programme including but not being limited to any indirect or consequential loss or damage, loss of enjoyment or travel/accommodation costs. | We recommend you take out activity, travel and personal possessions insurance for our courses. | The cost of any damage caused by you or any participant you have booked on the course to any property or facilities will be passed on to you. | We treat as a priority the safety and wellbeing of all participants attending the Programme. We therefore reserve the right to remove from the Programme, without refund, any participant who is found bullying, behaving in a way that may be a danger to others or who is generally disruptive. | Places on all Programmes are limited. They will be allocated based upon the assessment by UEFA qualified coaches. | If a Programme is fully booked, applicants are encouraged to sign up for our mailing list or book an alternative Programme. | A confirmation email will be sent out before the start of the relevant Programme to confirm acceptance or not of your registration. If a confirmation email is not received within 16 days of your registration or within 8 days of the start date of the Programme, if this is sooner, please contact the Programme Administrator on +82 (0)31-966-0199. | You agree to grant us the worldwide right in perpetuity, without approval or compensation, to use the participant's name, photographic or video image or likeness for our reasonable commercial and promotional purposes.  You also agree to grant us permission to use any online feedback for our reasonable commercial and promotional purposes. You also agree to grant any third party the said rights and permission with our consent, but without your or your parents/guardians’ approval or compensation. | We do not allow any cameras, telephone images, video or other filming or recording equipment on the Programmes by anyone other than those whom Indulge Football has officially designated to do so during the operation of the Programme. Indulge Football does not guarantee that every participant will be photographed or filmed on his chosen Programme by our official designated photographer or filming crew. | Parents and guardians may be able to stay and watch at the training Programme and visit the children at the accommodation but this will be at the discretion of Indulge Football and the participant club and will be confirmed via the Programme information at the time of registration and/or before the start of the Programme. | Neither you nor the participant shall disclose or use any aspect of the Programme for commercial or promotional purposes. The Programme venues cannot be used in marketing or promotions or resold under any circumstances (and this includes not using the Programme venues as part of a wider package or experience). | Indulge Football will not be responsible for any items lost or left behind at any of our Programmes nor will the Indulge Football be responsible for returning any said items.",
+    "korean": "일반 약관 | 귀하는 요청 시 신분 증명과 거주지 증명 서류를 제출해야 합니다. (예: 주민등록등본 & 여권 사본 혹은 외국인등록사실증명) |  모든 참가자는 지정된 참가비 전액을 지불하여야 합니다. |	모든 수수료 및 참가비는 VAT를 미포함합니다. |	등록 취소는 프로그램 시작 21일 전까지 하여야 수수료가 청구되지 않습니다. |	모든 등록은 프로그램 시작 날짜 이전에 완료되어야 합니다. 프로그램 시작 당일에는 참가 등록을 할 수 없습니다. |	모든 세션과 활동, 장소는 날씨, 구성 프로그램 그리고 참가자 수에 따라 바뀔 수 있습니다. 어떠한 이유로 필요하다고 판단될 경우 인덜지풋볼은 프로그램 일부 또는 전부를 취소할 수 있으며, 사전에 고지된 내용을 바꿀 수 있습니다. 만약 프로그램을 취소하게 될 시 인덜지풋볼은 가능한 경우 대체 프로그램을 제공할 것이며, 대체 프로그램이 없을 경우 참가비를 전액 환불 처리합니다. |	참가자는 신체적으로 건강하여야 하며, 프로그램에 등록함으로써 스포츠 활동에 적합한 건강 상태임을 보장하고 프로그램 참여 기간 동안 발생하는 모든 위험 요소를 수용함에 동의합니다. |	인덜지풋볼은 지원자의 프로그램 등록을 승인하기 전 제출된 지원서 내용에 따라 추가적인 정보를 요청할 수 있습니다. |	참가자가 프로그램 기간 동안 의료적 처치를 받아야 할 경우 부모 또는 보호자는 인덜지풋볼이 적절하고 필요한 조치를 취하는 것에 동의하며, 참가자가 지속적인 의료적 주의를 필요로 하는 경우 부모 또는 보호자는 지원 시 그러한 사실을 반드시 서면으로 인덜지풋볼에 통지하여야 합니다. | 	참여 구단 또는 인덜지풋볼의 부주의로 인한 사망 또는 부상을 제외하고, 구단과 인덜지풋볼, 그 경영자들과 직원, 대리인은 (계약 등에 관계없이) 다음 사항에 대해 책임이 없습니다. (i) 참가자 또는 참가자의 소유물에 대한 모든 부상, 손실 또는 손상; (ii) 어떠한 이익 또는 사용의 손실, 기회 손실, 간접적, 경제적, 결과적 손실; (iii) 프로그램 일부 또는 전부의 취소, 연기, 변경으로 인한 모든 손실. |	참가자의 활동, 여정 및 개인 소지품 보호를 위해 별도의 보험에 가입하시는 것을 권장합니다. |	귀하 또는 귀하가 등록한 참가자에 의해 발생한 모든 재산 또는 시설에 대한 손해 비용은 귀하에게 전가됩니다. |	인덜지풋볼은 프로그램에 참여하는 모든 참가자의 안전과 복지를 최우선으로 취급합니다. 따라서 자사는 다른 참가자들에게 피해를 주거나 프로그램 운영에 지장을 주는 것으로 판단되는 참가자를 퇴출할 권리가 있으며, 이 경우 참가비는 환불되지 않습니다. | 본 프로그램 참가 가능 인원은 제한되어 있습니다. 먼저 접수한 지원자들에게 기회가 먼저 제공됩니다. |	정원이 모두 찬 경우, 나머지 지원자들은 인덜지풋볼의 알림 메일을 구독하고 다른 프로그램을 지원할 것을 권장합니다. |	프로그램 등록을 마치고 나면 인덜지풋볼로부터 확인 이메일이 발송됩니다. 등록 후 28일 이내, 또는 프로그램 시작 5일 전까지 확인 이메일이 수신되지 않을 경우 관리자에게 문의하십시오 (PHONE NUMBER). |	귀하는 참가자의 이름, 사진, 영상 등을 인덜지풋볼이 합리적인 홍보 및 상업적 목적으로 전 세계에서 영구히 사용할 수 있는 권리를 별도의 승인이나 보상 없이 부여하는 데 동의합니다. 또한 자사의 합리적인 홍보 및 상업적 목적으로 참가자의 온라인 피드백을 이용(18) 귀하는 참가자의 이름, 사진, 영상 등을 인덜지풋볼이 합리적인 홍보 및 상업적 목적으로 전 세계에서 영구히 사용할 수 있는 권리를 별도의 승인이나 보상 없이 부여하는 데 동의합니다. 또한 귀하는 합리적인 홍보 및 상업적 목적으로 자사가 참가자의 온라인 피드백을 이용할 수 있는 권리를 자사에 부여합니다. 귀하는 귀하 또는 귀하의 법정대리인(보호자)의 동의 없이 자사의 동의로 제3자가 그러한 권리들을 행사하는 데 동의합니다. |	프로그램 운영 중 인덜지풋볼이 공식적으로 지정한 사람 이외에 다른 사람이 카메라, 휴대전화 카메라, 영상 촬영 또는 다른 녹화 장비를 프로그램에서 이용할 수 없습니다. 인덜지풋볼은 모든 참가자가 해당 프로그램에서 공식 지정된 사진작가 또는 녹화팀에 의해 촬영됨을 보장하지 않습니다. | 인덜지 풋볼이 허가한 경우 이외에 그 누구도 홍보 또는 상업적 목적으로 프로그램의 일부 또는 전부를 공개하거나 이용할 수 없습니다. 프로그램 장소는 마케팅 또는 프로모션에 이용되거나 어떤 상황에서도 재판매될 수 없습니다. 이는 추가적인 패키지 또는 경험의 일부로 프로그램 장소를 이용할 수 없음을 포함합니다. |	인덜지풋볼은 프로그램에서 잃어버리거나 남겨진 물건에 대해 책임지지 않으며, 남겨진 물건을 반환할 책임이 없습니다."
+  },{
+    "page": "profile",
+    "section": "11d",
+    "english": "Registration | You are eligible for registration if you are above 12 and under 15 years of age. If you are under 12 or above 15 years of age, you are not eligible to participate in the Programme. | You warrant that you have obtained the appropriate parent/guardian consent to sign up for the Programme. | Further, we reserve the right to refuse to accept your application for any reason, including but not limited to any belief that you are not acting in accordance with these Terms.",
+    "korean": "프로그램 등록 | 본 프로그램은 만 12세-15세 선수들을 대상으로 합니다. 그 이외 연령대의 선수들은 참여할 수 없습니다. | 귀하는 법에서 요구하는 법정대리인(부모/보호자)의 동의 하에 본 프로그램에 등록함을 보장합니다. | 또한 인덜지풋볼은 어떠한 이유로 귀하의 프로그램 참가를 거부할 수 있으며, 그 이유는 약관 위반 여부에만 국한되지 않습니다. "
+  },
+  {
+    "page": "profile",
+    "section": "11e",
+    "english": "Your obligations and conduct | By registering for the Programme, you agree to: | attend all the required activities during the Programme and not quitting during the course, unless any health issues or urgent matters arise in which case you must consult Indulge Football staff immediately and without any delay; | make individual and group appearances as required by Indulge Football and/or the participant club, during the operation of the Programme; and | fully commit yourself to participate in the Programme and make the best efforts to perform well throughout the Programme. | For the avoidance of doubt, you are solely responsible for ensuring that you are medically able, and have the requisite skill level, to perform any or all of the exercises, skills or other physical activities required during the training and assessment for the Programme. Indulge Football shall not be liable in any way for any injuries suffered as a result of you attempting to perform said exercises, skills or other physical activities. ",
+    "korean": "참가자의 의무 | 본 프로그램에 등록함으로써, 귀하는 아래 사항에 동의합니다: | 건강상의 이유나 비상 상황을 제외하고는 프로그램 기간 동안 진행되는 모든 활동에 참여하며 도중에 그만두지 않습니다. 건강상 이상이나 비상 상황의 경우 인덜지풋볼 스태프에게 지체 없이 즉시 알립니다. | 프로그램 기간 동안 인덜지풋볼 또는 참여 구단의 요청에 따라 개인 및 단체로서 출연합니다. | 프로그램에 참여하고 프로그램 전체에 걸쳐 좋은 성과를 거두기 위해 최선의 노력을 다합니다. | 귀하는 귀하가 (혹은 귀하의 자녀가) 본 프로그램에 참여 가능한 건강 상태, 축구 기술 수준을 갖추고 있는지 확인할 책임이 있습니다. 인덜지풋볼은 그러한 확인의 미비 또는 프로그램 활동 이외의 다른 신체적인 활동의 결과로 생긴 사고 및 부상에 어떠한 책임도 지지 않습니다."
+  },
+  {
+    "page": "profile",
+    "section": "11f",
+    "english": "Payment / You must pay the participation fee (the 'Fee') to register for the Programme, in accordance with the fee amount notified to you at the time of registration. Unless otherwise stated, charges are exclusive of VAT and any other taxes applicable from time to time, for which payment you shall be liable. / The Fee must be paid through bank transfer. Once the payment is made successfully, a confirmation email will be sent from ftballer.com.",
+    "korean": "수수료 결제 | 프로그램에 등록하려면 등록 시 귀하에게 통지된 참가비(“수수료”)를 지불해야 합니다. 달리 명시되지 않은 한 모든 요금은 부가세를 포함한 별도의 세금을 포함하지 않으며, 이는 귀하가 지불할 책임이 있습니다. 원화(또는 기타 통화)를 GBP로 환산할 경우, 은행이 부과하는 환전 수수료가 있을 수 있습니다. | 신용/직불 카드의 경우, 양식에 기재된 신용/직불 카드 번호를 통해 수수료가 자동으로 결제됩니다. 결제는 비자, 마스터카드 등 주요 신용/직불 카드를 통해 이루어질 수 있습니다. 수수료 결제 시도가 실패할 경우 여러 번 승인 시도를 할 수 있으나, 인덜지풋볼은 결제가 완료되어 수수료를 수령할 때까지 귀하의 프로그램 등록을 중지하거나 종료할 수 있는 권리를 보유합니다. | 인덜지풋볼은 제3자 결제 처리 서비스를 이용하여 신용카드 정보를 처리합니다. 인덜지풋볼은 모든 개인 및 재무 정보의 프라이버시를 보호하기 위해 상업적으로 합리적인 노력을 기울이고 있으며, 제3자가 제공하는 결제 서비스를 이용하는 것과 관련된 모든 논란, 청구, 소송, 손해에 대해 모든 책임을 명시적으로 부인합니다. 이는 귀하의 정보가 해당 결제 서비스 제공자에게 공유되어 발생할 수 있는 모든 손실을 포함합니다. 인덜지풋볼의 결제 처리 서비스 이용에 대한 자세한 내용은 enquiries@indulgefootball.com으로 문의하십시오."
+  },
+  {
+    "page": "profile",
+    "section": "11g",
+    "english": "Cancellation and Refunds | You can cancel your registration at least 14 days prior to the start date of the Service Period in which case you will be entitled to a full refund of the Fee. In order to receive the refund you must contact us after cancellation using our Contact Us section. Any notice given by you after this 14 day period shall not be effective to entitle you to receive a refund. We will refund such sums by crediting your credit/debit card, or directly to your account from which you made bank transfer to pay the Fee. |  For the avoidance of doubt, Indulge Football shall not be required to provide any refunds where a participant seeks to terminate its enrolment to the Programme following the above mentioned 14 day period. ",
+    "korean": "등록 취소 및 환불 | 귀하는 프로그램 시작 최소 14일 전에 등록을 취소할 수 있으며, 이 경우 수수료를 전액 환불받을 수 있습니다. 환불을 받으려면 취소 후 자사에 별도의 문의를 하여야 합니다. 이 14일 이후에 발생한 귀하의 등록 취소 통지는 귀하에게 수수료 전액 환불을 받을 수 있는 자격을 부여하지 않습니다. 환불 시 귀하의 신용/직불 카드를 통해 해당 금액이 환불됩니다. | 인덜지풋볼은 위에서 언급한 프로그램 시작 14일 이전 시점 후에 발생한 등록 취소에 대해서는 수수료를 환불하지 않습니다."
+  },
+  {
+    "page": "profile",
+    "section": "11h",
+    "english": "Intellectual Property Rights / You agree not to reproduce, modify, rent, lease, loan, sell, distribute, mirror, frame, republish, download, transmit, or create derivative works of the Programme, in whole or in part, by any means. You must not modify, decompile, or reverse engineer any software Indulge Football discloses to you, and you must not remove or modify any copyright or trademark notice, or other notice of ownership./ 'Indulge Football Trademarks' means all names, marks, brands, logos, designs, trade dress, slogans and other designations Indulge Football uses in connection with the Programme. You may not remove or alter any Indulge Trademarks, or co-brand your own products or material with Indulge Trademarks, without Indulge Football’s prior written consent. You acknowledge Indulge Football’s rights in Indulge Football Trademarks.  You agree not to incorporate any Indulge Football Trademarks into your trademarks, service marks, company names, internet addresses, domain names, or any other similar designations, for use on or in connection with computer or internet-related products, services or technologies.  ",
+    "korean": "지적 재산권 / 귀하는 어떤 방식으로도 프로그램의 전체 또는 일부를 복제, 수정, 임대, 대여, 판매, 배포, 미러링, 프레임, 재발행, 다운로드, 전송할 수 없으며, 파생 상품을 만들 수 없습니다. 귀하는 인덜지풋볼이 귀하에게 공개한 소프트웨어를 수정, 압축 해제 또는 역엔지니어링할 수 없으며, 저작권 또는 상표권 고지 또는 기타 소유권 고지 사항을 삭제하거나 수정할 수 없습니다. / “인덜지풋볼 상표”는 자사의 모든 이름, 마크, 브랜드, 로고, 디자인, 트레이드 드레스, 슬로건 및 기타 인덜지풋볼이 본 프로그램과 관련하여 사용하는 모든 기타 명칭들을 의미합니다. 귀하는 인덜지풋볼의 사전 서면 동의 없이 인덜지풋볼 상표를 제거 또는 변경하거나, 귀하(사)의 제품 또는 자료를 인덜지풋볼 상표와 공동 브랜드화할 수 없습니다. 또한 귀하는 컴퓨터 또는 인터넷 관련 제품, 서비스, 기술과 관련하여 귀하(사)의 상표, 서비스, 마크, 사명, 인터넷 주소, 도메인 또는 기타 명칭에 인덜지풋볼 상표를 포함시킬 수 없습니다."
+  },
+  {
+    "page": "profile",
+    "section": "11i",
+    "english": "Limitation Liability / To the extent permitted by applicable law, neither we nor any of our directors, employees or other representatives will be liable for any damages (whether direct, indirect, special, consequential or punitive damages), in contract, tort or otherwise including negligence, or any other loss of income, profits, goodwill, data, contracts, or other economic benefits, arising out of or in connection with your participation in the Programme. / You confirm that we shall not be liable to you or any third party for any modification to, suspension of or discontinuance of the Programme. This is a comprehensive limitation of liability that applies to all damages of any kind, including (without limitation) compensatory, direct, indirect or consequential damages, loss of data, income or profit, loss of or damage to property and claims of third parties.",
+    "korean": "책임의 제한 / 자사와 운영진, 직원 그리고 대리인은 관련 법률에 의해 허용된 범위 내에서 계약상 손해 (직접적, 간접적, 특정적, 결과적 또는 징벌적 손해 포함), 과실 또는 프로그램 참여로 인해 또는 프로그램 참여와 관련하여 발생한 기타 소득, 이익, 영업권, 자료, 계약 또는 기타 경제적 손실에 대해 책임을 지지 않습니다. / 귀하는 프로그램 변경, 연기 또는 중단에 대해 인덜지풋볼이 귀하 또는 제3자에게 책임을 지지 않음에 동의합니다. 이는 보상적, 직접적, 간접적 또는 결과적 손해, 데이터 손실, 소득 또는 이익의 손실, 재산의 손실 및 제3자의 청구를 포함한 모든 종류의 손해에 적용되는 포괄적인 부채를 모두 포함합니다."
+  },
+  {
+    "page": "profile",
+    "section": "11j",
+    "english": "Indemnity / You agree to fully indemnify us immediately on demand against all claims, liability, damages, costs and expenses, including legal fees, arising out of:  / any breach of these Terms by you; / any misrepresentation, act or omission made by you in connection with your participation in the Programme; or / claims brought by third parties arising from or related to your participation in the Programme, or any other liabilities arising out of your participation in the Programme. You shall provide us with notice of such claims, full authority to defend, compromise or settle such claims and reasonable assistance necessary to defend such claims, at your sole expense. ",
+    "korean": "배상 책임 / 귀하는 다음 사항으로 인해 발생하는 모든 청구, 책임, 손해, 비용(법적 수수료 포함)에 대해 요구에 따라 자사에게 즉시 그리고 완전히 배상하는 데 동의합니다. / 귀하가 본 약관을 위반하는 경우 / 프로그램 참여와 관련하여 귀하가 사칭, 정보의 잘못된 전달, 누락 등을 행한 경우 / 귀하의 프로그램 참여와 관련하여 또는 귀하의 프로그램 참여로 인해 발생하는 기타 책임과 관련하여 제3자가 제기한 청구. 귀하는 자사에 이러한 청구에 대한 통지를 즉시 하여야 하며, 그에 대한 방어, 타협 또는 해결을 위한 모든 권한과 비용을 즉시 그리고 완전히 제공해야 합니다."
+  },
+  {
+    "page": "profile",
+    "section": "11k",
+    "english": "Modification, Suspension and Termination | We may from time to time modify or discontinue the Programme without giving you notice. We may change the way in which we run the Programme and will use reasonable endeavours not to make changes that materially adversely affect you during any period for which you have already paid the Fee at the relevant time, unless it is beyond our reasonable control (without limitation for legal or regulatory reasons). | We may also suspend or terminate your participation in the Programme immediately at any time in our absolute discretion if: | any information you provided to register for the Programme is found to be inaccurate, false, out of date or incomplete; | your participation in the Programme is considered abusive, excessive, or against the interests of other participants; | your participation in the Programme is considered in breach of these Terms and/or the General Terms; | a competent regulatory authority requires the Programme to be closed; or | any Fee (or part of any Fee) remains outstanding for more than seven days from the due date (other than because of a fault of ours or our third party payment provider). | We may also suspend or cancel the Programme immediately at any time in our absolute discretion (but giving you as much notice as is reasonably practicable in the circumstances) if: | technical or operational reasons beyond our control make this reasonably necessary; or | we decide, in our sole discretion, to stop operating the Programme, | but in such circumstances if you have already paid the Fee, we shall refund any proportion of the Fee which you have already paid for the duration of the courses relating to any time during the period of the courses where you have not been able to participate in the Programme, on a pro rata basis. ",
+    "korean": "프로그램 변경, 연기 또는 종료 | 자사는 귀하에게 통지하지 않고 프로그램을 수정하거나 중단할 수 있습니다. 또한 자사는 프로그램 운영 방식을 변경할 수 있으며, 합리적으로 통제 불가능한 상황이 있지 않는 한 그러한 변동이 프로그램에 부정적인 영향을 미치지 않도록 위해 합리적인 노력을 기울일 것입니다. | 다음의 경우 자사의 절대 재량에 따라 언제든지 귀하의 프로그램 참여를 중지하거나 종료할 수 있습니다. | 프로그램에 등록하기 위해 귀하가 제공한 정보가 부정확하거나, 거짓이거나, 오래 되었거나 불완전한 것으로 확인된 경우. |	프로그램에 대한 귀하의 참여가 일반적인 통념을 벗어나 남용에 이르거나 다른 참여자의 이익에 반하는 것으로 간주되는 경우. |	귀하가 본 약관 또는 일반 약관을 위반한 것으로 간주되는 경우. |	관할 규제 기관이 프로그램의 폐쇄를 요구하는 경우. |	수수료 또는 수수료의 일부가 납기일로부터 7일 이상 미결 상태일 경우 (자사 또는 결제 서비스 제공자의 과실로 인한 경우 제외). | 또한 다음과 같은 경우 자사는 자사의 절대 재량에 따라 언제든지 프로그램의 운영을 중단하거나 취소할 수 있습니다 (이 경우 상황에 따라 가능한 범위에서 최대한의 통지를 제공). |	자사가 통제할 수 없는 기술적 혹은 운영상의 이유로 합리적인 사유에 의해 필요한 경우. |	자사의 단독 재량으로 프로그램 운영을 중단하기로 결정하는 경우. | 이 경우 귀하가 프로그램에 참여할 수 없게 된 기간에 따라 이미 납부된 수수료의 일부를 산정하여 환불 처리합니다. "
+  },
+  {
+    "page": "profile",
+    "section": "11l",
+    "english": "Miscellaneous / To the extent that anything in or associated with the Programme is in conflict or inconsistent with these Terms, these Terms shall take precedence. Indulge Football's failure to enforce any provision of these Terms shall not be deemed as either a waiver of such provision or as a waiver of the right to enforce such provision.",
+    "korean": "그 외 사항 | 프로그램 내부/관련 내용이 본 약관과 상충되거나 일치하지 않는 경우, 본 조항이 우선 적용됩니다. 인덜지풋볼이 본 약관의 조항을 시행하지 않은 경우, 해당 조항의 포기 혹은 해당 조항의 시행 권리의 포기로 간주되지 않습니다."
+  },
+  {
+    "page": "profile",
+    "section": "11m",
+    "english": "ACCEPTANCE OF THE TERMS AND CONDITIONS / You hereby acknowledge that you have read and agree to be bound by the above Terms and Conditions for registration for the Programme.",
+    "korean": "약관 동의 / 프로그램 등록을 위해 약관을 모두 읽고 숙지하였으며 이에 동의합니다."
+  },
+
 ]
 
 
