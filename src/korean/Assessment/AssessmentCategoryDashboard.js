@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -28,6 +29,12 @@ const useRowStyles = makeStyles({
   },
   link: {
     fontSize: '12px'
+  },
+  field: {
+    margin: '2rem 0'
+  },
+  button: {
+    margin: '1rem 0'
   }
 });
 
@@ -41,6 +48,7 @@ export default function AssessmentCategoryDashboard({
 
 
   const [assessmentDataObject, setAssessmentDataObject] = useState(null)
+  const [feedback, setFeedback] = useState()
 
   const positions = {
     Defence: ['right back', 'right wing back', 'left wing back', 'left back', 'centre back', 'sweeper'],
@@ -52,7 +60,6 @@ export default function AssessmentCategoryDashboard({
   const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
   useEffect(() => {
-    console.log(filteredApplications)
     axios.get(`/users/${application[0]}`)
       .then(res => {
         const { applications: { ajax_application: { assessment_id } } } = res.data[0]
@@ -67,6 +74,7 @@ export default function AssessmentCategoryDashboard({
   function getAssessment(id, type) {
     return axios.get(`/player-assessment/${id}`)
       .then(res => {
+        if (res.data.coach_generic_comments) setFeedback(res.data.coach_generic_comments)
         if (type === 'initial') {
           return setAssessmentDataObject(res.data)
         }
@@ -88,40 +96,53 @@ export default function AssessmentCategoryDashboard({
         .length
   }
 
-
-  function getPositionRanking(heading) {
-    const { position } = application[2].player_attributes
-    const currentPos = Object.keys(positions).filter(x => positions[x].includes(position))[0]
-    const current = assessmentDataObject?.areas[heading]
-    const averages = []
-    let ranking 
-
-    var promise = new Promise((resolve, reject) => {
-      filteredApplications
-        .forEach((app, i) => {
-          const { position } = app[2].player_attributes
-          const pos = Object.keys(positions).filter(x => positions[x].includes(position))[0]
-          if (pos === currentPos) {
-            const data = getAssessment(app[2].assessment_id, '')
-            data.then(res => {
-              averages.push(!getAverageRating(res[heading]) ? 0 : getAverageRating(res[heading]))
-              if (i === filteredApplications.length - 1) resolve()
-            })
-          }
-
-        })
+  function handleSave() {
+    axios.post('/player-assessment', {
+      ...assessmentDataObject,
+      coach_generic_comments: feedback
     })
-
-    promise.then(() => {
-      const index = averages
-        .sort((a, b) => b - a)
-        .indexOf(getAverageRating(current))
-
-      ranking = index === -1 ? averages.length : index + 1
-    })
-    .finally(() => ranking)
-
+      .then(res => {
+ 
+        getAssessment(application[2].assessment_id, 'initial')
+      })
+      .catch(err => console.log(err))
   }
+
+
+
+  // function getPositionRanking(heading) {
+  //   const { position } = application[2].player_attributes
+  //   const currentPos = Object.keys(positions).filter(x => positions[x].includes(position))[0]
+  //   const current = assessmentDataObject?.areas[heading]
+  //   const averages = []
+  //   let ranking
+
+  //   var promise = new Promise((resolve, reject) => {
+  //     filteredApplications
+  //       .forEach((app, i) => {
+  //         const { position } = app[2].player_attributes
+  //         const pos = Object.keys(positions).filter(x => positions[x].includes(position))[0]
+  //         if (pos === currentPos) {
+  //           const data = getAssessment(app[2].assessment_id, '')
+  //           data.then(res => {
+  //             averages.push(!getAverageRating(res[heading]) ? 0 : getAverageRating(res[heading]))
+  //             if (i === filteredApplications.length - 1) resolve()
+  //           })
+  //         }
+
+  //       })
+  //   })
+
+  //   promise.then(() => {
+  //     const index = averages
+  //       .sort((a, b) => b - a)
+  //       .indexOf(getAverageRating(current))
+
+  //     ranking = index === -1 ? averages.length : index + 1
+  //   })
+  //     .finally(() => ranking)
+
+  // }
 
   function Row({ row, heading }) {
     const [open, setOpen] = React.useState(false);
@@ -130,7 +151,7 @@ export default function AssessmentCategoryDashboard({
     // const positionRanking = assessmentDataObject ? console.log(getPositionRanking(heading)) : ''
     const average = assessmentDataObject ? getAverageRating(current) : ''
 
-    console.log({ average })
+    // console.log({ average })
 
     const completed = assessmentDataObject ?
       ((Object.keys(current)
@@ -168,7 +189,7 @@ export default function AssessmentCategoryDashboard({
           <TableCell style={{ color: completed !== 100.0 ? 'red' : 'green' }}>
             {completed ? completed : 0 + ''}%
           </TableCell>
-          <TableCell> 
+          <TableCell>
             {current?.completed_by}
           </TableCell>
 
@@ -208,9 +229,9 @@ export default function AssessmentCategoryDashboard({
 
                     {Object.keys(row).map(subRow => {
 
-                      const rating = assessmentDataObject?.areas[heading][subRow].rating
-                      const feedback = assessmentDataObject?.areas[heading][subRow].rating_selected_feedback
-                      const actions = assessmentDataObject?.areas[heading][subRow].development_selected_actions
+                      const rating = assessmentDataObject?.areas[heading][subRow]?.rating
+                      const feedback = assessmentDataObject?.areas[heading][subRow]?.rating_selected_feedback
+                      const actions = assessmentDataObject?.areas[heading][subRow]?.development_selected_actions
                       const completed = [rating, feedback, actions].filter(x => x).length
                       const percentage = completed === 3 ? '100' : completed * 33
 
@@ -284,6 +305,48 @@ export default function AssessmentCategoryDashboard({
           </TableBody>
         </Table>
       </TableContainer>
+
+      <div class="field">
+        <div class="field-body">
+          <div className={classes.field}>
+            <div className={classes.label}>
+               <Box
+                fontSize={15}
+                fontWeight="fontWeightBold">
+                <label> Player Feedback </label>
+              </Box>
+            </div>
+            <div class="control">
+              <p> {assessmentDataObject?.player_feedback} </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-body">
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <Box
+                fontSize={15}
+                fontWeight="fontWeightBold">
+                <label> Add any generic assessment feedback below </label>
+              </Box>
+
+            </div>
+            <div class="control">
+              <textarea value={feedback} onChange={e => setFeedback(e.target.value)}
+                rows='7' cols='100' class="textarea" ></textarea>
+            </div>
+            <Button
+              className={classes.button}
+              onClick={handleSave}
+              variant='contained' color='primary'>
+              Save Feedback
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
 
   );

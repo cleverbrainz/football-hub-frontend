@@ -12,6 +12,7 @@ import NavBarKorea from '../components/Navbars/NavBarKorea'
 import UserAuthForm from './UserAuthForm'
 import ApplicantProfile from './ApplicantProfile'
 import PostAppForm from './PostAppForm'
+import AssessmentPlayerView from './Assessment/AssessmentPlayerView'
 // import JSONConvertor from './JSONConvertor'
 import ApplicationDashboard from './ApplicationDashboard';
 // import MarketingBeta from './MarketingBeta ';
@@ -35,6 +36,15 @@ const RouteContainer = (props) => {
           locale === 'en' ? setLocale('ko') : setLocale('en')
         }} />
       <Switch>
+
+      <AuthRouter exact path="/user/:id/pdp/player-assessment"
+          locale={locale}
+          component={(props) => (
+            <AssessmentPlayerView
+              {...props}
+              locale={locale} />
+          )} />
+
         
         <AuthRouter exact path="/user/:id/pdp-form"
           locale={locale}

@@ -453,24 +453,30 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
     }
   ]
 
+
+
+
+
+
   const ageCampDates = {
     'Under 12s': {
-      en: '31st May - 3rd June',
-      ko: '2021년 5월 31일 ~ 6월 3일'
+      en: '01/09/2021 - 04/09/2021',
+      ko: '2021년 9월 1일 ~ 9월 4일'
     },
     'Under 13s': {
-      en: '5th June - 8th June',
-      ko: '2021년 6월 5일 ~ 6월 8일'
+      en: '06/09/2021 - 09/09/2021',
+      ko: '2021년 9월 6일 ~ 9월 9일'
     },
     'Under 14s': {
-      en: '11th June - 14th June',
-      ko: '2021년 6월 11일 ~ 6월 14일'
+      en: '12/05/2021 - 15/09/2021',
+      ko: '2021년 9월 12일 ~ 9월 15일'
     },
     'Under 15s': {
-      en: '16th June - 19th June',
-      ko: '2021년 6월 16일 ~6월 19일'
+      en: '17/09/2021 - 20/09/2021',
+      ko: '2021년 9월 17일 ~ 9월 20일'
     }
   }
+
 
   const nav = [profile['1b'], profile['1c'], profile['1d'], profile['1e']]
   if (!hasLoaded) return null
@@ -768,8 +774,10 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                     <Box
                       fontSize={20}
                       fontWeight="fontWeightBold" mb={3}>
-                      Upcoming Camps
-              </Box>
+                      {moment() > moment(ageCampDates[application.age_group].en.split('-')[1], 'DDMMYYYY') ? 'Previous Camps' :
+                        moment() > moment(ageCampDates[application.age_group].en.split('-')[0], 'DDMMYYYY') ? 'Attending Camps' : 'Upcoming Camps'}
+
+                    </Box>
                   </Typography>
 
                   <TableContainer >
@@ -778,12 +786,18 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                         <TableRow>
                           <TableCell align="right"> {profile['5b'][locale]}</TableCell>
 
-                          {(application && application.hasOwnProperty('challenges_submitted')) &&
-                            <TableCell align="right"> Camp Date </TableCell>}
+                          <TableCell align="right"> Camp Date </TableCell>
 
-                          <TableCell align="right"> Payment </TableCell>
-                          <TableCell align="right"> PDP Form</TableCell>
-                          <TableCell align="right"> Itinerary</TableCell>
+                          {moment() < moment(ageCampDates[application.age_group].en.split('-')[0], 'DDMMYYYY') ? (
+                            <>
+                              <TableCell align="right"> Payment </TableCell>
+                              <TableCell align="right"> PDP Form</TableCell>
+                              <TableCell align="right"> Itinerary</TableCell>
+                            </>
+                          ) : <TableCell align="right"> Player Assessment </TableCell>}
+
+
+
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -794,39 +808,53 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                             {ageCampDates[application.age_group][locale]}
                           </TableCell>
 
-                          <TableCell align="right">
-                            {(!application.post_app_actions?.payment_confirm || application.post_app_actions?.payment_confirm === 'no') ?
-                              <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} /> :
-                              application.post_app_actions?.payment_confirm === 'yes' ?
-                                <InfoIcon style={{ color: 'blue', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} />
-                                : <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />}
+                          {moment() < moment(ageCampDates[application.age_group].en.split('-')[0], 'DDMMYYYY') ? (
+                            <>
 
-                            {(!application.post_app_actions?.payment_confirm || application.post_app_actions?.payment_confirm === 'no') ? <a onClick={() => setDialog({
-                              type: 'payment',
-                              open: true
-                            })}> View </a>
-                              : application.post_app_actions.payment_confirm === 'yes' ? 'In Review' : 'Confirmed'}
+                              <TableCell align="right">
+                                {(!application.post_app_actions?.payment_confirm || application.post_app_actions?.payment_confirm === 'no') ?
+                                  <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} /> :
+                                  application.post_app_actions?.payment_confirm === 'yes' ?
+                                    <InfoIcon style={{ color: 'blue', fontSize: '17px', transform: 'translateY(3px)', marginRight: '6px' }} />
+                                    : <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />}
 
-                          </TableCell>
+                                {(!application.post_app_actions?.payment_confirm || application.post_app_actions?.payment_confirm === 'no') ? <a onClick={() => setDialog({
+                                  type: 'payment',
+                                  open: true
+                                })}> View </a>
+                                  : application.post_app_actions.payment_confirm === 'yes' ? 'In Review' : 'Confirmed'}
 
-                          <TableCell align="right" style={{ color: '#3100F7' }}>
+                              </TableCell>
 
-                            {application.post_app_actions ?
-                              Object.keys(application.post_app_actions).filter(x => application.post_app_actions[x] === '').length === 0 && application.post_app_actions.hasOwnProperty('allergies') ?
-                                <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
-                                <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
-                              <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />
+                              <TableCell align="right" style={{ color: '#3100F7' }}>
+
+                                {application.post_app_actions ?
+                                  Object.keys(application.post_app_actions).filter(x => application.post_app_actions[x] === '').length === 0 && application.post_app_actions.hasOwnProperty('allergies') ?
+                                    <CheckCircleSharpIcon style={{ color: 'green', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
+                                    <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} /> :
+                                  <CancelSharpIcon style={{ color: 'red', fontSize: '17px', transform: 'translateY(4px)', marginRight: '6px' }} />
+                                }
+                                <Link
+                                  to={{
+                                    pathname: `/user/${auth.getUserId()}/pdp-form`,
+                                    state: application
+                                  }}> View </Link>
+                              </TableCell>
+
+                              <TableCell align="right">
+                                <a target='_blank' rel='noopener noreferrer' href='https://indulgefootball.kr/PDP%20Sample%20Daily%20Itinerary.pdf'> View </a>
+                              </TableCell>
+
+                            </>
+                          ) : <TableCell align="right">
+                              {
+                                application.assessment_id ? <Link
+                                  to={{
+                                    pathname: `/user/${auth.getUserId()}/pdp/player-assessment`,
+                                    state: application.assessment_id
+                                  }}> View </Link> : 'Not Available'
                             }
-                            <Link
-                              to={{
-                                pathname: `/user/${auth.getUserId()}/pdp-form`,
-                                state: application
-                              }}> View </Link>
-                          </TableCell>
-
-                          <TableCell align="right">
-                            <a target='_blank' rel='noopener noreferrer' href='https://indulgefootball.kr/PDP%20Sample%20Daily%20Itinerary.pdf'> View </a>
-                          </TableCell>
+                            </TableCell>}
 
                         </TableRow>
 
@@ -905,7 +933,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                       fontSize={20}
                       fontWeight="fontWeightBold" mb={3}>
                       {profile['10c'][locale]}
-              </Box>
+                    </Box>
                   </Typography>
 
                   <ul>

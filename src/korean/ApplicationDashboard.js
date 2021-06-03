@@ -188,7 +188,7 @@ function AlertDialog({ open, setOpen, handleSave, setEditing }) {
 }
 
 
-const Application = ({ viewSelect, permissions, application, filteredApplications, applications, setFilteredApplications, setApplications, filteredIndex, setEditing, open, setOpen, editing, averages, text, locale }) => {
+const Application = ({ viewSelect, permissions, application, filteredApplications, applications, setFilteredApplications, setApplications, filteredIndex, setEditing, open, setOpen, editing, averages, text, locale, setTabValue, getData }) => {
 
   const classes = useStyles()
   const [userId, email, applicationInfo] = application
@@ -201,7 +201,7 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
   const [ratings, setRatings] = useState(applicationInfo.ratings)
   const [[averagePositionScore, averageCategoryScore, playerCategory], setAverageScores] = useState(averages(player_attributes.position))
 
-  // console.log({ ratings })
+  const [paymentConfirmation, setPaymentConfirmation] = useState(applicationInfo.post_app_actions?.payment_confirm !== 'indulge' ? '' : 'indulge')
 
   const handleSave = (event, approval = false) => {
     console.log('handling')
@@ -237,6 +237,32 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
       setEditing(false)
     })
   }
+
+  function handlePaymentSave() {
+    axios.patch(`/users/${userId}`, {
+      userId,
+      updates: {
+        applications: {
+          ajax_application: {
+            ...applicationInfo, post_app_actions: {
+              ...applicationInfo.post_app_actions,
+              payment_confirm: paymentConfirmation
+            }
+          }
+        }
+      }
+    }, {
+      headers: {
+        authorization: `Bearer ${auth.getToken()}`
+      }
+    })
+      .then(res => {
+        setTabValue(0)
+        getData()
+      })
+      .catch(err => console.log(err))
+  }
+
 
   function capitalise(str) {
     var i, frags = str.split('_');
@@ -595,6 +621,22 @@ const Application = ({ viewSelect, permissions, application, filteredApplication
             })}
 
           </div>
+
+          <div class='field'
+            style={{ flex: '0.8', marginRight: '10px' }}>
+            <label className={classes.label} > Please type <span style={{ color: 'red' }}> indulge </span>  into the input below to confirm payment </label>
+            <div class="control">
+              <input value={paymentConfirmation} onChange={e => setPaymentConfirmation(e.target.value)} class="input is-small" type="text" />
+            </div>
+
+            <Button onClick={handlePaymentSave} style={{ margin: '1rem 0' }} variant='contained' color='primary'>
+              Save Confirmation
+            </Button>
+          </div>
+
+
+
+
         </>
       }
 
@@ -1144,6 +1186,8 @@ const ApplicationDashboard = ({ locale }) => {
   //   setTabValue(2)
   // }, [])
 
+
+
   const positions = {
     Defence: ['Right Back', 'Right Wing Back', 'Left Wing Back', 'Left Back', 'Centre Back', 'Sweeper'],
     Midfield: ['Right Wing', 'Right Midfield', 'Left Wing', 'Left Midfield', 'Central Midfield', 'Defensive Midfield', 'Attacking Midfield'],
@@ -1666,19 +1710,19 @@ const ApplicationDashboard = ({ locale }) => {
                           className={classes.tableHeading}
 
                           onClick={(event) => handleSort(event, 'personal_details name')}>
-                         
+
                           {text[locale].Name}  <ImportExportSharpIcon className={classes.sortIcons} />
                         </Button>
                       </TableCell>
                       <TableCell className={classes.tableHeadingIcon} align="right" >
                         <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'personal_details dob')}>
-                          
+
                           {text[locale].Age}  <ImportExportSharpIcon className={classes.sortIcons} />
                         </Button>
                       </TableCell>
                       <TableCell className={classes.tableHeadingIcon} align="right">
                         <Button className={classes.tableHeading} onClick={(event) => handleSort(event, 'personal_details city')}>
-                        
+
                           {text[locale].City} <ImportExportSharpIcon className={classes.sortIcons} />
                         </Button>
                       </TableCell>
@@ -1860,6 +1904,8 @@ const ApplicationDashboard = ({ locale }) => {
 
         <TabPanel value={tabValue} index={1}>
           <Application
+            setTabValue={setTabValue}
+            getData={() => getData()}
             viewSelect={viewSelect}
             editing={editing}
             open={open}
