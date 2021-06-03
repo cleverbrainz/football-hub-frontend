@@ -12,10 +12,11 @@ import NavBarKorea from '../components/Navbars/NavBarKorea'
 import UserAuthForm from './UserAuthForm'
 import ApplicantProfile from './ApplicantProfile'
 import PostAppForm from './PostAppForm'
+import AssessmentPlayerView from './Assessment/AssessmentPlayerView'
 // import JSONConvertor from './JSONConvertor'
 import ApplicationDashboard from './ApplicationDashboard';
 // import MarketingBeta from './MarketingBeta ';
-import AddPhone from '../pages/AddPhone';
+import AddPhone from '../Dashboards/dashboardComponents/AddPhone';
 import AuthRouter from '../lib/PrivateRoute'
 
 
@@ -36,6 +37,15 @@ const RouteContainer = (props) => {
         }} />
       <Switch>
 
+      <AuthRouter exact path="/user/:id/pdp/player-assessment"
+          locale={locale}
+          component={(props) => (
+            <AssessmentPlayerView
+              {...props}
+              locale={locale} />
+          )} />
+
+        
         <AuthRouter exact path="/user/:id/pdp-form"
           locale={locale}
           component={(props) => (

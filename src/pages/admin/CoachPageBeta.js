@@ -2,29 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import PeopleAltSharpIcon from '@material-ui/icons/PeopleAltSharp';
 import PersonAddSharpIcon from '@material-ui/icons/PersonAddSharp';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormPropsTextFields from '../admin/AddCoaches'
 import {
   Typography,
-  Card,
-  CardContent,
   OutlinedInput,
-  Button
+  Button,
+  Box,
+  Tab,
+  Tabs,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  AppBar
 } from "@material-ui/core";
-import CancelSharpIcon from "@material-ui/icons/CancelSharp";
-import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import auth from '../../lib/auth'
-import DeleteComponent from './DeleteComponent'
-import CoachEdit from '../CoachEdit'
+import DeleteComponent from '../../Dashboards/dashboardComponents/DeleteComponent'
 import CoachPageBetaTable from '../../components/CoachPageBetaTable'
 import { withRouter } from 'react-router-dom';
 import CompanyAddCoach from '../CompanyAddCoach';
@@ -119,9 +114,6 @@ function CoachPageBeta({ componentTabValue, handleComponentChange }) {
   const [coaches, setCoaches] = useState([])
   const [user, setUser] = useState({})
   const [alreadyCoach, setAlreadyCoach] = useState(false)
-
-  const [companyCoaches, setCompanyCoaches] = useState()
-  const [allAppCoaches, setAllAppCoaches] = useState()
   const [coachEditPending, setCoachEditPending] = useState(false)
   const [newCoachDetail, setNewCoachDetail] = useState('')
   const [externalCoachDetail, setExternalCoachDetail] = useState()
@@ -129,7 +121,6 @@ function CoachPageBeta({ componentTabValue, handleComponentChange }) {
   const [CoachEditOpen, setCoachEditOpen] = useState(false)
   const [deleteInProgress, setDeleteInProgress] = useState(false)
   const [coachIdToBeDeleted, setCoachIdToBeDeleted] = useState()
-  const [existingAppCoachToBeAdded, setExistingAppCoachToBeAdded] = useState()
   const [newExternalCoachDetails, setNewExternalCoachDetails] = useState({
     fullName: '',
     email: ''

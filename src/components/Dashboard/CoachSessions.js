@@ -3,42 +3,29 @@ import moment from 'moment'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import ExploreSharpIcon from '@material-ui/icons/ExploreSharp';
-import AddLocationSharpIcon from '@material-ui/icons/AddLocationSharp';
 import HistoryIcon from '@material-ui/icons/History';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {
   Typography,
-  Button,
-  Select
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  TableHead,
+  Paper,
+  AccordionSummary,
+  AccordionDetails,
+  Accordion,
+  Tab,
+  Tabs,
+  AppBar,
+  Container
 } from "@material-ui/core";
-import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import auth from '../../lib/auth'
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
-import ClearSharpIcon from '@material-ui/icons/ClearSharp';
-import CheckSharpIcon from '@material-ui/icons/CheckSharp';
-import DeleteComponent from '../../pages/admin/DeleteComponent'
-import SessionsPageTable from '../../components/SessionsPageTable'
-import MaterialUIPickers from '../../pages/admin/CampMultiDetails'
-import WeeklyCourseDetails from '../../pages/admin/WeeklyCourseDetails'
 
 
 function TabPanel(props) {

@@ -46,12 +46,9 @@ let styles = {
     
   },
   button: {
-    width: '50%',
-    backgroundColor: 'rgb(49, 1, 247)',
-    color: 'white',
     fontSize: '12px',
     letterSpacing: '2px',
-    height: '50px',
+    padding: '.5rem 1rem'
   }
 }
 
@@ -120,8 +117,8 @@ function NavBarKorea({ history, locale, user }) {
       <nav style={styles.navBar} className="navbar" role="navigation" aria-label="main navigation">
         <div style={styles.subContainer} className="navbar-brand">
           <Typography component='div'>
-            <Box fontSize={23} fontWeight="fontWeightRegular" m={1}>
-              <svg width="175" height="35" viewBox="0 0 2529 557" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Box fontSize={23} fontWeight="fontWeightRegular" m={1.2}>
+              <svg width="160" height="30" viewBox="0 0 2529 557" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2493.52 492.636C2512.76 492.636 2528.35 477.043 2528.35 457.809V457.809C2528.35 438.574 2512.76 422.981 2493.52 422.981V422.981C2474.29 422.981 2458.7 438.574 2458.7 457.809V457.809C2458.7 477.043 2474.29 492.636 2493.52 492.636V492.636Z" fill="#3101F7" />
                 <path d="M836.169 492.636V283.464H870.299V222.029H836.169V213.74C836.169 191.311 846.408 185.948 867.374 185.948H870.299V125H859.085C772.783 125 755.23 165.957 755.23 210.814V222.029H725V283.464H755.23V492.636H836.169Z" fill="black" />
                 <path d="M1027.03 492.636V283.464H1066.04V222.029H1027.03V131.826H946.095V222.029H906.114V283.464H946.095V492.636H1027.03Z" fill="black" />
@@ -164,7 +161,7 @@ function NavBarKorea({ history, locale, user }) {
                 onClick={() => mobileRedirect('/authentication')} variant="outlined" style={styles.button} 
                 > {buttons['4'][locale]} </Button></div> :
                 location.pathname === '/dashboard' ?
-                <Button variant="outlined" style={styles.button} onClick={() => mobileLogOut()}>{profile['2d'][locale]}</Button>
+                <Button variant="outlined" style={styles.button} color='secondary' onClick={() => mobileLogOut()}>{profile['2d'][locale]}</Button>
                 :
                 
 
@@ -174,7 +171,9 @@ function NavBarKorea({ history, locale, user }) {
                 <div style={styles.roundedContainer} className='roundedContainer'>
                 <hr style={styles.rounded}/>
                 </div>
-                <Button variant="outlined" style={styles.button} onClick={() => mobileLogOut()}>{profile['2d'][locale]}</Button>
+                <Button  variant="outlined"  style={styles.button} color='secondary' onClick={() => mobileLogOut()}>
+                  {profile['2d'][locale]}
+                </Button>
                 </div>
                 :
                 

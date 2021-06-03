@@ -1,27 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import ExploreSharpIcon from '@material-ui/icons/ExploreSharp';
 import AddLocationSharpIcon from '@material-ui/icons/AddLocationSharp';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
 import {
   Typography,
-  Button,
-  Select
+  Select,
+  InputLabel,
+  FormControl,
+  Tab,
+  AppBar,
+  Tabs,
+  MenuItem,
+  Box
 } from "@material-ui/core";
-import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import auth from '../../lib/auth'
-import DeleteComponent from '../../pages/admin/DeleteComponent'
+import DeleteComponent from '../../Dashboards/dashboardComponents/DeleteComponent'
 import MiscPageTable from '../../components/MiscPageTable'
 import ContainedButtons from '../../pages/admin/AddServices'
-import AddAgeGroup from '../../pages/admin/AddAgeGroup'
-import { getDate } from 'date-fns';
 
 
 

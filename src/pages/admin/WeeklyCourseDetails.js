@@ -1,6 +1,5 @@
-// import "date-fns";
+
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import {
   FormControl,
   Container,
@@ -10,14 +9,12 @@ import {
   TextField,
   Select,
   MenuItem,
-  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import TableComponent from "./TestComponent";
+import TableComponent from '../../Dashboards/dashboardComponents/TestComponent';
 import axios from "axios";
 import auth from "../../lib/auth";
 import ResetCampDetailsDialogue from '../../components/ResetCampDetailsDialogue'
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import moment from 'moment'
