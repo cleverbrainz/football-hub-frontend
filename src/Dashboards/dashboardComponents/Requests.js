@@ -104,27 +104,34 @@ const Requests = ({ match, setPanel, refreshRequests }) => {
   // const input = useRef()
   // const [imageUpload, setImageUpload] = useState(false)
   // const [requestSent, setRequestSent] = useState()
-
-  console.log(requests)
-
   async function getData() {
     let companies = []
     let user
-    const response = await axios.get(`/users/${auth.getUserId()}`)
+    const response = await axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+    // axios.get(`/users/${auth.getUserId()}`)
+    //   .then(res => {
+    //     user = res.data[0]
+    //     if (user.requests) {
+    //       for (const request of user.requests) {
+    //         const response = await axios.get(`/users/${request}`)
+    //         const data = await response.data[0]
+    //         console.log('data', data)
+    //         companies.push(data)
+    //       } 
+    //     }
+    //   })
     const data = await response.data[0]
     user = data
-    console.log(data)
     if (data.requests) {
       for (const request of data.requests) {
-      const response = await axios.get(`/users/${request}`)
-      const data = await response.data[0]
-      console.log('data', data)
-      companies.push(data)
+        const response = await axios.get(`/users/${request}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+        const data = await response.data[0]
+        companies.push(data)
+      } 
     }
-  }
     setUser(user)
     setRequests(companies)
-}
+  }
 
   useEffect(() => {
     getData()
@@ -133,12 +140,9 @@ const Requests = ({ match, setPanel, refreshRequests }) => {
 
   const handleRequest = (event, id, email, decision) => {
     event.preventDefault()
-    console.log(decision)
-    
     const userId = auth.getUserId()
     axios.put(`/user/${userId}/requests`, { userId, coachName: user.name, companyId: id, bool: decision, companyEmail: email })
       .then(res => {
-        console.log(res)
         refreshRequests()
         .then(() => {
           setPanel(0)
@@ -158,7 +162,6 @@ const Requests = ({ match, setPanel, refreshRequests }) => {
       </Typography>
       
       {requests.map((request, index) => {
-        console.log(request)
         return (
           <Card key={`card-${index}`} className={classes.card}>
           <CardActionArea>

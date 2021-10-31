@@ -19,6 +19,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import InfoIcon from '@material-ui/icons/Info';
 import { useStripe } from "@stripe/react-stripe-js";
+import ReactPixel from 'react-facebook-pixel'
 
 import {
   CircularProgress,
@@ -34,6 +35,12 @@ import {
   TableCell,
   Button
 } from '@material-ui/core'
+
+const options = {
+  autoConfig: true, 
+  debug: false, 
+};
+ReactPixel.init('331288028562698', options);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -263,6 +270,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
   const [imageUpload, setImageUpload] = useState(false)
   const [isOwnProfile, setIsOwnProfile] = useState(auth.getUserId() === match.params.id)
   const [subDate, setSubDate] = useState('')
+  const [challengeDate, setChallengeDate] = useState('')
   const input = useRef()
   const defaultPic = 'https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80'
 
@@ -272,17 +280,21 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
   const getData = async () => {
 
-    axios.get(`/users/${match.params.id}`)
-      .then(res => {
-        // console.log('THISSS ISSS', res.data)
+    axios.get(`/users/${match.params.id}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+      .then(res => {      
         const { applications } = res.data[0]
+        // console.log('application====>', applications)
         setUser(res.data[0])
 
-        if (applications.ajax_application?.hasOwnProperty('challenges_submitted')) {
-          setSubDate(moment(applications.ajax_application.submission_date).format('MMMM Do YYYY'))
+        if (applications.ajax_application?.hasOwnProperty('application_submitted')) {
+          setSubDate(moment(applications.ajax_application.application_date).format('MMMM Do YYYY'))
         }
 
-        if (applications.ajax_application?.ratings.indulge === 'yes' && !applications.ajax_application?.post_app_actions) {
+        if (applications.ajax_application?.hasOwnProperty('challenges_submitted')) {
+          setChallengeDate(moment(applications.ajax_application.submission_date).format('MMMM Do YYYY'))
+        }
+
+        if (applications.ajax_application?.ratings.indulge === 'Yes' && (!applications.ajax_application?.post_app_actions || (applications.ajax_application?.post_app_actions === null))) {
           setDialog({
             ...dialog,
             open: true
@@ -297,6 +309,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
         }
         setHasLoaded(true)
       })
+      .catch(err => console.log(err))
   }
 
   useEffect(() => {
@@ -384,6 +397,9 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
   async function handleRedirect() {
 
+    // console.log("start applicaiton ======?")
+    const user_name =  user.name
+    ReactPixel.trackCustom('start application', user_name + ' ' + 'started application');
     const { stripeId, application_fee_paid } = user
     const fee_needed = (application_fee_paid === 'unpaid' && moment().isAfter(moment('05/31/2021')))
 
@@ -392,25 +408,26 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
     })
 
     // fee needed = unpaid application + date is after 14.04.21
-    if (fee_needed) {
-      let checkout = await axios.post('/korean-application-fee', {
-        stripeId,
-        email: user.email,
-        locale,
-        userId: auth.getUserId()
-      })
-      const session = await checkout.data
+    // if (fee_needed) {
+    //   let checkout = await axios.post('/korean-application-fee', {
+    //     stripeId,
+    //     email: user.email,
+    //     locale,
+    //     userId: auth.getUserId()
+    //   })
+    //   const session = await checkout.data
 
-      const result = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      })
+    //   const result = await stripe.redirectToCheckout({
+    //     sessionId: session.id,
+    //   })
 
-      if (result.error) {
-        handleAfterRequestStates({ error: snackbar_messages['7b'][locale] })
-      }
-    } else {
-      application?.submitted ? history.push('/challenges') : history.push('/application')
-    }
+    //   if (result.error) {
+    //     handleAfterRequestStates({ error: snackbar_messages['7b'][locale] })
+    //   }
+    // } else {
+    //   application?.submitted ? history.push('/challenges') : history.push('/application')
+    // }
+    application?.submitted ? history.push('/challenges') : history.push('/application')
   }
 
   function titleCase(str) {
@@ -484,7 +501,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
     <div className={classes.root}>
 
-      {(application && application.hasOwnProperty('challenges_submitted')) && (
+      {(application && application.hasOwnProperty('application_submitted')) && (
         <Paper id='nav' elevation={3} className={classes.menu}>
           <Typography component='div' >
             <Box
@@ -554,7 +571,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                 {user.name}
               </Box>
 
-              {(application && application.hasOwnProperty('challenges_submitted')) && (
+              {(application && application.hasOwnProperty('application_submitted')) && (
                 <>
                   <Box
                     fontSize={13}
@@ -587,7 +604,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
             </Typography>
           </Paper>
 
-          {(application && application.hasOwnProperty('challenges_submitted')) && (
+          {(application && application.hasOwnProperty('application_submitted')) && (
             <Paper id={profile['1b']['en']} elevation={3} className={`${classes.otherSections} nav-sections`} >
               <Typography component='div' >
                 <Box
@@ -618,156 +635,318 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
 
 
           {
-            (application?.ratings.indulge !== 'yes' || !application?.post_app_actions?.agree_tcs) ? (
-              <Paper id={profile['1c']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
-                <Typography component='div' >
-                  <Box
-                    fontSize={20}
-                    fontWeight="fontWeightBold" mb={3}>
-                    {profile['1c'][locale]}
-                  </Box>
-                </Typography>
+            (application?.ratings.indulge !== 'Yes' || !application?.post_app_actions?.agree_tcs) ? (
+              !application?.hasOwnProperty('application_submitted') ? (
+                <Paper id={profile['1c']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
+                  <Typography component='div' >
+                    <Box
+                      fontSize={20}
+                      fontWeight="fontWeightBold" mb={3}>
+                      {profile['1c'][locale]}
+                    </Box>
+                  </Typography>
 
-                <TableContainer>
-                  <Table className={classes.table} aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>ID </TableCell>
-                        <TableCell align="right"> {profile['5b'][locale]}</TableCell>
+                  <TableContainer>
+                    <Table className={classes.table} aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          {/* <TableCell>ID </TableCell> */}
+                          <TableCell align="right"> {profile['5b'][locale]}</TableCell>
 
-                        {(application && application.hasOwnProperty('challenges_submitted')) &&
-                          <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
-
-
-                        {application?.hasOwnProperty('challenges_submitted') && <TableCell align="right"> {profile['5d'][locale]}</TableCell>}
-
-                        {!application?.hasOwnProperty('challenges_submitted') && <TableCell align="right"> {app['2e'][locale]}</TableCell>}
-                        {!application?.hasOwnProperty('challenges_submitted') && <TableCell align="right">
-                          {app['2d'][locale]} </TableCell>}
+                          {(application && application.hasOwnProperty('application_submitted')) &&
+                            <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
 
 
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell>
-                        <TableCell align="right"> PDP </TableCell>
+                          {application?.hasOwnProperty('application_submitted') && <TableCell align="right"> {profile['5d'][locale]}</TableCell>}
 
-                        {(application && application.hasOwnProperty('challenges_submitted')) &&
-                          <TableCell align="right">
-                            {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
+                          {!application?.hasOwnProperty('application_submitted') && <TableCell align="right"> {app['2e'][locale]}</TableCell>}
+                          {!application?.hasOwnProperty('application_submitted') && <TableCell align="right">
+                            {app['2d'][locale]} </TableCell>}
+
+
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <TableRow>
+                          {/* <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell> */}
+                          <TableCell align="right"> PDP </TableCell>
+
+                          {(application && application.hasOwnProperty('application_submitted')) &&
+                            <TableCell align="right">
+                              {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
+                            </TableCell>}
+
+                          {application?.hasOwnProperty('application_submitted') && <TableCell align="right" style={{ color: '#3100F7' }}>
+                            {(application && application.hasOwnProperty('application_submitted')) ? application.ratings.indulge === 'Yes' ? 'Accepted' : profile['5f'][locale] : profile['5e'][locale]}
                           </TableCell>}
 
-                        {application?.hasOwnProperty('challenges_submitted') && <TableCell align="right" style={{ color: '#3100F7' }}>
-                          {(application && application.hasOwnProperty('challenges_submitted')) ? application.ratings.indulge === 'yes' ? 'Accepted' : profile['5f'][locale] : profile['5e'][locale]}
-                        </TableCell>}
 
 
 
 
-
-                        {!application?.hasOwnProperty('challenges_submitted') && <TableCell align="right">
-                          {(application && application?.submitted) ? (
-                            <>
-                              <CheckCircleSharpIcon style={{
-                                color: 'green',
-                                fontSize: '17px',
-                                transform: 'translateY(4px)',
-                                marginRight: '6px'
-                              }} />
-
-                              {profile['10a'][locale]}
-                            </>
-                          ) : (
+                          {!application?.hasOwnProperty('application_submitted') && <TableCell align="right">
+                            {(application && application?.submitted) ? (
                               <>
-                                <CancelSharpIcon style={{
-                                  color: 'red',
+                                <CheckCircleSharpIcon style={{
+                                  color: 'green',
                                   fontSize: '17px',
-                                  transform: 'translateY(3px)',
+                                  transform: 'translateY(4px)',
                                   marginRight: '6px'
                                 }} />
 
-                                <a href='' onClick={() => handleRedirect()}>  {profile['10b'][locale]} </a>
+                                {profile['10a'][locale]}
                               </>
-                            )}
-                        </TableCell>}
+                            ) : (
+                                <>
+                                  <CancelSharpIcon style={{
+                                    color: 'red',
+                                    fontSize: '17px',
+                                    transform: 'translateY(3px)',
+                                    marginRight: '6px'
+                                  }} />
+
+                                  <a href='' onClick={() => handleRedirect()}>  {profile['10b'][locale]} </a>
+                                </>
+                              )}
+                          </TableCell>}
 
 
-                        {!application?.hasOwnProperty('challenges_submitted') && <TableCell
+                          {!application?.hasOwnProperty('application_submitted') && <TableCell
 
-                          align="right">
-                          {(application && application?.challenges_submitted) ? (
-                            <>
-                              <CheckCircleSharpIcon style={{
-                                color: 'green',
-                                fontSize: '17px',
-                                transform: 'translateY(4px)',
-                                marginRight: '6px'
-                              }} />
-
-                              {profile['10a'][locale]}
-                            </>
-                          ) : (
+                            align="right">
+                            {(application && application?.application_submitted) ? (
                               <>
-                                <CancelSharpIcon style={{
-                                  color: 'red',
+                                <CheckCircleSharpIcon style={{
+                                  color: 'green',
                                   fontSize: '17px',
-                                  transform: 'translateY(3px)',
+                                  transform: 'translateY(4px)',
                                   marginRight: '6px'
                                 }} />
 
-                                <a
-                                  style={{
-                                    ...(!application?.submitted && {
-                                      pointerEvents: 'none',
-                                      color: 'darkgrey'
-                                    })
-                                  }}
-                                  href='' onClick={() => handleRedirect()}>  {profile['10b'][locale]} </a>
+                                {profile['10a'][locale]}
                               </>
-                            )}
-                        </TableCell>}
+                            ) : (
+                                <>
+                                  <CancelSharpIcon style={{
+                                    color: 'red',
+                                    fontSize: '17px',
+                                    transform: 'translateY(3px)',
+                                    marginRight: '6px'
+                                  }} />
+
+                                  <a
+                                    style={{
+                                      ...(!application?.submitted && {
+                                        pointerEvents: 'none',
+                                        color: 'darkgrey'
+                                      })
+                                    }}
+                                    href='' onClick={() => handleRedirect()}>  {profile['10d'][locale]} </a>
+                                </>
+                              )}
+                          </TableCell>}  
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+               ) : (
+                <div>
+                  <Paper id={profile['1c']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
+                    <Typography component='div' >
+                      <Box
+                        fontSize={20}
+                        fontWeight="fontWeightBold" mb={3}>
+                        {profile['1c'][locale]}
+                      </Box>
+                    </Typography>
+
+                    <TableContainer>
+                      <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            {/* <TableCell>ID </TableCell> */}
+                            <TableCell align="right"> {profile['5b'][locale]}</TableCell>
+
+                            {(application && application.hasOwnProperty('application_submitted')) &&
+                              <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
 
 
-                        {/* {
-            !application?.hasOwnProperty('challenges_submitted') && (
-              <Box display="flex" flexDirection="column" textAlign="center">
-                <Container style={{ marginBottom: '25px' }}>
-                  {profile['9a'][locale].split(' / ').map(text => (
-                    <Typography>{text}</Typography>
-                  )
-                  )}
-                </Container>
-                <Container style={{ marginBottom: '50px' }}>
-                  <Button
-                    style={{ width: '15rem', margin: '5px 10px' }}
-                    variant='outlined'
-                    color='primary'
-                    disabled={application?.submitted}
-                    onClick={() => handleRedirect()}>
-                    {application ? application.submitted ? profile['8d'][locale] : profile['8a'][locale] : profile['8b'][locale]}
-                  </Button>
-                  <Button
-                    style={{ width: '15rem', margin: '5px 10px' }}
-                    variant='outlined'
-                    color='primary'
-                    disabled={!application?.submitted}
-                    onClick={() => handleRedirect()}>
-                    {locale === 'ko' ? '축구 챌린지' : 'Football Challenges'}
-                  </Button>
-                </Container>
-              </Box>
+                            {application?.hasOwnProperty('application_submitted') && <TableCell align="right"> {profile['5d'][locale]}</TableCell>}
+
+                            {!application?.hasOwnProperty('application_submitted') && <TableCell align="right"> {app['2e'][locale]}</TableCell>}
+                            {!application?.hasOwnProperty('application_submitted') && <TableCell align="right">
+                              {app['2d'][locale]} </TableCell>}
 
 
-            )
-          } */}
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <TableRow>
+                            {/* <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell> */}
+                            <TableCell align="right"> PDP </TableCell>
+
+                            {(application && application.hasOwnProperty('application_submitted')) &&
+                              <TableCell align="right">
+                                {locale === 'en' ? subDate : `${subDate.slice(-4)}년 ${date.getMonth(subDate.split(' ')[0])}월 ${subDate.split(' ')[1].replace(/\D/g, '')}일`}
+                              </TableCell>}
+
+                            {application?.hasOwnProperty('application_submitted') && <TableCell align="right" style={{ color: '#3100F7' }}>
+                              {(application && application.hasOwnProperty('application_submitted')) ? application.ratings.indulge === 'Yes' ? 'Accepted' : profile['5f'][locale] : profile['5e'][locale]}
+                            </TableCell>}
 
 
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
+
+
+
+                            {!application?.hasOwnProperty('application_submitted') && <TableCell align="right">
+                              {(application && application?.submitted) ? (
+                                <>
+                                  <CheckCircleSharpIcon style={{
+                                    color: 'green',
+                                    fontSize: '17px',
+                                    transform: 'translateY(4px)',
+                                    marginRight: '6px'
+                                  }} />
+
+                                  {profile['10a'][locale]}
+                                </>
+                              ) : (
+                                  <>
+                                    <CancelSharpIcon style={{
+                                      color: 'red',
+                                      fontSize: '17px',
+                                      transform: 'translateY(3px)',
+                                      marginRight: '6px'
+                                    }} />
+
+                                    <a href='' onClick={() => handleRedirect()}>  {profile['10b'][locale]} </a>
+                                  </>
+                                )}
+                            </TableCell>}
+
+
+                            {!application?.hasOwnProperty('application_submitted') && <TableCell
+
+                              align="right">
+                              {(application && application?.application_submitted) ? (
+                                <>
+                                  <CheckCircleSharpIcon style={{
+                                    color: 'green',
+                                    fontSize: '17px',
+                                    transform: 'translateY(4px)',
+                                    marginRight: '6px'
+                                  }} />
+
+                                  {profile['10a'][locale]}
+                                </>
+                              ) : (
+                                  <>
+                                    <CancelSharpIcon style={{
+                                      color: 'red',
+                                      fontSize: '17px',
+                                      transform: 'translateY(3px)',
+                                      marginRight: '6px'
+                                    }} />
+
+                                    <a
+                                      style={{
+                                        ...(!application?.submitted && {
+                                          pointerEvents: 'none',
+                                          color: 'darkgrey'
+                                        })
+                                      }}
+                                      href='' onClick={() => handleRedirect()}>  {profile['10d'][locale]} </a>
+                                  </>
+                                )}
+                            </TableCell>}  
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Paper>
+                  
+                  <Paper id={profile['1ca']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
+                    <Typography component='div' >
+                      <Box
+                        fontSize={20}
+                        fontWeight="fontWeightBold" mb={3}>
+                        {profile['1ca'][locale]}
+                      </Box>
+                    </Typography>
+
+                    <TableContainer>
+                      <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            {/* <TableCell>ID </TableCell> */}
+                            <TableCell align="right"> {profile['5b'][locale]}</TableCell>
+
+                            {(application && application.hasOwnProperty('challenges_submitted')) &&
+                              <TableCell align="right">  {profile['5c'][locale]} </TableCell>}
+
+
+                            {application?.hasOwnProperty('application_submitted') && <TableCell align="right"> {profile['5d'][locale]}</TableCell>}
+
+                            {!application?.hasOwnProperty('application_submitted') && <TableCell align="right"> {app['2e'][locale]}</TableCell>}
+                            {!application?.hasOwnProperty('application_submitted') && <TableCell align="right">
+                              {app['2d'][locale]} </TableCell>}
+
+
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <TableRow>
+                            {/* <TableCell align="right">{auth.getUserId().substring(0, 10)}</TableCell> */}
+                            <TableCell align="right"> PDP </TableCell>
+
+                            {(application && application.hasOwnProperty('challenges_submitted')) &&
+                              <TableCell align="right">
+                                {locale === 'en' ? challengeDate : `${challengeDate.slice(-4)}년 ${date.getMonth(challengeDate.split(' ')[0])}월 ${challengeDate.split(' ')[1].replace(/\D/g, '')}일`}
+                              </TableCell>}
+
+                            {application?.hasOwnProperty('challenges_submitted') && <TableCell align="right" style={{ color: '#3100F7' }}>
+                              {(application && application.hasOwnProperty('challenges_submitted')) ? application.ratings.indulge === 'Yes' ? 'Accepted' : profile['5f'][locale] : profile['10d'][locale]}
+                            </TableCell>}
+
+
+                            {!application?.hasOwnProperty('challenges_submitted') && <TableCell align="right">
+                              {(application && application?.submitted) ? (
+                                <>
+                                <CancelSharpIcon style={{
+                                      color: 'red',
+                                      fontSize: '17px',
+                                      transform: 'translateY(3px)',
+                                      marginRight: '6px'                                
+                                  }} />
+                                  {profile['10d'][locale]}
+                                </>
+                              ) : (
+                                  <>
+
+                                    <a href=''> {profile['5f'][locale]} </a>
+                                  </>
+                                )}
+                            </TableCell>} 
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    {!application?.hasOwnProperty('challenges_submitted') ? (
+                      <div style={{display: 'flex', justifyContent: 'center'}}>
+                        <Button
+                          style={{ width: '15rem', marginTop: '25px'}}
+                          variant='contained'
+                          color='primary'
+                          onClick={() => handleRedirect()}>
+                          {locale === 'ko' ? '축구 챌린지' : 'Football Challenges'}
+                        </Button>                      
+                    </div> 
+                    ):null
+                    }                                       
+                  </Paper>
+                </div>
+               )
             ) : (
                 <Paper id='upcoming' elevation={3} className={`${classes.otherSections} nav-sections`}>
                   <Typography component='div' >
@@ -865,9 +1044,39 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
               )
           }
 
+          {
+            !application?.hasOwnProperty('application_submitted') && (
+              <Box display="flex" flexDirection="column" textAlign="center">
+                <Container style={{ marginBottom: '25px' }}>
+                  {profile['9a'][locale].split(' / ').map(text => (
+                    <Typography>{text}</Typography>
+                  )
+                  )}
+                </Container>
+                <Container style={{ marginBottom: '50px' }}>
+                  <Button
+                    style={{ width: '15rem', margin: '5px 10px' }}
+                    variant='contained'
+                    color='primary'
+                    disabled={application?.submitted}
+                    onClick={() => handleRedirect()}>
+                    {application ? application.submitted ? profile['8d'][locale] : profile['8a'][locale] : profile['8b'][locale]}
+                  </Button>
+                  <Button
+                    style={{ width: '15rem', margin: '5px 10px' }}
+                    variant='outlined'
+                    color='primary'
+                    disabled={!application?.submitted}
+                    onClick={() => handleRedirect()}>
+                    {locale === 'ko' ? '축구 챌린지' : 'Football Challenges'}
+                  </Button>
+                </Container>
+              </Box>
+            )
+          }
 
 
-          {(application && application.hasOwnProperty('challenges_submitted')) && (
+          {(application && application.hasOwnProperty('application_submitted')) && (
             <>
               <Paper id={profile['1d']['en']} elevation={3} className={`${classes.otherSections} nav-sections`}>
                 <Typography component='div' >
@@ -982,7 +1191,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
             </>
           )
           }
-        </div >
+        </div>
       ) : <CircularProgress size={65} className={classes.progress} />
       }
 
@@ -1225,8 +1434,6 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                             </Box>
                           })}
 
-
-
                           <Box
                             fontSize={17} style={{ color: 'black' }}
                             fontWeight="fontWeightRegular" mb={.5}>
@@ -1310,8 +1517,6 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                             {profile['11k'][locale].split('|')[11]}
                           </Box>
 
-
-
                           <Box
                             fontSize={17} style={{ color: 'black' }}
                             fontWeight="fontWeightRegular" mb={.5}>
@@ -1335,17 +1540,10 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
                             fontWeight="fontWeightRegular" mb={.5}>
                             {profile['11m'][locale].split('/')[1]}
                           </Box>
-
-
                         </Typography>
-
-
-
-
                       </DialogContentText>
                     </>
                   )}
-
 
               </DialogContent>
 
@@ -1381,10 +1579,7 @@ const ApplicantProfile = ({ locale, match, history, history: { location: { state
           </Alert>
         </Snackbar>
       }
-
-
-
-    </div >
+    </div>
 
 
   );

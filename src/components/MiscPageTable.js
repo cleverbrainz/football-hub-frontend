@@ -40,8 +40,8 @@ export default function MiscPageTable({
   classes,
   handleEditService, 
   handleMiscDeletion,
-  services }) {
-
+  services })
+  {
   return (
     <>
       <Typography variant="h6" gutterBottom component="div">

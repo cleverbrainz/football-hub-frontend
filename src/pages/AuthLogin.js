@@ -8,8 +8,6 @@ import { Redirect } from "react-router-dom";
 export default function SignIn() {
   //get the user state from the context
   const { user } = useContext(AuthContext);
-  console.log(user)
-
   //this is our config for FirebaseAuth
   const uiConfig = {
     signInFlow: "popup",

@@ -107,11 +107,11 @@ export default function CoachEdit({ history }) {
   const [imageUpload, setImageUpload] = useState(false)
 
   useEffect(() => {
-    console.log('usefect')
-    axios.get(`/users/${auth.getUserId()}`).then((res) => {
-      console.log(res.data[0])
+    axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+      .then((res) => {
       setUser(res.data[0])
-    })
+      })
+      .catch(err => console.log(err))
   }, [])
 
   const dbsInput = useRef()
@@ -126,7 +126,6 @@ export default function CoachEdit({ history }) {
   const handleSubmit = (e) => {
     const updates = user
     e.preventDefault()
-    console.log(user.imageURL)
     axios
       .patch(
         `/users/${userId}`,
@@ -134,7 +133,6 @@ export default function CoachEdit({ history }) {
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
       )
       .then((res) => {
-        console.log(res.data)
         user.category === 'company'
           ? history.push('/tester')
           : history.push('/testercoach')
@@ -147,21 +145,17 @@ export default function CoachEdit({ history }) {
   const handleDocumentUpload = (e) => {
     const type = e.target.name
     setDataChange({ ...dataChange, [type]: true })
-    console.log('hellooo', type)
     const image = e.target.files
     const document = new FormData()
 
     document.append('owner', auth.getUserId())
     document.append('document', image[0], image[0].name)
 
-    console.log(document)
-
     axios
       .patch(`/coaches/${userId}/document/${type}`, document, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
-        console.log(res.data)
         const coach = res.data.coachInfo ? res.data.coachInfo : res.data.data.coachInfo
         setUser({ ...user, coachInfo: coach })
         // setCoachInfo(res.data.coachInfo)
@@ -190,7 +184,6 @@ export default function CoachEdit({ history }) {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
       })
       .then((res) => {
-        console.log(res.data)
         setImageUpload(false)
         setUser({ ...user, imageURL: res.data.message })
         // setAvatarImage(res.data.message)

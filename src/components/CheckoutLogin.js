@@ -120,6 +120,7 @@ const CourseBookingDialogue = ({
       .finally(res => {
         handleClick()
       })
+      .catch(err => console.log(err))
   }
 
   const handleRedirect = (e) => {
@@ -146,6 +147,7 @@ const CourseBookingDialogue = ({
             .catch(err => console.error(err.response.data))
         })
         .finally(() => login(email, password))
+        .catch(err => console.log(err))
     }
   }
 

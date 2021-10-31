@@ -17,6 +17,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { data } from './data'
 import axios from 'axios'
+import auth from '../../lib/auth'
 
 const useRowStyles = makeStyles({
   row: {
@@ -60,7 +61,7 @@ export default function AssessmentCategoryDashboard({
   const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
   useEffect(() => {
-    axios.get(`/users/${application[0]}`)
+    axios.get(`/users/${application[0]}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         const { applications: { ajax_application: { assessment_id } } } = res.data[0]
 
@@ -72,7 +73,7 @@ export default function AssessmentCategoryDashboard({
 
 
   function getAssessment(id, type) {
-    return axios.get(`/player-assessment/${id}`)
+    return axios.get(`/player-assessment/${id}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         if (res.data.coach_generic_comments) setFeedback(res.data.coach_generic_comments)
         if (type === 'initial') {
@@ -100,7 +101,7 @@ export default function AssessmentCategoryDashboard({
     axios.post('/player-assessment', {
       ...assessmentDataObject,
       coach_generic_comments: feedback
-    })
+    }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
  
         getAssessment(application[2].assessment_id, 'initial')

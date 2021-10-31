@@ -5,6 +5,7 @@ import BusinessIcon from '@material-ui/icons/Business';
 import PeopleIcon from '@material-ui/icons/People';
 import CompanyTableList from './CompanyTableList'
 import CoachTableList from './CoachTableList'
+import auth from '../../lib/auth'
 
 import {
   Typography,
@@ -15,6 +16,7 @@ import {
 } from "@material-ui/core";
 
 import axios from 'axios'
+import { isEmpty } from 'lodash';
 
 
 
@@ -117,8 +119,16 @@ export default function MasterLists() {
   };
 
   useEffect(() => {
-    axios.get('/masterlists')
-      .then(res => setMasterLists({ coaches: res.data.coaches, companies: res.data.companies }))
+    axios.get('/masterlists', { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+      .then(
+        res => {
+          if (isEmpty(res.data) || res.data === null) {
+            console.log('Master data is empty')
+          } else {
+            setMasterLists({ coaches: res.data.coaches, companies: res.data.companies })
+          }          
+        })
+      .catch(err => console.log(err))
   }, [])
 
   return (

@@ -8,6 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
+import CreateSharpIcon from '@material-ui/icons/CreateSharp';
 
 const useStyles = makeStyles({
   table: {
@@ -22,7 +23,10 @@ const useStyles = makeStyles({
   }
 });
 
-export default function CoachPageBetaTable({ locations  }) {
+export default function LocationPageTable({ 
+  locations,
+  handleEditLocation,
+  handleLocationDeletion}) {
   const classes = useStyles();
 
   return (
@@ -35,11 +39,12 @@ export default function CoachPageBetaTable({ locations  }) {
             <TableCell align="right">Full Address</TableCell>
             <TableCell align="right">Latitude</TableCell>
             <TableCell align="right">Longitude</TableCell>
+            <TableCell align="right"></TableCell>
+            <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {locations.map((el, i) => {
-            console.log(el)
             return (
               <TableRow key={i}>
                 <TableCell align="right">{el.venue}</TableCell>
@@ -48,6 +53,18 @@ export default function CoachPageBetaTable({ locations  }) {
                 <TableCell align="right">{el.latitude}</TableCell>
                 <TableCell align="right">{el.longitude}</TableCell>
                 <TableCell align="right">
+                  <CreateSharpIcon
+                    style={{ color: '#709995' }}
+                    onClick={() => handleEditLocation(el)}
+                    className={classes.icon}
+                  />
+                </TableCell>
+                <TableCell align="right">
+                  <DeleteForeverSharpIcon
+                    onClick={() => {
+                      console.log('locaiton id===>', el.locationId)
+                      handleLocationDeletion(el.locationId)}}
+                    className={classes.icon} />
                 </TableCell>
               </TableRow>
 

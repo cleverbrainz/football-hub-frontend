@@ -10,9 +10,7 @@ import { AuthContext } from '../../lib/context';
 import axios from 'axios'
 import auth from '../../lib/auth';
 
-
 const useStyles = makeStyles((theme) => ({
-
   root: {
     flexGrow: 1,
   },
@@ -29,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingBottom: '20px'
-    },
+  },
   roundBox: {
     width: '30px',
     height: '30px',
@@ -55,23 +53,47 @@ const useStyles = makeStyles((theme) => ({
   pending: {
     color: 'white',
     backgroundColor: 'orange'
+  },
+  paymentButtonContainer: { 
+    marginTop: '20px',   
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: '20px',
+    [theme.breakpoints.up("sm")]: {
+      display: 'flex',
+    },
+  },
+  registerButton: {
+    padding: '5px 20px',
+    fontSize: '12pt',
+    backgroundColor: '#02a7f0',
+    borderRadius: '5px',
+    color: 'white',
+    "&:hover": {
+      backgroundColor: '#02a7f0',
+    },
+  },
+  buttonContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center', 
+    marginTop: '40px',
+    marginBottom: '40px'
   }
 }));
-
-
 
 const IntroductionPage = ({ handleComponentChange }) => {
   const classes = useStyles()
   const boxes = [
-    {name: 'Company Details', state: 'companyInfo', component: 'Contact', page: 0 }, {name: 'Locations', state:'locations', component: 'Locations', page: 1 }, {name:'Coaches', state: 'coaches', component: 'Coaches', page: 1 },
-    {name: 'Services', state: 'services', component: 'Misc', page: 1 }, 
+    {name: 'Company Details', state: 'companyInfo', component: 'Contact', page: 0 , details: 'Provide your company details'}, 
+    {name: 'Locations', state:'locations', component: 'Locations', page: 1, details: 'Enter locations of your courses'}, 
+    {name:'Coaches', state: 'coaches', component: 'Coaches', page: 1, details: 'Add and invite your coaches to join'},
+    {name: 'Services', state: 'services', component: 'Misc', page: 1, details:'Add the services you offer'}, 
     // {name: 'Age Groups', state:'ageDetails', component: 'Misc', page: 1 },
-     {name:'Courses/Camps', state: 'courses', component: 'Sessions', page: 1 }
+    {name:'Courses/Camps', state: 'courses', component: 'Sessions', page: 1, details:'Enter your course and camp dates'}
   ]
   const [checkState, setCheckState] = useState(null)
-
   const { user, userData, setUserData } = useContext(AuthContext)
-  console.log(user)
 
   const checkReducer = (toCheck) => {
     const test = Object.values(toCheck).reduce((acc, curr) => {
@@ -93,7 +115,7 @@ const IntroductionPage = ({ handleComponentChange }) => {
     }
     for (const type of Object.keys(newState)) {
       const check = toCheck[type]
-      console.log(check)
+
       check ? Array.isArray(check) ? (
         check.length > 0 ? newState[type] = true :
         console.log('empty array')
@@ -106,119 +128,127 @@ const IntroductionPage = ({ handleComponentChange }) => {
         console.log('empty object'))
       ) : type === 'companyInfo' ? ( [toCheck.verification.companyDetailsCheck, toCheck.verification.indemnityDocumentCheck, toCheck.verification.liabilityDocumentCheck].reduce((pre, cu) => pre && cu, true) ? newState[type] = true : toCheck.verificationId?.companyInfo ? newState[type] = 'pending' : newState[type]= false ) : console.log('undefined') 
 
-      console.log(newState)
+      // console.log(newState)
     }
     // setUserData({ ...userData, verification: { ...userData.verification, setup: test } })
     if (checkReducer(newState)) {
-      console.log('all good!')
-      console.log({userData, auth: auth.getUserId()})
+      // console.log('all good!')
+      // console.log({userData, auth: auth.getUserId()})
       axios.patch(`/users/${userData.userId}`, { userId: userData.userId, updates: { verification: { ...userData.verification, setup: true }}}, { headers: { authorization: `Bearer ${auth.getToken()}` }})
-      .then(res => {
-          console.log(res)
-          setCheckState({ ...newState })
-        })
-        .catch(err => console.log(err))
+      .then(res => {        
+        setCheckState({ ...newState })                 
+      })
+      .catch(err => console.log(err))
     } else {
       setCheckState({ ...newState })
     }
   }
 
-const getData = async () => {
-      const userCall = await axios.get(`/users/${auth.getUserId()}`)
-      const userRes = await userCall.data[0]
-      await introductionCheck(userRes)
-      setUserData(userRes)
-      console.log(userRes)
-    }
-  
-  useEffect(() => {
+  const getData = async () => {
+    // const userCall = await axios.get(`/users/${auth.getUserId()}`) 
     
-
+    axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+      .then(res => {        
+        const userCall = res
+        const userRes = userCall.data[0]
+        introductionCheck(userRes)
+        setUserData(userRes)        
+      })
+      .catch(err => console.log(err))
+    // const userRes = await userCall.data[0]
+    // await introductionCheck(userRes)
+    // setUserData(userRes)
+  }
+  
+  useEffect(() => {  
     getData()
   },[])
 
   const handleIgnoreStripe = () => {
     axios.patch(`/users/${auth.getUserId()}`, { updates: { stripeAccount: 'not using' }, userId: auth.getUserId()}, { headers: { authorization: `Bearer ${auth.getToken()}` }})
-      .then(res => {
-        console.log(res)
-        getData()
+      .then(res => {       
+        getData()               
       })
       .catch(err => console.log(err))
   }
 
-
   if (!checkState) return null
   return (
-    <div className={classes.root}>
+    <div className={classes.root} style={{backgroundColor: '#fafafa'}}>
       <div className={classes.headerBox}>
         <Paper  className={classes.paper}>
-      <Typography variant="h3">
-        Welcome to ftballer.com
-      </Typography>
-      <Typography variant="h6">
-        In order for your listing to appear on our public website you need to complete the following sections. You can always come back to a section to complete it later.
-        We will need to verify some of your details such as insurance, coaching certificates and identity, so please submit these when prompted.
-      </Typography>
-      </Paper>
+          <Typography variant="h4">
+            Welcome to ftballer.com
+          </Typography>
+          <Typography variant="subtitle1">
+            Please set up your account so that you can get your listing live
+          </Typography>
+        </Paper>
       </div>
-      <Grid container spacing={3} className={classes.gridContainer}>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}><div className={classes.titleBox}>
-              <Typography variant="h4">Do you want to take online payments?</Typography>{ userData.stripe_account || userData.stripeAccount ? <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box> : <Box className={`${classes.roundBox} ${classes.outstanding}`} border={1} borderRadius="50%">1</Box> }
-              </div>
-              <Typography variant="p" >Taking payments online automates a lot of the process on ftballer.com and is simpler for your customers as well.</Typography>
-              <div className={classes.titleBox}>
-              {/* <Typography variant="p">Powered by Stripe</Typography> */}
-              <a href="https://stripe.com/gb">
-                <img alt="Powered by Stripe" style={{maxWidth: "65%"}} src='https://i.imgur.com/VzVZXkr.png'/>
-              </a>
-              <div>
-              { !userData.stripe_account && !userData.stripeAccount ?
-              <>
-              <Button variant="contained" color="default" onClick={() => handleIgnoreStripe()}>Not Now</Button>
-              <Button variant="contained" color="primary" onClick={() => handleComponentChange('Subscription', 0)}>Yes I Need This -{'>'}</Button>
-              </>
-              :
-              <Button variant="contained" color="primary" onClick={() => handleComponentChange('Subscription', 0)}>Go To Stripe Dashboard</Button>
-              }
-              </div>
-              </div>
-            </Paper>
-        </Grid>
+      <Grid container spacing={3} className={classes.gridContainer}>        
         { boxes.map((item, index) => {
           return (
-          <Grid item xs={4}>
+          <Grid item lg={4} sm={6} xs={12} key={index}>
             <Paper className={`${classes.paper} ${classes.linkbox}`} onClick={(event) => handleComponentChange(item.component, item.page)}>
               <div className={classes.titleBox}>
-              <Typography variant="h4">{item.name}</Typography>
-              {!checkState[item.state]? <Box className={`${classes.roundBox} ${classes.outstanding}`} border={1} borderRadius="50%">{index + 2}</Box> :
-               checkState[item.state] === 'pending' ? <Box className={`${classes.roundBox} ${classes.pending}`} border={1} borderRadius="50%"><span role="img" aria-label="hourglass emoji">⌛</span></Box> : <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box>
-              }
+                <Typography variant="h5">{item.name}</Typography>
+                {!checkState[item.state]? <Box className={`${classes.roundBox} ${classes.outstanding}`} border={1} borderRadius="50%">{index + 1}</Box> :
+                checkState[item.state] === 'pending' ? <Box className={`${classes.roundBox} ${classes.pending}`} border={1} borderRadius="50%"><span role="img" aria-label="hourglass emoji">⌛</span></Box> : <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box>
+                }
               </div>
-              <Typography variant="p">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque tristique lacus eu bibendum. Pellentesque et lacinia elit.</Typography>
+              <Typography variant="subtitle1">{item.details}</Typography>
               {/* <Link to={item.url}><Button variant="contained" color="primary">Click here</Button></Link> */}
               {/* <Button onClick={(event) => handleComponentChange(item.component, item.page)}>Click Here</Button> */}
             </Paper>
           </Grid>)
         }) }
-                <Grid item xs={12}>
-          <Paper className={classes.paper}><div className={classes.titleBox}>
-              <Typography variant="h4">Create your first listing</Typography>{ userData.verification.setup ? <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box> : <Box className={`${classes.roundBox} ${classes.outstanding}`} border={1} borderRadius="50%">8</Box> }
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <div className={classes.titleBox}>
+              <Typography variant="h5">Online payments</Typography>{ userData.stripe_account || userData.stripeAccount ? <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box> : <Box className={`${classes.roundBox} ${classes.outstanding}`} border={1} borderRadius="50%">6</Box> }
+            </div>
+            <Typography variant="subtitle1" >Taking payments online automates a lot of the process on ftballer.com and is simpler for your customers as well.</Typography>
+            <div className={classes.paymentButtonContainer}>
+              {/* <Typography variant="p">Powered by Stripe</Typography> */}
+              <a xs={12} href="https://stripe.com/gb">
+                <img alt="Powered by Stripe" style={{maxWidth: "65%"}} src='https://i.imgur.com/VzVZXkr.png'/>
+              </a>
+              <div xs={12}>
+                { !userData.stripe_account && !userData.stripeAccount ?
+                <>
+                <Button variant="contained" color="default" onClick={() => handleIgnoreStripe()}>Not Now</Button>
+                <Button variant="contained" color="primary" onClick={() => handleComponentChange('Subscription', 0)}>Yes I Need This -{'>'}</Button>
+                </>
+                :
+                <Button variant="contained" color="primary" onClick={() => handleComponentChange('Subscription', 0)}>Go To Stripe Dashboard</Button>
+                }
               </div>
-              <Typography variant="p" >Once you've finished setting up your account click here to create your first listing!</Typography>
-              <div className={classes.titleBox}>
+            </div>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <div className={classes.titleBox}>
+              <Typography variant="h4">Create your first listing</Typography>{ userData.verification.setup ? <Box className={`${classes.roundBox} ${classes.complete}`} border={1} borderRadius="50%">✓</Box> : <Box className={`${classes.roundBox} ${classes.outstanding}`} border={1} borderRadius="50%">7</Box> }
+            </div>
+            <Typography variant="subtitle1" >Once you've finished setting up your account click here to create your first listing!</Typography>
+            <div className={classes.titleBox}>
               {/* <Typography variant="p">Powered by Stripe</Typography> */}
               <div></div>
               <Button variant="contained" color="primary" onClick={(event) => handleComponentChange('Listings', 1)} disabled={!checkReducer(checkState)}>Create your first listing</Button>
               {/* <Button variant="contained" color="secondary">Go to Stripe Dashboard</Button> */}
-              </div>
-            </Paper>
+            </div>
+          </Paper>
         </Grid>
       </Grid>
+      <div className={classes.buttonContainer}>
+        <Button className={classes.registerButton} onClick={(event) => handleComponentChange('Contact', 0)}>
+          Start Now         
+        </Button>
+      </div>
     </div>
   )
-
-
 }
 
 export default IntroductionPage

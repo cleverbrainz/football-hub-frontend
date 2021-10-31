@@ -26,6 +26,7 @@ import {
 } from "@material-ui/core";
 import axios from 'axios'
 import auth from '../../lib/auth'
+import { isEmpty } from 'lodash';
 
 
 function TabPanel(props) {
@@ -126,20 +127,38 @@ export default function CoachSessions() {
   async function getData() {
     let coursesArray = []
     const registerArray = []
-    const response = await axios.get(`/users/${auth.getUserId()}`)
+    const response = await axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
     const data = await response.data[0]
     console.log(data)
     for (const course of Object.keys(data.courses)) {
-    console.log('objkeys', course, data.courses[course])
+    // console.log('objkeys', course, data.courses[course])
     let courses
-    const response = await axios.get(`/users/${course}`)
-    courses = await response.data[0].courses
+    // const response = await axios.get(`/users/${course}`)
+    axios.get(`/users/${course}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+      .then(res => {
+        console.log('course result====>', res)
+        if (isEmpty(res.data)) {
+          console.log('User Course data is empty')
+        } else {
+          courses = res.data[0].courses
+        }
+      })
+      .catch(err => console.log(err))
+    // courses = await response.data[0].courses
     for (const compCourse of courses.active) {
       if (data.courses[course].active.some(id => id === compCourse.courseId)) {
         coursesArray.push([compCourse, response.data[0].name])
-        const registerResponse = await axios.get(`/courses/${compCourse.courseId}`)
-        const registerData = await registerResponse.data
-        if (registerData.register) registerArray.push([compCourse.courseDetails, compCourse.courseId, registerData.register.sessions])
+        // const registerResponse = await axios.get(`/courses/${compCourse.courseId}`)
+        axios.get(`/courses/${compCourse.courseId}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+          .then(res => {
+            if (isEmpty(res.data) || res.data === null) {
+              console.log('course data is empty')
+            } else {
+              if (res.data.register) registerArray.push([compCourse.courseDetails, compCourse.courseId, res.data.register.sessions])
+            }
+          })
+        // const registerData = await registerResponse.data
+        // if (registerData.register) registerArray.push([compCourse.courseDetails, compCourse.courseId, registerData.register.sessions])
       }
     }
     // console.log('data', data)
@@ -148,29 +167,27 @@ export default function CoachSessions() {
     setCourses(coursesArray)
     setRegisters(registerArray)
     setThisWeek(sortRegisters(registerArray))
+  }
+
+
+  const sortRegisters = registers => {
+    const monday = date.startOf('week')
+    const weekdays = {}
+    for (let i = 1; i <= 7; i++) {
+      weekdays[(monday.add(1, 'days').format('YYYY-MM-DD'))] = []
     }
 
-
-    const sortRegisters = registers => {
-      const monday = date.startOf('week')
-      const weekdays = {}
-      for (let i = 1; i <= 7; i++) {
-        weekdays[(monday.add(1, 'days').format('YYYY-MM-DD'))] = []
-      }
-
-      registers.forEach(([courseDetails, id, sessionDates]) => {
-        for (const session of sessionDates) {
-          if (Object.keys(weekdays).indexOf(session) !== -1) {
-            const correctSession = courseDetails.sessions.filter(infoSession => infoSession.day === moment(session).format('dddd'))[0]
-            weekdays[session].push([courseDetails, id, correctSession])
-          }
+    registers.forEach(([courseDetails, id, sessionDates]) => {
+      for (const session of sessionDates) {
+        if (Object.keys(weekdays).indexOf(session) !== -1) {
+          const correctSession = courseDetails.sessions.filter(infoSession => infoSession.day === moment(session).format('dddd'))[0]
+          weekdays[session].push([courseDetails, id, correctSession])
         }
-      })
-
-      console.log(weekdays)
-      
-      return weekdays
-    } 
+      }
+    })
+    // console.log(weekdays)      
+    return weekdays
+  } 
 
 
   useEffect(() => {

@@ -164,11 +164,14 @@ export default function CoachProfile({ history }) {
   }
 
   const getData = async function() {
-    const res = await axios.get(`/users/${profileId}`)
-      const { requests, companies } = await res.data[0]
-      console.log('getting data')
-      console.log(res.data)
-      setUser(res.data[0])
+    // const res = await axios.get(`/users/${profileId}`)
+    axios.get(`/users/${profileId}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+      .then(res => {
+        const { requests, companies } = res.data[0]
+        setUser(res.data[0])
+      })
+      .catch(err => console.log(err))
+      // const { requests, companies } = await res.data[0]     
   }
 
   useEffect(() => {
@@ -213,9 +216,10 @@ export default function CoachProfile({ history }) {
 
           </div>
 
-          <Button variant='contained' color='secondary' onClick={() => {
-            auth.logOut()
-            history.push('/')
+          <Button variant='contained' color='secondary' onClick={async () => {
+            await auth.logOut()
+            await history.push('/')
+            window.location.reload()
           }}> Log out </Button>
         </Toolbar>
       </AppBar>

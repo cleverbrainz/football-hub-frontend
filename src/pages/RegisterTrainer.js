@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -21,11 +21,8 @@ import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 import InfoSharpIcon from '@material-ui/icons/InfoSharp';
 import axios from 'axios'
-
 import AttachFileSharpIcon from '@material-ui/icons/AttachFileSharp';
-
 import { Link } from 'react-router-dom'
-
 import { CircularProgress } from '@material-ui/core'
 const { validateSignupFields, validateLoginFields } = require('../lib/validators')
 
@@ -73,8 +70,6 @@ function getSteps() {
   return ['Registration details', 'Basic information', 'Registration Completed'];
 }
 
-
-
 export default function RegisterTrainer({ match }) {
 
   const classes = useStyles();
@@ -84,7 +79,6 @@ export default function RegisterTrainer({ match }) {
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   // const [type, setType] = useState(match.params.type)
-
   // console.log(type)
 
   const [registerFields, setRegisterFields] = useState({
@@ -92,18 +86,16 @@ export default function RegisterTrainer({ match }) {
     email: '',
     password: '',
     confirmPassword: '',
-    category: match.params.companyLink ? 'coach' : '',
+    category: match.params.companyLink ? 'coach' : localStorage.getItem('category'),
     public_liability_insurance: '',
     professional_indemnity_insurance: '',
     companyLink: match.params.companyLink ? match.params.companyLink : undefined
   })
   const [fieldErrors, setFieldErrors] = useState()
   const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState()
-
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [placement, setPlacement] = React.useState();
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault()
   }
@@ -113,24 +105,18 @@ export default function RegisterTrainer({ match }) {
     const fields = { ...registerFields, [name]: value }
     // console.log(e.target.tagName)
     setRegisterFields(fields)
-
   }
 
   const handleNext = (e) => {
     if (activeStep === 1) {
       setIsLoading(true)
-
       for (var key in registerFields) {
         if (!registerFields[key]) delete registerFields[key]
       }
-
-      if (localStorage.token) localStorage.removeItem('token')
-
-
+      if (localStorage.token) localStorage.removeItem('token')      
       axios.post('/signup', registerFields)
         .then(res => {
           setRegistrationSuccessMessage(res.data)
-          console.log(res.data)
           setIsLoading(false)
         // .catch(err => {
         //   // setFieldErrors(err.response.data)
@@ -139,28 +125,27 @@ export default function RegisterTrainer({ match }) {
         // })
         // setRegisterFields({ ...registerFields, password: '', confirmPassword: '' })
           // setActiveStep((prevActiveStep) => prevActiveStep + 1)
-        delete registerFields.password
-        delete registerFields.confirmPassword
+          delete registerFields.password
+          delete registerFields.confirmPassword
+          let requestObject = {}
 
-        let requestObject = {}
+          if (registerFields.category === 'coach') {
+            requestObject = { ...registerFields, requests: [], companies: [], coachInfo: {}, courses: {} }
+          } else requestObject = { ...registerFields, sentRequests: [], coaches: [], listings: [], locations: [], images: [], services: [], sessions: [], courses: { active: [], past: []}, players: [], ageDetails: [] }
 
-      if (registerFields.category === 'coach') {
-        requestObject = { ...registerFields, requests: [], companies: [], coachInfo: {}, courses: {} }
-      } else requestObject = { ...registerFields, sentRequests: [], coaches: [], listings: [], locations: [], images: [], services: [], sessions: [], courses: { active: [], past: []}, players: [], ageDetails: [] }
-
-      // setIsLoading(true)
-      console.log('code hello', res.data.userId)
-      axios.post(`/user/${res.data.userId}/signup`, { ...requestObject, userId: res.data.userId })
-        .then(res => {
-          console.log(res.data)
-          setIsLoading(false)
-        })
-        .then(() => setActiveStep((prevActiveStep) => prevActiveStep + 1))
-        .catch(err => {
-          // setFieldErrors(err.response.data)
-          setIsLoading(false)
-          console.error(err.response.data)
-        })
+          // setIsLoading(true)
+          // console.log('code hello', res.data.userId)
+          axios.post(`/user/${res.data.userId}/signup`, { ...requestObject, userId: res.data.userId })
+            .then(res => {
+              console.log(res.data)
+              setIsLoading(false)
+            })
+            .then(() => setActiveStep((prevActiveStep) => prevActiveStep + 1))
+            .catch(err => {
+              // setFieldErrors(err.response.data)
+              setIsLoading(false)
+              console.error(err.response.data)
+            })
     // } 
     // else if (activeStep === 2) {
     //   for (var key in registerFields) {
@@ -187,10 +172,15 @@ export default function RegisterTrainer({ match }) {
     //       console.error(err.response.data)
 
         })
+        .catch(err => {
+          // setFieldErrors(err.response.data)
+          setIsLoading(false)
+          // setRegistrationSuccessMessage(err.response.data.message)
+          console.log(err.response.data)
+        })
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
-
   };
 
   const handleBack = () => {
@@ -209,7 +199,6 @@ export default function RegisterTrainer({ match }) {
 
   const form = (
     <>
-
       <Popper open={open} anchorEl={anchorEl} placement={placement} transition>
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={350}>
@@ -217,17 +206,13 @@ export default function RegisterTrainer({ match }) {
               <Typography component='div'>
                 <Box fontSize={20} fontWeight="fontWeightRegular" m={3}>
                   Password Requirements
-              </Box>
-
-             <ul>
-               <li> - Contain 1 uppercase and 1 lowercase letter </li>
-               <li> - Contain at least 1 number </li>
-               <li> - Must be longer than 8 characters </li>
-             </ul>
-
-              </Typography>
-
-            
+                </Box>
+                <ul>
+                  <li> - Contain 1 uppercase and 1 lowercase letter </li>
+                  <li> - Contain at least 1 number </li>
+                  <li> - Must be longer than 8 characters </li>
+                </ul>
+              </Typography>            
             </Paper>
           </Fade>
         )}
@@ -250,7 +235,6 @@ export default function RegisterTrainer({ match }) {
           helperText={fieldErrors ? fieldErrors.email : null}
           name='email' label='Email' />
       </FormControl>
-
 
       <FormControl variant="outlined">
         <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
@@ -281,13 +265,10 @@ export default function RegisterTrainer({ match }) {
             </InputAdornment>
           }
           labelWidth={70}
-
         />
-
       </FormControl>
 
       <FormControl variant="outlined">
-
         <InputLabel htmlFor="outlined-adornment-password"> Confirm Password</InputLabel>
         <OutlinedInput
           id="outlined-adornment-password"
@@ -310,20 +291,15 @@ export default function RegisterTrainer({ match }) {
           }
           labelWidth={70}
         />
-
       </FormControl>
     </>
-
   )
 
-
   const basicInfo = (
-
     <>
       <Typography variant='h5'>
         Who are you?
       </Typography>
-
 
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel id="demo-simple-select-outlined-label">Category</InputLabel>
@@ -338,11 +314,8 @@ export default function RegisterTrainer({ match }) {
           <MenuItem value='company'>Company</MenuItem>
         </Select>
       </FormControl>
-
     </>
   )
-
-
 
   // const userProfileSetup = () => {
 
@@ -405,14 +378,9 @@ export default function RegisterTrainer({ match }) {
         {registrationSuccessMessage && registrationSuccessMessage.message}
       </p>
 
-      <Link to='/login'> Click here to login </Link>
+      <Link to='/loginregister'> Click here to login </Link>
     </>
-
   )
-
-
-
-
 
   function getStepContent(stepIndex) {
     switch (stepIndex) {
@@ -430,13 +398,9 @@ export default function RegisterTrainer({ match }) {
   }
 
   return (
-
     <div className={classes.root}>
       <Typography style={{ textAlign: "center" }} variant='h4'> SIGN UP </Typography>
-
-
       <div className={classes.formContainer}>
-
         <Stepper style={{ width: '100%' }} activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
@@ -456,17 +420,13 @@ export default function RegisterTrainer({ match }) {
         ) : (
             // when not finished registering
             <>
-
               <form
                 autoComplete='off'
                 onChange={(e) => handleFormChange(e)}
                 // onSubmit={(e) => handleFormSubmit(e)}
                 className={classes.form}>
-
                 {getStepContent(activeStep)}
-
               </form>
-
               <div>
 {/* 
                 {activeStep === 2 && (
@@ -494,11 +454,9 @@ export default function RegisterTrainer({ match }) {
                       variant="contained" color="primary"
                       onClick={handleNext}>
                       {activeStep === 2 ? 'Finish' : 'Continue'}
-
                       {isLoading && <CircularProgress size={25} className={classes.progress} />}
                     </Button>
                   </>
-
                 )}
               </div>
             </>

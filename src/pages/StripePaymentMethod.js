@@ -61,13 +61,13 @@ function CheckoutForm({
 
 
   const getUserData = async () => {
-    const data = await axios.get(`/users/${auth.getUserId()}`)
+    const data = await axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
     const user = await data.data[0]
     setUser(user)
   }
 
   const getTerms = async () => {
-    const data = await axios.get(`/users/${companyId}`)
+    const data = await axios.get(`/users/${companyId}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
     console.log(data)
     const user = await data.data[0]
     user.contactInformation?.terms ? setTerms(user.contactInformation.terms) : setTerms('Terms go here')
@@ -78,7 +78,7 @@ function CheckoutForm({
     getUserData()
     getTerms()
 
-    axios.get(`/connected-account/${stripeId}/product`)
+    axios.get(`/connected-account/${stripeId}/product`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         setPrices(res.data.prices)
       })
@@ -106,7 +106,7 @@ function CheckoutForm({
           name,
           playerId: userId
         }
-      })
+      }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
 
     } else {
       checkout = await axios.post('/connected-account/subscriptions', {
@@ -120,7 +120,7 @@ function CheckoutForm({
           name,
           playerId: userId
         }
-      })
+      }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
     }
 
     const session = await checkout.data

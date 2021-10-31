@@ -21,9 +21,6 @@ import {
   Select
 } from '@material-ui/core'
 
-
-
-
 export default function Login({ history, location }) {
   const { user, setUserData, userData } = useContext(AuthContext);
   // const [verificationCode, setVerificationCode] = useState('123456')
@@ -39,7 +36,6 @@ export default function Login({ history, location }) {
   useEffect(() => {
     console.log("verificationCode2 updated");
   }, [verificationCode])
-
 
   const useStyles = makeStyles((theme) => ({
     container: {
@@ -77,15 +73,13 @@ export default function Login({ history, location }) {
   const emailErrors = ['auth/user-not-found', 'auth/invalid-email']
   const passwordErrors = ['auth/wrong-password',]
   const [captchad, setCaptchad] = useState(false)
-
   const { email } = loginFields
-
   function handleFormChange(e) {
     const { name, value } = e.target
     const fields = { ...loginFields, [name]: value }
     setLoginError('')
     setLoginFields(fields)
-    console.log(loginFields)
+    // console.log(loginFields)
   }
 
   const handleMouseDownPassword = (event) => {
@@ -96,7 +90,7 @@ export default function Login({ history, location }) {
     e.preventDefault()
     var cred = firebase.auth.PhoneAuthProvider.credential(
       verificationId, verificationCode);
-    console.log(cred)
+    // console.log(cred)
     var multiFactorAssertion =
       firebase.auth.PhoneMultiFactorGenerator.assertion(cred);
     // Complete sign-in.
@@ -104,9 +98,10 @@ export default function Login({ history, location }) {
     resolver.resolveSignIn(multiFactorAssertion)
       .then(function (data) {
         // User successfully signed in with the second factor phone number.
-        console.log(data)
-        axios.get(`/users/${data.user.uid}`)
+        // console.log(data)
+        axios.get(`/users/${data.user.uid}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
           .then(res => {
+            // console.log(res.status);
             // console.log(res.data)
             const { category } = res.data[0]
             localStorage.setItem('category', category)
@@ -118,35 +113,38 @@ export default function Login({ history, location }) {
               history.push('/testercoach')
             }
           })
+          .catch((error) => {
+            console.log(error);
+          })
       }
-      )
-
+    )
   }
-
 
   const frontendLogin = (e) => {
     e.preventDefault()
     const { email, password } = loginFields
-    firebaseApp.auth().signInWithEmailAndPassword(email, password)
-      .then(data => {
-        // if (data.user.emailVerified) {
-        axios.get(`/users/${data.user.uid}`)
-          .then(res => {
-            console.log(res.data)
-            const { category } = res.data[0]
-            localStorage.setItem('category', category)
-            if (category === 'player' || category === 'parent') {
-              history.push(`/${auth.getUserId()}/profile`)
-            } else if (category === 'company') {
-              history.push('/tester')
-            } else {
-              history.push('/testercoach')
-            }
-          })
-        //   } else {
-        //     firebaseApp.auth().signOut()
-        //     setLoginError({ message: 'Email has not yet been verifed. Please check your emails for a verification link.' })
-        //   }
+    firebaseApp.auth().signInWithEmailAndPassword(userEmail, password)
+      .then(data => {       
+        if (data.user.emailVerified) {
+          data.user.getIdToken().then(token => {
+            axios.get(`/users/${data.user.uid}`, { headers: { Authorization: `Bearer ${token}` }})
+            .then(res => {
+              // console.log(res.data)
+              const { category } = res.data[0]
+              localStorage.setItem('category', category)
+              if (category === 'player' || category === 'parent') {
+                history.push(`/${auth.getUserId()}/profile`)
+              } else if (category === 'company') {
+                history.push('/tester')
+              } else {
+                history.push('/testercoach')
+              }
+            })
+          });
+        } else {
+          firebaseApp.auth().signOut()
+          setLoginError({ message: 'Email has not yet been verifed. Please check your emails for a verification link.' })
+        }
       })
       .catch(error => {
         console.log(error)
@@ -173,7 +171,6 @@ export default function Login({ history, location }) {
                   // ...
                   // handleRecaptcha()
                   setCaptchad(true)
-
                 },
                 'expired-callback': function () {
                   // Response expired. Ask user to solve reCAPTCHA again.
@@ -186,13 +183,12 @@ export default function Login({ history, location }) {
             // Send SMS verification code
             return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
               .then(function (verificationId) {
-
                 setVerificationId(verificationId)
-
                 // // Ask user for the SMS verification code.
                 // console.log('sdfdsg verificationCode2', verificationCode2)
 
-              }).catch(err => setLoginError(error))
+              })
+              .catch(err => setLoginError(error))
           } else {
             // Unsupported second factor.
           }
@@ -205,8 +201,6 @@ export default function Login({ history, location }) {
   const handlePhoneVerification = () => {
     console.log('phone verification!')
   }
-
-
   // function handleFormSubmit(e) {
   //   e.preventDefault()
   //   setIsLoading(true)
@@ -249,46 +243,40 @@ export default function Login({ history, location }) {
   // }
   const localCatCheck = (localStorage.getItem('category') !== null)
   const loginCheck = auth.isLoggedIn()
+  const userEmail = localStorage.getItem('userEmail')
 
   if (!user) return null
   return (
     <>
-      { (loginCheck && localCatCheck) ?
+      {(loginCheck && localCatCheck) ?
         (localStorage.getItem('category') === 'company' ?
-          <Redirect to={{ pathname: "/tester" }} /> :
+          <Redirect to={{ pathname: "/tester/Summary" }} /> :
           localStorage.getItem('category') === 'coach' ?
             <Redirect to={{ pathname: "/testercoach" }} /> :
             <Redirect to={{ pathname: `/${auth.getUserId()}/profile` }} />
-        ) : (
-
-
-
+        ) : (          
           !phoneVerifyRequired ?
-
-
             <div className={classes.container}>
               <Typography variant='h4'> LOGIN </Typography>
               <Select value={lang} style={{ fontSize: '14px' }} onChange={(event) => {
               setLang(event.target.value)
-            }}>
-              
+            }}>              
               <MenuItem value={'en'}>English</MenuItem>
               <MenuItem value={'ko'}>Korean</MenuItem>
             </Select>
-
               <form
                 autoComplete='off'
                 onChange={(e) => handleFormChange(e)}
                 onSubmit={(e) => frontendLogin(e)}
                 className={classes.form}>
-                <FormControl variant="outlined">
+                {/* <FormControl variant="outlined">
                   <InputLabel htmlFor="component-outlined"> Email </InputLabel>
                   <OutlinedInput
                     error={emailErrors.some(code => code === loginError.code) ? true : false}
                     type='text'
-                    name='email' id="component-outlined" label='Email'
+                    name='email' id="component-outlined" label='Email' value={userEmail}
                   />
-                </FormControl>
+                </FormControl> */}
 
                 <FormControl variant="outlined">
                   <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
@@ -312,21 +300,17 @@ export default function Login({ history, location }) {
                     labelWidth={70}
                   />
                 </FormControl>
-
                 {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
-
                 <Button disabled={isLoading}
                   className={classes.button} type='submit'
                   variant="contained" color="primary">
                   Login
-        {isLoading && <CircularProgress size={30} className={classes.progress} />}
+                  {isLoading && <CircularProgress size={30} className={classes.progress} />}
                 </Button>
                 {/* {loginError && <Typography>{loginError}</Typography>} */}
                 {location.pathname !== '/admin/login' &&
                   <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
-
               </form>
-
               {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
             </div>
             :
@@ -353,27 +337,21 @@ export default function Login({ history, location }) {
                     name='verificationCode' id="component-outlined" label='Verification Code'
                   />
                 </FormControl>
-                {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>}
-               
-
+                {loginError && <p style={{ color: 'red', textAlign: 'center' }}> {loginError.message} </p>} 
                 <Button disabled={isLoading || !captchad}
                   className={classes.button} type='submit'
                   variant="contained" color="primary">
                   Login
-        {isLoading && <CircularProgress size={30} className={classes.progress} />}
+                  {isLoading && <CircularProgress size={30} className={classes.progress} />}
                 </Button>
                 {/* {loginError && <Typography>{loginError}</Typography>} */}
                 {location.pathname !== '/admin/login' &&
-                  <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}
-               
+                  <Link style={{ textAlign: 'center' }} to='/forgot_password'> Forgot password? </Link>}               
               </form>
               </>
               }
-
               {/* {location.pathname !== '/admin/login' && <Link to='/register'> Don't have an account? Sign up </Link>} */}
             </div>
-
-
         )
       }
     </>

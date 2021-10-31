@@ -129,7 +129,8 @@ function NavbarTwo({ history, loggedIn, location }) {
 
       <MenuItem style={{ color: 'red' }} onClick={async () => {
         await auth.logOut()
-        history.push('/')
+        await history.push('/')
+        window.location.reload();
       }}>Log out</MenuItem>
     </Menu>
   );
@@ -190,7 +191,7 @@ function NavbarTwo({ history, loggedIn, location }) {
                     <div className="navbar-start">
                     </div>
                     <div className="buttons">
-                      {location.pathname !== '/register/player' && (
+                      {/* {location.pathname !== '/register/player' && (
                         <button style={{ backgroundColor: '#3d0F3d' }} className="button is-link">
                           <Link style={{ color: 'white', }} to='/register/player'>Register Player</Link>
                         </button>
@@ -200,21 +201,16 @@ function NavbarTwo({ history, loggedIn, location }) {
                         <button style={{ backgroundColor: '#3d3d3d' }} className="button is-link">
                           <Link style={{ color: 'white', }} to='/register/trainer'>Register Company/Coach</Link>
                         </button>
-                      )}
+                      )} */}
 
-                      {location.pathname !== '/login' && <button component={Link} to='/login' className="button is-light">
+                      {/* {((location.pathname !== '/login') || (location.pathname !== '/loginregister')) && <button component={Link} to='/login' className="button is-light">
                         <Link style={{ color: 'black' }} to='/login'> Login </Link>
-                      </button>}
+                      </button>} */}
                     </div>
                   </div>
                 </div>
               </div>
-
-
             )}
-
-
-
 
           <div className={classes.sectionMobile}>
             <IconButton
@@ -227,8 +223,6 @@ function NavbarTwo({ history, loggedIn, location }) {
               <MoreIcon />
             </IconButton>
           </div>
-
-
         </Toolbar>
       </AppBar>
       {
@@ -242,7 +236,7 @@ function NavbarTwo({ history, loggedIn, location }) {
         />
       }
       {renderMenu}
-    </div >
+    </div>
   );
 }
 

@@ -25,6 +25,8 @@ import About from './pages/About'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import Home from './pages/Home'
 import Login from './pages/Login'
+import LoginRegister from './pages/LoginRegister'
+import RegisterType from './pages/RegisterType'
 import RegisterPlayer from './pages/RegisterPlayer'
 import RegisterTrainer from './pages/RegisterTrainer'
 import AdminDashboard from './pages/AdminDashboard'
@@ -46,17 +48,19 @@ import Subscription from './Subscription'
 import AuthRouter from './lib/PrivateRoute'
 
 import RouteContainer from './korean/RouteContainer'
-
+import Setup from './components/Dashboard/Setup'
 import AdminHomeBeta from './Dashboards/indulgeDashboard/AdminHomeBeta'
 import AddPhone from './Dashboards/dashboardComponents/AddPhone'
 import Requests from './Dashboards/dashboardComponents/Requests'
+import firebase from 'firebase/firebase'
+import Calendar from './components/Dashboard/Calendar'
+import Listings from './components/Dashboard/Listings'
 
-axios.defaults.baseURL = process.env.REACT_APP_AXIOS_DEFAULTS_BASE_URL
-
+// axios.defaults.baseURL = process.env.REACT_APP_AXIOS_DEFAULTS_BASE_URL
 
 const useStyles = makeStyles((theme) => ({
   title: {
-    textAlign: 'center'
+    textAlign: 'center' 
   },
   root: {
     display: 'flex',
@@ -68,7 +72,6 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       flexDirection: "row",
       width: 550,
-
     },
   },
   card: {
@@ -88,8 +91,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-
 const App = () => {
+
   const classes = useStyles()
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
@@ -98,7 +101,6 @@ const App = () => {
   const [selectedCountry, setSelectedCountry] = useState()
   const countries = ['United Kingdom', 'South Korea']
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY)
-
 
   const enRoutes = (
     <Router>
@@ -109,6 +111,8 @@ const App = () => {
         <Route exact path="/privacy-policy" component={PrivacyPolicy} />
         <Route exact path="/join" component={Join} />
         <Route exact path="/login" component={Login} />
+        <Route exact path="/loginregister" component={LoginRegister} />
+        <Route exact path="/registerType" component={RegisterType} />
         <Route exact path="/register/player/:companyLink?" component={RegisterPlayer} />
         <Route exact path="/register/trainer/:companyLink?" component={RegisterTrainer} />
         <Route exact path="/forgot_password" component={ForgottenPassword} />
@@ -121,7 +125,7 @@ const App = () => {
         <AuthRouter path="/courses/:courseId/register/:sessionDate?" component={CourseRegister} />
         <AuthRouter exact path="/:id/messages" component={ClientMessages} />
         <AuthRouter exact path="/adminbeta" component={AdminHomeBeta} />
-        <AuthRouter exact path="/tester" component={AdminDashboard} />
+        <AuthRouter path="/tester" component={AdminDashboard} />
         <AuthRouter exact path="/testercoach" component={CoachDashboard} />
         <AuthRouter exact path="/stripe-payment" component={StripePayment} />
         <AuthRouter exact path="/termsandconditions" component={Terms} />
@@ -130,6 +134,8 @@ const App = () => {
         <AuthRouter exact path="/checkout" component={SuccessfulCheckout} />
         <AuthRouter exact path="/checkout-form" component={CheckoutForm} />
         <AuthRouter exact path="/add-phone" component={AddPhone} />
+        <AuthRouter exact path="/setup" component={Setup} />
+        <AuthRouter exact path="/calendar" component={Calendar} />
       </Switch>
     </Router>
   )
@@ -177,18 +183,14 @@ const App = () => {
           {`Continue to ${selectedCountry === 'United Kingdom' ? 'English' : 'Korean'} version`}
         </Button>
       </DialogActions>}
-
-    </ Dialog>
+    </Dialog>
   )
-
-
 
   useEffect(() => {
 
-    const version = localStorage.version
+   const version = localStorage.version
     // const version = 'South Korea'
     if (version) setNavigationRoute(version === 'United Kingdom' ? enRoutes : krRoutes)
-
 
     // if (!auth.isLoggedIn()) {
     //   auth.logOut()
@@ -208,9 +210,6 @@ const App = () => {
     //   }
     // }
   }, [])
-
-
-
 
   return (
     !navigationRoute ? <CountrySelection /> :

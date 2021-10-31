@@ -70,16 +70,13 @@ const PopulateWhyJoin = () => {
 
   function handleFormSubmit(e) {
     e.preventDefault()
-    console.log(form)
     setDataChange(true)
 
     axios.post('/admin/PGkp8RJmn6XA9uBv5dPg', form)
       .then(res => {
-        console.log(res.data)
         setDataChange(false)
       })
       .catch(err => {
-        console.log(err)
         setDataChange(false)
       })
 

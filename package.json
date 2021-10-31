@@ -29,8 +29,10 @@
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-facebook-pixel": "^1.0.4",
     "react-firebaseui": "^4.1.0",
     "react-google-recaptcha": "^2.1.0",
+    "react-gtm-module": "^2.0.11",
     "react-map-gl": "^5.2.7",
     "react-places-autocomplete": "^7.3.0",
     "react-responsive": "^8.2.0",
@@ -44,6 +46,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start-dev": "dotenv -e .env.development react-scripts start",
+    "start-production": "dotenv -e .env.production react-scripts start",
     "build": "react-scripts build",
     "build-dev": "dotenv -e .env.development react-scripts build && firebase -P development deploy",
     "build-production": "dotenv -e .env.production react-scripts build && firebase -P production deploy",
@@ -65,7 +68,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000/football-hub-4018a/europe-west2/api",
+  "proxy": "http://localhost:5000/football-hub-dev-de9cc/europe-west2/api",
   "devDependencies": {
     "dotenv": "^8.2.0"
   }

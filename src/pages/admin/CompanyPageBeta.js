@@ -112,12 +112,12 @@ export default function CompanyPageBeta() {
   async function getData() {
     let companyArray = []
     let user
-    const response = await axios.get(`/users/${auth.getUserId()}`)
+    const response = await axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
     const data = await response.data[0]
     user = data
     console.log(data)
     for (const request of data.companies) {
-      const response = await axios.get(`/users/${request}`)
+      const response = await axios.get(`/users/${request}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       const data = await response.data[0]
       console.log('data', data)
       companyArray.push(data)

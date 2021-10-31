@@ -19,6 +19,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Icon from '@material-ui/core/Icon';
 import SaveIcon from '@material-ui/icons/Save';
 import { Typography } from '@material-ui/core';
+import auth from '../lib/auth'
 
 const useStyles = makeStyles({
   table: {
@@ -47,15 +48,16 @@ const CourseRegister = ({ match, courseId, session }) => {
 
   useEffect(() => {
     console.log('use')
-    axios.get(`/courses/${courseId}`)
+    axios.get(`/courses/${courseId}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
-        console.log('axios!')
-        console.log(res.data.playerList)
-        console.log(res.data)
+        // console.log('axios!')
+        // console.log(res.data.playerList)
+        // console.log(res.data)
         // setCourse(res.data)
         res.data.register ? setData({ register: res.data.register, course: res.data }) : setData({ register: {}, course: res.data })
 
       })
+      .catch(err => console.log(err))
   }, [sessionDate])
 
   const handleChange = (event) => {
@@ -68,7 +70,7 @@ const CourseRegister = ({ match, courseId, session }) => {
 
   const saveChanges = (event) => {
     event.preventDefault()
-    axios.patch(`/courses/${courseId}`, { updatedRegister: data.register })
+    axios.patch(`/courses/${courseId}`, { updatedRegister: data.register }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         console.log(res)
         window.location.reload()

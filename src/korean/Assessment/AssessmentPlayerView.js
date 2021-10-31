@@ -8,6 +8,7 @@ import {
 
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
+import auth from '../../lib/auth';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,7 +44,7 @@ const AssessmentPlayerView = ({
   const [feedback, setFeedback] = useState()
 
   function getAssessment() {
-    axios.get(`/player-assessment/${state}`)
+    axios.get(`/player-assessment/${state}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         if (res.data.player_feedback) setFeedback(res.data.player_feedback)
         setData(res.data)
@@ -55,7 +56,7 @@ const AssessmentPlayerView = ({
     axios.post('/player-assessment', {
       ...data,
       player_feedback: feedback
-    })
+    }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => history.goBack())
       .catch(err => console.log(err))
   }

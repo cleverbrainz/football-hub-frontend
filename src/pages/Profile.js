@@ -104,23 +104,22 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
   const [isAlreadyCoach, setIsAlreadyCoach] = useState(false)
   const [isAlreadyPlayer, setIsAlreadyPlayer] = useState(true)
   const [requestSent, setRequestSent] = useState(false)
+  const [isProgress, setIsProgress] = useState(false)
   const verifyObj = { coachDocumentationCheck: 'Training Certification', dbsDocumentationCheck: 'DBS', paymentCheck: 'Payment Details' }
 
 
   async function getData() {
     if (info) {
-      console.log('eggs')
       setUser(info)
       setProfileInfo(info)
     } else {
-      console.log('beans')
       let user
       let profile
       let company = false
       let alreadyCoach = false
       let requestSent = false
       let alreadyPlayer = false
-      axios.get(`/users/${auth.getUserId()}`)
+      axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
         .then(res => {
           user = res.data[0]
           company = user.category === 'company' ? true : false
@@ -130,7 +129,7 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
           alreadyCoach = user.coaches.some(coach => coach === profileId) ? true : false
           }
         }).then(() => {
-          axios.get(`/users/${profileId}`)
+          axios.get(`/users/${profileId}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
             .then(res => {
               profile = res.data[0]
             }).then(() => {
@@ -149,8 +148,6 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
   useEffect(() => {
     getData()
   }, [])
-
-
 
   const UserProfile = () => {
 
@@ -316,10 +313,7 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
   }
 
   const CoachProfile = () => {
-
-
     console.log(profileId)
-
     const handleMediaChange = (e) => {
       setImageUpload(true)
       const image = e.target.files
@@ -336,22 +330,26 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
     }
 
     const handleSendRequest = (e) => {
+      setIsProgress(true)
       e.preventDefault()
       if (!isCompany) return
       axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId, coachName: profileInfo.name, coachEmail: profileInfo.email, type: window.location.hostname })
         .then(res => {
           console.log(res.data)
+          setIsProgress(false)
           setRequestSent(true)
         })
         .catch(err => console.error(err))
     }
 
     const handleDeleteRequest = (e) => {
+      setIsProgress(true)
       e.preventDefault()
       if (!isCompany) return
       axios.put(`/user/${profileId}/deleterequest`, { companyId: auth.getUserId(), coachId: profileId })
         .then(res => {
           console.log(res.data)
+          setIsProgress(false)
           setRequestSent(false)
         })
         .catch(err => console.error(err))
@@ -368,7 +366,6 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
             <Avatar
               onClick={isOwnProfile ? (e) => input.current.click() : ''}
               className={classes.avatar} src={profileInfo && profileInfo.coachInfo.imageURL}
-
             />
 
             <Typography style={{ margin: '10px 0' }} component='div' >
@@ -419,11 +416,10 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
               onClick={!requestSent ? (event) => handleSendRequest(event) : (event) => handleDeleteRequest(event)}
             >
               {!requestSent ? 'Add to Coaching team' : 'Request sent!'}
+              {isProgress ? <CircularProgress size={30} className={classes.buttonProgressWhite} /> : null}
             </Button>
             }
-
           </div>
-
 
           <div className={classes.midContainer}>
             <Typography style={{ textAlign: 'center' }} component='div' >
@@ -441,7 +437,6 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
               </small>
             </Typography>
 
-
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
@@ -457,8 +452,6 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
               </Box>
             </Typography>
 
-
-
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
@@ -466,12 +459,9 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
                 {profileInfo && profileInfo.best_career_highlight}
               </Box>
             </Typography>
-
-
           </div>
 
           <div className={classes.rightContainer}>
-
             <Typography style={{ margin: '10px 0' }} component='div' >
               <Box
                 fontSize={16} fontWeight="fontWeightRegular" m={0}>
@@ -492,16 +482,12 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
                 Edit Details
           </Button>
             }
-
           </div>
         </div>
         {imageUpload && <CircularProgress size={100} className={classes.progress} />}
       </div>
     )
   }
-
-
-
 
   const classes = useStyles();
   if (!profileInfo) return null
@@ -516,6 +502,4 @@ const Profile = ({ match, handleChange, handleComponentChange, info }) => {
     // <h1>COMPANY PROFILE PENDING</h1>
   );
 };
-
-
 export default Profile

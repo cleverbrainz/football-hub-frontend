@@ -143,8 +143,7 @@ const AddPhone = ({ location, history, locale }) => {
         'size': 'invisible',
         'callback': function (response) {
           console.log('captcha!')
-          // handleRecaptch()
-  
+          // handleRecaptch()  
         },
         'expired-callback': function () {
           console.log('captcha expired')

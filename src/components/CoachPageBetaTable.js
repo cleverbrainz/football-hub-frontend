@@ -28,9 +28,6 @@ const useStyles = makeStyles({
 
 export default function CoachPageBetaTable({ coaches, handleSetCoachId, handleChange }) {
   const classes = useStyles();
-
-  console.log('table', coaches)
-
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">

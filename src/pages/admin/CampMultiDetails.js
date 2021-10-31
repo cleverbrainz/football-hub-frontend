@@ -74,8 +74,8 @@ export default function MaterialUIPickers({ history, course,
     // dayCost: course ? course.courseDetails.dayCost : "",
     // age: course ? course.courseDetails.age : "",
     // individualDayBookings: course ? course.courseDetails.individualDayBookings : false,
-    ageFrom: course ? course.courseDetails.age.split(' ')[0] : "",
-    ageTo: course ? course.courseDetails.age.split(' ')[2] : "",
+    // ageFrom: course ? course.courseDetails.age.split(' ')[0] : "",
+    // ageTo: course ? course.courseDetails.age.split(' ')[2] : "",
     spaces: course ? course.courseDetails.spaces : "",
     startTime: course ? course.courseDetails.startTime : "",
     endTime: course ? course.courseDetails.endTime : ""
@@ -93,7 +93,7 @@ export default function MaterialUIPickers({ history, course,
 
     console.log(course)
 
-    axios.get(`/users/${auth.getUserId()}`)
+    axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         const locationArr = []
         const ageArr = []
@@ -149,7 +149,7 @@ export default function MaterialUIPickers({ history, course,
         .post("/companies/courses", {
           courseDetails,
           companyId: auth.getUserId(),
-        })
+        }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
         .then(res => handleStateRefresh())
         .catch((error) => {
           alert(error.message);

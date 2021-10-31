@@ -75,11 +75,9 @@ const PopulateHome = () => {
 
     axios.post('/admin/RwlT9uMWhORyHNNQOell', form)
       .then(res => {
-        console.log(res.data)
         setDataChange(false)
       })
       .catch(err => {
-        console.log(err)
         setDataChange(false)
       })
 

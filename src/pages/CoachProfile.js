@@ -110,13 +110,10 @@ const ProfileCoach = () => {
   const [requestSent, setRequestSent] = useState()
   const verifyObj = { coachDocumentationCheck: 'Training Certification', dbsDocumentationCheck: 'DBS', paymentCheck: 'Payment Details' }
 
-  console.log(isCompany, isOwnProfile)
-
   useEffect(() => {
-    axios.get(`/users/${profileId}`)
+    axios.get(`/users/${profileId}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         const { requests, companies } = res.data[0]
-        console.log(res.data)
         setUser(res.data[0])
         if (requests) setRequestSent(requests.some(id => id === auth.getUserId()))
         if (companies) setIsAlreadyCoach(companies.some(id => id === auth.getUserId()))
@@ -135,7 +132,6 @@ const ProfileCoach = () => {
 
     axios.post(`/user/${auth.getUserId()}/image`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
-        console.log(res.data)
         setImageUpload(false)
       })
       .catch(err => console.error(err))
@@ -146,7 +142,6 @@ const ProfileCoach = () => {
     if (!isCompany) return
     axios.post(`/user/${profileId}/request`, { companyId: auth.getUserId(), coachId: profileId })
     .then(res => {
-      console.log(res.data)
       setRequestSent(true)
     })
     .catch(err => console.error(err))
@@ -157,7 +152,6 @@ const ProfileCoach = () => {
     if (!isCompany) return
     axios.put(`/user/${profileId}/deleterequest`, { companyId: auth.getUserId(), coachId: profileId })
     .then(res => {
-      console.log(res.data)
       setRequestSent(false)
     })
     .catch(err => console.error(err))

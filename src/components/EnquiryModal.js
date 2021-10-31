@@ -68,7 +68,7 @@ const EnquiryModal = ({ toggleModal, companyId, companyName, openSnackBar }) => 
     e.preventDefault()
     setIsLoading(true)
 
-    axios.post('/enquiries', enquiryBody)
+    axios.post('/enquiries', enquiryBody, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         openSnackBar()
         toggleModal()

@@ -33,14 +33,14 @@ const MobileMenu = ({ handleMobileMenuClose, mobileMoreAnchorEl,
         <div>
           <MenuItem>
             <button style={{ backgroundColor: '#3d3d3d' }} className="button is-link">
-              <Link style={{ color: 'white', }} to='/register'> Sign up </Link>
+              <Link style={{ color: 'white', }} to='/registerType'> Sign up </Link>
             </button>
-          </MenuItem >
+          </MenuItem>
           <MenuItem>
             <button style={{width: '100%'}} component={Link} to='/login' className="button is-light">
-              <Link style={{ color: 'black' }} to='/login'> Login </Link>
+              <Link style={{ color: 'black' }} to='/loginregister'> Login </Link>
             </button>
-          </MenuItem >
+          </MenuItem>
         </div>
       ) : (
           <div>
@@ -49,9 +49,9 @@ const MobileMenu = ({ handleMobileMenuClose, mobileMoreAnchorEl,
                 <Badge badgeContent={4} color="secondary">
                   <MailIcon />
                 </Badge>
-              </IconButton >
+              </IconButton>
               <p>Messages</p>
-            </MenuItem >
+            </MenuItem>
             <MenuItem>
               <IconButton color="inherit">
                 <Badge badgeContent={1} color="secondary">
@@ -70,8 +70,7 @@ const MobileMenu = ({ handleMobileMenuClose, mobileMoreAnchorEl,
             </MenuItem>
           </div>
         )}
-
-    </Menu >
+    </Menu>
   )
 }
 

@@ -34,9 +34,20 @@ import Slide from '@material-ui/core/Slide';
 import {
   FormControlLabel,
   Radio,
+  RadioGroup, 
+  FormControl,
+  FormLabel
 } from "@material-ui/core";
 import PhoneDropDown from './PhoneDropdown';
 import ApplicationSummary from './ApplicationSummary'
+import ReactPixel from 'react-facebook-pixel'
+import { getAge } from '../lib/tools';
+
+const options = {
+  autoConfig: true, 
+  debug: false,
+};
+ReactPixel.init('331288028562698', options);
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -234,7 +245,6 @@ export default function ApplicationForm({ history, location, locale, match, setL
     setLocale(match.params.locale)
   }
 
-
   const [applicationDetails, setApplicationDetails] = useState({
     personal_details: {
       player_first_name: '',
@@ -249,7 +259,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
       alt_contact_number: ['+', '', ''],
       can_provide_certificates: false,
       nationality: '',
-      country: '',
+      country: ''
     },
     player_attributes: {
       height: '',
@@ -276,7 +286,14 @@ export default function ApplicationForm({ history, location, locale, match, setL
       award_reasoning: '',
       award_achieved: false,
       highlights_footage_link: [],
-      bio_description: ''
+      bio_description: '',
+      join_reason: 'first_reason',
+      specify_reason:'',      
+      join_reason_1: false,
+      join_reason_2: false,
+      join_reason_3: false,
+      join_reason_4: false,
+      join_reason_5: false
     },
     challenges: {
       link_1: '',
@@ -332,7 +349,13 @@ export default function ApplicationForm({ history, location, locale, match, setL
     private_coach_name,
     private_coach_website,
     private_coach_company,
-
+    join_reason,
+    specify_reason,     
+    join_reason_1,
+    join_reason_2,
+    join_reason_3,
+    join_reason_4,
+    join_reason_5
   } = applicationDetails.football_history
   const {
     link_1,
@@ -353,10 +376,20 @@ export default function ApplicationForm({ history, location, locale, match, setL
     }
   })
 
+  const handleRadioChange = (event) => {
+    setApplicationDetails({
+      ...applicationDetails,
+      football_history: {
+        ...applicationDetails.football_history,
+        join_reason: event.target.value
+      }
+    })
+  };
+
   function getData() {
-    axios.get(`/users/${auth.getUserId()}`)
+    axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
-        console.log('THISS ISSSS', res.data[0])
+        // console.log('THISS ISSSS', res.data[0])
         const { applications, email, category,
           guardian_first_name, guardian_last_name,
           player_first_name, player_last_name } = res.data[0]
@@ -467,9 +500,14 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
   function handleApplicationSave(type) {
     setIsLoading(true)
-    const age = moment('2021-12-31').diff(dob, 'years')
-    const group = age < 13 ? 13 : (age !== 14 && age < 15) ? age + 1 : 15
-    console.log(applicationDetails.personal_details)
+    const age = getAge(dob);
+    // const age = moment('2021-12-31').diff(dob, 'years')
+    // const group = age < 13 ? 13 : (age === 14 && age < 15) ? age : 15
+    // const group = age < 13 ? 13 : (age !== 14 && age < 15) ? age + 1 : 15
+    // console.log('age group6=====>' , group)
+    // console.log(applicationDetails.personal_details)
+    // const user_name = applicationDetails.personal_details.player_first_name + applicationDetails.personal_details.player_last_name  
+    // ReactPixel.trackCustom('application submission', user_name + ' submitted application');
     handleClose()
 
 
@@ -480,8 +518,10 @@ export default function ApplicationForm({ history, location, locale, match, setL
         applications: {
           ajax_application: {
             ...(type === 'application' && {
-              age_group: `Under ${group}s`,
-              submitted: true
+              age_group: `Under ${age}s`,
+              submitted: true,
+              application_submitted:true,
+              application_date: moment()
             }),
             ...(type === 'challenges' && {
               challenges_submitted: true,
@@ -502,9 +542,10 @@ export default function ApplicationForm({ history, location, locale, match, setL
           axios.post('/contactPlayer', {
             type: 'applicationReceived',
             recipient: { recipientId: auth.getUserId() },
-            emailContent: { contentCourse: `Ajax Camp: U${group}` },
+            emailContent: { contentCourse: `Ajax Camp: U${age}` },
             locale: locale
-          }).then((res) => {
+          }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+          .then((res) => {
             setMessage({ success: snackbar_messages['1a'][locale], info: res.info })
             setIsLoading(false)
           })
@@ -537,7 +578,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
     function checkRequiredFields(arr) {
       const check = arr.filter(x => !x && x === '')
-      console.log(check)
+      // console.log(check)
 
       if (check !== [] && check.length > 0) {
         setMessage({
@@ -561,7 +602,6 @@ export default function ApplicationForm({ history, location, locale, match, setL
         dob, contact_number, gender, player_first_name, player_last_name]
 
       checkRequiredFields(required)
-
 
     } else if (activeStep === 1) {
 
@@ -680,17 +720,15 @@ export default function ApplicationForm({ history, location, locale, match, setL
         })
       }
 
+      const age = getAge(value);
 
-      const age = moment('2021-12-31').diff(value, 'years')
-      const group = age < 12 ? 12 : (age !== 14 && age < 15) ? age + 1 : 15
-
-      setMessage((age >= 10 && age < 15) ? {
-        info: snackbar_messages['3'][locale].replace('s', `${group}s`)
+      setMessage((age >= 10 && age < 16) ? {
+        info: snackbar_messages['3'][locale].replace('s', `${age}s`)
       } : {
           error: snackbar_messages['4'][locale]
         })
 
-      if (age >= 10 && age < 15) {
+      if (age >= 10 && age < 16) {
         setApplicationDetails({
           ...applicationDetails,
           personal_details: {
@@ -937,11 +975,6 @@ export default function ApplicationForm({ history, location, locale, match, setL
             </p>
           </div>
         </div>
-
-
-
-
-
       </>}
 
 
@@ -1089,10 +1122,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
         </div>
 
-
-
-
-      </div >
+      </div>
 
       <div className="field"
         style={{
@@ -1154,9 +1184,6 @@ export default function ApplicationForm({ history, location, locale, match, setL
             </p>
           </div>
 
-
-
-
           <div className={classes.field}>
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span> {application['4j'][locale]} </label>
@@ -1166,7 +1193,6 @@ export default function ApplicationForm({ history, location, locale, match, setL
             </p>
           </div>
 
-
           <div className={classes.field} style={{ flex: 0 }} >
             <div className={classes.label}>
               <label> <span style={{ color: 'red' }}>*</span> {application['4i'][locale]}</label>
@@ -1175,14 +1201,9 @@ export default function ApplicationForm({ history, location, locale, match, setL
               <NationalityDropDown value={nationality} />
             </div>
           </div>
-
-
-
         </div>
 
         <div class="field-body" >
-
-
           <div className="field-body">
 
             <FormControlLabel
@@ -1244,12 +1265,6 @@ export default function ApplicationForm({ history, location, locale, match, setL
             </div>
           </div> */}
         </div>
-
-
-
-
-
-
       </div>
 
 
@@ -1354,17 +1369,8 @@ export default function ApplicationForm({ history, location, locale, match, setL
             isSearchable={false}
             options={playing_positions}
           />
-
         </div>
-
-
       </div>
-
-
-
-
-
-
     </>
   )
 
@@ -1381,9 +1387,6 @@ export default function ApplicationForm({ history, location, locale, match, setL
 
 
       <div class="field" style={{ paddingBottom: '25px', marginBottom: '20px', borderBottom: '1px dotted #f1f1f1' }}>
-
-
-
         <div class="field-body">
           <div className={classes.field}>
             <div className={classes.label}>
@@ -1853,10 +1856,102 @@ export default function ApplicationForm({ history, location, locale, match, setL
           )
         }
         )}
+      </div>
 
-
-
-      </div >
+      <div class="field">
+        <div class="field-body">
+          <div className={classes.field}>
+            <div className={classes.label}>
+              <label> <span style={{ color: 'red' }}>*</span>{application['21'][locale]}</label>              
+            </div>
+            <div className="field-body">
+              <FormControlLabel
+                style={{ transform: 'translate(5px, 5px)', marginTop: '5px' }} 
+                onClick={() => {
+                  setApplicationDetails({
+                    ...applicationDetails,
+                    football_history: {
+                      ...applicationDetails.football_history,
+                      join_reason_1: !join_reason_1
+                    }
+                  })
+                }}
+                control={<Radio className='radio-check' checked={join_reason_1}/>} label={application['21a'][locale]} />
+            </div>
+            <div className="field-body">
+              <FormControlLabel
+                style={{ transform: 'translate(5px, 5px)', marginTop: '5px' }} 
+                onClick={() => {
+                  setApplicationDetails({
+                    ...applicationDetails,
+                    football_history: {
+                      ...applicationDetails.football_history,
+                      join_reason_2: !join_reason_2
+                    }
+                  })
+                }}
+                control={<Radio className='radio-check' checked={join_reason_2}/>} label={application['21b'][locale]} />
+            </div>
+            <div className="field-body">
+              <FormControlLabel
+                style={{ transform: 'translate(5px, 5px)', marginTop: '5px' }} 
+                onClick={() => {
+                  setApplicationDetails({
+                    ...applicationDetails,
+                    football_history: {
+                      ...applicationDetails.football_history,
+                      join_reason_3: !join_reason_3
+                    }
+                  })
+                }}
+                control={<Radio className='radio-check' checked={join_reason_3}/>} label={application['21c'][locale]} />
+            </div>
+            <div className="field-body">
+              <FormControlLabel
+                style={{ transform: 'translate(5px, 5px)', marginTop: '5px' }} 
+                onClick={() => {
+                  setApplicationDetails({
+                    ...applicationDetails,
+                    football_history: {
+                      ...applicationDetails.football_history,
+                      join_reason_4: !join_reason_4
+                    }
+                  })
+                }}
+                control={<Radio className='radio-check' checked={join_reason_4}/>} label={application['21d'][locale]} />
+            </div>
+            <div className="field-body">
+              <FormControlLabel
+                style={{ transform: 'translate(5px, 5px)', marginTop: '5px' }} 
+                onClick={() => {
+                  setApplicationDetails({
+                    ...applicationDetails,
+                    football_history: {
+                      ...applicationDetails.football_history,
+                      join_reason_5: !join_reason_5
+                    }
+                  })
+                }}
+                control={<Radio className='radio-check' checked={join_reason_5}/>} label={application['21e'][locale]} />
+            </div>         
+            {join_reason_5 && 
+            <p class="control is-expanded">
+              <input
+                value={specify_reason} name='specify_reason' class="input" type="text"
+                onChange={(event) =>
+                  setApplicationDetails({
+                    ...applicationDetails,
+                    football_history: {
+                      ...applicationDetails.football_history,
+                      specify_reason: event.target.value
+                    }
+                  })
+                }
+              />
+            </p>}
+          </div>
+        </div>
+      </div>
 
       <div class="field">
         <div class="field-body">
@@ -1867,7 +1962,6 @@ export default function ApplicationForm({ history, location, locale, match, setL
             </div>
 
             <div class="control">
-
               <textarea value={bio_description} name='bio_description' style={{ minHeight: '15rem' }} class="textarea" ></textarea>
             </div>
           </div>
@@ -2082,6 +2176,7 @@ export default function ApplicationForm({ history, location, locale, match, setL
             {application['10a'][locale]}
           </Button>
           <Button variant='outlined' onClick={() => {
+            // console.log("challenge submitted=========>")            
             handleApplicationSave(activeStep === 2 ? 'challenges' : 'application')
             setTimeout(() => {
               history.push(`/user/${auth.getUserId()}`)

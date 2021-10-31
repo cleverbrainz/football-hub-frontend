@@ -31,7 +31,6 @@ const style = ({ palette }) => ({
   }
 });
 
-
 const Calendar = (props) => {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [data, setData] = useState([]);
@@ -95,10 +94,8 @@ const Calendar = (props) => {
     return result.map(m => new Date(m).toString())
   }
 
-
-
   useEffect(() => {
-    axios.get(`/users/${auth.getUserId()}`)
+    axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         const { courses } = res.data[0]
         const appointments = []
@@ -125,14 +122,12 @@ const Calendar = (props) => {
                 coaches: coaches
               })
             })
-
           } else if (courseType === 'Weekly') {
             sessions.forEach(session => {
               recurringDate(startDate, endDate, session.day).forEach((date, i) => {
                 const { startTime, endTime } = session
                 const start = new Date(date.replace('00:00:00', timeConversion(formatDateString(startTime))))
                 const end = new Date(date.replace('00:00:00', timeConversion(formatDateString(endTime))))
-
 
                 appointments.push({
                   title: `${optionalName}: Session ${i + 1}`,
@@ -144,19 +139,13 @@ const Calendar = (props) => {
                 })
               })
             })
-
-
           }
         })
-        console.log(appointments)
+        // console.log(appointments)
         setData(appointments)
-
       })
-
-
+      .catch(err => console.log(err))
   }, [])
-
-
 
   const Content = withStyles(style, { name: 'Content' })(({
     children, appointmentData, classes, ...restProps
@@ -169,7 +158,6 @@ const Calendar = (props) => {
           <Grid item xs={10}>
             <span> {appointmentData.location} </span>
           </Grid>
-
           <Grid item xs={2} style={{marginTop: '7px'}} className={classes.textCenter}>
             <PeopleAltSharpIcon className={classes.icon} />
           </Grid>
@@ -180,14 +168,11 @@ const Calendar = (props) => {
       </AppointmentTooltip.Content>
     ));
 
-
   return (
-
     <Paper style={{ maxWidth: '95vw', height: '86vh', padding: 0 }}>
       <Scheduler
         data={data}
-        height={660}
-      >
+        height={660}>
         <ViewState
           currentDate={currentDate}
           onCurrentDateChange={date => setCurrentDate(date)}
@@ -205,7 +190,6 @@ const Calendar = (props) => {
           showCloseButton
           contentComponent={Content}
           showOpenButton>
-
         </AppointmentTooltip>
       </Scheduler>
     </Paper>

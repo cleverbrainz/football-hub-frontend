@@ -193,7 +193,7 @@ const [loginBeforeEnquiry, setLoginBeforeEnquiry] = useState(false)
   let currentPosition = 0
 
   async function getListingImages(companyId) {
-    const data = await axios.get(`/users/${companyId}`)
+    const data = await axios.get(`/users/${companyId}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
     const { images, contactInformation } = await data.data[0]
     console.log('THISSS IS IMAGESSS', images)
     setListingImages(images)
@@ -207,7 +207,7 @@ const [loginBeforeEnquiry, setLoginBeforeEnquiry] = useState(false)
 
     if (previewPage && !previewData) {
       console.log(companyId)
-      axios.get(`/listings/${listingId}`)
+      axios.get(`/listings/${listingId}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         getListingImages(res.data.companyId)
         res.data.courses.forEach(el => {
@@ -226,7 +226,7 @@ const [loginBeforeEnquiry, setLoginBeforeEnquiry] = useState(false)
     setAgeSelection(ageArr)
     
     if (!auth.getUserId()) return
-    axios.get(`/users/${auth.getUserId()}`)
+    axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         const category = res.data[0].category
         setUserCategory(category)

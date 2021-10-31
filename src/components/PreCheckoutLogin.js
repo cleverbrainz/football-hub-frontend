@@ -123,6 +123,7 @@ export default function PreCheckoutLogin({
         }
 
       })
+      .catch(err => console.log(err))
   }
 
   const handleRedirect = (e) => {
@@ -147,8 +148,8 @@ export default function PreCheckoutLogin({
           axios.post(`/user/${userId}/signup`, { ...requestObject, userId })
             .then(() => login(email, password))
             .catch(err => console.error(err.response.data))
-        })
-
+        })       
+        .catch(err => console.log(err))
     }
   }
 

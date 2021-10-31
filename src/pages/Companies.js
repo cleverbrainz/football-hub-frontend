@@ -27,6 +27,7 @@ import RoomSharpIcon from "@material-ui/icons/RoomSharp";
 import ReactMapPopup from "../components/ReactMapPopup";
 import { fi } from "date-fns/locale";
 import Footer from '../components/Footer'
+import auth from '../lib/auth'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -184,9 +185,9 @@ export default function Companies({ history }) {
   useEffect(() => {
     axios.post('/filteredCompanies', filterDetails)
       .then(res => {
-        console.log('COMPANIESSS BITCHES', res.data)
         setCompanies(res.data)
       })
+      .catch(err => console.log(err))
   }, [clearFilter])
 
   function toggleModal(e) {
@@ -235,7 +236,7 @@ export default function Companies({ history }) {
           latitude: latLng.lat,
           longitude: latLng.lng,
         },
-      })
+      }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then((res) => {
         toggleModal();
         setViewport({
@@ -247,7 +248,8 @@ export default function Companies({ history }) {
         setAddress(value);
         setCoordinates(latLng);
         setCompanies(res.data);
-      });
+      })
+      .catch(err => console.log(err))
   };
 
   const success = async (pos) => {
@@ -261,7 +263,7 @@ export default function Companies({ history }) {
     setFilterDetails({ ...filterDetails, location: position });
 
     axios
-      .post("/filteredCompanies", { ...filterDetails, location: position })
+      .post("/filteredCompanies", { ...filterDetails, location: position }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then((res) => {
         setUserCoordinates(position);
         setViewport({
@@ -271,7 +273,8 @@ export default function Companies({ history }) {
           longitude: parseFloat(position.longitude),
         });
         setCompanies(res.data);
-      });
+      })
+      .catch(err => console.log(err));
   };
 
   const handleLocate = (e) => {
@@ -282,11 +285,12 @@ export default function Companies({ history }) {
   };
 
   function handleFilterSubmit() {
-    axios.post('/filteredCompanies', filterDetails)
+    axios.post('/filteredCompanies', filterDetails, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         toggleModal()
         setCompanies(res.data)
       })
+      .catch(err => console.log(err))
   }
 
   const filterIcons = {
@@ -414,8 +418,6 @@ export default function Companies({ history }) {
           {companies ? companies.map((el, i) => {
             // console.log(el)
             const { companyName, images, bio, companyId } = el.listingInfo
-            console.log(images)
-
             return (
               <>
                 <Link key={i} to={{

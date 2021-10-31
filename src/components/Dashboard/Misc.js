@@ -12,14 +12,20 @@ import {
   AppBar,
   Tabs,
   MenuItem,
-  Box
+  Box,
+  TextField,
+  Container
 } from "@material-ui/core";
 import axios from 'axios'
 import auth from '../../lib/auth'
 import DeleteComponent from '../../Dashboards/dashboardComponents/DeleteComponent'
 import MiscPageTable from '../../components/MiscPageTable'
 import ContainedButtons from '../../pages/admin/AddServices'
-
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 
 function TabPanel(props) {
@@ -97,7 +103,32 @@ const useStyles = makeStyles((theme) => ({
   inputs: {
     margin: '7px 0',
     width: `${(window.innerWidth - 100) / 3}px`
-  }
+  },
+  spacing: {
+    marginTop: '60px',
+    marginBottom: '10px'
+  },
+  typeSelect: {
+    [theme.breakpoints.up("sm")]: {
+      width: '30%'
+    },
+  },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    textAlign: "center",
+    padding: '20px'
+  },
+  addForm: {
+    width: "50%",
+    minWidth: "300px",
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    justifyContent: "space-around",
+  },
 }));
 
 
@@ -114,12 +145,28 @@ export default function Misc({ componentTabValue }) {
   })
   const [newMiscDetail, setNewMiscDetail] = useState()
   const [serviceToBeEdited, setServiceToBeEdited] = useState()
+  const [isLoading, setIsLoading] = useState(true)
+  const [isEmptyService, setIsEmptyService] =  useState(true)
+  const [service, setService] = useState({companyId: auth.getUserId()})
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   async function getData() {
-    const data = await axios.get(`/users/${auth.getUserId()}`)
-    const { services } = await data.data[0]
-
-    setCompanyServices(services)
+    // const data = await axios.get(`/users/${auth.getUserId()}`)
+    axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+      .then(res => {
+        const { services } =  res.data[0]
+        if (services.length !== 0 && !dialogOpen) {
+          setIsEmptyService(false)
+        }
+        setCompanyServices(services)
+        setIsLoading(false)
+      })
+      .catch(err => {
+        setIsLoading(false)
+        console.log(err)
+      })
+    // const { services } = await data.data[0]
+    // setCompanyServices(services)
   }
 
   useEffect(() => {
@@ -132,13 +179,16 @@ export default function Misc({ componentTabValue }) {
   }
 
   const handleClose = () => {
-    setOpen(false);
+    setOpen(false);    
   };
 
+  const handleDialogClose = () => {
+    setDialogOpen(false)
+    setIsEmptyService(false)
+  }
+
   const handleDelete = () => {
-
     const { miscType, id } = miscToBeDeleted
-
     axios.delete(`/companies/services/${id}`, {
       headers: { Authorization: `Bearer ${auth.getToken()}` }
     })
@@ -152,6 +202,35 @@ export default function Misc({ componentTabValue }) {
       });
   };
 
+  const handleSave = () => {
+    // if (service) {
+    //   return axios
+    //     .patch("/companies/array/services", { ...form, serviceId: service.serviceId },
+    //       { headers: { Authorization: `Bearer ${auth.getToken()}` } })
+    //     .then((res) => {
+    //       getData()
+    //       handleChange(e,0)
+    //     })
+    //     .catch((error) => {
+    //       getData()
+    //       handleChange(e,0)
+    //     });
+
+    // } else {
+      
+      axios
+        .post("/companies/services", service, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+        .then((res) => {
+          // getData()
+          setDialogOpen(true)
+        })
+        .catch((error) => {
+          // getData()
+          console.log(error)
+        });
+    // }
+  }
+
   const handleEditService = (service) => {
     setValue(2)
     setServiceToBeEdited(service)
@@ -163,83 +242,147 @@ export default function Misc({ componentTabValue }) {
     setValue(newValue);
   };
 
+  const handleAddAnother = () => {
+    setService({companyId: auth.getUserId()})
+    setNewMiscDetail('')
+    setDialogOpen(false)
+  }
 
   return (
     <div className={classes.root}>
+      {isLoading && <div>
+        <CircularProgress style= {{position: 'absolute', left: 'calc(50% - 50px)', top: 'calc(50% - 50px)', width: '100px', height: '100px', margin: 'auto'}}/>
+      </div>}
 
-      <AppBar position="static" color="default">
-        <Tabs
-          className={classes.AppBar}
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="on"
-          indicatorColor="primary"
-          textColor="primary"
-          aria-label="scrollable force tabs example"
+      {(!isLoading && isEmptyService) && <Container className={classes.container}>
+        <form className={classes.addForm}>
+          <FormControl variant="outlined" style={{marginTop: '50px'}}>
+            <InputLabel id="service-type-outlined-label"> Service Type </InputLabel>
+            <Select
+              labelId="service-type-label"
+              id="service_type"
+              label='Service Type'
+              value={newMiscDetail ? newMiscDetail : ''}
+              onChange={e => setNewMiscDetail(e.target.value)}
+            >
+              <MenuItem value='service'> Company Service </MenuItem>
+            </Select>
+          </FormControl>
+
+          <TextField
+            className={classes.spacing}
+            id="outlined-service-name"
+            label="Service Name"
+            variant="outlined"
+            name='name'
+            value={service.name ? service.name : ''}
+            onChange={(e) => setService({...service, name: e.target.value})}
+          />
+
+          <TextField
+            id="outlined-service-description"
+            label="Service Description"
+            name='description'
+            multiline
+            rows={8}
+            variant="outlined"
+            value={service.description ? service.description : ''}
+            onChange={(e) => setService({...service, description: e.target.value})}
+          />          
+        </form>
+        <Button style={{backgroundColor: '#02a7f0', color: 'white', minWidth: '300px', marginTop: '50px'}}
+          onClick={() => handleSave()}>Save</Button>
+        <Dialog
+          open={dialogOpen}
+          onClose={handleDialogClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
         >
-          <Tab label="Current Misc" icon={<ExploreSharpIcon />} {...a11yProps(0)} />
-          <Tab label="Add New" icon={<AddLocationSharpIcon />} {...a11yProps(1)} />
-          {serviceToBeEdited && <Tab label="Edit Existing" icon={<AddLocationSharpIcon />} {...a11yProps(2)} />}
-        </Tabs>
-      </AppBar>
+          <DialogTitle id="add-service-dialog-title">
+            {"Do you want to add another service?"}
+          </DialogTitle>
+          <DialogActions>
+            <Button onClick={handleAddAnother}>Yes</Button>
+            <Button onClick={handleDialogClose}>No</Button>
+          </DialogActions>
+        </Dialog>
+      </Container>}
 
-      {/* tab 1 content */}
-      <TabPanel value={value} index={0}>
-        <MiscPageTable
-          classes={classes}
-          handleEditService={e => handleEditService(e)}
-          handleMiscDeletion={(miscId, miscType) => handleMiscDeletion(miscId, miscType)}
-          services={companyServices} />
-      </TabPanel>
-
-      {/* tab 2 content */}
-      <TabPanel className={classes.formContainer} value={value} index={1}>
-        <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel id="demo-simple-select-outlined-label"> What other company detail are you adding? </InputLabel>
-          <Select
-            className={classes.select}
-            labelId="demo-simple-select-filled-label"
-            id="demo-simple-select-filled"
-            label='What other company detail are you adding?'
-            value={newMiscDetail}
-            onChange={e => setNewMiscDetail(e.target.value)}
+      {(!isLoading && !isEmptyService) && <div>
+        <AppBar position="static" color="default">
+          <Tabs
+            className={classes.AppBar}
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="on"
+            indicatorColor="primary"
+            textColor="primary"
+            aria-label="scrollable force tabs example"
           >
+            <Tab label="Current Misc" icon={<ExploreSharpIcon />} {...a11yProps(0)} />
+            <Tab label="Add New" icon={<AddLocationSharpIcon />} {...a11yProps(1)} />
+            {serviceToBeEdited && <Tab label="Edit Existing" icon={<AddLocationSharpIcon />} {...a11yProps(2)} />}
+          </Tabs>
+        </AppBar>
 
-            <MenuItem value='service'> Company Service </MenuItem>
-            {/* <MenuItem value='age'> Age Group </MenuItem> */}
+        {/* tab 1 content */}
+        <TabPanel value={value} index={0}>
+          <MiscPageTable
+            classes={classes}
+            handleEditService={e => handleEditService(e)}
+            handleMiscDeletion={(miscId, miscType) => handleMiscDeletion(miscId, miscType)}
+            services={companyServices} />
+        </TabPanel>
 
-          </Select>
-        </FormControl>
+        {/* tab 2 content */}
+        <TabPanel className={classes.formContainer} value={value} index={1}>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel id="demo-simple-select-outlined-label"> What other company detail are you adding? </InputLabel>
+            <Select
+              className={classes.select}
+              labelId="demo-simple-select-filled-label"
+              id="demo-simple-select-filled"
+              label='What other company detail are you adding?'
+              value={newMiscDetail}
+              onChange={e => setNewMiscDetail(e.target.value)}
+            >
 
-        {newMiscDetail && (newMiscDetail === 'service' && <ContainedButtons
-          getData={() => getData()}
-          handleChange={(e, val) => handleChange(e, val)}
+              <MenuItem value='service'> Company Service </MenuItem>
+              {/* <MenuItem value='age'> Age Group </MenuItem> */}
 
-        />)}
+            </Select>
+          </FormControl>
 
-      </TabPanel>
+          {newMiscDetail && (newMiscDetail === 'service' && <ContainedButtons
+            getData={() => getData()}
+            handleChange={(e, val) => handleChange(e, val)}
 
-      {/* tab 5 content */}
-      <TabPanel className={classes.formContainer} value={value} index={2}>
+          />)}
 
-        {serviceToBeEdited && <ContainedButtons
-          service={serviceToBeEdited}
-          getData={() => getData()}
-          handleChange={(e, val) => handleChange(e, val)}
-          // handleStateRefresh={() => handleStateRefresh()}
-        />}
-      </TabPanel>
+        </TabPanel>
 
-      <TabPanel className={classes.formContainer} value={value} index={3}>
+        {/* tab 5 content */}
+        <TabPanel className={classes.formContainer} value={value} index={2}>
 
-      </TabPanel>
+          {serviceToBeEdited && <ContainedButtons
+            service={serviceToBeEdited}
+            getData={() => getData()}
+            handleChange={(e, val) => handleChange(e, val)}
+            // handleStateRefresh={() => handleStateRefresh()}
+          />}
+        </TabPanel>
 
-      <DeleteComponent
-        open={open}
-        handleDelete={e => handleDelete(e)}
-        handleClose={e => handleClose(e)}
-        name={miscToBeDeleted.miscType === 'service' ? 'service' : 'age group'} />
+        <TabPanel className={classes.formContainer} value={value} index={3}>
+
+        </TabPanel>
+
+        <DeleteComponent
+          open={open}
+          handleDelete={e => handleDelete(e)}
+          handleClose={e => handleClose(e)}
+          name={miscToBeDeleted.miscType === 'service' ? 'service' : 'age group'} />
+      </div>}
     </div>
   );
 }

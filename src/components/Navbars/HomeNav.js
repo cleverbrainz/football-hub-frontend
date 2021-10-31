@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { Link, withRouter, useLocation } from 'react-router-dom';
 import { buttons } from '../../korean/LanguageSkeleton'
 import { Typography, Box, Button } from '@material-ui/core'
+import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import auth from '../../lib/auth';
 
 const styles = {
@@ -32,6 +33,10 @@ const styles = {
   },
   menu: {
     backgroundColor: 'red'
+  },
+  registerButton: {
+    marginLeft: '15px',
+    width: '50px'
   }
 }
 
@@ -41,7 +46,9 @@ function HomeNav({ history, locale, user }) {
 
   const location = useLocation()
   const [scrollPosition, setScrollPosition] = useState()
-  console.log(user)
+  const [width, setWidth] = useState(0);
+  const [navColor, setNavColor] = useState('white')
+  // console.log(user)
   
 
   useEffect(() => {
@@ -50,11 +57,12 @@ function HomeNav({ history, locale, user }) {
     if (localStorage.version === 'United Kingdom') {
       window.addEventListener('scroll', () => {
         setScrollPosition(window.pageYOffset)
-
-        if (scrollPosition > 340) {
+        if (scrollPosition > 100) {
           nav.style.backgroundColor = 'white'
           nav.style.boxShadow = '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.1), 0px 1px 10px 0px rgba(0,0,0,0.12)'
+          setNavColor('black')
         } else {
+          setNavColor('white')
           nav.style.backgroundColor = 'transparent'
           nav.style.boxShadow = ''
         }
@@ -62,8 +70,15 @@ function HomeNav({ history, locale, user }) {
     }
   })
 
-  const handleBurgerMenu = ({ user }) => {
+  useLayoutEffect(() => {
+    function updateSize() {
+      setWidth(window.innerWidth);
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+  }, []);
 
+  const handleBurgerMenu = ({ user }) => {
 
     const burger = document.querySelector('.burger')
     const navItems = document.querySelector(`#${burger.dataset.target}`)
@@ -108,52 +123,62 @@ function HomeNav({ history, locale, user }) {
             </Box>
           </Typography>
 
-          { (localStorage.version === 'South Korea' && location.pathname !== '/authentication') &&
+          {width < 1023.99 && <Button style={{position: 'fixed', right: '30px'}}
+            onClick={() => {history.push('/loginregister');}}>
+            <AccountCircleOutlinedIcon style={{height: '35px', width: '35px', color: navColor}} />
+          </Button>}
 
-          <a onClick={handleBurgerMenu} role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-            <span style={{ backgroundColor: 'black' }} aria-hidden="true"></span>
-            <span style={{ backgroundColor: 'black' }} aria-hidden="true"></span>
-            <span style={{ backgroundColor: 'black' }} aria-hidden="true"></span>
-          </a>
-        }
+          {/* { (localStorage.version === 'South Korea' && location.pathname !== '/authentication') && */}
+
+          {width < 1023.99 && <a onClick={handleBurgerMenu} role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span style={{ backgroundColor: navColor }} aria-hidden="true"></span>
+            <span style={{ backgroundColor: navColor }} aria-hidden="true"></span>
+            <span style={{ backgroundColor: navColor }} aria-hidden="true"></span>
+          </a>}
+        {/* } */}
         </div>
 
         <div id="navbarBasicExample" className="navbar-menu">
-
-
-
           <div className="navbar-end">
             <div style={{ display: 'flex', justifyContent: 'flex-end' }} className="navbar-item">
               <div className="navbar-start">
               </div>
 
-              {localStorage.version === 'United Kingdom' && <div className="buttons">
-                <button style={{ backgroundColor: '#3d0F3d' }} className="button is-link">
-                  <Link style={{ color: 'white', }} to='/register/player'>Register Player</Link>
+              {localStorage.version === 'United Kingdom' && <div>
+                <Button style={{ backgroundColor: 'white', marginLeft: '30px', height: '40px', width: '130px', color: 'black', textTransform: 'none'}} 
+                  onClick={() => {history.push('/register/player');}}>
+                  Player
+                </Button>
+                <Button style={{ backgroundColor: 'white', marginLeft: '30px', height: '40px', width: '130px', color: 'black', textTransform: 'none'}}
+                  onClick={() => {
+                    localStorage.setItem('category', 'coach')
+                    history.push('/register/trainer');}}>
+                  Coach
+                </Button>
+                <Button style={{ backgroundColor: 'white', marginLeft: '30px', height: '40px', width: '130px', color: 'black', textTransform: 'none'}} 
+                  onClick={() => {
+                    localStorage.setItem('category', 'company')
+                    history.push('/register/trainer');}}>
+                  Company
+                </Button>
+                {width > 1023.99 && <Button style={{marginLeft: '120px'}}  
+                  onClick={() => {history.push('/loginregister');}}>
+                  <AccountCircleOutlinedIcon style={{height: '40px', width: '40px', color: navColor}} />
+                </Button>}
+                
+                {/* <button style={{ backgroundColor: 'white', marginLeft: '30px', width: '130px'}} className="button is-link">
+                  <Link style={{ color: 'black', }} to='/register/player'>Player</Link>
                 </button>
-                <button style={{ backgroundColor: '#3d3d3d' }} className="button is-link">
-                  <Link style={{ color: 'white', }} to='/register/trainer'>Register Company/Coach</Link>
+                <button style={{ backgroundColor: 'white', marginLeft: '30px', width: '130px'}} className="button is-link">
+                  <Link style={{ color: 'black', }} to='/register/trainer'>Coach</Link>
                 </button>
-                <button component={Link} to='/login' className="button is-light">
-                  <Link style={{ color: 'black' }} to='/login'> Login </Link>
-                </button>
-              </div>}
-
-              {localStorage.version === 'South Korea' && 
-              
-              location.pathname === '/' ?  <Button
-                onClick={() => history.push('/authentication')}
-                variant='contained' color='primary'> {buttons['4'][locale]} </Button> :
-
-                location.pathname !== '/authentication' ?
-                <>
-                <Button onClick={() => mobileLogOut()}>Log Out</Button>
-                <Button>Other Details</Button>
-                </>
-                :
-                null
-                }
-
+                <button style={{ backgroundColor: 'white', marginLeft: '30px', width: '130px' }} className="button is-link">
+                  <Link style={{ color: 'black', }} to='/register/trainer'>Company</Link>
+                </button> */}
+                {/* <button style={{ backgroundColor: 'white', marginLeft: '80px', width: '130px' }} className="button is-light">
+                  <Link style={{ color: 'black' }} to='/loginregister'> Login/Register </Link>
+                </button> */}
+              </div>}             
             </div>
           </div>
         </div>
@@ -162,5 +187,19 @@ function HomeNav({ history, locale, user }) {
   );
 }
 
-
 export default withRouter(HomeNav)
+
+// {localStorage.version === 'South Korea' && 
+              
+//               location.pathname === '/' ?  <Button
+//                 onClick={() => history.push('/authentication')}
+//                 variant='contained' color='primary'> {buttons['4'][locale]} </Button> :
+
+//                 location.pathname !== '/authentication' ?
+//                 <>
+//                 {/* <Button onClick={() => mobileLogOut()}>Log Out</Button> */}
+//                 <Button>Other Details</Button>
+//                 </>
+//                 :
+//                 null
+                // }

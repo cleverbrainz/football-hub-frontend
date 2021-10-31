@@ -19,6 +19,7 @@ import axios from 'axios';
 import auth from '../../lib/auth'
 import moment from 'moment'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { isEmpty } from 'lodash';
 
 const drawerWidth = 350;
 
@@ -123,30 +124,29 @@ export default function CompanyMessages({componentTabValue}, props) {
 
   useEffect(() => {
  
-
     axios.get('/enquiries/company', { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(async res => {
-
-        const orderedMessages = res.data.sort((a, b) => {
-          const messageA = a.enquiryInfo.messages[a.enquiryInfo.messages.length - 1]
-          const messageB = b.enquiryInfo.messages[b.enquiryInfo.messages.length - 1]
-          const dateA = new Date(messageA.createdAt._seconds * 1000 + messageA.createdAt._nanoseconds / 1000000)
-          const dateB = new Date(messageB.createdAt._seconds * 1000 + messageB.createdAt._nanoseconds / 1000000)
-
-          return dateB - dateA
-        })
-
-        setMessages(orderedMessages)
-        if (!selectedMessage) return
-        else {
-          const filter = res.data.filter(el => el.enquiryId === selectedMessage.enquiryId)
-          await setSelectedMessage(filter[0])
-          scroll()
-        }
+        if (isEmpty(res.data) || res.data === null) {
+          console.log('message data is empty')
+        } else {
+          const orderedMessages = res.data.sort((a, b) => {
+            const messageA = a.enquiryInfo.messages[a.enquiryInfo.messages.length - 1]
+            const messageB = b.enquiryInfo.messages[b.enquiryInfo.messages.length - 1]
+            const dateA = new Date(messageA.createdAt._seconds * 1000 + messageA.createdAt._nanoseconds / 1000000)
+            const dateB = new Date(messageB.createdAt._seconds * 1000 + messageB.createdAt._nanoseconds / 1000000)
+  
+            return dateB - dateA
+          })  
+          setMessages(orderedMessages)
+          if (!selectedMessage) return
+          else {
+            const filter = res.data.filter(el => el.enquiryId === selectedMessage.enquiryId)
+            await setSelectedMessage(filter[0])
+            scroll()
+          }
+        }        
       })
-
-      console.log(componentTabValue)
-
+      .catch(err => console.log(err))
   }, [!isLoading])
 
   const handleDrawerToggle = () => {
@@ -159,7 +159,7 @@ export default function CompanyMessages({componentTabValue}, props) {
   }
 
   const handleMessageSelect = async el => {
-    console.log(el)
+    // console.log(el)
     await setSelectedMessage(el)
     scroll()
   }
@@ -167,7 +167,7 @@ export default function CompanyMessages({componentTabValue}, props) {
   const handleSendMessage = e => {
     e.preventDefault()
     setIsLoading(true)
-    axios.patch(`/enquiries/${selectedMessage.enquiryId}`, typedMessage)
+    axios.patch(`/enquiries/${selectedMessage.enquiryId}`, typedMessage, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         document.querySelector('#component-outlined').value = ''
         setIsLoading(false)

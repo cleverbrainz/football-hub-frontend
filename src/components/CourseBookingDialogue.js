@@ -127,7 +127,7 @@ const CourseBookingDialogue = ({
       setLoginBeforeMessage(true)
       return
     } else {
-      axios.get(`/users/${auth.getUserId()}`)
+      axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
         .then(res => {
           const { name, email, category } = res.data[0]
           setEnquiryForm({
@@ -137,6 +137,7 @@ const CourseBookingDialogue = ({
             enquiringName: category === 'parent' ? res.data[0].parentName : name
           })
         })
+        .catch(err => console.log(err))
     }
 
   }, [!loginBeforeMessage])
@@ -152,7 +153,7 @@ const CourseBookingDialogue = ({
 
     e.preventDefault()
     setIsLoading(true)
-    axios.post('/enquiries', enquiryForm)
+    axios.post('/enquiries', enquiryForm, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         setIsLoading(false)
         handleClose()

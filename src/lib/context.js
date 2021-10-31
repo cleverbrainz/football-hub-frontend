@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
     return new firebase.auth.RecaptchaVerifier(container, params, firebaseApp)
   }
 
-  console.log(user)
+  // console.log(user)
   
   useEffect(() => {
     firebaseApp.auth().onAuthStateChanged(function(user){

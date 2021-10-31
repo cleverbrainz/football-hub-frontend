@@ -102,11 +102,12 @@ export default function CompanyDetailsEdit({ history }) {
 
   useEffect(() => {
     (console.log('usefect'))
-    axios.get(`/users/${auth.getUserId()}`)
+    axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         console.log(res.data[0])
         setCompanyInfo(res.data[0])
       })
+      .catch(err => console.log(err))
   }, [!dataChange])
 
 
@@ -133,7 +134,6 @@ export default function CompanyDetailsEdit({ history }) {
       .then((res) => {
         console.log(res.data);
         history.push("/tester")
-
       })
       .catch((error) => {
         alert(error.message);
@@ -148,9 +148,7 @@ export default function CompanyDetailsEdit({ history }) {
 
     document.append("owner", auth.getUserId());
     document.append("document", image[0], image[0].name);
-
     setDataChange({ ...dataChange, [target]: true })
-
 
     axios
       .patch(`/companies/${userId}/document/${target}`, document, {
@@ -160,7 +158,6 @@ export default function CompanyDetailsEdit({ history }) {
         console.log(res.data);
         console.log(res.data.data.documents)
         // setDocuments(res.data.documents)
-
         setCompanyInfo({ ...companyInfo, documents: res.data.data.documents, verificationId: res.data.data.verificationId })
         setDataChange({ ...dataChange, [target]: false });
       })
@@ -168,14 +165,12 @@ export default function CompanyDetailsEdit({ history }) {
         console.error(err);
         setDataChange({ ...dataChange, [target]: false });
       });
-  };
-
+  };  
 
   if (!companyInfo) return null
   return (
     <Container className={classes.container}>
       <form className={classes.form} autoComplete="off" >
-
         <div className={classes.subforms}>
           <FormControl variant="outlined" className={classes.spacing}>
             <InputLabel htmlFor="component-outlined"> Company Name </InputLabel>
@@ -298,19 +293,10 @@ export default function CompanyDetailsEdit({ history }) {
                     UPLOAD {sentence.toUpperCase()} CERTIFICATE
                 </Button>
                 </div>
-
-
               </Container>
             )
           })}
-
-
-
         </div>
-
-
-
-
       </form>
 
       <Button

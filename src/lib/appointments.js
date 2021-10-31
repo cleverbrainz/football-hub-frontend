@@ -11,7 +11,7 @@ const CalendarData = () => {
   const appointments = []
 
   useEffect(() => {
-    axios.get(`/users/${auth.getUserId()}`)
+    axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         const { courses } = res.data[0]
 

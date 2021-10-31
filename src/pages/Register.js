@@ -377,8 +377,7 @@ export default function Register({ match }) {
                 <MenuItem value='£10,000,000'>£10,000,000</MenuItem>
                 <MenuItem value='Other'>Other</MenuItem>
               </Select>
-
-            </FormControl >
+            </FormControl>
 
           </>
         )

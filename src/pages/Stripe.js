@@ -44,15 +44,11 @@ export default function Stripe({
     firstDay,
     lastDay } = course.courseDetails
 
-
-
-
   const handleBookingWidget = (e) => {
     const { value } = e.target
     // const { cost, campCost } = course.courseDetails
     setBookingWidget({ spaces: value, total: value * (courseType === 'course' ? cost : campCost) })
   };
-
 
   useEffect(() => {
     console.log(course)
@@ -64,9 +60,7 @@ export default function Stripe({
       })
       setSessionLocations(locationArr)
     }
-
     setBookingWidget({ spaces: 1, total: 1 * (courseType === 'course' ? cost : campCost) })
-
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
     if (query.get("success")) {
@@ -79,19 +73,14 @@ export default function Stripe({
     }
   }, [optionalName]);
 
-
   const Message = ({ message }) => (
     <section>
       <p>{message}</p>
     </section>
   );
 
-
-
   const ProductDisplay = ({ handleClick }) => (
-
     <>
-
       <Paper style={{ marginTop: '40px' }} elevation={4}>
         <CardContent>
           <Typography style={{ marginBottom: '15px' }} variant="h5" component="h2">
@@ -102,8 +91,6 @@ export default function Stripe({
             {optionalName}
             <span style={{ display: 'block' }}> {courseType === 'course' ? startDate : firstDay} - {courseType === 'course' ? endDate : lastDay} </span>
             <span style={{ display: 'block' }}> {age} age group </span>
-
-
             <span className={classes.subtitle}> Session(s) </span>
             {sessions.map((el, i) => {
               function toDateTime(secs) {
@@ -115,11 +102,9 @@ export default function Stripe({
               return <span style={{ display: 'block' }}> {i + 1}. {courseType === 'course' ? day : moment(toDateTime(sessionDate._seconds)).format('MMMM Do YYYY')} @ {startTime}</span>
             })}
             <span className={classes.subtitle}> Location(s) </span>
-
             {(courseType === 'course' && sessionLocations) ? sessionLocations.map((el, i) => <span style={{ display: 'block ' }}> {i + 1}. {el} </span>) :
               <span style={{ display: 'block ' }}> {location} </span>
             }
-
           </Typography>
 
           <FormControl style={{ margin: '25px 0' }} className={classes.formControl}>
@@ -137,15 +122,10 @@ export default function Stripe({
               })}
             </Select>
           </FormControl>
-
-
           {/* <Typography style={{ fontWeight: 'bold' }} variant="h6" component="h6">
             Total: £{bookingWidget.total}
           </Typography> */}
-
-
         </CardContent>
-
 
         <CardActions>
           <Button
@@ -154,15 +134,11 @@ export default function Stripe({
             variant="contained"
             color="primary"
             size="small"> Reserve Now </Button>
-          <Typography variant="body2" component="p">{preview ? <p>No booking during preview</p> : <p> You won't be charged yet </p>}
-
+          <Typography variant="body2" component="p">
+            {preview ? <p>No booking during preview</p> : <p> You won't be charged yet </p>}
           </Typography>
         </CardActions>
-
-
-
       </Paper>
-
 
       {loginBeforeBooking && <PreCheckoutLogin
         followUpAction={'booking'}
@@ -179,20 +155,15 @@ export default function Stripe({
         handleClose={() => setCheckout(false)}
       />}
     </>
-
   );
 
-
-
   const handleClick = async (event) => {
-
+    
     if (!auth.isLoggedIn()) {
       setLoginBeforeBooking(true)
       return
     }
-
     setCheckout(true)
-
   }
   return message ? <Message message={message} /> : <ProductDisplay handleClick={handleClick} />
 }

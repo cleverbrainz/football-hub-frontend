@@ -56,7 +56,7 @@ export default function ContainedButtons({ history, service, getData, handleChan
 
     } else {
       return axios
-        .post("/companies/services", form)
+        .post("/companies/services", form, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
         .then((res) => {
           getData()
           handleChange(e,0)

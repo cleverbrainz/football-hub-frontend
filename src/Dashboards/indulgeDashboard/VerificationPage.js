@@ -11,8 +11,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-
-
+import { isEmpty } from 'lodash';
+import auth from '../../lib/auth';
 
 const useStyles = makeStyles({
   table: {
@@ -103,34 +103,31 @@ const VerificationPage = () => {
 
 
   useEffect(() => {
-    axios.get('/admin/awaitingVerification')
+    axios.get('/admin/awaitingVerification', { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
-        console.log('resdata', res.data)
-        setAwaitingVerification(res.data)
-        for (const item of res.data) {
-          const [id, user] = item
-          setVerificationChoice({ ...verificationChoice, [id]: 0 })
-        }
+        if (isEmpty(res.data) || res.data === null) {
+          console.log('Verification is empty')
+        } else {
+          setAwaitingVerification(res.data)
+          for (const item of res.data) {
+            const [id, user] = item
+            setVerificationChoice({ ...verificationChoice, [id]: 0 })
+          }
+        }        
       })
       .catch(error => console.log(error))
   }, [stateRefreshInProgress])
-
-  console.log(verificationChoice)
-
   const acceptDocuments = (event, [verificationId, userId], type) => {
     event.preventDefault()
     setStateRefreshInProgress(true)
     // const [verificationId, userId] = event.target.id.split('-')
-    console.log(event.target)
     const currentVerification = awaitingVerification.filter(item => item[0] === verificationId)[0][1].verification
-    console.log(currentVerification)
     const updatedVerification = { ...currentVerification, ...verificationOutcomes[type][verificationChoice[verificationId]] }
-    console.log({updatedVerification})
     // const accepted = type === 'coachInfo' ? 'coachDocumentationCheck': 'companyDetailsCheck'
 
     const message = 'Documents verifed'
     axios.put(`/admin/awaitingVerification/${verificationId}`, 
-    { type, updatedVerification, userId, message, verificationId })
+    { type, updatedVerification, userId, message, verificationId }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(setStateRefreshInProgress(false))
       .catch(setStateRefreshInProgress(false))
   }

@@ -205,7 +205,8 @@ export default function AddListings({
         });
     } else {
       return axios
-        .post("/addNewListing", { ...requestObj, ...(stripe_account && { accountId: stripe_account.id }), status: 'saved' })
+        .post("/addNewListing", { ...requestObj, ...(stripe_account && { accountId: stripe_account.id }), status: 'saved' },
+          { headers: { Authorization: `Bearer ${auth.getToken()}`}})
         .then((res) => {
           handleStateRefresh()
           getData()

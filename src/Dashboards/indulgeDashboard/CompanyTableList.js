@@ -135,7 +135,7 @@ export default function CompanyTableList({ companies }) {
             </Collapse>
           </TableCell>
         </TableRow>
-      </React.Fragment >
+      </React.Fragment>
     );
   }
 

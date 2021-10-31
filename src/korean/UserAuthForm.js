@@ -20,6 +20,13 @@ import HelpIcon from '@material-ui/icons/Help';
 import { firebaseApp } from '../lib/firebase';
 import * as firebase from "firebase";
 import { AuthContext } from '../lib/context';
+import ReactPixel from 'react-facebook-pixel'
+
+const options = {
+  autoConfig: true, 
+  debug: false,
+};
+ReactPixel.init('331288028562698', options);
 
 const UserAuthForm = ({ locale, history }) => {
 
@@ -227,7 +234,7 @@ const UserAuthForm = ({ locale, history }) => {
       .then(function (data) {
         // User successfully signed in with the second factor phone number.
         // console.log(data)
-        axios.get(`/users/${data.user.uid}`)
+        axios.get(`/users/${data.user.uid}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
           .then(res => {
             // console.log(res.data)
             const { category } = res.data[0]
@@ -254,7 +261,7 @@ const UserAuthForm = ({ locale, history }) => {
     firebaseApp.auth().signInWithEmailAndPassword(email, password)
       .then(data => {
         if (data.user.emailVerified) {
-        axios.get(`/users/${data.user.uid}`)
+        axios.get(`/users/${data.user.uid}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
           .then(res => {
             // console.log(res)
             const { category } = res.data[0]
@@ -386,7 +393,8 @@ const UserAuthForm = ({ locale, history }) => {
             error: 'Please indicate that you have read and understood the Terms & Conditions'
           })
           return
-        }
+        }        
+        ReactPixel.trackCustom('Registration', 'User created an account');
         registerDetails.language = locale
         axios.post('/registerUserViaApplication', registerDetails)
           .then(res => {
@@ -426,8 +434,8 @@ const UserAuthForm = ({ locale, history }) => {
         <Typography component='div' >
           <Box
             className={classes.boldText}
-            fontSize={20} fontWeight="fontWeightBold" m={0}>
-            {authorization['1a'][locale]}: {registrationOrLogin === 'login' ? authorization['5b'][locale] : authorization['5a'][locale]}
+            fontSize={25} fontWeight="fontWeightBold" m={0}>
+            {authorization['1a'][locale]} {registrationOrLogin === 'login' ? authorization['5ab'][locale] : authorization['5a'][locale]}
           </Box>
           {registrationOrLogin === 'login' && <>
             <Box
@@ -441,11 +449,7 @@ const UserAuthForm = ({ locale, history }) => {
                 authorization['3a'][locale] :
                 authorization['3b'][locale]}
             </Box>
-
           </>}
-
-
-
         </Typography>
 
 
@@ -687,7 +691,7 @@ const UserAuthForm = ({ locale, history }) => {
           component='div'>
           <Box
             style={{ color: '#3100F7' }}
-            fontSize={16} fontWeight="fontWeightBold" m={0}>
+            fontSize={25} fontWeight="fontWeightBold" m={0}>
             {registrationOrLogin === 'login' ? authorization['7b'][locale] : authorization['7a'][locale]}
           </Box>
           <Box

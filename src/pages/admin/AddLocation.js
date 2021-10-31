@@ -31,7 +31,7 @@ export default function AddLocation({
   const handleFormSubmit = e => {
     e.preventDefault()
 
-    axios.post("/companies/locations", formDetails)
+    axios.post("/companies/locations", formDetails, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         handleStateRefresh()
       })
@@ -58,8 +58,6 @@ export default function AddLocation({
 
 
   return (
-
-
     <form
       onSubmit={(e) => handleFormSubmit(e)}
       className={classes.form}

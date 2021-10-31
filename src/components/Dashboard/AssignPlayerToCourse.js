@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { FormControl, FormHelperText, Select, InputLabel, MenuItem, Button } from '@material-ui/core'
+import auth from '../../lib/auth';
 
 const AssignPlayerToCourse = ({player, courses, companyId, setDataChange}) => {
   const [assignedCourse, setAssignedCourse] = React.useState('');
@@ -10,8 +11,7 @@ const AssignPlayerToCourse = ({player, courses, companyId, setDataChange}) => {
   };
 
   const handleAssign = (event) => {
-    event.preventDefault()
-    console.log('button!')
+    event.preventDefault()    
     setDataChange([true, player.userId])
     const body = {
       companyId: companyId,
@@ -19,13 +19,13 @@ const AssignPlayerToCourse = ({player, courses, companyId, setDataChange}) => {
       playerName: player.name,
       playerDob: player.dob
     }
-    axios.patch(`/courses/${assignedCourse}/players`, body)
+    axios.patch(`/courses/${assignedCourse}/players`, body, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         console.log(res)
         setDataChange([false, player.userId])
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
         setDataChange([false, player.userId])
       })
   }

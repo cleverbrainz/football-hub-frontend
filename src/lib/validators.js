@@ -26,7 +26,6 @@ const isValidPassword = string => {
 exports.validateSignupFields = data => {
 
   const { fullName, email, password, confirmPassword } = data
-  console.log(data)
   const fieldErrors = {}
 
   if (isEmpty(fullName) || !isValidName(fullName)) fieldErrors.fullName = 'Please give us your full name'

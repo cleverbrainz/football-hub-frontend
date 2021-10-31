@@ -134,7 +134,7 @@ export default function Listings() {
 
   async function getData() {
 
-    const data = await axios.get(`/users/${auth.getUserId()}`)
+    const data = await axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
     const { coaches, listings, stripe_account, services, courses, name, images, verification } = await data.data[0]
 
     let coachArray = []
@@ -142,22 +142,43 @@ export default function Listings() {
 
     for (const id of coaches) {
       let coach
-      const response = await axios.get(`/users/${id}`)
-      coach = await response.data[0] ? response.data[0] : response.data
-      coachArray.push(coach)
+      // const response = await axios.get(`/users/${id}`)
+      axios.get(`/users/${id}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+        .then(res => {
+          coach = res.data[0] ? res.data[0] : res.data
+          coachArray.push(coach)
+        })
+        .catch(err => console.log(err))
+      // coach = await response.data[0] ? response.data[0] : response.data
+      // coachArray.push(coach)
     }
 
-    for (const id of listings) {
-      console.log('THIS IS', id)
-      let listing
-      const response = await axios.get(`/listings/${id}`)
-      listing = await response.data[0] ? response.data[0] : response.data
-      listingArray.push(listing)
-    }
-
-    console.log(coachArray, listingArray)
-
+    await Promise.all(listings.map(async (listing) => {
+      await axios.get(`/listings/${listing}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+        .then(async res => {
+          listing = res.data[0] ? res.data[0] : res.data
+          listingArray.push(listing)
+        })
+        .catch(async err => console.log(err))
+    }))
     setCompanyListings(listingArray);
+    // for (const id of listings) {
+    //   let listing
+    //   // const response = await axios.get(`/listings/${id}`)
+    //   axios.get(`/listings/${id}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+    //     .then(res => {
+    //       listing = res.data[0] ? res.data[0] : res.data
+    //       listingArray.push(listing)
+    //       total++;
+    //       if (total == listings.length) {
+    //         console.log('listingArray===>', listingArray)
+    //         setCompanyListings(listingArray);
+    //       }
+    //     })
+    //     .catch(err => console.log(err))
+    //   // listing = await response.data[0] ? response.data[0] : response.data
+    //   // listingArray.push(listing)
+    // }
     setListingTransferListInfo({
       ...listingTransferListInfo,
       stripe_account,
@@ -167,7 +188,7 @@ export default function Listings() {
       companyName: name,
       images
     })
-    setCompletedSetup(verification.setup)
+    setCompletedSetup(verification.setup)    
   }
 
   useEffect(() => {
@@ -195,9 +216,7 @@ export default function Listings() {
     // setStateRefreshInProgress(false);
   }
 
-  const handleDelete = () => {
-
-
+  const handleDelete = () => {    
     axios
       .delete(`/companies/listings/${listingIdToBeDeleted}`, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
@@ -212,11 +231,8 @@ export default function Listings() {
         // console.error(err);
         handleClose();
         getData()
-
-
       });
   };
-
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -266,7 +282,6 @@ export default function Listings() {
       <TabPanel value={value} index={0}>
         {(completedSetup && companyListings) &&
           <ListingsPageTable
-
             listings={companyListings}
             handleSetListingId={listingId => handleSetListingId(listingId)}
             handleSetListingToBeEdited={listing => handleSetListingToBeEdited(listing)} />}
@@ -316,6 +331,3 @@ export default function Listings() {
     </div>
   );
 }
-
-
-

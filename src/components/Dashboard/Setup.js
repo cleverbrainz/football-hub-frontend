@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useLayoutEffect} from 'react';
 import { Paper, Grid, Typography } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,9 +14,9 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    height: '40vh',
+    // height: '40vh',
     borderRadius: '20px',
-    position: 'relative'
+    position: 'relative',
   },
   fab: {
     position: 'absolute',
@@ -25,10 +25,22 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
 const Setup = ({ handleComponentChange }) => {
 
   const classes = useStyles();
+  const [paperHeight, setPaperHeight] = useState('')
+
+  useLayoutEffect(() => {
+    function updateSize() {
+      if (window.innerHeight<768) {
+        setPaperHeight('50vh')
+      } else {
+        setPaperHeight('40vh')
+      }
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+  }, []);
 
   const cards = [
     {
@@ -62,16 +74,14 @@ const Setup = ({ handleComponentChange }) => {
       <Grid container
         spacing={3}>
         <>
-
           {cards.map((el, i) => {
             return (
-              <Grid item xs={12} sm={3}>
+              <Grid item xs={12} sm={6} md={3}>
                 <Paper elevation={4}
-                  className={classes.paper}>
+                  className={classes.paper} style={{height: paperHeight}}>
                   <Typography gutterBottom variant="h5">
                     {el.text}
                   </Typography>
-
 
                   <Typography gutterBottom variant="p">
                     {el.description}
@@ -86,6 +96,7 @@ const Setup = ({ handleComponentChange }) => {
                     <EditIcon />
                   </Fab>
                   )}
+
                   <Fab className={classes.fab}
                     size="small"
                     onClick={() => handleComponentChange(el.component, 1)}
@@ -93,23 +104,21 @@ const Setup = ({ handleComponentChange }) => {
                     aria-label="add">
                     <AddIcon />
                   </Fab>
-
                 </Paper>
               </Grid>
             )
           })}
 
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={6} md={3}>
             <Paper elevation={4}
-              className={classes.paper}>
+              className={classes.paper} style={{height: paperHeight}}>
               <Typography gutterBottom variant="h5">
                 Payment Details
-                </Typography>
-
+              </Typography>
 
               <Typography gutterBottom variant="p">
                 Update your subscription and account settings to enable online payments
-                </Typography>
+              </Typography>
 
              <Fab className={classes.fab}
                 size="small"
@@ -120,7 +129,6 @@ const Setup = ({ handleComponentChange }) => {
               </Fab>
             </Paper>
           </Grid>
-
         </>
       </Grid>
     </div>

@@ -17,8 +17,6 @@ const FilterModal = ({ toggleModal,
   handleAgeChange 
 }) => {
 
-  console.log(selectedFilter)
-
   const componentsObject = {
     Location: LocationFilter,
     Age: AgeFilter,

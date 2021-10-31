@@ -409,6 +409,12 @@ const arr = [
   },
   {
     "page": "authorization",
+    "section": "5ab",
+    "english": "with AFC Ajax",
+    "korean": "AFC 아약스와 함께합니다"
+  },
+  {
+    "page": "authorization",
     "section": "5c",
     "english": "Reset Password",
     "korean": "비밀번호 재설정"
@@ -985,7 +991,47 @@ const arr = [
     "korean": "입력한 URL이 정확하다면 제출하기 버튼을 클릭해 주세요."
   },
 
+  {
+    "page": "application",
+    "section": "21",
+    "english": "What do you want to know by applying the Ajax training programme? (you can choose one or more among the below)",
+    "korean": "아래 항목 중 가장 관심 있는 내용은 무엇인가요? (여러 항목 선택 가능)"
+  },
 
+  {
+    "page": "application",
+    "section": "21a",
+    "english": "I (my child) want to improve footballing skills.",
+    "korean": "축구 기술을 향상시키고 싶어요."
+  },
+
+  {
+    "page": "application",
+    "section": "21b",
+    "english": "I (my child) want to know how to become a football player in Europe.",
+    "korean": "유럽에서 선수로 활동하려면 어떻게 해야 하는지 알고 싶어요."
+  },
+
+  {
+    "page": "application",
+    "section": "21c",
+    "english": "I (my child) want to decide wether should keep pursuing a dream of becoming a professional player.",
+    "korean": "프로 축구 선수가 되기 위한 노력을 계속해야 하는지 결정하고 싶어요."
+  },
+
+  {
+    "page": "application",
+    "section": "21d",
+    "english": "I (my child) want to explore what kind of other career paths there are in football.",
+    "korean": "프로 선수 이외에 축구와 관련된 진로에는 어떤 것들이 있는지 탐색해 보고 싶어요."
+  },
+
+  {
+    "page": "application",
+    "section": "21e",
+    "english": "Others (please specify)",
+    "korean": "그 외 (기술하여 주세요)"
+  },
 
   {
     "page": "snackbar_messages",
@@ -1118,6 +1164,12 @@ const arr = [
     "section": "1c",
     "english": "applications",
     "korean": "지원서"
+  },
+  {
+    "page": "profile",
+    "section": "1ca",
+    "english": "challenges",
+    "korean": "챌린지"
   },
   {
     "page": "profile",
@@ -1260,8 +1312,8 @@ const arr = [
   {
     "page": "profile",
     "section": "9a",
-    "english": "Please complete and submit your personal information and football history. / After this please complete and submit the challenges.",
-    "korean": "먼저 참가신청자 본인의 정보와 유스 경력을 토대로 프로필을 작성하여 참가신청을 완료하세요. / 참가신청 이후 가이드라인에 따라 챌린지 영상(유튜브) 업로드하여 제출하세요."
+    "english": "Please complete and submit your personal information and football history. / After this, if you are able to, you can choose to complete and submit the challenges",
+    "korean": "먼저 참가신청자 본인의 정보와 유스 경력을 토대로 프로필을 작성하여 참가신청을 완료하세요. / 이후 원한다면 챌린지를 완수하여 영상을 제출할 수 있습니다."
   },
   {
     "page": "profile",
@@ -1280,6 +1332,12 @@ const arr = [
     "section": "10c",
     "english": "Attributes",
     "korean": "특성"
+  },
+  {
+    "page": "profile",
+    "section": "10d",
+    "english": "Optional",
+    "korean": "선택사항"
   },
   {
     "page": "profile",

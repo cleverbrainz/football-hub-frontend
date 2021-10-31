@@ -96,12 +96,6 @@ export default function CompanyAddCoach({ info, setInfo, handleComponentChange, 
   // const [pending, setPending] = useState(false)
   const [updated, setUpdated] = useState({})
   const [user, setUser] = useState(info)
-
-  console.log(user)
-
-
-
-
   const [image, setImage] = React.useState(null);
   const [url, setUrl] = React.useState("");
   // const [dataChange, setDataChange] = useState(false);
@@ -119,10 +113,6 @@ export default function CompanyAddCoach({ info, setInfo, handleComponentChange, 
     coachingCertificate: false,
     dbsCertificate: false,
   })
-
-  console.log(existing)
-
-
   const dbsInput = useRef();
   const coachingInput = useRef();
   const imageInput = useRef();
@@ -137,8 +127,8 @@ export default function CompanyAddCoach({ info, setInfo, handleComponentChange, 
     // refreshState(true);
     // setDataChange({ ...dataChange, [e.target.name]: true })
     e.preventDefault();
-    console.log(imageURL)
-    console.log({existing})
+    // console.log(imageURL)
+    // console.log({existing})
     const path = existing ? `/users/${userId}` : `/companies/addSelfCoach`
     axios
       .patch(
@@ -150,20 +140,18 @@ export default function CompanyAddCoach({ info, setInfo, handleComponentChange, 
         },
         { headers: { Authorization: `Bearer ${auth.getToken()}` } }
       )
-      .then((res) => {
-        console.log(res.data);
-        // setDataChange({ ...dataChange, [e.target.name]: false })
-      console.log(info.category)
+      .then((res) => {        
+        // setDataChange({ ...dataChange, [e.target.name]: false })    
       
-      refreshState(true)
-      if (info.category === 'company') {
-        changePage(e, 0, false)
-       } else {
-         refreshData().then(() => {
-          setPending(false)
-          handleComponentChange('Summary', 0, false)
-        })
-       } 
+        refreshState(true)
+        if (info.category === 'company') {
+          changePage(e, 0, false)
+        } else {
+          refreshData().then(() => {
+            setPending(false)
+            handleComponentChange('Summary', 0, false)
+          })
+        } 
       })
       .catch((error) => {
         alert(error.message);
@@ -173,15 +161,11 @@ export default function CompanyAddCoach({ info, setInfo, handleComponentChange, 
   const handleDocumentUpload = (e) => {
     const type = e.target.name
     setDataChange({ ...dataChange, [type]: true })
-    console.log("type", type);
     const image = e.target.files; 
     const document = new FormData();
 
     document.append("owner", auth.getUserId());
     document.append("document", image[0], image[0].name);
-
-    console.log(document);
-
     axios
       .patch(`/coaches/${userId}/document/${type}`, document, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
@@ -192,7 +176,6 @@ export default function CompanyAddCoach({ info, setInfo, handleComponentChange, 
         const resInfo = res.data.coachInfo ? res.data.coachInfo : res.data.data.coachInfo
         const updatedVerification = res.data.verification ? res.data.verification : res.data.data.verification
         // console.log(resInfo);
-        console.log('updated file!')
         setPending(true)
         // setInfo({ ...user, ...updatedVerification })
         setUser({ ...updatedUser })
@@ -222,7 +205,6 @@ export default function CompanyAddCoach({ info, setInfo, handleComponentChange, 
 
     axios.post(`/coaches/image/${userId}`, picture, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
-        console.log(res.data)
         setImageUpload(false)
         setAvatarImage(res.data.message)
         setCoachInfo({ ...coachInfo, imageURL: res.data.message })

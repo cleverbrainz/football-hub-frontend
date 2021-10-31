@@ -74,7 +74,7 @@ const Images = ({ history }) => {
 
 
   function updateUser() {
-    axios.get(`/users/${auth.getUserId()}`)
+    axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         const emptyImageSlots = []
         for (let i = 0; i < 8 - res.data[0].images.length; i++) {
@@ -83,6 +83,7 @@ const Images = ({ history }) => {
         setUser(res.data[0])
         setEmptyImageSlots(emptyImageSlots)
       })
+      .catch(err => console.log(err))
   }
 
 
@@ -107,7 +108,7 @@ const Images = ({ history }) => {
 
     axios.delete(`/user/image/${e.target.id}/`, { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setDataChange(false)
       })
       .catch(err => {

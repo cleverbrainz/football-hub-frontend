@@ -119,7 +119,6 @@ const ClientMessages = (props) => {
   useEffect(() => {
     axios.get('/enquiries/player', { headers: { Authorization: `Bearer ${auth.getToken()}` } })
       .then(async res => {
-        console.log(res.data)
         const orderedMessages = res.data.sort((a, b) => {
           const messageA = a.enquiryInfo.messages[a.enquiryInfo.messages.length - 1]
           const messageB = b.enquiryInfo.messages[b.enquiryInfo.messages.length - 1]
@@ -137,6 +136,7 @@ const ClientMessages = (props) => {
           scroll()
         }
       })
+      .catch(err => console.log(err))
 
   }, [!isLoading])
 
@@ -157,7 +157,7 @@ const ClientMessages = (props) => {
   const handleSendMessage = e => {
     e.preventDefault()
     setIsLoading(true)
-    axios.patch(`/enquiries/${selectedMessage.enquiryId}`, typedMessage)
+    axios.patch(`/enquiries/${selectedMessage.enquiryId}`, typedMessage, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         document.querySelector('#component-outlined').value = ''
         setIsLoading(false)

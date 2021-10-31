@@ -26,10 +26,13 @@ import TextField from "@material-ui/core/TextField";
 import axios from "axios";
 import SearchBar from "./HomeSearch";
 import ExploreIcon from "@material-ui/icons/Explore";
+import CheckIcon from '@material-ui/icons/Check';
+import {Link } from 'react-router-dom'
 import Footer from '../components/Footer'
 import { askForPermissioToReceiveNotifications } from '../notifications/push-notifications';
 
 import { useStripe } from "@stripe/react-stripe-js";
+import auth from '../lib/auth'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -68,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
   },
   featureRoot: {
     [theme.breakpoints.up("sm")]: {
-      maxWidth: 1200,
+      maxWidth: "40%",
     },
     maxWidth: 320,
     margin: "0 auto",
@@ -114,7 +117,31 @@ const useStyles = makeStyles((theme) => ({
     margin: "10px",
     width: "200px",
   },
-
+  textContainer: {
+    marginTop: '40px',
+    marginBottom: '40px',
+    [theme.breakpoints.up("md")]: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'row'
+    },  
+  },
+  registerButton: {
+    padding: '10px 40px',
+    fontSize: '14pt',
+    backgroundColor: '#02a7f0',
+    borderRadius: '10px',
+    color: 'white',
+    "&:hover": {
+      backgroundColor: '#02a7f0',
+    },
+  },
+  buttonContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 }));
 
 const Home = () => {
@@ -149,9 +176,11 @@ const Home = () => {
   };
 
   const handleMessage = () => {
-    axios.post("/preSignUpEnquiry", message).then((res) => {
-      console.log(res.data);
-    });
+    axios.post("/preSignUpEnquiry", message, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch(err => console.log(err));
   };
 
   return (
@@ -224,17 +253,13 @@ const Home = () => {
           src="https://images.unsplash.com/photo-1556476870-36fde88f47d0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMjF9&auto=format&fit=crop&w=2090&q=80"
           alt=""
         />
-
-   
-
         <SearchBar classes={classes} />
-
-
       </div>
+      
       <section>
-        <Typography style={{ textAlign: 'center', margin: '40px 0' }} variant='h5' > Pathway to greatness </Typography>
+        <Typography style={{ textAlign: 'center', margin: '40px 0' }} variant='h5' > Popular courses in Epsom </Typography>
         <section id='home-scroll-section' className={classes.section}>
-          {['Your pathway', 'Get advice', 'What to look for'].map((el, i) => {
+          {['Elite Coaches', 'Clever Coaches', 'ABC Coaches'].map((el, i) => {
             let text
             if (homeDetails) {
               switch (i) {
@@ -260,21 +285,21 @@ const Home = () => {
                     image="https://images.unsplash.com/photo-1510566337590-2fc1f21d0faa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"
                   />
                   <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
+                    <Typography style={{ textAlign: 'center'}} >
                       {el}
                     </Typography>
 
-                    <Typography variant="body2" color="textSecondary" component="p">
+                    {/* <Typography variant="body2" color="textSecondary" component="p">
                       {text}
-                    </Typography>
+                    </Typography> */}
 
                   </CardContent>
                 </CardActionArea>
-                <CardActions>
+                {/* <CardActions>
                   <Button size="small" color="primary">
                     Learn More
                   </Button>
-                </CardActions>
+                </CardActions> */}
               </Card>
             );
           })}
@@ -284,10 +309,12 @@ const Home = () => {
       <Divider style={{ margin: "70px 0" }} />
 
       <section>
-        <Fab style={{ margin: "0 95px 70px 95px" }} variant="extended">
+        {/* <Fab style={{ margin: "0 95px 70px 95px" }} variant="extended">
           <NewReleasesSharpIcon style={{ marginRight: "10px" }} />
           NEW FEATURE
-        </Fab>
+        </Fab> */}
+
+        <Typography style={{ textAlign: 'center', margin: '40px 0' }} variant='h5' > Summer Camp of the Week </Typography>
 
         <Card className={classes.featureRoot}>
           <CardActionArea className={classes.subRoot}>
@@ -295,7 +322,7 @@ const Home = () => {
               className={classes.featureMedia}
               image="https://images.unsplash.com/photo-1510566337590-2fc1f21d0faa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"
             />
-            <CardContent>
+            {/* <CardContent>
               <Typography gutterBottom variant="h5" component="h2">
                 NEW FEATURED COMPANY
               </Typography>
@@ -342,12 +369,34 @@ const Home = () => {
                   </AccordionDetails>
                 </Accordion>
               </div>
-            </CardContent>
+            </CardContent> */}
           </CardActionArea>
         </Card>
+        <Typography style={{ textAlign: 'center', marginTop: '20px'}}> JD Summer Camps </Typography>
       </section>
 
-      <Divider style={{ marginTop: "70px" }} />
+      <section style={{backgroundColor: '#f2f2f2', padding: '30px 0'}}>
+        <Typography style={{ textAlign: 'center'}} variant='h5' > Want your company listed? </Typography>
+        <div className={classes.textContainer}>
+          {['Attract new players to your courses and camps',
+            'Manage your existing players with our CRM', 
+            'Take registers and assign coaches'].map((el, index) => { 
+              return (
+                <div key={index} style={{display: 'flex', alignItems: 'center', flexDirection: 'row', marginLeft: '20px'}}>
+                  <CheckIcon style={{fontSize: 'large'}}></CheckIcon>
+                  <p>{el}</p>
+                </div>
+              );
+          })}    
+        </div>  
+        <div className={classes.buttonContainer}>
+          <Button className={classes.registerButton}>
+            <Link style={{ color: 'white' }} to='/loginregister'> SIGN UP TODAY </Link>         
+          </Button>
+        </div>              
+      </section>
+
+      {/* <Divider style={{ marginTop: "70px" }} /> */}
       <Footer />
     </>
   );

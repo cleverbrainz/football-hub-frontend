@@ -108,6 +108,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: -12,
   },
 }));
+
 function CompanyDetailsEdit({ handleComponentChange }) {
   const classes = useStyles();
   const userId = auth.getUserId()
@@ -118,14 +119,16 @@ function CompanyDetailsEdit({ handleComponentChange }) {
   const [imageUpload, setImageUpload] = useState(false)
   const [companyInfo, setCompanyInfo] = useState(null)
   const [pending, setPending] = useState(false)
-  const [snackBarOpen, setSnackBarOpen] = useState(false)
+  const [snackBarOpen, setSnackBarOpen] = useState(false)  
+
   useEffect(() => {
     // (console.log('usefect'))
-    axios.get(`/users/${auth.getUserId()}`)
+    axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         console.log(res.data[0])
         setCompanyInfo(res.data[0])
       })
+      .catch(err => console.log(err))
   }, [!dataChange])
 
   const input = {
@@ -148,10 +151,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
         userId,
         updates: companyInfo,
         type: 'companyInfo'
-      },
-      {
-        headers: { Authorization: `Bearer ${auth.getToken()}` },
-      })
+      },{ headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then((res) => {
         console.log(res.data);
         setSaved('saved')
@@ -171,9 +171,8 @@ function CompanyDetailsEdit({ handleComponentChange }) {
     setDataChange({ ...dataChange, [target]: true })
 
     axios
-      .patch(`/companies/${userId}/document/${target}`, document, {
-        headers: { Authorization: `Bearer ${auth.getToken()}` },
-      })
+      .patch(`/companies/${userId}/document/${target}`, document, 
+      { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then((res) => {
         console.log(res.data);
         console.log(res.data.data.documents)
@@ -195,7 +194,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
   const closeSnackBar = (event, reason) => {
     if (reason === 'clickaway') return;
     handleComponentChange('Summary', 0)
-  };
+  };  
 
   if (!companyInfo) return null
   return (
@@ -308,10 +307,7 @@ function CompanyDetailsEdit({ handleComponentChange }) {
               </Container>
             )
           })}
-
         </div>
-
-
       </form>
       <Container style={{ alignItems: 'center', display: 'flex', justifyContent: 'center', minWidth: '60px' }}>
         <Button
@@ -321,9 +317,8 @@ function CompanyDetailsEdit({ handleComponentChange }) {
           variant="contained"
           color="primary"
         >
-          {saved === 'saving' ? <span> <CircularProgress size={24} className={classes.buttonProgressWhite} /></span> : saved === 'saved' ? <CheckCircleIcon fontSize='large' /> : 'Save'}
+          {saved === 'saving' ? <span> <CircularProgress size={24} className={classes.buttonProgressWhite} color='primary' /></span> : saved === 'saved' ? <CheckCircleIcon fontSize='large' /> : 'Save'}
         </Button>
-
       </Container>
       <Snackbar open={snackBarOpen} autoHideDuration={1000} onClose={closeSnackBar}>
         <Alert onClose={closeSnackBar} severity="success">

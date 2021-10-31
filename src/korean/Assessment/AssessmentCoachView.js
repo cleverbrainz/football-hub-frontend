@@ -8,7 +8,7 @@ import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-
+import auth from '../../lib/auth';
 import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
@@ -80,7 +80,7 @@ function AssessmentCoachView({
 
 
   useEffect(() => {
-    axios.get(`/users/${application[0]}`)
+    axios.get(`/users/${application[0]}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         const { applications: { ajax_application: { assessment_id } } } = res.data[0]
 
@@ -93,7 +93,7 @@ function AssessmentCoachView({
 
 
   function getAssessment() {
-    axios.get(`/player-assessment/${application[2].assessment_id}`)
+    axios.get(`/player-assessment/${application[2].assessment_id}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         setAssessmentDataObject(res.data)
       })
@@ -127,7 +127,7 @@ function AssessmentCoachView({
       ...(application[2].hasOwnProperty('assessment_id') && {
         assessment_id: application[2].assessment_id
       })
-    })
+    }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         setTabValue(2)
       })

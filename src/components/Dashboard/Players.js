@@ -46,7 +46,6 @@ const useStyles = makeStyles({
 })
 
 export default function CompanyPlayersList() {
-  console.log(window.location)
   const [companyData, setCompanyData] = useState([])
   const [players, setPlayers] = useState([])
   const [filteredNames, setFilteredNames] = useState([])
@@ -61,18 +60,14 @@ export default function CompanyPlayersList() {
   const [open, setOpen] = useState({})
   const [dataChange, setDataChange] = useState([false, '']);
 
-
   async function getData() {
     let playerlist = {}
-    const response = await axios.get(`/users/${auth.getUserId()}`)
+    const response = await axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
     const data = await response.data[0]
-    console.log(data)
     for (const player of Object.keys(data.players)) {
       let playerInfo
-      const response = await axios.get(`/users/${player}`)
+      const response = await axios.get(`/users/${player}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       playerInfo = await response.data[0]
-      console.log(player, 'playerinfo', playerInfo)
-      console.log('data', data)
       playerlist[player] = playerInfo
       setOpen({...open, [playerInfo.userId]: playerInfo.Id === dataChange[1] ? true : false })
     }
@@ -86,7 +81,6 @@ export default function CompanyPlayersList() {
   }, [!dataChange[0]])
 
   const handleFilterChange = (event) => {
-    console.log(event)
     const name = event.target.name
     const newFilters = {
       ...filters,
@@ -123,7 +117,6 @@ export default function CompanyPlayersList() {
     event.preventDefault()
     setEmailRequest(event.target.value)
     setMessage('')
-    console.log(emailRequest)
   }
 
   const isValidEmail = string => {
@@ -138,9 +131,9 @@ export default function CompanyPlayersList() {
       setMessage('Email address is not valid. Please try again.')
       return
     }
-    axios.post('/emailRequest', { email: emailRequest, companyName: companyData.name, companyId: companyData.userId, type: window.location.hostname })
+    axios.post('/emailRequest', { email: emailRequest, companyName: companyData.name, companyId: companyData.userId, type: window.location.hostname },
+      { headers: { Authorization: `Bearer ${auth.getToken()}`}})
       .then(res => {
-        console.log(res)
         setMessage('Email Sent!')
         setEmailRequest('')
       })
@@ -212,7 +205,7 @@ export default function CompanyPlayersList() {
             </TableHead>
             <TableBody>
               {filteredNames.map((el, i) => {
-                console.log(players[el])
+                {/* console.log(players[el]) */}
                 const activeCourses = players[el].courses[companyData.userId]?.active ? players[el].courses[companyData.userId].active : []
                 const pastCourses = players[el].courses[companyData.userId]?.past ? players[el].courses[companyData.userId].past : []
                 return (
@@ -280,7 +273,7 @@ export default function CompanyPlayersList() {
                               <Table aria-label="collapsible table">
                                 <TableHead>
                                   <TableRow>
-                                    <TableCell>Name </TableCell>
+                                    <TableCell>Name</TableCell>
                                     <TableCell align="right">
                                       Start Date
                                     </TableCell>
@@ -296,9 +289,9 @@ export default function CompanyPlayersList() {
                                 </TableHead>
                                 <TableBody>
                                   { activeCourses.map((elCourse, i) => {
-                                    console.log({elCourse, companyData})
+                                    {/* console.log({elCourse, companyData}) */}
                                     for (const correctCourse of companyData.courses.active) {
-                                      console.log(elCourse, correctCourse.courseId)
+                                      {/* console.log(elCourse, correctCourse.courseId) */}
                                       if (elCourse === correctCourse.courseId)
                                         {
                                           return (
@@ -320,8 +313,6 @@ export default function CompanyPlayersList() {
                                           )
                                         }
                                     }
-
-                                    
                                   })}
                                 </TableBody>
                               </Table>
@@ -363,9 +354,9 @@ export default function CompanyPlayersList() {
                                 </TableHead>
                                 <TableBody>
                                   {pastCourses && pastCourses.map((elCourse, i) => {
-                                    console.log({elCourse, companyData})
+                                    {/* console.log({elCourse, companyData}) */}
                                     for (const correctCourse of companyData.courses.past) {
-                                      console.log(elCourse, correctCourse.courseId)
+                                      {/* console.log(elCourse, correctCourse.courseId) */}
                                       if (elCourse === correctCourse.courseId)
                                         {
                                           return (
@@ -390,8 +381,6 @@ export default function CompanyPlayersList() {
                                           )
                                         }
                                     }
-
-                                    
                                   })}
                                 </TableBody>
                               </Table>

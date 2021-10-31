@@ -67,7 +67,7 @@ const ReactMapPopup = ({ selected }) => {
         .to("#slideshow", 0.15, { filter: "blur(0)" }, "+=0.1");
       count++;
       currentPosition += size;
-      console.log(count);
+      // console.log(count);
     } else {
       if (count === 1) {
         return;

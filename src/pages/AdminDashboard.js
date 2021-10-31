@@ -1,8 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useLayoutEffect} from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useRouteMatch
+} from 'react-router-dom'
 
 import {
+  Link,
   Drawer,
   AppBar,
   Toolbar,
@@ -55,7 +62,6 @@ import Subscription from '../Subscription';
 import Profile from './Profile'
 
 const drawerWidth = 240;
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -117,8 +123,9 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     width: '100%',
+    backgroundColor: '#fafafa',
     [theme.breakpoints.up('sm')]: {
-      width: `${100 - ((73 / window.innerWidth) * 100)}%`,
+      // width: `${100 - ((73 / window.innerWidth) * 100)}%`,
       float: 'right'
     },
 
@@ -143,7 +150,8 @@ export default function AdminDashboard({ history }) {
   const [open, setOpen] = useState(false);
   const [selectedComponent, setSelectedComponent] = useState('Summary');
   const [componentTabValue, setComponentTabValue] = useState(0)
-
+  const [contentWidth, setContentWidth] = useState('')
+  
   const [drawerItems, setDrawerItems] = useState({
     Summary: BubbleChartSharp,
     Calendar: EventNoteSharp,
@@ -178,10 +186,29 @@ export default function AdminDashboard({ history }) {
   const handleComponentChange = async (selectedComponent, tabValue) => {
 
     setComponentTabValue(tabValue)
-
-    setSelectedComponent(selectedComponent)
+    // setSelectedComponent(selectedComponent)
+    history.push(`/tester/${selectedComponent}`)
   }
 
+  useEffect(() => {
+    if (history.location.pathname.replace("/tester", "") == "") {
+      history.push("/tester/Summary");
+    } else {
+      setSelectedComponent(history.location.pathname.replace("/tester/", ""))
+    }    
+  }, [history.location.pathname])
+
+  useLayoutEffect(() => {
+    function updateSize() {
+      if (window.innerWidth<600) {
+        setContentWidth('100%')
+      } else {
+        setContentWidth(`${100 - ((73 / window.innerWidth) * 100)}%`)
+      }
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -193,10 +220,7 @@ export default function AdminDashboard({ history }) {
           [classes.appBarShift]: open
         })}
       >
-
-
         <Toolbar className={classes.contentLayout}>
-
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <IconButton
               color="inherit"
@@ -211,17 +235,15 @@ export default function AdminDashboard({ history }) {
             </IconButton>
             <Typography variant="h6" noWrap>
               ftballer
-          </Typography>
-
+            </Typography>
           </div>
-
-          <Button variant='contained' color='secondary' onClick={() => {
-            auth.logOut()
-            history.push('/')
+          <Button variant='contained' color='secondary' onClick={async () => {
+            await auth.logOut()
+            await history.push('/')
+            window.location.reload();
           }}> Log out </Button>
         </Toolbar>
       </AppBar>
-
 
       <Drawer
         variant="permanent"
@@ -247,14 +269,12 @@ export default function AdminDashboard({ history }) {
         <List>
           {Object.keys(drawerItems).map((text, index) => {
             const Icon = drawerItems[text]
-
-
             return (
               <ListItem
-
                 onClick={() => {
                   setOpen(false)
-                  setSelectedComponent(text)
+                  // setSelectedComponent(text)
+                  history.push(`/tester/${text}`)                  
                 }}
                 style={{ paddingLeft: '24px', marginTop: '25px' }} button key={text}>
                 <ListItemIcon> <Icon /> </ListItemIcon>
@@ -263,16 +283,14 @@ export default function AdminDashboard({ history }) {
             )
           })}
         </List>
-
       </Drawer>
-      <main className={classes.content}>
+      <main className={classes.content} style={{width: contentWidth}}>
 
         <DisplayedComponent
           // props for summary tab
           handleComponentChange={(component, tab) => handleComponentChange(component, tab)}
           componentTabValue={componentTabValue}
         />
-
       </main>
     </div>
   );

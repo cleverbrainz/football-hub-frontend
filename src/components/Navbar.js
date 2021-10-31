@@ -10,17 +10,17 @@ function Navbar() {
   const [pathName, setPathName] = useState('/')
   const [loggedIn, setLoggedIn] = useState(false)
   const authUser = useContext(AuthContext)
-  console.log(authUser)
+  // console.log(authUser)
 
   useEffect(() => {
     setPathName(location.pathname)
-    console.log((authUser.user))
+    // console.log((authUser.user))
     if (!authUser.user.checked) return
-    console.log('checked Nav')
+    // console.log('checked Nav')
     setLoggedIn(authUser.user !== null ? authUser.user.user !== null ? true : false : false)
   }, [location.pathname, authUser.user])
 
-  console.log('nav', loggedIn)
+  // console.log('nav', loggedIn)
   if (!authUser.user.checked) return null
   return (
     <>

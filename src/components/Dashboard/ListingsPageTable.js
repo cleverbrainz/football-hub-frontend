@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -35,12 +35,17 @@ export default function ListingsPageTable({
   handleSetListingToBeEdited }) {
   const classes = useStyles();
   const [updatedListings, setUpdatedListings] = useState(listings)
+  const [reload, setReload] = useState(true)
   const liveState = {}
   updatedListings.forEach(listing => liveState[listing.listingId] = listing.status)
   const [liveListing, setLiveListing] = useState(liveState)
 
+  useEffect(() => {
+    setReload(false)
+  })
+  
   const handleChange = (id, value) => {
-    // console.log(id)
+
     const updated = { ...liveListing }
     for (const listing of Object.keys(updated)) {
       if (listing === id) {
@@ -48,14 +53,15 @@ export default function ListingsPageTable({
       } else {
         updated[listing] = 'saved'
       }
-      // console.log(updated)
+      console.log(updated)
     }
     const updates = Object.entries(updated)
-    axios.patch(`/listings/live`, { updates: updates })
+    axios.patch(`/listings/live`, { updates: updates }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         setLiveListing(updated)
-        // console.log(updated)
+        console.log('listing updated===>', updated)
       })
+      .catch(err => console.log(err))
   };
 
   return (
@@ -92,8 +98,8 @@ export default function ListingsPageTable({
                   }} target="_blank" ><Button variant="contained" >Preview</Button></Link>
                   <Checkbox
                     checked={liveListing[el.listingId] === 'live'}
-                    onChange={() => handleChange(el.listingId, (liveListing[el.listingId] === 'live'))}
-
+                    onChange={() => {
+                      handleChange(el.listingId, (liveListing[el.listingId] === 'live'))}}
                   ></Checkbox>
                 </TableCell>
                 <TableCell align="right">

@@ -88,7 +88,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
     //   console.log(el.className)
     // })
 
-    axios.get(`/users/${auth.getUserId()}`)
+    axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       .then(res => {
         const locationArr = []
         const ageArr = []
@@ -124,7 +124,7 @@ export default function WeeklyformDetails({ history, course, handleCampResetInfo
         .post("/companies/courses", {
           courseDetails,
           companyId: auth.getUserId(),
-        })
+        }, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
         .then((res) => {
           handleStateRefresh()
         })

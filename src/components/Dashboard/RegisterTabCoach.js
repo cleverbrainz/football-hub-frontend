@@ -132,13 +132,12 @@ async function getData() {
   let activeRegisterArray = []
   let pastRegisterArray = []
   let coachArray = []
-  const response = await axios.get(`/users/${auth.getUserId()}`)
+  const response = await axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
   const data = await response.data[0]
-  console.log(data)
 
   for (const course of data.courses.active) {
   let register
-  const response = await axios.get(`/courses/${course.courseId}`)
+  const response = await axios.get(`/courses/${course.courseId}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
   register = await response.data
   console.log(register.register)
   // console.log('data', data)
@@ -146,15 +145,13 @@ async function getData() {
   }
   for (const course of data.courses.past) {
     let register
-    const response = await axios.get(`/courses/${course.courseId}`)
+    const response = await axios.get(`/courses/${course.courseId}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
     register = await response.data
-    console.log(register.register)
-    // console.log('data', data)
     if (register.register) pastRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
     }
   for (const coach of data.coaches) {
     let coachdetails
-    const response = await axios.get(`users/${coach}`)
+    const response = await axios.get(`users/${coach}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
     coachdetails = await response.data[0]
     coachArray.push(coachdetails)
   }

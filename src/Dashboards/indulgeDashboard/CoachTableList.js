@@ -135,7 +135,7 @@ export default function CoachTableList({ coaches }) {
             </Collapse>
           </TableCell>
         </TableRow>
-      </React.Fragment >
+      </React.Fragment>
     );
   }
 

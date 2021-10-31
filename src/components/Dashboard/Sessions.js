@@ -23,40 +23,8 @@ import DeleteComponent from '../../Dashboards/dashboardComponents/DeleteComponen
 import SessionsPageTable from '../../components/SessionsPageTable'
 import MaterialUIPickers from '../../pages/admin/CampMultiDetails'
 import WeeklyCourseDetails from '../../pages/admin/WeeklyCourseDetails'
-
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`scrollable-force-tabpanel-${index}`}
-      aria-labelledby={`scrollable-force-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `scrollable-force-tab-${index}`,
-    'aria-controls': `scrollable-force-tabpanel-${index}`,
-  };
-}
+import CircularProgress from '@material-ui/core/CircularProgress'
+import AddNewCourse from '../../pages/admin/AddNewCourse'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -93,6 +61,13 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    textAlign: "center",
+  },
   select: {
     width: `${(window.innerWidth - 100) / 3}px`,
     marginBottom: '30px'
@@ -100,11 +75,45 @@ const useStyles = makeStyles((theme) => ({
   inputs: {
     margin: '7px 0',
     width: `${(window.innerWidth - 100) / 3}px`
+  },
+  stepContainer: {
+    display: 'grid',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  button: {
+    position: "relative",
+    margin: "10px 0",
+    minWidth: '170px',
+    minHeight: '40px'
+  },
+  buttonContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  text: {
+    margin: 'auto',
+    color: 'black'
+  }, 
+  circle: {
+    display: 'flex',
+    width: '70px',
+    height: '70px',
+    backgroundColor: 'transparent',
+    borderRadius: '50%',
+    borderStyle: 'solid',
+    borderColor: '#00000',
+    borderWidth: '2px',
+    margin: 'auto' 
+  }, 
+  excludeButton: {
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    margin: '5px 20px'
   }
 }));
-
-
-
 
 export default function Sessions({ componentTabValue }) {
   const date = moment()
@@ -120,13 +129,26 @@ export default function Sessions({ componentTabValue }) {
   const [companyCoachIds, setCompanyCoachIds] = useState([])
   const [companyCoachInfo, setCompanyCoachInfo] = useState([])
   const [thisWeek, setThisWeek] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAddNewcourse, setIsAddNewCourse] = useState(false)
+  const [isEditCourse, setIsEditCourse] = useState(false)
+  const [editCourse, setEditCourse] = useState({})
 
   async function getData() {
     let activeRegisterArray = []
     let pastRegisterArray = []
     let coachArray = []
-    const response = await axios.get(`/users/${auth.getUserId()}`)
-    const data = await response.data[0]
+    const response = await axios.get(`/users/${auth.getUserId()}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
+    const data = await response.data[0]    
+
+    if ((data.courses.active.length === 0) && (data.courses.past.length === 0)) {
+      setIsAddNewCourse(true)
+    }
+    // axios.get(`/users/${auth.getUserId()}`)
+    //   .then(res => {
+
+    //   })
+    //   .catch(err => console.log(err))
     // console.log(data, 'hellooooo')
 
     // for (const course of data.courses) {
@@ -139,28 +161,24 @@ export default function Sessions({ componentTabValue }) {
     // }
 
     for (const course of data.courses.active) {
-
       let register
-      const response = await axios.get(`/courses/${course.courseId}`)
+      const response = await axios.get(`/courses/${course.courseId}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       register = await response.data
       // console.log({register})
       if (register.register) activeRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
     }
 
-
     for (const course of data.courses.past) {
       let register
-      const response = await axios.get(`/courses/${course.courseId}`)
+      const response = await axios.get(`/courses/${course.courseId}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       register = await response.data
 
       if (register.register) pastRegisterArray.push([course.courseDetails, course.courseId, register.register.sessions])
     }
 
-
-
     for (const coach of data.coaches) {
       let coachInfo
-      const response = await axios.get(`/users/${coach}`)
+      const response = await axios.get(`/users/${coach}`, { headers: { Authorization: `Bearer ${auth.getToken()}` }})
       coachInfo = await response.data[0]
       coachArray.push(coachInfo)
     }
@@ -169,9 +187,8 @@ export default function Sessions({ componentTabValue }) {
     setCompanyCourses(data.courses)
     setRegisters({ active: activeRegisterArray, past: pastRegisterArray })
     setThisWeek(sortRegisters(pastRegisterArray.concat(activeRegisterArray)))
+    setIsLoading(false)
   }
-
-
 
   const sortRegisters = (registers) => {
     const monday = date.startOf('week')
@@ -212,6 +229,9 @@ export default function Sessions({ componentTabValue }) {
     setValue(0)
   }
 
+  const handleIsNewCourse = () => {
+    setIsAddNewCourse(false)
+  }
 
   function handleCampResetInformation(courseId) {
     const { courseType } = courseToBeEdited.courseDetails
@@ -234,7 +254,6 @@ export default function Sessions({ componentTabValue }) {
 
   const handleDelete = () => {
     setStateRefreshInProgress(true);
-    console.log(courseIdToBeDeleted);
     axios
       .delete(`/courses/${courseIdToBeDeleted}`, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
@@ -252,11 +271,9 @@ export default function Sessions({ componentTabValue }) {
   };
 
   const handleEditCourse = (course) => {
-    console.log(course)
     setValue(2)
     setCourseToBeEdited(course)
-  }
-
+  };
 
   const handleChange = (event, newValue) => {
     setCourseToBeEdited(null)
@@ -265,119 +282,131 @@ export default function Sessions({ componentTabValue }) {
 
   return (
     <div className={classes.root}>
-
-      <AppBar position="static" color="default">
-        <Tabs
-          className={classes.AppBar}
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="on"
-          indicatorColor="primary"
-          textColor="primary"
-          aria-label="scrollable force tabs example"
-        >
-          <Tab label="Current" icon={<ExploreSharpIcon />} {...a11yProps(0)} />
-          <Tab label="Add New" icon={<AddLocationSharpIcon />} {...a11yProps(2)} />
-         {courseToBeEdited && <Tab label="Edit Existing" icon={<AddLocationSharpIcon />} {...a11yProps(3)} /> } 
-        </Tabs>
-      </AppBar>
-
-      {/* tab 1 content */}
-      <TabPanel value={value} index={0}>
-        <SessionsPageTable
-          classes={classes}
-          handleEditCourse={e => handleEditCourse(e)}
-          handleCourseDeletion={e => handleCourseDeletion(e)}
-          courseToBeEdited={courseToBeEdited}
-          courses={companyCourses}
-          companyCoachIds={companyCoachIds}
-          companyCoachInfo={companyCoachInfo}
-          registers={registers} />
-
-        <br></br>
-        <Typography variant="h4" >This Weeks Sessions</Typography>
-        <Container>
-
-          {Object.keys(thisWeek).map(day => {
-            if (thisWeek[day].length !== 0) {
-              return (
-                <>
-                  <Typography gutterBottom={true} variant="h5">{moment(day).format('dddd')}</Typography>
-                  {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
-                    return (
-                      <Typography gutterBottom={true} variant="h6">
-                        {sessionInfo.startTime} - {sessionInfo.endTime}, {courseDetails.courseType === 'Camp' ? courseDetails.location : courseDetails.sessions[0].location}:
-            <Link to={`/courses/${id}/register/${day}`}>
-                          {` ${courseDetails.optionalName}`}
-                        </Link>
-                      </Typography>
-                    )
-                  })}
-                </>
-              )
-            }
-          })}
-        </Container>
-
-      </TabPanel>
-
-      {/* tab 2 content */}
-      <TabPanel className={classes.formContainer} value={value} index={1}>
-        <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel id="demo-simple-select-outlined-label">What type of course are you adding?</InputLabel>
-          <Select
-            className={classes.select}
-            labelId="demo-simple-select-filled-label"
-            id="demo-simple-select-filled"
-            label='Who type of course are you adding?'
-            value={newCourseDetail}
-            onChange={e => setNewCourseDetail(e.target.value)}
-          >
-
-            <MenuItem value='camp'> Camp </MenuItem>
-            <MenuItem value='weekly'> Weekly Course </MenuItem>
-
-          </Select>
-        </FormControl>
-
-        {newCourseDetail ? newCourseDetail === 'camp' ?
-          <MaterialUIPickers
-            handleStateRefresh={() => handleStateRefresh()}
-          />
-          : (
-            <WeeklyCourseDetails
-              handleStateRefresh={() => handleStateRefresh()}
-            />
-          ) : null}
-
-      </TabPanel>
-
-      {/* tab 5 content */}
-      <TabPanel className={classes.formContainer} value={value} index={2}>
-        {courseToBeEdited ? courseToBeEdited.courseDetails.courseType === 'Camp' ?
-          <MaterialUIPickers
-            handleCampResetInformation={e => handleCampResetInformation(e)}
-            handleStateRefresh={() => handleStateRefresh()}
-            course={courseToBeEdited}
-          />
-          :
-          (
-            <WeeklyCourseDetails
-              course={courseToBeEdited}
-              handleStateRefresh={() => handleStateRefresh()}
-              handleCampResetInformation={e => handleCampResetInformation(e)} />
-          ) : null}
-      </TabPanel>
-
-      <DeleteComponent
-        open={open}
-        handleDelete={e => handleDelete(e)}
-        handleClose={e => handleClose(e)}
-        name='course/camp' />
+      {isLoading && <div>
+        <CircularProgress style= {{position: 'absolute', left: 'calc(50% - 50px)', top: 'calc(50% - 50px)', width: '100px', height: '100px', margin: 'auto'}}/>
+      </div>}
+      {(!isLoading && isAddNewcourse) && <AddNewCourse classes={classes} handleStateRefresh={() => handleStateRefresh()} handleIsNewCourse={() => handleIsNewCourse()} setStateRefreshInProgress={setStateRefreshInProgress}/>}
+      {(!isLoading && !isAddNewcourse) &&
+        <div className={classes.root}>        
+          {!isEditCourse && <SessionsPageTable
+            classes={classes}
+            handleEditCourse={e => handleEditCourse(e)}
+            handleCourseDeletion={e => handleCourseDeletion(e)}
+            courseToBeEdited={courseToBeEdited}
+            courses={companyCourses}
+            companyCoachIds={companyCoachIds}
+            companyCoachInfo={companyCoachInfo}
+            registers={registers} 
+            setIsEditCourse={setIsEditCourse}
+            setEditCourse={setEditCourse}
+            setIsAddNewCourse={setIsAddNewCourse}
+            />}
+          {isEditCourse && <AddNewCourse classes={classes} handleStateRefresh={() => handleStateRefresh()} handleIsNewCourse={() => handleIsNewCourse()} editCourse={editCourse} setIsEditCourse={() => setIsEditCourse()} setStateRefreshInProgress={setStateRefreshInProgress}/>}
+          <DeleteComponent
+            open={open}
+            handleDelete={e => handleDelete(e)}
+            handleClose={e => handleClose(e)}
+            name='course/camp' />
+        </div>}
     </div>
   );
 }
+
+{/* <AppBar position="static" color="default">
+          <Tabs
+            className={classes.AppBar}
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="on"
+            indicatorColor="primary"
+            textColor="primary"
+            aria-label="scrollable force tabs example"
+          >
+            <Tab label="Current" icon={<ExploreSharpIcon />} {...a11yProps(0)} />
+            <Tab label="Add New" icon={<AddLocationSharpIcon />} {...a11yProps(2)} />
+          {courseToBeEdited && <Tab label="Edit Existing" icon={<AddLocationSharpIcon />} {...a11yProps(3)} /> } 
+          </Tabs>
+        </AppBar>
+
+        <TabPanel value={value} index={0}>
+          <SessionsPageTable
+            classes={classes}
+            handleEditCourse={e => handleEditCourse(e)}
+            handleCourseDeletion={e => handleCourseDeletion(e)}
+            courseToBeEdited={courseToBeEdited}
+            courses={companyCourses}
+            companyCoachIds={companyCoachIds}
+            companyCoachInfo={companyCoachInfo}
+            registers={registers} />
+
+          <br></br>
+          <Typography variant="h4" >This Weeks Sessions</Typography>
+          <Container>
+            {Object.keys(thisWeek).map(day => {
+              if (thisWeek[day].length !== 0) {
+                return (
+                  <>
+                    <Typography gutterBottom={true} variant="h5">{moment(day).format('dddd')}</Typography>
+                    {thisWeek[day].map(([courseDetails, id, sessionInfo]) => {
+                      return (
+                        <Typography gutterBottom={true} variant="h6">
+                          {sessionInfo.startTime} - {sessionInfo.endTime}, {courseDetails.courseType === 'Camp' ? courseDetails.location : courseDetails.sessions[0].location}:
+                          <Link to={`/courses/${id}/register/${day}`}>
+                            {`${courseDetails.optionalName}`}
+                          </Link>
+                        </Typography>
+                      )
+                    })}
+                  </>
+                )
+              }
+            })}
+          </Container>
+        </TabPanel>
+        
+        <TabPanel className={classes.formContainer} value={value} index={1}>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel id="demo-simple-select-outlined-label">What type of course are you adding?</InputLabel>
+            <Select
+              className={classes.select}
+              labelId="demo-simple-select-filled-label"
+              id="demo-simple-select-filled"
+              label='Who type of course are you adding?'
+              value={newCourseDetail}
+              onChange={e => setNewCourseDetail(e.target.value)}
+            >
+              <MenuItem value='camp'> Camp </MenuItem>
+              <MenuItem value='weekly'> Weekly Course</MenuItem>
+            </Select>
+          </FormControl>
+
+          {newCourseDetail ? newCourseDetail === 'camp' ?
+            <MaterialUIPickers
+              handleStateRefresh={() => handleStateRefresh()}
+            />
+            : (
+              <WeeklyCourseDetails
+                handleStateRefresh={() => handleStateRefresh()}
+              />
+            ) : null}
+        </TabPanel>
+        
+        <TabPanel className={classes.formContainer} value={value} index={2}>
+          {courseToBeEdited ? courseToBeEdited.courseDetails.courseType === 'Camp' ?
+            <MaterialUIPickers
+              handleCampResetInformation={e => handleCampResetInformation(e)}
+              handleStateRefresh={() => handleStateRefresh()}
+              course={courseToBeEdited}
+            />
+            :
+            (
+              <WeeklyCourseDetails
+                course={courseToBeEdited}
+                handleStateRefresh={() => handleStateRefresh()}
+                handleCampResetInformation={e => handleCampResetInformation(e)} />
+            ) : null}
+        </TabPanel> */}
 
 
 
